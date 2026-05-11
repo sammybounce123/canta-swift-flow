@@ -16,6 +16,7 @@ import {
   TrendingDown,
   UserCog,
   Check,
+  Menu,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRole, ALL_ROLES, type Permission, type Role } from "@/components/RoleProvider";
@@ -23,6 +24,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { toast } from "sonner";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean; perm: Permission };
