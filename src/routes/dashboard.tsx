@@ -61,7 +61,9 @@ function Dashboard() {
               Total balance · NGN equivalent
             </div>
             <div className="mt-2 flex items-end gap-3">
-              <div className="text-4xl lg:text-5xl font-semibold tabular-nums">{fmtNGN(totalNGN)}</div>
+              <div className="text-4xl lg:text-5xl font-semibold tabular-nums">
+                {hidden ? `₦${MASK}` : fmtNGN(totalNGN)}
+              </div>
               <div className="inline-flex items-center gap-1 bg-success/20 text-success px-2 py-1 rounded text-xs mb-2">
                 <ArrowUpRight className="h-3 w-3" /> +4.8% this week
               </div>
@@ -70,27 +72,36 @@ function Dashboard() {
               {wallets.map((w) => (
                 <button
                   key={w.ccy}
-                  onClick={() => openFund(w.ccy)}
-                  className="text-left rounded-lg bg-white/5 backdrop-blur border border-white/10 px-3 py-2.5 hover:bg-white/10 transition"
+                  onClick={() => can("initiate_tx") ? openFund(w.ccy) : undefined}
+                  disabled={!can("initiate_tx")}
+                  className="text-left rounded-lg bg-white/5 backdrop-blur border border-white/10 px-3 py-2.5 hover:bg-white/10 transition disabled:cursor-not-allowed disabled:hover:bg-white/5"
                 >
                   <div className="text-[10px] text-primary-foreground/60 uppercase tracking-wider">
                     {w.flag} {w.ccy}
                   </div>
-                  <div className="text-sm font-semibold tabular-nums mt-1">{fmtMoney(w.balance, w.ccy)}</div>
+                  <div className="text-sm font-semibold tabular-nums mt-1">
+                    {hidden ? MASK : fmtMoney(w.balance, w.ccy)}
+                  </div>
                 </button>
               ))}
             </div>
-            <div className="mt-6 flex flex-wrap gap-2">
-              <Button onClick={() => openFund("NGN")} className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold">
-                <Plus className="h-4 w-4 mr-1.5" /> Fund Wallet
-              </Button>
-              <Button onClick={() => openConvert("NGN", "USD")} variant="secondary" className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15">
-                <ArrowLeftRight className="h-4 w-4 mr-1.5" /> Convert Currency
-              </Button>
-              <Button onClick={() => openSend()} variant="secondary" className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15">
-                <Send className="h-4 w-4 mr-1.5" /> Send Payment
-              </Button>
-            </div>
+            {can("initiate_tx") ? (
+              <div className="mt-6 flex flex-wrap gap-2">
+                <Button onClick={() => openFund("NGN")} className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold">
+                  <Plus className="h-4 w-4 mr-1.5" /> Fund Wallet
+                </Button>
+                <Button onClick={() => openConvert("NGN", "USD")} variant="secondary" className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15">
+                  <ArrowLeftRight className="h-4 w-4 mr-1.5" /> Convert Currency
+                </Button>
+                <Button onClick={() => openSend()} variant="secondary" className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15">
+                  <Send className="h-4 w-4 mr-1.5" /> Send Payment
+                </Button>
+              </div>
+            ) : (
+              <div className="mt-6 text-xs text-primary-foreground/70 bg-white/5 border border-white/10 rounded-lg px-3 py-2 inline-flex items-center gap-2">
+                Your role ({role}) doesn't allow initiating transactions.
+              </div>
+            )}
           </div>
         </Card>
 
