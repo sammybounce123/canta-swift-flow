@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, CreditCard, Building, Zap } from "lucide-react";
 import { wallets, fmtMoney } from "@/lib/mock";
+import { useActions } from "@/components/ActionsProvider";
 
 export const Route = createFileRoute("/wallets")({
   head: () => ({ meta: [{ title: "Wallets — Canta" }] }),
@@ -10,6 +11,7 @@ export const Route = createFileRoute("/wallets")({
 });
 
 function Wallets() {
+  const { openFund, openSend } = useActions();
   return (
     <div className="space-y-6">
       <div className="flex items-end justify-between flex-wrap gap-4">
@@ -17,7 +19,7 @@ function Wallets() {
           <h1 className="text-2xl font-semibold">Wallets</h1>
           <p className="text-sm text-muted-foreground mt-1">Multi-currency balances and funding sources.</p>
         </div>
-        <Button className="bg-primary"><Plus className="h-4 w-4 mr-1.5" /> New Wallet</Button>
+        <Button onClick={() => openFund("NGN")} className="bg-primary"><Plus className="h-4 w-4 mr-1.5" /> New Wallet</Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
@@ -26,15 +28,13 @@ function Wallets() {
             {i === 0 && <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-accent/20 blur-2xl" />}
             <div className="flex items-center justify-between relative">
               <div className="text-2xl">{w.flag}</div>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full ${i === 0 ? "bg-white/15" : "bg-secondary"}`}>
-                {w.ccy}
-              </span>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full ${i === 0 ? "bg-white/15" : "bg-secondary"}`}>{w.ccy}</span>
             </div>
             <div className={`mt-4 text-xs ${i === 0 ? "text-primary-foreground/70" : "text-muted-foreground"}`}>{w.label}</div>
             <div className="text-2xl font-semibold tabular-nums mt-1">{fmtMoney(w.balance, w.ccy)}</div>
             <div className="mt-5 flex gap-2">
-              <Button size="sm" className={i === 0 ? "bg-accent text-accent-foreground hover:bg-accent/90" : ""}>Fund</Button>
-              <Button size="sm" variant={i === 0 ? "secondary" : "outline"} className={i === 0 ? "bg-white/10 text-primary-foreground border-white/15 hover:bg-white/15" : ""}>Send</Button>
+              <Button size="sm" onClick={() => openFund(w.ccy)} className={i === 0 ? "bg-accent text-accent-foreground hover:bg-accent/90" : ""}>Fund</Button>
+              <Button size="sm" onClick={() => openSend()} variant={i === 0 ? "secondary" : "outline"} className={i === 0 ? "bg-white/10 text-primary-foreground border-white/15 hover:bg-white/15" : ""}>Send</Button>
             </div>
           </Card>
         ))}
@@ -49,7 +49,7 @@ function Wallets() {
             { icon: CreditCard, label: "Card Payment", desc: "1.5% fee · Instant" },
             { icon: Zap, label: "Pay Without Funding", desc: "Inline payment · No pre-fund needed", badge: "New" },
           ].map((o) => (
-            <button key={o.label} className="text-left p-4 rounded-xl border border-border hover:border-accent hover:shadow-card transition">
+            <button key={o.label} onClick={() => openFund("NGN")} className="text-left p-4 rounded-xl border border-border hover:border-accent hover:shadow-card transition">
               <div className="flex items-start justify-between">
                 <div className="h-10 w-10 rounded-lg bg-primary/10 grid place-items-center">
                   <o.icon className="h-5 w-5 text-primary" />

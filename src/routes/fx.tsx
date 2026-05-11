@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { ArrowDown, Lock, Sparkles, Info } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { fxHistory } from "@/lib/mock";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/fx")({
   head: () => ({ meta: [{ title: "FX / Exchange — Canta" }] }),
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/fx")({
 });
 
 function FX() {
+  const navigate = useNavigate();
   const [from, setFrom] = useState("NGN");
   const [to, setTo] = useState("USD");
   const [amount, setAmount] = useState("50000000");
@@ -94,7 +96,13 @@ function FX() {
             <Row label="Slippage" value="< 0.05%" />
           </div>
 
-          <Button className="w-full mt-5 bg-accent text-accent-foreground hover:bg-accent/90 h-11 font-semibold">
+          <Button
+            onClick={() => {
+              toast.success("Conversion confirmed", { description: `Converted ${Number(amount).toLocaleString()} ${from} → ${to}.` });
+              navigate({ to: "/transactions" });
+            }}
+            className="w-full mt-5 bg-accent text-accent-foreground hover:bg-accent/90 h-11 font-semibold"
+          >
             Confirm Conversion
           </Button>
         </Card>

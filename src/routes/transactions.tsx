@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, Filter } from "lucide-react";
 import { transactions, fmtMoney } from "@/lib/mock";
-import { StatusPill } from "./index";
+import { StatusPill } from "@/components/StatusPill";
 
 export const Route = createFileRoute("/transactions")({
   head: () => ({ meta: [{ title: "Transactions — Canta" }] }),

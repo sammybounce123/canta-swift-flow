@@ -8,7 +8,9 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
+import { ActionsProvider } from "@/components/ActionsProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { useRouterState } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
 
@@ -83,11 +85,19 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isLanding = pathname === "/";
   return (
     <QueryClientProvider client={queryClient}>
-      <AppShell>
+      {isLanding ? (
         <Outlet />
-      </AppShell>
+      ) : (
+        <ActionsProvider>
+          <AppShell>
+            <Outlet />
+          </AppShell>
+        </ActionsProvider>
+      )}
       <Toaster />
     </QueryClientProvider>
   );

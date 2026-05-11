@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
 const nav: NavItem[] = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/wallets", label: "Wallets", icon: Wallet },
   { to: "/fx", label: "FX / Exchange", icon: ArrowLeftRight },
   { to: "/transactions", label: "Transactions", icon: Receipt },
@@ -87,7 +87,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex bg-background">
       {/* Sidebar */}
       <aside className="hidden lg:flex w-64 flex-col bg-sidebar text-sidebar-foreground sticky top-0 h-screen">
-        <div className="px-6 py-5 flex items-center gap-2 border-b border-sidebar-border">
+        <Link to="/dashboard" className="px-6 py-5 flex items-center gap-2 border-b border-sidebar-border hover:bg-sidebar-accent/30">
           <div className="h-9 w-9 rounded-xl bg-gradient-accent grid place-items-center text-sidebar-primary-foreground font-bold shadow-glow">
             C
           </div>
@@ -97,7 +97,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               Enterprise FX
             </div>
           </div>
-        </div>
+        </Link>
 
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {nav.map((item) => {

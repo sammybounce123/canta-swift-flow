@@ -15,6 +15,7 @@ import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as FxRouteImport } from './routes/fx'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BeneficiariesRouteImport } from './routes/beneficiaries'
 import { Route as AiInsightsRouteImport } from './routes/ai-insights'
 import { Route as IndexRouteImport } from './routes/index'
@@ -49,6 +50,11 @@ const FxRoute = FxRouteImport.update({
   path: '/fx',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BeneficiariesRoute = BeneficiariesRouteImport.update({
   id: '/beneficiaries',
   path: '/beneficiaries',
@@ -69,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ai-insights': typeof AiInsightsRoute
   '/beneficiaries': typeof BeneficiariesRoute
+  '/dashboard': typeof DashboardRoute
   '/fx': typeof FxRoute
   '/settings': typeof SettingsRoute
   '/team': typeof TeamRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ai-insights': typeof AiInsightsRoute
   '/beneficiaries': typeof BeneficiariesRoute
+  '/dashboard': typeof DashboardRoute
   '/fx': typeof FxRoute
   '/settings': typeof SettingsRoute
   '/team': typeof TeamRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/ai-insights': typeof AiInsightsRoute
   '/beneficiaries': typeof BeneficiariesRoute
+  '/dashboard': typeof DashboardRoute
   '/fx': typeof FxRoute
   '/settings': typeof SettingsRoute
   '/team': typeof TeamRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ai-insights'
     | '/beneficiaries'
+    | '/dashboard'
     | '/fx'
     | '/settings'
     | '/team'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ai-insights'
     | '/beneficiaries'
+    | '/dashboard'
     | '/fx'
     | '/settings'
     | '/team'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ai-insights'
     | '/beneficiaries'
+    | '/dashboard'
     | '/fx'
     | '/settings'
     | '/team'
@@ -139,6 +151,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AiInsightsRoute: typeof AiInsightsRoute
   BeneficiariesRoute: typeof BeneficiariesRoute
+  DashboardRoute: typeof DashboardRoute
   FxRoute: typeof FxRoute
   SettingsRoute: typeof SettingsRoute
   TeamRoute: typeof TeamRoute
@@ -191,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FxRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/beneficiaries': {
       id: '/beneficiaries'
       path: '/beneficiaries'
@@ -219,6 +239,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AiInsightsRoute: AiInsightsRoute,
   BeneficiariesRoute: BeneficiariesRoute,
+  DashboardRoute: DashboardRoute,
   FxRoute: FxRoute,
   SettingsRoute: SettingsRoute,
   TeamRoute: TeamRoute,
