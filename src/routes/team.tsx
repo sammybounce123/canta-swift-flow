@@ -4,6 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { UserPlus, Check } from "lucide-react";
 import { team } from "@/lib/mock";
+import { useActions } from "@/components/ActionsProvider";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 const permissions = [
   { name: "View dashboard", roles: { Admin: true, Treasury: true, Finance: true, Compliance: true, Viewer: true } },
@@ -21,6 +26,7 @@ export const Route = createFileRoute("/team")({
 });
 
 function Team() {
+  const { openInvite } = useActions();
   return (
     <div className="space-y-6">
       <div className="flex items-end justify-between flex-wrap gap-4">
@@ -28,7 +34,7 @@ function Team() {
           <h1 className="text-2xl font-semibold">Team & Roles</h1>
           <p className="text-sm text-muted-foreground mt-1">Granular permissions for finance, treasury and compliance.</p>
         </div>
-        <Button className="bg-primary"><UserPlus className="h-4 w-4 mr-1.5" /> Invite Member</Button>
+        <Button className="bg-primary" onClick={openInvite}><UserPlus className="h-4 w-4 mr-1.5" /> Invite Member</Button>
       </div>
 
       <Card className="shadow-card overflow-hidden">
@@ -62,7 +68,18 @@ function Team() {
                   </span>
                 </td>
                 <td className="px-5 py-3 text-right">
-                  <Button variant="ghost" size="sm">Manage</Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm">Manage</Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => toast.success(`Role updated for ${m.name}`)}>Change role</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => toast.success(`Invite resent to ${m.email}`)}>Resend invite</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => toast.success(`2FA reset for ${m.name}`)}>Reset 2FA</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="text-destructive" onClick={() => toast.success(`${m.name} removed`)}>Remove member</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </td>
               </tr>
             ))}
@@ -107,7 +124,7 @@ function Toggle({ initial }: { initial: boolean }) {
   const [on, setOn] = useState(initial);
   return (
     <button
-      onClick={() => setOn(!on)}
+      onClick={() => { setOn(!on); toast.success(on ? "Permission revoked" : "Permission granted"); }}
       className={`h-5 w-9 rounded-full inline-flex items-center px-0.5 transition ${on ? "bg-accent justify-end" : "bg-secondary justify-start"}`}
     >
       <span className="h-4 w-4 rounded-full bg-white shadow grid place-items-center">
