@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
 const nav: NavItem[] = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/wallets", label: "Wallets", icon: Wallet },
   { to: "/fx", label: "FX / Exchange", icon: ArrowLeftRight },
   { to: "/transactions", label: "Transactions", icon: Receipt },
