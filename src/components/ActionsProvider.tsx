@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import {
@@ -278,8 +278,7 @@ function AddBeneficiaryForm({ onClose }: { onClose: () => void }) {
   const [country, setCountry] = useState("US");
   const auto = COUNTRIES.find((c) => c.code === country)?.ccy ?? "USD";
   const [ccy, setCcy] = useState(auto);
-  // when country changes, auto-set currency
-  useMemo(() => { setCcy(auto); }, [auto]);
+  useEffect(() => { setCcy(auto); }, [auto]);
 
   // Predict fields based on currency
   const fields = useMemo(() => {
