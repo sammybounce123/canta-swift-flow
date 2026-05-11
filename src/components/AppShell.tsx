@@ -106,7 +106,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             return (
               <Link
                 key={item.to}
-                to={item.to}
+                to={item.to as never}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
                   active
                     ? "bg-sidebar-accent text-sidebar-accent-foreground border-l-2 border-sidebar-primary"
