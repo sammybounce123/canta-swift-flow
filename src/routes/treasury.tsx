@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { Calendar, Layers } from "lucide-react";
+import { useActions } from "@/components/ActionsProvider";
 
 const allocation = [
   { name: "USD", value: 62 },
@@ -26,6 +27,7 @@ export const Route = createFileRoute("/treasury")({
 });
 
 function Treasury() {
+  const { openBulk, openSchedule } = useActions();
   return (
     <div className="space-y-6">
       <div className="flex items-end justify-between flex-wrap gap-4">
@@ -34,8 +36,8 @@ function Treasury() {
           <p className="text-sm text-muted-foreground mt-1">FX exposure and corporate cash positions.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline"><Layers className="h-4 w-4 mr-1.5" /> Bulk Payments</Button>
-          <Button className="bg-primary"><Calendar className="h-4 w-4 mr-1.5" /> Schedule Conversion</Button>
+          <Button variant="outline" onClick={openBulk}><Layers className="h-4 w-4 mr-1.5" /> Bulk Payments</Button>
+          <Button className="bg-primary" onClick={openSchedule}><Calendar className="h-4 w-4 mr-1.5" /> Schedule Conversion</Button>
         </div>
       </div>
 

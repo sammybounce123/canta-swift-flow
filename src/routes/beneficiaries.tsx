@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Send, Search } from "lucide-react";
 import { beneficiaries } from "@/lib/mock";
 import { useActions } from "@/components/ActionsProvider";
+import { useState, useMemo } from "react";
 
 export const Route = createFileRoute("/beneficiaries")({
   head: () => ({ meta: [{ title: "Beneficiaries — Canta" }] }),
@@ -12,6 +13,13 @@ export const Route = createFileRoute("/beneficiaries")({
 
 function Beneficiaries() {
   const { openSend, openAddBeneficiary } = useActions();
+  const [q, setQ] = useState("");
+  const filtered = useMemo(
+    () => beneficiaries.filter((b) =>
+      `${b.name} ${b.bank} ${b.country} ${b.ccy}`.toLowerCase().includes(q.toLowerCase())
+    ),
+    [q]
+  );
   return (
     <div className="space-y-6">
       <div className="flex items-end justify-between flex-wrap gap-4">
@@ -24,13 +32,22 @@ function Beneficiaries() {
 
       <Card className="p-4 shadow-card flex items-center gap-3">
         <Search className="h-4 w-4 text-muted-foreground ml-2" />
-        <input className="flex-1 bg-transparent outline-none text-sm" placeholder="Search beneficiaries by name or bank…" />
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          className="flex-1 bg-transparent outline-none text-sm"
+          placeholder="Search beneficiaries by name, bank, country or currency…"
+        />
+        {q && <button onClick={() => setQ("")} className="text-xs text-muted-foreground hover:text-foreground px-2">Clear</button>}
       </Card>
 
       <div>
         <div className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Recently used</div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {beneficiaries.map((b) => (
+          {filtered.length === 0 && (
+            <div className="col-span-full text-sm text-muted-foreground text-center py-10">No beneficiaries match "{q}".</div>
+          )}
+          {filtered.map((b) => (
             <Card key={b.name} className="p-5 shadow-card hover:shadow-elevated transition">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
