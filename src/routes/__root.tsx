@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { ActionsProvider } from "@/components/ActionsProvider";
+import { RoleProvider } from "@/components/RoleProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { useRouterState } from "@tanstack/react-router";
 
