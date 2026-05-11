@@ -14,20 +14,28 @@ import {
   ChevronDown,
   TrendingUp,
   TrendingDown,
+  UserCog,
+  Check,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useRole, ALL_ROLES, type Permission, type Role } from "@/components/RoleProvider";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
+  DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
-type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean; perm: Permission };
 const nav: NavItem[] = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { to: "/wallets", label: "Wallets", icon: Wallet },
-  { to: "/fx", label: "FX / Exchange", icon: ArrowLeftRight },
-  { to: "/transactions", label: "Transactions", icon: Receipt },
-  { to: "/beneficiaries", label: "Beneficiaries", icon: Users },
-  { to: "/treasury", label: "Treasury", icon: Building2 },
-  { to: "/ai-insights", label: "AI Insights", icon: Sparkles },
-  { to: "/team", label: "Team & Roles", icon: Shield },
-  { to: "/settings", label: "Settings", icon: Settings },
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true, perm: "view_dashboard" },
+  { to: "/wallets", label: "Wallets", icon: Wallet, perm: "view_wallets" },
+  { to: "/fx", label: "FX / Exchange", icon: ArrowLeftRight, perm: "view_fx" },
+  { to: "/transactions", label: "Transactions", icon: Receipt, perm: "view_transactions" },
+  { to: "/beneficiaries", label: "Beneficiaries", icon: Users, perm: "view_beneficiaries" },
+  { to: "/treasury", label: "Treasury", icon: Building2, perm: "view_treasury" },
+  { to: "/ai-insights", label: "AI Insights", icon: Sparkles, perm: "view_ai" },
+  { to: "/team", label: "Team & Roles", icon: Shield, perm: "view_team" },
+  { to: "/settings", label: "Settings", icon: Settings, perm: "view_settings" },
 ];
 
 const initialRates = [
@@ -82,6 +90,8 @@ function FxTicker() {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { role, setRole, can, profile } = useRole();
+  const visibleNav = nav.filter((n) => can(n.perm));
 
   return (
     <div className="min-h-screen flex bg-background">
@@ -100,7 +110,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </Link>
 
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          {nav.map((item) => {
+          {visibleNav.map((item) => {
             const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
             const Icon = item.icon;
             return (
@@ -120,7 +130,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        <div className="p-4 border-t border-sidebar-border">
+        <div className="p-4 border-t border-sidebar-border space-y-3">
+          <div className="rounded-xl p-3 bg-sidebar-accent/60 border border-sidebar-border">
+            <div className="text-[10px] uppercase tracking-widest text-sidebar-foreground/60 mb-1">Signed in as</div>
+            <div className="text-sm font-semibold">{profile.name}</div>
+            <div className="text-[11px] text-sidebar-foreground/70">{role} · {profile.title}</div>
+          </div>
           <div className="rounded-xl p-3 bg-sidebar-accent/60 border border-sidebar-border">
             <div className="flex items-center gap-2 text-xs">
               <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
@@ -158,23 +173,68 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Bell className="h-4 w-4" />
                 <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive" />
               </button>
-              <div className="flex items-center gap-2 pl-2 border-l border-border">
-                <div className="h-8 w-8 rounded-full bg-gradient-primary text-primary-foreground grid place-items-center text-xs font-semibold">
-                  AO
-                </div>
-                <div className="hidden sm:block leading-tight">
-                  <div className="text-xs font-semibold">Adaeze O.</div>
-                  <div className="text-[10px] text-muted-foreground">Treasury Admin</div>
-                </div>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 pl-2 border-l border-border hover:opacity-80">
+                    <div className="h-8 w-8 rounded-full bg-gradient-primary text-primary-foreground grid place-items-center text-xs font-semibold">
+                      {profile.initials}
+                    </div>
+                    <div className="hidden sm:block leading-tight text-left">
+                      <div className="text-xs font-semibold">{profile.name}</div>
+                      <div className="text-[10px] text-muted-foreground">{role} · {profile.title}</div>
+                    </div>
+                    <ChevronDown className="h-3.5 w-3.5 text-muted-foreground hidden sm:block" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-64">
+                  <DropdownMenuLabel className="flex items-center gap-2">
+                    <UserCog className="h-3.5 w-3.5" /> Switch role (demo)
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {ALL_ROLES.map((r: Role) => (
+                    <DropdownMenuItem
+                      key={r}
+                      onClick={() => { setRole(r); toast.success(`Viewing as ${r}`); }}
+                      className="flex items-center justify-between"
+                    >
+                      <span>{r}</span>
+                      {role === r && <Check className="h-4 w-4 text-accent" />}
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => toast.success("Signed out")}>Sign out</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </header>
 
         <main className="flex-1 px-4 lg:px-8 py-6 lg:py-8 max-w-[1600px] w-full mx-auto">
-          {children}
+          <RouteGuard pathname={pathname}>{children}</RouteGuard>
         </main>
       </div>
     </div>
   );
+}
+
+function RouteGuard({ pathname, children }: { pathname: string; children: React.ReactNode }) {
+  const { can, role } = useRole();
+  const match = nav.find((n) => (n.exact ? pathname === n.to : pathname.startsWith(n.to)));
+  if (match && !can(match.perm)) {
+    return (
+      <div className="max-w-lg mx-auto mt-16 text-center">
+        <div className="h-14 w-14 rounded-2xl bg-destructive/10 grid place-items-center mx-auto mb-4">
+          <Shield className="h-6 w-6 text-destructive" />
+        </div>
+        <h2 className="text-xl font-semibold">Access restricted</h2>
+        <p className="text-sm text-muted-foreground mt-2">
+          Your role <span className="font-semibold text-foreground">{role}</span> doesn't have permission to view this page. Switch role from the top-right menu to explore.
+        </p>
+        <Link to="/dashboard" className="inline-block mt-6 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium">
+          Back to Dashboard
+        </Link>
+      </div>
+    );
+  }
+  return <>{children}</>;
 }

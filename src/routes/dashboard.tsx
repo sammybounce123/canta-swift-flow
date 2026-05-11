@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowUpRight, ArrowDownRight, Plus, ArrowLeftRight, Send, Sparkles,
-  TrendingUp, Wallet as WalletIcon, Zap,
+  TrendingUp, Wallet as WalletIcon, Zap, Eye, EyeOff,
 } from "lucide-react";
 import {
   AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid,
@@ -12,28 +12,45 @@ import {
 import { wallets, transactions, cashFlow, fmtMoney, fmtNGN } from "@/lib/mock";
 import { StatusPill } from "@/components/StatusPill";
 import { useActions } from "@/components/ActionsProvider";
+import { useRole } from "@/components/RoleProvider";
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Canta" }] }),
   component: Dashboard,
 });
 
+const MASK = "•••••••";
+
 function Dashboard() {
   const { openFund, openConvert, openSend } = useActions();
+  const { profile, role, can } = useRole();
+  const [hidden, setHidden] = useState(false);
   const totalNGN = 2_847_120_000;
+  const greet = role === "Viewer" ? "Welcome" : role === "Compliance" ? "Hello" : "Good morning";
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Good morning, Adaeze</h1>
+          <h1 className="text-2xl font-semibold">{greet}, {profile.name.split(" ")[0]}</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Here's what's happening with your treasury today.
+            {role === "Compliance"
+              ? "Review pending approvals and audit recent activity."
+              : role === "Viewer"
+              ? "Read-only view of treasury activity."
+              : "Here's what's happening with your treasury today."}
           </p>
         </div>
-        <Badge className="bg-accent/15 text-accent-foreground border border-accent/30 hover:bg-accent/20">
-          <Zap className="h-3 w-3 mr-1" /> Oil & Gas Mode
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => setHidden((h) => !h)}>
+            {hidden ? <Eye className="h-4 w-4 mr-1.5" /> : <EyeOff className="h-4 w-4 mr-1.5" />}
+            {hidden ? "Show balances" : "Hide balances"}
+          </Button>
+          <Badge className="bg-accent/15 text-accent-foreground border border-accent/30 hover:bg-accent/20">
+            <Zap className="h-3 w-3 mr-1" /> Oil & Gas Mode
+          </Badge>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -44,7 +61,9 @@ function Dashboard() {
               Total balance · NGN equivalent
             </div>
             <div className="mt-2 flex items-end gap-3">
-              <div className="text-4xl lg:text-5xl font-semibold tabular-nums">{fmtNGN(totalNGN)}</div>
+              <div className="text-4xl lg:text-5xl font-semibold tabular-nums">
+                {hidden ? `₦${MASK}` : fmtNGN(totalNGN)}
+              </div>
               <div className="inline-flex items-center gap-1 bg-success/20 text-success px-2 py-1 rounded text-xs mb-2">
                 <ArrowUpRight className="h-3 w-3" /> +4.8% this week
               </div>
@@ -53,27 +72,36 @@ function Dashboard() {
               {wallets.map((w) => (
                 <button
                   key={w.ccy}
-                  onClick={() => openFund(w.ccy)}
-                  className="text-left rounded-lg bg-white/5 backdrop-blur border border-white/10 px-3 py-2.5 hover:bg-white/10 transition"
+                  onClick={() => can("initiate_tx") ? openFund(w.ccy) : undefined}
+                  disabled={!can("initiate_tx")}
+                  className="text-left rounded-lg bg-white/5 backdrop-blur border border-white/10 px-3 py-2.5 hover:bg-white/10 transition disabled:cursor-not-allowed disabled:hover:bg-white/5"
                 >
                   <div className="text-[10px] text-primary-foreground/60 uppercase tracking-wider">
                     {w.flag} {w.ccy}
                   </div>
-                  <div className="text-sm font-semibold tabular-nums mt-1">{fmtMoney(w.balance, w.ccy)}</div>
+                  <div className="text-sm font-semibold tabular-nums mt-1">
+                    {hidden ? MASK : fmtMoney(w.balance, w.ccy)}
+                  </div>
                 </button>
               ))}
             </div>
-            <div className="mt-6 flex flex-wrap gap-2">
-              <Button onClick={() => openFund("NGN")} className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold">
-                <Plus className="h-4 w-4 mr-1.5" /> Fund Wallet
-              </Button>
-              <Button onClick={() => openConvert("NGN", "USD")} variant="secondary" className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15">
-                <ArrowLeftRight className="h-4 w-4 mr-1.5" /> Convert Currency
-              </Button>
-              <Button onClick={() => openSend()} variant="secondary" className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15">
-                <Send className="h-4 w-4 mr-1.5" /> Send Payment
-              </Button>
-            </div>
+            {can("initiate_tx") ? (
+              <div className="mt-6 flex flex-wrap gap-2">
+                <Button onClick={() => openFund("NGN")} className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold">
+                  <Plus className="h-4 w-4 mr-1.5" /> Fund Wallet
+                </Button>
+                <Button onClick={() => openConvert("NGN", "USD")} variant="secondary" className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15">
+                  <ArrowLeftRight className="h-4 w-4 mr-1.5" /> Convert Currency
+                </Button>
+                <Button onClick={() => openSend()} variant="secondary" className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15">
+                  <Send className="h-4 w-4 mr-1.5" /> Send Payment
+                </Button>
+              </div>
+            ) : (
+              <div className="mt-6 text-xs text-primary-foreground/70 bg-white/5 border border-white/10 rounded-lg px-3 py-2 inline-flex items-center gap-2">
+                Your role ({role}) doesn't allow initiating transactions.
+              </div>
+            )}
           </div>
         </Card>
 
@@ -166,8 +194,12 @@ function Dashboard() {
             </Badge>
             <span className="text-muted-foreground">Updated 2m ago</span>
           </div>
-          <Button onClick={() => openConvert("NGN", "USD")} className="w-full mt-5 bg-accent text-accent-foreground hover:bg-accent/90">
-            Convert now
+          <Button
+            onClick={() => openConvert("NGN", "USD")}
+            disabled={!can("initiate_tx")}
+            className="w-full mt-5 bg-accent text-accent-foreground hover:bg-accent/90"
+          >
+            {can("initiate_tx") ? "Convert now" : "Insight only · no permission"}
           </Button>
         </Card>
       </div>
@@ -200,7 +232,7 @@ function Dashboard() {
                     <div className="text-xs text-muted-foreground">{t.date}</div>
                   </td>
                   <td className="px-5 py-3"><span className="text-xs px-2 py-0.5 rounded bg-secondary text-secondary-foreground">{t.type}</span></td>
-                  <td className="px-5 py-3 text-right tabular-nums font-semibold">{fmtMoney(t.amount, t.ccy)}</td>
+                  <td className="px-5 py-3 text-right tabular-nums font-semibold">{hidden ? MASK : fmtMoney(t.amount, t.ccy)}</td>
                   <td className="px-5 py-3"><StatusPill status={t.status} /></td>
                 </tr>
               ))}
