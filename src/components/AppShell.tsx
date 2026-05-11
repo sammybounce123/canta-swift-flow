@@ -173,15 +173,38 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Bell className="h-4 w-4" />
                 <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive" />
               </button>
-              <div className="flex items-center gap-2 pl-2 border-l border-border">
-                <div className="h-8 w-8 rounded-full bg-gradient-primary text-primary-foreground grid place-items-center text-xs font-semibold">
-                  AO
-                </div>
-                <div className="hidden sm:block leading-tight">
-                  <div className="text-xs font-semibold">Adaeze O.</div>
-                  <div className="text-[10px] text-muted-foreground">Treasury Admin</div>
-                </div>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 pl-2 border-l border-border hover:opacity-80">
+                    <div className="h-8 w-8 rounded-full bg-gradient-primary text-primary-foreground grid place-items-center text-xs font-semibold">
+                      {profile.initials}
+                    </div>
+                    <div className="hidden sm:block leading-tight text-left">
+                      <div className="text-xs font-semibold">{profile.name}</div>
+                      <div className="text-[10px] text-muted-foreground">{role} · {profile.title}</div>
+                    </div>
+                    <ChevronDown className="h-3.5 w-3.5 text-muted-foreground hidden sm:block" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-64">
+                  <DropdownMenuLabel className="flex items-center gap-2">
+                    <UserCog className="h-3.5 w-3.5" /> Switch role (demo)
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {ALL_ROLES.map((r: Role) => (
+                    <DropdownMenuItem
+                      key={r}
+                      onClick={() => { setRole(r); toast.success(`Viewing as ${r}`); }}
+                      className="flex items-center justify-between"
+                    >
+                      <span>{r}</span>
+                      {role === r && <Check className="h-4 w-4 text-accent" />}
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => toast.success("Signed out")}>Sign out</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </header>
