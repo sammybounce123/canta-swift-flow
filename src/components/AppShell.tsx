@@ -90,73 +90,100 @@ function FxTicker() {
   );
 }
 
+function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
+  const { role, can, profile } = useRole();
+  const visibleNav = nav.filter((n) => can(n.perm));
+  return (
+    <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
+      <Link to="/dashboard" onClick={onNavigate} className="px-6 py-5 flex items-center gap-2 border-b border-sidebar-border hover:bg-sidebar-accent/30">
+        <div className="h-9 w-9 rounded-xl bg-gradient-accent grid place-items-center text-sidebar-primary-foreground font-bold shadow-glow">
+          C
+        </div>
+        <div>
+          <div className="font-semibold tracking-tight">Canta</div>
+          <div className="text-[10px] uppercase tracking-widest text-sidebar-foreground/60">
+            Enterprise FX
+          </div>
+        </div>
+      </Link>
+
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        {visibleNav.map((item) => {
+          const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.to}
+              to={item.to as never}
+              onClick={onNavigate}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                active
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground border-l-2 border-sidebar-primary"
+                  : "text-sidebar-foreground/75 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
+              }`}
+            >
+              <Icon className="h-4 w-4 shrink-0" />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="p-4 border-t border-sidebar-border space-y-3">
+        <div className="rounded-xl p-3 bg-sidebar-accent/60 border border-sidebar-border">
+          <div className="text-[10px] uppercase tracking-widest text-sidebar-foreground/60 mb-1">Signed in as</div>
+          <div className="text-sm font-semibold">{profile.name}</div>
+          <div className="text-[11px] text-sidebar-foreground/70">{role} · {profile.title}</div>
+        </div>
+        <div className="rounded-xl p-3 bg-sidebar-accent/60 border border-sidebar-border">
+          <div className="flex items-center gap-2 text-xs">
+            <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
+            <span className="text-sidebar-foreground/80">Bank-grade · NDIC ready</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { role, setRole, can, profile } = useRole();
-  const visibleNav = nav.filter((n) => can(n.perm));
+  const { role, setRole, profile } = useRole();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex bg-background">
-      {/* Sidebar */}
-      <aside className="hidden lg:flex w-64 flex-col bg-sidebar text-sidebar-foreground sticky top-0 h-screen">
-        <Link to="/dashboard" className="px-6 py-5 flex items-center gap-2 border-b border-sidebar-border hover:bg-sidebar-accent/30">
-          <div className="h-9 w-9 rounded-xl bg-gradient-accent grid place-items-center text-sidebar-primary-foreground font-bold shadow-glow">
-            C
-          </div>
-          <div>
-            <div className="font-semibold tracking-tight">Canta</div>
-            <div className="text-[10px] uppercase tracking-widest text-sidebar-foreground/60">
-              Enterprise FX
-            </div>
-          </div>
-        </Link>
-
-        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          {visibleNav.map((item) => {
-            const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.to}
-                to={item.to as never}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                  active
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground border-l-2 border-sidebar-primary"
-                    : "text-sidebar-foreground/75 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
-                }`}
-              >
-                <Icon className="h-4 w-4 shrink-0" />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="p-4 border-t border-sidebar-border space-y-3">
-          <div className="rounded-xl p-3 bg-sidebar-accent/60 border border-sidebar-border">
-            <div className="text-[10px] uppercase tracking-widest text-sidebar-foreground/60 mb-1">Signed in as</div>
-            <div className="text-sm font-semibold">{profile.name}</div>
-            <div className="text-[11px] text-sidebar-foreground/70">{role} · {profile.title}</div>
-          </div>
-          <div className="rounded-xl p-3 bg-sidebar-accent/60 border border-sidebar-border">
-            <div className="flex items-center gap-2 text-xs">
-              <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
-              <span className="text-sidebar-foreground/80">Bank-grade · NDIC ready</span>
-            </div>
-          </div>
-        </div>
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex w-64 flex-col sticky top-0 h-screen">
+        <SidebarContent pathname={pathname} />
       </aside>
+
+      {/* Mobile Sidebar (Sheet) */}
+      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+        <SheetContent side="left" className="p-0 w-72 bg-sidebar border-sidebar-border">
+          <SheetTitle className="sr-only">Navigation</SheetTitle>
+          <SidebarContent pathname={pathname} onNavigate={() => setMobileOpen(false)} />
+        </SheetContent>
+      </Sheet>
 
       <div className="flex-1 flex flex-col min-w-0">
         {/* Topbar */}
         <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-border">
-          <div className="h-16 px-4 lg:px-8 flex items-center gap-4">
-            <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card hover:bg-secondary text-sm font-medium">
-              <div className="h-6 w-6 rounded bg-gradient-primary text-primary-foreground grid place-items-center text-[10px] font-bold">
+          <div className="h-16 px-3 sm:px-4 lg:px-8 flex items-center gap-2 sm:gap-4">
+            <button
+              onClick={() => setMobileOpen(true)}
+              className="lg:hidden h-9 w-9 grid place-items-center rounded-lg hover:bg-secondary -ml-1 flex-shrink-0"
+              aria-label="Open menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+
+            <button className="flex items-center gap-2 px-2 sm:px-3 py-1.5 rounded-lg border border-border bg-card hover:bg-secondary text-sm font-medium min-w-0">
+              <div className="h-6 w-6 rounded bg-gradient-primary text-primary-foreground grid place-items-center text-[10px] font-bold flex-shrink-0">
                 NX
               </div>
-              <span className="hidden sm:inline">Niger Delta Exploration</span>
-              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="hidden sm:inline truncate max-w-[140px] md:max-w-none">Niger Delta Exploration</span>
+              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
             </button>
 
             <div className="hidden md:flex items-center gap-2 flex-1 max-w-md ml-2">
@@ -169,16 +196,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </div>
             </div>
 
-            <div className="ml-auto flex items-center gap-3">
+            <div className="ml-auto flex items-center gap-2 sm:gap-3">
               <FxTicker />
-              <button className="relative h-9 w-9 grid place-items-center rounded-lg hover:bg-secondary">
+              <button className="relative h-9 w-9 grid place-items-center rounded-lg hover:bg-secondary flex-shrink-0">
                 <Bell className="h-4 w-4" />
                 <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive" />
               </button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-2 pl-2 border-l border-border hover:opacity-80">
-                    <div className="h-8 w-8 rounded-full bg-gradient-primary text-primary-foreground grid place-items-center text-xs font-semibold">
+                  <button className="flex items-center gap-2 sm:pl-2 sm:border-l sm:border-border hover:opacity-80">
+                    <div className="h-8 w-8 rounded-full bg-gradient-primary text-primary-foreground grid place-items-center text-xs font-semibold flex-shrink-0">
                       {profile.initials}
                     </div>
                     <div className="hidden sm:block leading-tight text-left">
@@ -211,7 +238,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1 px-4 lg:px-8 py-6 lg:py-8 max-w-[1600px] w-full mx-auto">
+        <main className="flex-1 px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-[1600px] w-full mx-auto">
           <RouteGuard pathname={pathname}>{children}</RouteGuard>
         </main>
       </div>
