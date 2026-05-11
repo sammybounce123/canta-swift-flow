@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowUpRight, ArrowDownRight, Plus, ArrowLeftRight, Send, Sparkles,
-  TrendingUp, Wallet as WalletIcon, Zap,
+  TrendingUp, Wallet as WalletIcon, Zap, Eye, EyeOff,
 } from "lucide-react";
 import {
   AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid,
@@ -12,28 +12,45 @@ import {
 import { wallets, transactions, cashFlow, fmtMoney, fmtNGN } from "@/lib/mock";
 import { StatusPill } from "@/components/StatusPill";
 import { useActions } from "@/components/ActionsProvider";
+import { useRole } from "@/components/RoleProvider";
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Canta" }] }),
   component: Dashboard,
 });
 
+const MASK = "•••••••";
+
 function Dashboard() {
   const { openFund, openConvert, openSend } = useActions();
+  const { profile, role, can } = useRole();
+  const [hidden, setHidden] = useState(false);
   const totalNGN = 2_847_120_000;
+  const greet = role === "Viewer" ? "Welcome" : role === "Compliance" ? "Hello" : "Good morning";
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Good morning, Adaeze</h1>
+          <h1 className="text-2xl font-semibold">{greet}, {profile.name.split(" ")[0]}</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Here's what's happening with your treasury today.
+            {role === "Compliance"
+              ? "Review pending approvals and audit recent activity."
+              : role === "Viewer"
+              ? "Read-only view of treasury activity."
+              : "Here's what's happening with your treasury today."}
           </p>
         </div>
-        <Badge className="bg-accent/15 text-accent-foreground border border-accent/30 hover:bg-accent/20">
-          <Zap className="h-3 w-3 mr-1" /> Oil & Gas Mode
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => setHidden((h) => !h)}>
+            {hidden ? <Eye className="h-4 w-4 mr-1.5" /> : <EyeOff className="h-4 w-4 mr-1.5" />}
+            {hidden ? "Show balances" : "Hide balances"}
+          </Button>
+          <Badge className="bg-accent/15 text-accent-foreground border border-accent/30 hover:bg-accent/20">
+            <Zap className="h-3 w-3 mr-1" /> Oil & Gas Mode
+          </Badge>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
