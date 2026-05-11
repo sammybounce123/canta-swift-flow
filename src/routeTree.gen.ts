@@ -9,8 +9,56 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WalletsRouteImport } from './routes/wallets'
+import { Route as TreasuryRouteImport } from './routes/treasury'
+import { Route as TransactionsRouteImport } from './routes/transactions'
+import { Route as TeamRouteImport } from './routes/team'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as FxRouteImport } from './routes/fx'
+import { Route as BeneficiariesRouteImport } from './routes/beneficiaries'
+import { Route as AiInsightsRouteImport } from './routes/ai-insights'
 import { Route as IndexRouteImport } from './routes/index'
 
+const WalletsRoute = WalletsRouteImport.update({
+  id: '/wallets',
+  path: '/wallets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TreasuryRoute = TreasuryRouteImport.update({
+  id: '/treasury',
+  path: '/treasury',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransactionsRoute = TransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamRoute = TeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FxRoute = FxRouteImport.update({
+  id: '/fx',
+  path: '/fx',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BeneficiariesRoute = BeneficiariesRouteImport.update({
+  id: '/beneficiaries',
+  path: '/beneficiaries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiInsightsRoute = AiInsightsRouteImport.update({
+  id: '/ai-insights',
+  path: '/ai-insights',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +67,144 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ai-insights': typeof AiInsightsRoute
+  '/beneficiaries': typeof BeneficiariesRoute
+  '/fx': typeof FxRoute
+  '/settings': typeof SettingsRoute
+  '/team': typeof TeamRoute
+  '/transactions': typeof TransactionsRoute
+  '/treasury': typeof TreasuryRoute
+  '/wallets': typeof WalletsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ai-insights': typeof AiInsightsRoute
+  '/beneficiaries': typeof BeneficiariesRoute
+  '/fx': typeof FxRoute
+  '/settings': typeof SettingsRoute
+  '/team': typeof TeamRoute
+  '/transactions': typeof TransactionsRoute
+  '/treasury': typeof TreasuryRoute
+  '/wallets': typeof WalletsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ai-insights': typeof AiInsightsRoute
+  '/beneficiaries': typeof BeneficiariesRoute
+  '/fx': typeof FxRoute
+  '/settings': typeof SettingsRoute
+  '/team': typeof TeamRoute
+  '/transactions': typeof TransactionsRoute
+  '/treasury': typeof TreasuryRoute
+  '/wallets': typeof WalletsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/ai-insights'
+    | '/beneficiaries'
+    | '/fx'
+    | '/settings'
+    | '/team'
+    | '/transactions'
+    | '/treasury'
+    | '/wallets'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/ai-insights'
+    | '/beneficiaries'
+    | '/fx'
+    | '/settings'
+    | '/team'
+    | '/transactions'
+    | '/treasury'
+    | '/wallets'
+  id:
+    | '__root__'
+    | '/'
+    | '/ai-insights'
+    | '/beneficiaries'
+    | '/fx'
+    | '/settings'
+    | '/team'
+    | '/transactions'
+    | '/treasury'
+    | '/wallets'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AiInsightsRoute: typeof AiInsightsRoute
+  BeneficiariesRoute: typeof BeneficiariesRoute
+  FxRoute: typeof FxRoute
+  SettingsRoute: typeof SettingsRoute
+  TeamRoute: typeof TeamRoute
+  TransactionsRoute: typeof TransactionsRoute
+  TreasuryRoute: typeof TreasuryRoute
+  WalletsRoute: typeof WalletsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wallets': {
+      id: '/wallets'
+      path: '/wallets'
+      fullPath: '/wallets'
+      preLoaderRoute: typeof WalletsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/treasury': {
+      id: '/treasury'
+      path: '/treasury'
+      fullPath: '/treasury'
+      preLoaderRoute: typeof TreasuryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transactions': {
+      id: '/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof TransactionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team': {
+      id: '/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof TeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fx': {
+      id: '/fx'
+      path: '/fx'
+      fullPath: '/fx'
+      preLoaderRoute: typeof FxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/beneficiaries': {
+      id: '/beneficiaries'
+      path: '/beneficiaries'
+      fullPath: '/beneficiaries'
+      preLoaderRoute: typeof BeneficiariesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-insights': {
+      id: '/ai-insights'
+      path: '/ai-insights'
+      fullPath: '/ai-insights'
+      preLoaderRoute: typeof AiInsightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +217,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AiInsightsRoute: AiInsightsRoute,
+  BeneficiariesRoute: BeneficiariesRoute,
+  FxRoute: FxRoute,
+  SettingsRoute: SettingsRoute,
+  TeamRoute: TeamRoute,
+  TransactionsRoute: TransactionsRoute,
+  TreasuryRoute: TreasuryRoute,
+  WalletsRoute: WalletsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
