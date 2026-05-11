@@ -14,7 +14,7 @@ import { StatusPill } from "@/components/StatusPill";
 import { useActions } from "@/components/ActionsProvider";
 import { useRole } from "@/components/RoleProvider";
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Canta" }] }),
