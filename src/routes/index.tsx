@@ -35,7 +35,7 @@ function Landing() {
           <div className="flex items-center gap-2">
             <Button asChild variant="ghost" size="sm"><Link to="/dashboard">Sign in</Link></Button>
             <Button asChild size="sm" className="bg-accent text-accent-foreground hover:bg-accent/90">
-              <Link to="/dashboard">Launch Workspace <ArrowRight className="h-3.5 w-3.5 ml-1" /></Link>
+              <Link to="/onboarding">Get started <ArrowRight className="h-3.5 w-3.5 ml-1" /></Link>
             </Button>
           </div>
         </div>
@@ -61,10 +61,10 @@ function Landing() {
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold">
-              <Link to="/dashboard">Enter the Workspace <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
+              <Link to="/onboarding">Start onboarding <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
             </Button>
             <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-              <a href="#platform">Explore the platform</a>
+              <Link to="/dashboard">Enter demo workspace</Link>
             </Button>
           </div>
 

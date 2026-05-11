@@ -14,6 +14,7 @@ import { Route as TreasuryRouteImport } from './routes/treasury'
 import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as FxRouteImport } from './routes/fx'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BeneficiariesRouteImport } from './routes/beneficiaries'
@@ -43,6 +44,11 @@ const TeamRoute = TeamRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FxRoute = FxRouteImport.update({
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/beneficiaries': typeof BeneficiariesRoute
   '/dashboard': typeof DashboardRoute
   '/fx': typeof FxRoute
+  '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/team': typeof TeamRoute
   '/transactions': typeof TransactionsRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/beneficiaries': typeof BeneficiariesRoute
   '/dashboard': typeof DashboardRoute
   '/fx': typeof FxRoute
+  '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/team': typeof TeamRoute
   '/transactions': typeof TransactionsRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/beneficiaries': typeof BeneficiariesRoute
   '/dashboard': typeof DashboardRoute
   '/fx': typeof FxRoute
+  '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/team': typeof TeamRoute
   '/transactions': typeof TransactionsRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/beneficiaries'
     | '/dashboard'
     | '/fx'
+    | '/onboarding'
     | '/settings'
     | '/team'
     | '/transactions'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/beneficiaries'
     | '/dashboard'
     | '/fx'
+    | '/onboarding'
     | '/settings'
     | '/team'
     | '/transactions'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/beneficiaries'
     | '/dashboard'
     | '/fx'
+    | '/onboarding'
     | '/settings'
     | '/team'
     | '/transactions'
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   BeneficiariesRoute: typeof BeneficiariesRoute
   DashboardRoute: typeof DashboardRoute
   FxRoute: typeof FxRoute
+  OnboardingRoute: typeof OnboardingRoute
   SettingsRoute: typeof SettingsRoute
   TeamRoute: typeof TeamRoute
   TransactionsRoute: typeof TransactionsRoute
@@ -195,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fx': {
@@ -241,6 +261,7 @@ const rootRouteChildren: RootRouteChildren = {
   BeneficiariesRoute: BeneficiariesRoute,
   DashboardRoute: DashboardRoute,
   FxRoute: FxRoute,
+  OnboardingRoute: OnboardingRoute,
   SettingsRoute: SettingsRoute,
   TeamRoute: TeamRoute,
   TransactionsRoute: TransactionsRoute,
