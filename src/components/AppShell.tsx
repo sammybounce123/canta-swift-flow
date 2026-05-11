@@ -14,20 +14,28 @@ import {
   ChevronDown,
   TrendingUp,
   TrendingDown,
+  UserCog,
+  Check,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useRole, ALL_ROLES, type Permission, type Role } from "@/components/RoleProvider";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
+  DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
-type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean; perm: Permission };
 const nav: NavItem[] = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { to: "/wallets", label: "Wallets", icon: Wallet },
-  { to: "/fx", label: "FX / Exchange", icon: ArrowLeftRight },
-  { to: "/transactions", label: "Transactions", icon: Receipt },
-  { to: "/beneficiaries", label: "Beneficiaries", icon: Users },
-  { to: "/treasury", label: "Treasury", icon: Building2 },
-  { to: "/ai-insights", label: "AI Insights", icon: Sparkles },
-  { to: "/team", label: "Team & Roles", icon: Shield },
-  { to: "/settings", label: "Settings", icon: Settings },
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true, perm: "view_dashboard" },
+  { to: "/wallets", label: "Wallets", icon: Wallet, perm: "view_wallets" },
+  { to: "/fx", label: "FX / Exchange", icon: ArrowLeftRight, perm: "view_fx" },
+  { to: "/transactions", label: "Transactions", icon: Receipt, perm: "view_transactions" },
+  { to: "/beneficiaries", label: "Beneficiaries", icon: Users, perm: "view_beneficiaries" },
+  { to: "/treasury", label: "Treasury", icon: Building2, perm: "view_treasury" },
+  { to: "/ai-insights", label: "AI Insights", icon: Sparkles, perm: "view_ai" },
+  { to: "/team", label: "Team & Roles", icon: Shield, perm: "view_team" },
+  { to: "/settings", label: "Settings", icon: Settings, perm: "view_settings" },
 ];
 
 const initialRates = [
@@ -82,6 +90,8 @@ function FxTicker() {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { role, setRole, can, profile } = useRole();
+  const visibleNav = nav.filter((n) => can(n.perm));
 
   return (
     <div className="min-h-screen flex bg-background">
@@ -100,7 +110,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </Link>
 
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          {nav.map((item) => {
+          {visibleNav.map((item) => {
             const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
             const Icon = item.icon;
             return (
@@ -120,7 +130,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        <div className="p-4 border-t border-sidebar-border">
+        <div className="p-4 border-t border-sidebar-border space-y-3">
+          <div className="rounded-xl p-3 bg-sidebar-accent/60 border border-sidebar-border">
+            <div className="text-[10px] uppercase tracking-widest text-sidebar-foreground/60 mb-1">Signed in as</div>
+            <div className="text-sm font-semibold">{profile.name}</div>
+            <div className="text-[11px] text-sidebar-foreground/70">{role} · {profile.title}</div>
+          </div>
           <div className="rounded-xl p-3 bg-sidebar-accent/60 border border-sidebar-border">
             <div className="flex items-center gap-2 text-xs">
               <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
