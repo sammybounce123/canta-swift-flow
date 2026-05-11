@@ -17,7 +17,8 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const nav = [
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
+const nav: NavItem[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/wallets", label: "Wallets", icon: Wallet },
   { to: "/fx", label: "FX / Exchange", icon: ArrowLeftRight },
