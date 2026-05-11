@@ -43,9 +43,9 @@ function Landing() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-gradient-card opacity-95" />
-        <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-accent/20 blur-3xl -z-10" />
-        <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-primary-glow/20 blur-3xl -z-10" />
+        <div className="absolute inset-0 -z-10 bg-gradient-card" />
+        <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-accent/15 blur-3xl -z-10" />
+        <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-primary-glow/25 blur-3xl -z-10" />
 
         <div className="max-w-7xl mx-auto px-6 pt-20 pb-24 lg:pt-28 lg:pb-32 text-primary-foreground relative">
           <Badge className="bg-white/10 text-primary-foreground border border-white/20 hover:bg-white/15">
