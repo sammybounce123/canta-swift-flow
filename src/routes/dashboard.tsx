@@ -27,10 +27,35 @@ function Dashboard() {
   const { openFund, openConvert, openSend } = useActions();
   const { profile, role, can } = useRole();
   const [hidden, setHidden] = useState(false);
+  const [onboardingDone, setOnboardingDone] = useState(true);
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem("canta.onboarding.v1");
+      if (!raw) { setOnboardingDone(false); return; }
+      const parsed = JSON.parse(raw);
+      setOnboardingDone(Boolean(parsed?.completedAt));
+    } catch { setOnboardingDone(false); }
+  }, []);
   const totalNGN = 2_847_120_000;
   const greet = role === "Viewer" ? "Welcome" : role === "Compliance" ? "Hello" : "Good morning";
   return (
     <div className="space-y-6">
+      {!onboardingDone && (
+        <Card className="p-4 flex flex-wrap items-center gap-4 justify-between border-accent/40 bg-gradient-to-r from-accent/10 to-transparent shadow-card">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="h-10 w-10 rounded-lg bg-accent/20 grid place-items-center flex-shrink-0">
+              <Sparkles className="h-5 w-5 text-accent" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-sm font-semibold">Complete your enterprise onboarding</div>
+              <div className="text-xs text-muted-foreground">Verify your business to unlock institutional FX, higher limits and unlimited corridors.</div>
+            </div>
+          </div>
+          <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
+            <Link to="/onboarding">Continue onboarding <ArrowUpRight className="h-4 w-4 ml-1" /></Link>
+          </Button>
+        </Card>
+      )}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold">{greet}, {profile.name.split(" ")[0]}</h1>
