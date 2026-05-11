@@ -28,7 +28,7 @@ const nav: NavItem[] = [
   { to: "/ai-insights", label: "AI Insights", icon: Sparkles },
   { to: "/team", label: "Team & Roles", icon: Shield },
   { to: "/settings", label: "Settings", icon: Settings },
-] as const;
+];
 
 const initialRates = [
   { pair: "USD/NGN", rate: 1612.45, change: 0.32 },
