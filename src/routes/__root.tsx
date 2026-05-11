@@ -101,11 +101,13 @@ function RootComponent() {
       {isLanding ? (
         <Outlet />
       ) : (
-        <ActionsProvider>
-          <AppShell>
-            <Outlet />
-          </AppShell>
-        </ActionsProvider>
+        <RoleProvider>
+          <ActionsProvider>
+            <AppShell>
+              <Outlet />
+            </AppShell>
+          </ActionsProvider>
+        </RoleProvider>
       )}
       <Toaster />
     </QueryClientProvider>
