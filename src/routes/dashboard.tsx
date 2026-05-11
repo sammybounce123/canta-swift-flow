@@ -194,8 +194,12 @@ function Dashboard() {
             </Badge>
             <span className="text-muted-foreground">Updated 2m ago</span>
           </div>
-          <Button onClick={() => openConvert("NGN", "USD")} className="w-full mt-5 bg-accent text-accent-foreground hover:bg-accent/90">
-            Convert now
+          <Button
+            onClick={() => openConvert("NGN", "USD")}
+            disabled={!can("initiate_tx")}
+            className="w-full mt-5 bg-accent text-accent-foreground hover:bg-accent/90"
+          >
+            {can("initiate_tx") ? "Convert now" : "Insight only · no permission"}
           </Button>
         </Card>
       </div>
