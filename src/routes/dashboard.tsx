@@ -232,7 +232,7 @@ function Dashboard() {
                     <div className="text-xs text-muted-foreground">{t.date}</div>
                   </td>
                   <td className="px-5 py-3"><span className="text-xs px-2 py-0.5 rounded bg-secondary text-secondary-foreground">{t.type}</span></td>
-                  <td className="px-5 py-3 text-right tabular-nums font-semibold">{fmtMoney(t.amount, t.ccy)}</td>
+                  <td className="px-5 py-3 text-right tabular-nums font-semibold">{hidden ? MASK : fmtMoney(t.amount, t.ccy)}</td>
                   <td className="px-5 py-3"><StatusPill status={t.status} /></td>
                 </tr>
               ))}
