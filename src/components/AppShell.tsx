@@ -210,7 +210,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </header>
 
         <main className="flex-1 px-4 lg:px-8 py-6 lg:py-8 max-w-[1600px] w-full mx-auto">
-          {children}
+          <RouteGuard pathname={pathname}>{children}</RouteGuard>
         </main>
       </div>
     </div>
