@@ -39,7 +39,7 @@ const PLATFORM: Permission[] = [
 const matrix: Record<Role, Permission[]> = {
   Admin: [
     "view_dashboard","view_wallets","view_fx","view_transactions","view_beneficiaries",
-    "view_treasury","view_ai","view_team","view_settings",
+    "view_treasury","view_ai","view_team","view_settings","view_admin",
     "initiate_tx","approve_tx","manage_beneficiaries","manage_team","export_reports","view_balances",
     ...PLATFORM,
   ],
