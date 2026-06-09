@@ -14,6 +14,7 @@ import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as WalletsRouteImport } from './routes/wallets'
 import { Route as VerifiedSuppliersRouteImport } from './routes/verified-suppliers'
 import { Route as VerifiedBuyersRouteImport } from './routes/verified-buyers'
+import { Route as VerificationCenterRouteImport } from './routes/verification-center'
 import { Route as TreasuryRouteImport } from './routes/treasury'
 import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as TradeDeskRouteImport } from './routes/trade-desk'
@@ -65,6 +66,11 @@ const VerifiedSuppliersRoute = VerifiedSuppliersRouteImport.update({
 const VerifiedBuyersRoute = VerifiedBuyersRouteImport.update({
   id: '/verified-buyers',
   path: '/verified-buyers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerificationCenterRoute = VerificationCenterRouteImport.update({
+  id: '/verification-center',
+  path: '/verification-center',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TreasuryRoute = TreasuryRouteImport.update({
@@ -227,6 +233,7 @@ export interface FileRoutesByFullPath {
   '/trade-desk': typeof TradeDeskRouteWithChildren
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRoute
+  '/verification-center': typeof VerificationCenterRoute
   '/verified-buyers': typeof VerifiedBuyersRoute
   '/verified-suppliers': typeof VerifiedSuppliersRoute
   '/wallets': typeof WalletsRoute
@@ -260,6 +267,7 @@ export interface FileRoutesByTo {
   '/team': typeof TeamRoute
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRoute
+  '/verification-center': typeof VerificationCenterRoute
   '/verified-buyers': typeof VerifiedBuyersRoute
   '/verified-suppliers': typeof VerifiedSuppliersRoute
   '/wallets': typeof WalletsRoute
@@ -295,6 +303,7 @@ export interface FileRoutesById {
   '/trade-desk': typeof TradeDeskRouteWithChildren
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRoute
+  '/verification-center': typeof VerificationCenterRoute
   '/verified-buyers': typeof VerifiedBuyersRoute
   '/verified-suppliers': typeof VerifiedSuppliersRoute
   '/wallets': typeof WalletsRoute
@@ -331,6 +340,7 @@ export interface FileRouteTypes {
     | '/trade-desk'
     | '/transactions'
     | '/treasury'
+    | '/verification-center'
     | '/verified-buyers'
     | '/verified-suppliers'
     | '/wallets'
@@ -364,6 +374,7 @@ export interface FileRouteTypes {
     | '/team'
     | '/transactions'
     | '/treasury'
+    | '/verification-center'
     | '/verified-buyers'
     | '/verified-suppliers'
     | '/wallets'
@@ -398,6 +409,7 @@ export interface FileRouteTypes {
     | '/trade-desk'
     | '/transactions'
     | '/treasury'
+    | '/verification-center'
     | '/verified-buyers'
     | '/verified-suppliers'
     | '/wallets'
@@ -433,6 +445,7 @@ export interface RootRouteChildren {
   TradeDeskRoute: typeof TradeDeskRouteWithChildren
   TransactionsRoute: typeof TransactionsRoute
   TreasuryRoute: typeof TreasuryRoute
+  VerificationCenterRoute: typeof VerificationCenterRoute
   VerifiedBuyersRoute: typeof VerifiedBuyersRoute
   VerifiedSuppliersRoute: typeof VerifiedSuppliersRoute
   WalletsRoute: typeof WalletsRoute
@@ -477,6 +490,13 @@ declare module '@tanstack/react-router' {
       path: '/verified-buyers'
       fullPath: '/verified-buyers'
       preLoaderRoute: typeof VerifiedBuyersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verification-center': {
+      id: '/verification-center'
+      path: '/verification-center'
+      fullPath: '/verification-center'
+      preLoaderRoute: typeof VerificationCenterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/treasury': {
@@ -709,6 +729,7 @@ const rootRouteChildren: RootRouteChildren = {
   TradeDeskRoute: TradeDeskRouteWithChildren,
   TransactionsRoute: TransactionsRoute,
   TreasuryRoute: TreasuryRoute,
+  VerificationCenterRoute: VerificationCenterRoute,
   VerifiedBuyersRoute: VerifiedBuyersRoute,
   VerifiedSuppliersRoute: VerifiedSuppliersRoute,
   WalletsRoute: WalletsRoute,
