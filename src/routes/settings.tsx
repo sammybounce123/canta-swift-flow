@@ -80,7 +80,49 @@ function Settings() {
         </div>
       </Card>
 
+      <Card className="p-6 shadow-card">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+          <div className="flex items-center gap-2">
+            <Workflow className="h-4 w-4 text-primary" />
+            <div>
+              <div className="text-sm font-semibold">Approval Workflow Rules</div>
+              <div className="text-xs text-muted-foreground">Thresholds that trigger multi-step approvals across Canta modules.</div>
+            </div>
+          </div>
+          <Link to="/approvals">
+            <Button variant="outline" size="sm">Open Approvals <ArrowRight className="h-3.5 w-3.5 ml-1.5" /></Button>
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {[
+            { name: "Supplier payment", threshold: "USD 50,000", chain: "Finance → Treasury → Compliance" },
+            { name: "New beneficiary", threshold: "Always", chain: "Compliance KYB → Treasury" },
+            { name: "Escrow release", threshold: "Always", chain: "Document review → Treasury" },
+            { name: "Freight invoice approval", threshold: "USD 10,000", chain: "Operations → Finance" },
+            { name: "Card creation", threshold: "Always", chain: "Admin → Compliance" },
+            { name: "High-value FX conversion", threshold: "USD 250,000", chain: "Treasury → Owner" },
+            { name: "Global collection settlement", threshold: "USD 100,000", chain: "Reconciliation → Finance" },
+            { name: "Document approval", threshold: "Sensitive docs", chain: "Trade Officer → Compliance" },
+            { name: "Compliance approval", threshold: "Risk ≥ 70", chain: "Compliance → Super Admin" },
+            { name: "Trade finance request", threshold: "Always", chain: "Credit → Risk → Treasury" },
+          ].map((w) => (
+            <div key={w.name} className="p-3 rounded-lg border border-border bg-secondary/30 flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-sm font-medium">{w.name}</div>
+                <div className="text-[11px] text-muted-foreground mt-0.5">Trigger: <span className="text-foreground">{w.threshold}</span></div>
+                <div className="text-[11px] text-muted-foreground mt-0.5 truncate">{w.chain}</div>
+              </div>
+              <div className="flex flex-col items-end gap-1">
+                <Badge variant="outline" className="border-success/30 bg-success/10 text-success text-[10px]">Active</Badge>
+                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => toast.success(`${w.name} rule updated`)}>Edit</Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
         <Card className="p-6 shadow-card">
           <div className="flex items-center gap-2 mb-4">
             <Shield className="h-4 w-4 text-primary" />
