@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WhatsappRouteImport } from './routes/whatsapp'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as WalletsRouteImport } from './routes/wallets'
+import { Route as VerifiedSuppliersRouteImport } from './routes/verified-suppliers'
+import { Route as VerifiedBuyersRouteImport } from './routes/verified-buyers'
 import { Route as TreasuryRouteImport } from './routes/treasury'
 import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as TradeDeskRouteImport } from './routes/trade-desk'
@@ -53,6 +55,16 @@ const WelcomeRoute = WelcomeRouteImport.update({
 const WalletsRoute = WalletsRouteImport.update({
   id: '/wallets',
   path: '/wallets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifiedSuppliersRoute = VerifiedSuppliersRouteImport.update({
+  id: '/verified-suppliers',
+  path: '/verified-suppliers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifiedBuyersRoute = VerifiedBuyersRouteImport.update({
+  id: '/verified-buyers',
+  path: '/verified-buyers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TreasuryRoute = TreasuryRouteImport.update({
@@ -215,6 +227,8 @@ export interface FileRoutesByFullPath {
   '/trade-desk': typeof TradeDeskRouteWithChildren
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRoute
+  '/verified-buyers': typeof VerifiedBuyersRoute
+  '/verified-suppliers': typeof VerifiedSuppliersRoute
   '/wallets': typeof WalletsRoute
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
@@ -246,6 +260,8 @@ export interface FileRoutesByTo {
   '/team': typeof TeamRoute
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRoute
+  '/verified-buyers': typeof VerifiedBuyersRoute
+  '/verified-suppliers': typeof VerifiedSuppliersRoute
   '/wallets': typeof WalletsRoute
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
@@ -279,6 +295,8 @@ export interface FileRoutesById {
   '/trade-desk': typeof TradeDeskRouteWithChildren
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRoute
+  '/verified-buyers': typeof VerifiedBuyersRoute
+  '/verified-suppliers': typeof VerifiedSuppliersRoute
   '/wallets': typeof WalletsRoute
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
@@ -313,6 +331,8 @@ export interface FileRouteTypes {
     | '/trade-desk'
     | '/transactions'
     | '/treasury'
+    | '/verified-buyers'
+    | '/verified-suppliers'
     | '/wallets'
     | '/welcome'
     | '/whatsapp'
@@ -344,6 +364,8 @@ export interface FileRouteTypes {
     | '/team'
     | '/transactions'
     | '/treasury'
+    | '/verified-buyers'
+    | '/verified-suppliers'
     | '/wallets'
     | '/welcome'
     | '/whatsapp'
@@ -376,6 +398,8 @@ export interface FileRouteTypes {
     | '/trade-desk'
     | '/transactions'
     | '/treasury'
+    | '/verified-buyers'
+    | '/verified-suppliers'
     | '/wallets'
     | '/welcome'
     | '/whatsapp'
@@ -409,6 +433,8 @@ export interface RootRouteChildren {
   TradeDeskRoute: typeof TradeDeskRouteWithChildren
   TransactionsRoute: typeof TransactionsRoute
   TreasuryRoute: typeof TreasuryRoute
+  VerifiedBuyersRoute: typeof VerifiedBuyersRoute
+  VerifiedSuppliersRoute: typeof VerifiedSuppliersRoute
   WalletsRoute: typeof WalletsRoute
   WelcomeRoute: typeof WelcomeRoute
   WhatsappRoute: typeof WhatsappRoute
@@ -437,6 +463,20 @@ declare module '@tanstack/react-router' {
       path: '/wallets'
       fullPath: '/wallets'
       preLoaderRoute: typeof WalletsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verified-suppliers': {
+      id: '/verified-suppliers'
+      path: '/verified-suppliers'
+      fullPath: '/verified-suppliers'
+      preLoaderRoute: typeof VerifiedSuppliersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verified-buyers': {
+      id: '/verified-buyers'
+      path: '/verified-buyers'
+      fullPath: '/verified-buyers'
+      preLoaderRoute: typeof VerifiedBuyersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/treasury': {
@@ -669,6 +709,8 @@ const rootRouteChildren: RootRouteChildren = {
   TradeDeskRoute: TradeDeskRouteWithChildren,
   TransactionsRoute: TransactionsRoute,
   TreasuryRoute: TreasuryRoute,
+  VerifiedBuyersRoute: VerifiedBuyersRoute,
+  VerifiedSuppliersRoute: VerifiedSuppliersRoute,
   WalletsRoute: WalletsRoute,
   WelcomeRoute: WelcomeRoute,
   WhatsappRoute: WhatsappRoute,
@@ -678,3 +720,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
