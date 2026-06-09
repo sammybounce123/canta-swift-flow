@@ -118,6 +118,16 @@ export const SEGMENTS: Segment[] = [
   },
 ];
 
+export type FeatureFlags = {
+  trade_module_enabled: boolean;
+  freight_module_enabled: boolean;
+  supplier_module_enabled: boolean;
+  collections_module_enabled: boolean;
+  cards_module_enabled: boolean;
+  treasury_module_enabled: boolean;
+  compliance_module_enabled: boolean;
+};
+
 export type Profile = {
   account_type: Segment["accountType"];
   workspace_type: WorkspaceType;
@@ -128,9 +138,121 @@ export type Profile = {
   permissions: string[];
   welcome_message: string;
   created_at: string;
+  feature_flags: FeatureFlags;
 };
 
 const KEY = "canta:profile";
+const FLAGS_KEY = "canta:feature_flags";
+
+const ALL_OFF: FeatureFlags = {
+  trade_module_enabled: false,
+  freight_module_enabled: false,
+  supplier_module_enabled: false,
+  collections_module_enabled: false,
+  cards_module_enabled: false,
+  treasury_module_enabled: false,
+  compliance_module_enabled: false,
+};
+
+const ALL_ON: FeatureFlags = {
+  trade_module_enabled: true,
+  freight_module_enabled: true,
+  supplier_module_enabled: true,
+  collections_module_enabled: true,
+  cards_module_enabled: true,
+  treasury_module_enabled: true,
+  compliance_module_enabled: true,
+};
+
+export function defaultFlagsFor(workspace: WorkspaceType): FeatureFlags {
+  switch (workspace) {
+    case "enterprise_treasury":
+      return { ...ALL_OFF, treasury_module_enabled: true, cards_module_enabled: true, compliance_module_enabled: true };
+    case "importer_portal":
+      return { ...ALL_OFF, trade_module_enabled: true, cards_module_enabled: true };
+    case "freight_workspace":
+      return { ...ALL_OFF, freight_module_enabled: true, cards_module_enabled: true };
+    case "supplier_dashboard":
+      return { ...ALL_OFF, supplier_module_enabled: true };
+    case "global_collections":
+      return { ...ALL_OFF, collections_module_enabled: true, cards_module_enabled: true, compliance_module_enabled: true };
+    case "global_spend_cards":
+      return { ...ALL_OFF, cards_module_enabled: true };
+    case "canta_admin":
+      return ALL_ON;
+  }
+}
+
+export function loadFlags(workspace?: WorkspaceType): FeatureFlags {
+  if (typeof window !== "undefined") {
+    try {
+      const raw = window.localStorage.getItem(FLAGS_KEY);
+      if (raw) return { ...defaultFlagsFor(workspace ?? "enterprise_treasury"), ...JSON.parse(raw) };
+    } catch {}
+  }
+  return defaultFlagsFor(workspace ?? "enterprise_treasury");
+}
+
+export function saveFlags(flags: FeatureFlags) {
+  if (typeof window !== "undefined") window.localStorage.setItem(FLAGS_KEY, JSON.stringify(flags));
+}
+
+// Routes always visible regardless of workspace
+const COMMON_ROUTES = ["/dashboard", "/settings", "/team"];
+
+export function getAllowedRoutes(workspace: WorkspaceType, flags: FeatureFlags): Set<string> {
+  const allow = new Set<string>(COMMON_ROUTES);
+  const add = (...rs: string[]) => rs.forEach((r) => allow.add(r));
+
+  switch (workspace) {
+    case "global_collections":
+      add("/collections");
+      if (flags.compliance_module_enabled) add("/compliance");
+      if (flags.cards_module_enabled) add("/cards");
+      if (flags.trade_module_enabled) add("/trade-desk", "/shipments", "/freight", "/importer", "/suppliers");
+      break;
+    case "importer_portal":
+      add("/trade-desk", "/shipments", "/suppliers", "/importer", "/whatsapp");
+      if (flags.cards_module_enabled) add("/cards");
+      if (flags.freight_module_enabled) add("/freight");
+      if (flags.treasury_module_enabled) add("/treasury", "/wallets", "/fx", "/transactions", "/beneficiaries");
+      if (flags.compliance_module_enabled) add("/compliance");
+      break;
+    case "freight_workspace":
+      add("/freight", "/shipments", "/whatsapp");
+      if (flags.cards_module_enabled) add("/cards");
+      if (flags.trade_module_enabled) add("/importer", "/trade-desk");
+      if (flags.collections_module_enabled) add("/collections");
+      if (flags.treasury_module_enabled) add("/treasury", "/wallets", "/fx", "/transactions", "/beneficiaries");
+      break;
+    case "supplier_dashboard":
+      add("/suppliers");
+      if (flags.trade_module_enabled) add("/trade-desk");
+      if (flags.collections_module_enabled) add("/collections");
+      if (flags.cards_module_enabled) add("/cards");
+      break;
+    case "enterprise_treasury":
+      add("/treasury", "/wallets", "/fx", "/beneficiaries", "/transactions", "/approvals");
+      if (flags.cards_module_enabled) add("/cards");
+      if (flags.compliance_module_enabled) add("/compliance");
+      if (flags.collections_module_enabled) add("/collections");
+      if (flags.trade_module_enabled) add("/trade-desk", "/shipments", "/importer", "/suppliers");
+      if (flags.freight_module_enabled) add("/freight");
+      break;
+    case "global_spend_cards":
+      add("/cards", "/transactions");
+      break;
+    case "canta_admin":
+      add(
+        "/treasury","/wallets","/fx","/transactions","/beneficiaries","/approvals",
+        "/trade-desk","/shipments","/freight","/importer","/suppliers",
+        "/collections","/cards","/ai-growth","/ai-insights","/whatsapp",
+        "/compliance","/integrations","/organization","/admin",
+      );
+      break;
+  }
+  return allow;
+}
 
 export function loadProfile(): Profile | null {
   if (typeof window === "undefined") return null;
@@ -153,7 +275,9 @@ export function saveProfile(segment: Segment): Profile {
     permissions: segment.defaultPermissions,
     welcome_message: segment.welcome,
     created_at: new Date().toISOString(),
+    feature_flags: defaultFlagsFor(segment.id),
   };
+  if (typeof window !== "undefined") saveFlags(profile.feature_flags);
   if (typeof window !== "undefined") {
     window.localStorage.setItem(KEY, JSON.stringify(profile));
   }
