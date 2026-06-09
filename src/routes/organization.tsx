@@ -245,8 +245,8 @@ function OrganizationPage() {
           <UsersPanel />
         </TabsContent>
 
-        {/* Roles */}
-        <TabsContent value="roles" className="mt-4">
+        {/* Roles & Permissions */}
+        <TabsContent value="roles" className="mt-4 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
             {ROLE_GROUPS.map((g) => (
               <Card key={g.label} className="p-5 shadow-card">
@@ -262,10 +262,6 @@ function OrganizationPage() {
               </Card>
             ))}
           </div>
-        </TabsContent>
-
-        {/* Permissions */}
-        <TabsContent value="permissions" className="mt-4">
           <PermissionsMatrix />
         </TabsContent>
 
