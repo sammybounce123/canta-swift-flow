@@ -13,6 +13,7 @@ import { wallets, transactions, cashFlow, fmtMoney, fmtNGN } from "@/lib/mock";
 import { StatusPill } from "@/components/StatusPill";
 import { useActions } from "@/components/ActionsProvider";
 import { useRole } from "@/components/RoleProvider";
+import { useMode } from "@/components/ModeProvider";
 import { Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 
@@ -26,6 +27,7 @@ const MASK = "•••••••";
 function Dashboard() {
   const { openFund, openConvert, openSend } = useActions();
   const { profile, role, can } = useRole();
+  const { mode } = useMode();
   const [hidden, setHidden] = useState(false);
   const [onboardingDone, setOnboardingDone] = useState(true);
   useEffect(() => {
