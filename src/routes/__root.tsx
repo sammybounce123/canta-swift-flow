@@ -97,9 +97,10 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isLanding = pathname === "/";
+  const isPublic = pathname.startsWith("/track");
   return (
     <QueryClientProvider client={queryClient}>
-      {isLanding ? (
+      {isLanding || isPublic ? (
         <Outlet />
       ) : (
         <RoleProvider>
