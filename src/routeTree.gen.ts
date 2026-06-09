@@ -31,6 +31,7 @@ import { Route as BeneficiariesRouteImport } from './routes/beneficiaries'
 import { Route as AiInsightsRouteImport } from './routes/ai-insights'
 import { Route as AiGrowthRouteImport } from './routes/ai-growth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TradeDeskIndexRouteImport } from './routes/trade-desk.index'
 import { Route as TradeDeskFileIdRouteImport } from './routes/trade-desk.$fileId'
 
 const WhatsappRoute = WhatsappRouteImport.update({
@@ -143,6 +144,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TradeDeskIndexRoute = TradeDeskIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TradeDeskRoute,
+} as any)
 const TradeDeskFileIdRoute = TradeDeskFileIdRouteImport.update({
   id: '/$fileId',
   path: '/$fileId',
@@ -173,6 +179,7 @@ export interface FileRoutesByFullPath {
   '/wallets': typeof WalletsRoute
   '/whatsapp': typeof WhatsappRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/trade-desk/': typeof TradeDeskIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -192,12 +199,12 @@ export interface FileRoutesByTo {
   '/shipments': typeof ShipmentsRoute
   '/suppliers': typeof SuppliersRoute
   '/team': typeof TeamRoute
-  '/trade-desk': typeof TradeDeskRouteWithChildren
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRoute
   '/wallets': typeof WalletsRoute
   '/whatsapp': typeof WhatsappRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/trade-desk': typeof TradeDeskIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -224,6 +231,7 @@ export interface FileRoutesById {
   '/wallets': typeof WalletsRoute
   '/whatsapp': typeof WhatsappRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/trade-desk/': typeof TradeDeskIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -251,6 +259,7 @@ export interface FileRouteTypes {
     | '/wallets'
     | '/whatsapp'
     | '/trade-desk/$fileId'
+    | '/trade-desk/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -270,12 +279,12 @@ export interface FileRouteTypes {
     | '/shipments'
     | '/suppliers'
     | '/team'
-    | '/trade-desk'
     | '/transactions'
     | '/treasury'
     | '/wallets'
     | '/whatsapp'
     | '/trade-desk/$fileId'
+    | '/trade-desk'
   id:
     | '__root__'
     | '/'
@@ -301,6 +310,7 @@ export interface FileRouteTypes {
     | '/wallets'
     | '/whatsapp'
     | '/trade-desk/$fileId'
+    | '/trade-desk/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -484,6 +494,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/trade-desk/': {
+      id: '/trade-desk/'
+      path: '/'
+      fullPath: '/trade-desk/'
+      preLoaderRoute: typeof TradeDeskIndexRouteImport
+      parentRoute: typeof TradeDeskRoute
+    }
     '/trade-desk/$fileId': {
       id: '/trade-desk/$fileId'
       path: '/$fileId'
@@ -496,10 +513,12 @@ declare module '@tanstack/react-router' {
 
 interface TradeDeskRouteChildren {
   TradeDeskFileIdRoute: typeof TradeDeskFileIdRoute
+  TradeDeskIndexRoute: typeof TradeDeskIndexRoute
 }
 
 const TradeDeskRouteChildren: TradeDeskRouteChildren = {
   TradeDeskFileIdRoute: TradeDeskFileIdRoute,
+  TradeDeskIndexRoute: TradeDeskIndexRoute,
 }
 
 const TradeDeskRouteWithChildren = TradeDeskRoute._addFileChildren(
@@ -533,3 +552,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
