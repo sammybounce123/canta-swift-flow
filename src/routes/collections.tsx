@@ -241,6 +241,7 @@ function Collections() {
 
   return (
     <div className="space-y-6">
+      <WorkspaceWelcome workspace="global_collections" />
       {/* Header */}
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
