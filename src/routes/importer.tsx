@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Textarea } from "@/components/ui/textarea";
 import { shipments, suppliers, freightInvoices, fmtMoney, type Shipment } from "@/lib/mock";
 import { buildWhatsAppUrl, type WhatsAppTemplateKey } from "@/lib/whatsapp";
+import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import {
   MessageCircle, Upload, Sparkles, FileQuestion, Ship, Calendar, Truck, Bell, ShieldCheck,
   CheckCircle2, AlertCircle, ArrowRight, Receipt, Package, Send, Link as LinkIcon, Copy,
@@ -129,6 +130,28 @@ function ImporterPortal() {
           <Assistant />
         </TabsContent>
       </Tabs>
+
+      <WorkspaceCardsPanel
+        title="Importer Cards"
+        subtitle="Cards linked to trade files, shipments, supplier samples, inspections, logistics and ad spend."
+        categories={["Trade file", "Shipment", "Supplier samples", "Inspection fees", "Business travel", "Logistics tools", "Ad spend"]}
+        pendingApprovals={2}
+        receiptsMissing={3}
+        groupedLabel="trade file"
+        groupedSpend={[
+          { label: "TR-2031 · Guangzhou Q2", amount: 18_400 },
+          { label: "TR-2042 · Yiwu Fashion", amount: 9_120 },
+          { label: "TR-2055 · Dubai Spares",  amount: 5_200 },
+        ]}
+        cards={[
+          { id: "I1", label: "Guangzhou Sourcing", holder: "Tunde B.", last4: "6601", status: "Active", monthlySpend: 4200, limit: 8000,  category: "Supplier samples", linked: "TR-2031" },
+          { id: "I2", label: "QC Inspections",     holder: "Aisha B.", last4: "9912", status: "Active", monthlySpend: 1850, limit: 5000,  category: "Inspection fees", linked: "TR-2031" },
+          { id: "I3", label: "Shipment SH-9012",   holder: "Ops Team", last4: "4471", status: "Active", monthlySpend: 6200, limit: 12000, category: "Logistics",       linked: "Shenzhen → Lagos" },
+          { id: "I4", label: "Buyer Travel",       holder: "Adaeze O.",last4: "3326", status: "Active", monthlySpend: 2400, limit: 6000,  category: "Travel",          linked: "Trip: Yiwu" },
+          { id: "I5", label: "Meta Ads — Store",   holder: "Marketing",last4: "1158", status: "Active", monthlySpend: 3100, limit: 5000,  category: "Ads",             linked: "Campaign: ABC-Q2" },
+          { id: "I6", label: "Logistics SaaS",     holder: "Ops Team", last4: "2204", status: "Frozen", monthlySpend: 480,  limit: 1500,  category: "SaaS" },
+        ]}
+      />
     </div>
   );
 }
