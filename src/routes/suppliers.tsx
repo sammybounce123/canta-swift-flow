@@ -131,6 +131,7 @@ function SupplierDashboard() {
 
   return (
     <div className="space-y-6">
+      <WorkspaceWelcome workspace="supplier_dashboard" />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Supplier Dashboard</h1>
