@@ -647,6 +647,7 @@ function PermissionsMatrix() {
     "Owner", "Admin",
     "Enterprise Owner", "Treasury Manager", "Payment Initiator", "Payment Approver", "Compliance Officer",
     "Importer Owner", "Procurement Officer", "Logistics Manager", "Sales Manager",
+    "Freight Owner", "Freight Admin", "Operations Manager", "Operations Staff", "Warehouse Staff", "Clearing Agent", "Customer Support",
     "Finance Officer", "Accountant", "Auditor", "Staff Cardholder", "Viewer",
   ];
   return (
