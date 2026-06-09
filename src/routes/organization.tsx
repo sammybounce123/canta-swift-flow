@@ -106,6 +106,13 @@ const ROLE_GROUPS = [
     ],
   },
   {
+    label: "Supplier / Exporter",
+    roles: [
+      "Supplier Owner", "Supplier Admin", "Supplier Finance", "Supplier Operations",
+      "Sales Representative", "Settlement Manager", "Support Agent", "Viewer",
+    ],
+  },
+  {
     label: "Cards",
     roles: ["Card Admin", "Cardholder", "Card Approver", "Spend Auditor"],
   },
