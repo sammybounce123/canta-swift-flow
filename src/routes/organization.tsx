@@ -116,6 +116,13 @@ const ROLE_GROUPS = [
     label: "Cards",
     roles: ["Card Admin", "Cardholder", "Card Approver", "Spend Auditor"],
   },
+  {
+    label: "Standalone Card User",
+    roles: [
+      "Card Owner", "Cardholder", "Parent / Sponsor", "Student Cardholder",
+      "Business Cardholder", "Card Approver", "Spend Auditor",
+    ],
+  },
 ];
 
 const PERMISSIONS = [
