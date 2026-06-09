@@ -82,6 +82,7 @@ function ImporterPortal() {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
+      <WorkspaceWelcome workspace="importer_portal" />
       <div>
         <h1 className="text-2xl font-semibold">Welcome back, Tunde 👋</h1>
         <p className="text-sm text-muted-foreground mt-1">Here's a simple view of your goods, suppliers and payments.</p>
