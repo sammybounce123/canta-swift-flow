@@ -210,6 +210,15 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   "Procurement Officer": ["view dashboard", "create trade file", "edit trade file", "view trade file", "upload documents", "manage suppliers", "request supplier verification", "view landed cost", "send WhatsApp update", "create importer card", "link card to trade file", "view card spend"],
   "Logistics Manager": ["view dashboard", "view trade file", "create shipment", "edit shipment", "view shipment", "upload documents", "view landed cost", "send WhatsApp update", "link card to shipment", "view card spend"],
   "Sales Manager": ["view dashboard", "view trade file", "view shipment", "manage suppliers", "view card spend", "send WhatsApp update"],
+
+  // Freight role templates
+  "Freight Owner": PERMISSIONS.flatMap((g) => g.items),
+  "Freight Admin": PERMISSIONS.flatMap((g) => g.items).filter((p) => p !== "manage API keys"),
+  "Operations Manager": ["view dashboard", "create customer", "edit customer", "create shipment", "update shipment status", "upload documents", "send WhatsApp update", "manage clearing status", "manage warehouse status", "view route reports", "view customer reports", "create staff card", "assign card to staff", "link card to shipment", "approve card spend"],
+  "Operations Staff": ["view dashboard", "create shipment", "update shipment status", "upload documents", "send WhatsApp update", "view card spend"],
+  "Warehouse Staff": ["view dashboard", "update shipment status", "manage warehouse status", "upload documents"],
+  "Clearing Agent": ["view dashboard", "update shipment status", "manage clearing status", "upload documents", "send WhatsApp update"],
+  "Customer Support": ["view dashboard", "view shipment", "send WhatsApp update", "view outstanding invoices", "create freight invoice"],
 };
 
 // ---------- Page ----------
