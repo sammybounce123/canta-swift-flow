@@ -92,6 +92,15 @@ const ROLE_GROUPS = [
 
 const PERMISSIONS = [
   {
+    group: "Universal",
+    items: [
+      "view dashboard", "manage users", "manage roles", "manage departments",
+      "view wallets", "create payments", "approve payments",
+      "create cards", "approve card requests",
+      "view compliance pack", "export reports", "manage API keys", "view audit trail",
+    ],
+  },
+  {
     group: "Cards & Spend",
     items: [
       "create card", "fund card", "freeze card",
