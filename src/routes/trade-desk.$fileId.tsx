@@ -156,6 +156,82 @@ function TradeFileDetail() {
           <LandedCost value={file.invoiceValue} />
         </TabsContent>
 
+        <TabsContent value="escrow">
+          <Card className="p-6 shadow-card">
+            <div className="text-sm font-semibold flex items-center gap-2"><Shield className="h-4 w-4" /> Escrow protection</div>
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 rounded-lg border border-border bg-secondary/30">
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Escrow status</div>
+                <div className="mt-2 text-lg font-semibold">{file.escrow}</div>
+                <div className="text-[11px] text-muted-foreground mt-1">Funds held by Canta until milestones clear</div>
+              </div>
+              <div className="p-4 rounded-lg border border-border bg-secondary/30">
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Held amount</div>
+                <div className="mt-2 text-lg font-semibold tabular-nums">{fmtMoney(file.invoiceValue, file.ccy)}</div>
+                <div className="text-[11px] text-muted-foreground mt-1">Released against BL + delivery proof</div>
+              </div>
+              <div className="p-4 rounded-lg border border-border bg-secondary/30">
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Dispute</div>
+                <div className="mt-2 text-lg font-semibold">None</div>
+                <div className="text-[11px] text-muted-foreground mt-1">Open dispute window: 7 days post-delivery</div>
+              </div>
+            </div>
+            <div className="mt-5 space-y-2">
+              {[
+                { l: "Order confirmed by supplier", done: true },
+                { l: "Goods ready at origin", done: file.status !== "Drafting" },
+                { l: "Bill of lading uploaded", done: file.status !== "Drafting" },
+                { l: "Goods received at warehouse", done: file.status === "Arrived" || file.status === "Cleared" || file.status === "Delivered" },
+                { l: "Customs cleared", done: file.status === "Cleared" || file.status === "Delivered" },
+                { l: "Delivered to importer", done: file.status === "Delivered" },
+              ].map((m) => (
+                <div key={m.l} className="flex items-center justify-between p-3 rounded-lg bg-secondary/30 border border-border text-sm">
+                  <div className="flex items-center gap-2">
+                    {m.done ? <CheckCircle2 className="h-4 w-4 text-success" /> : <Clock className="h-4 w-4 text-muted-foreground" />}
+                    {m.l}
+                  </div>
+                  <Badge variant="outline" className="text-[10px]">{m.done ? "Cleared" : "Pending"}</Badge>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 flex gap-2 flex-wrap">
+              <Button size="sm" onClick={() => toast.success("Escrow release requested")}>Request release</Button>
+              <Button size="sm" variant="outline" onClick={() => toast.success("Dispute opened")}>Open dispute</Button>
+              <Button size="sm" variant="ghost" onClick={() => toast.info("Funds secured certificate downloaded")}>Download certificate</Button>
+            </div>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="whatsapp">
+          <Card className="p-6 shadow-card">
+            <div className="text-sm font-semibold flex items-center gap-2"><MessageCircle className="h-4 w-4 text-[#25D366]" /> WhatsApp conversation history</div>
+            <div className="text-xs text-muted-foreground mt-1">All messages between the importer, supplier, freight and Canta agent for {file.id}</div>
+            <div className="mt-5 space-y-3">
+              {[
+                { who: "Importer", side: "in", t: "Mon 9:14 AM", m: "Pls confirm vessel ETA for my container." },
+                { who: "Canta Agent", side: "out", t: "Mon 9:18 AM", m: `Hi, vessel for ${file.id} is on schedule. ETA ${file.eta}. I'll send BL once forwarder uploads it.` },
+                { who: "Forwarder", side: "in", t: "Tue 11:02 AM", m: "BL uploaded. Customs prep started." },
+                { who: "Canta Bot", side: "out", t: "Tue 11:03 AM", m: "📄 BL automatically attached to trade file." },
+                { who: "Supplier", side: "in", t: "Wed 2:31 PM", m: "Balance payment received via Canta escrow. Thank you." },
+                { who: "Importer", side: "in", t: "Today 8:42 AM", m: "How much duty should I expect?" },
+                { who: "Canta Agent", side: "out", t: "Today 8:45 AM", m: "Estimated landed cost is in the trade file. Duty ≈ 18% of invoice value." },
+              ].map((msg, i) => (
+                <div key={i} className={`flex ${msg.side === "out" ? "justify-end" : "justify-start"}`}>
+                  <div className={`max-w-[75%] p-3 rounded-2xl text-sm ${msg.side === "out" ? "bg-[#25D366]/15 border border-[#25D366]/30" : "bg-secondary/50 border border-border"}`}>
+                    <div className="text-[10px] font-semibold text-muted-foreground">{msg.who} · {msg.t}</div>
+                    <div className="mt-1">{msg.m}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 flex gap-2">
+              <Input placeholder="Reply to importer on WhatsApp…" />
+              <Button onClick={() => toast.success("Message sent on WhatsApp")} className="bg-[#25D366] hover:bg-[#1FB855] text-white">Send</Button>
+            </div>
+          </Card>
+        </TabsContent>
+
+
         <TabsContent value="activity">
           <Card className="p-6 shadow-card">
             <div className="text-sm font-semibold flex items-center gap-2"><Clock className="h-4 w-4" /> Activity log</div>
