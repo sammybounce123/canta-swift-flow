@@ -273,12 +273,7 @@ function Collections() {
         <div className="text-sm font-semibold mb-3 flex items-center gap-2"><Globe className="h-4 w-4" /> Start with a use-case template</div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3">
           {templates.map((t) => (
-            <button key={t.l} onClick={() => toast.success(`${t.l} template ready`)}
-              className="text-left p-4 rounded-xl border border-border hover:border-accent hover:shadow-card transition">
-              <div className="h-9 w-9 rounded-lg bg-primary/10 grid place-items-center"><t.i className="h-4 w-4 text-primary" /></div>
-              <div className="text-sm font-semibold mt-2">{t.l}</div>
-              <div className="text-[11px] text-muted-foreground">{t.d}</div>
-            </button>
+            <TemplateFlowButton key={t.l} template={t} />
           ))}
         </div>
       </Card>
