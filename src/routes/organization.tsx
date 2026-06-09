@@ -92,6 +92,15 @@ const ROLE_GROUPS = [
 
 const PERMISSIONS = [
   {
+    group: "Universal",
+    items: [
+      "view dashboard", "manage users", "manage roles", "manage departments",
+      "view wallets", "create payments", "approve payments",
+      "create cards", "approve card requests",
+      "view compliance pack", "export reports", "manage API keys", "view audit trail",
+    ],
+  },
+  {
     group: "Cards & Spend",
     items: [
       "create card", "fund card", "freeze card",
@@ -122,15 +131,15 @@ const PERMISSIONS = [
 // Suggested role-permission templates (read-only preview)
 const ROLE_TEMPLATES: Record<string, string[]> = {
   Owner: PERMISSIONS.flatMap((g) => g.items),
-  Admin: PERMISSIONS.flatMap((g) => g.items),
-  "Finance Admin": ["view wallets", "approve supplier payments", "approve FX conversions", "manage beneficiaries", "approve collections settlement", "export reports"],
-  "Compliance Admin": ["view compliance pack", "approve supplier payments", "export reports", "view card details"],
-  "Operations Admin": ["create trade files", "edit trade files", "upload documents", "send WhatsApp updates", "view landed cost"],
-  Viewer: ["view wallets", "view landed cost", "view compliance pack"],
-  "Card Admin": ["create card", "fund card", "freeze card", "set card limits", "assign cards to staff", "view card details"],
-  Cardholder: ["view masked card details only"],
-  "Card Approver": ["approve card requests", "view card details"],
-  "Spend Auditor": ["view card details", "export reports"],
+  Admin: PERMISSIONS.flatMap((g) => g.items).filter((p) => p !== "manage API keys"),
+  "Finance Admin": ["view dashboard", "view wallets", "create payments", "approve payments", "approve supplier payments", "approve FX conversions", "manage beneficiaries", "approve collections settlement", "export reports", "view audit trail"],
+  "Compliance Admin": ["view dashboard", "view compliance pack", "approve payments", "approve supplier payments", "export reports", "view audit trail", "view card details"],
+  "Operations Admin": ["view dashboard", "manage departments", "create trade files", "edit trade files", "upload documents", "send WhatsApp updates", "view landed cost", "create cards"],
+  Viewer: ["view dashboard", "view wallets", "view landed cost", "view compliance pack"],
+  "Card Admin": ["view dashboard", "create cards", "create card", "fund card", "freeze card", "set card limits", "assign cards to staff", "view card details", "approve card requests"],
+  Cardholder: ["view dashboard", "view masked card details only"],
+  "Card Approver": ["view dashboard", "approve card requests", "view card details"],
+  "Spend Auditor": ["view dashboard", "view card details", "export reports", "view audit trail"],
 };
 
 // ---------- Page ----------
@@ -165,15 +174,14 @@ function OrganizationPage() {
 
       <Tabs defaultValue="profile">
         <TabsList className="flex-wrap h-auto">
-          <TabsTrigger value="profile">Organization</TabsTrigger>
+          <TabsTrigger value="profile">Organization Profile</TabsTrigger>
           <TabsTrigger value="branches">Branches</TabsTrigger>
           <TabsTrigger value="departments">Departments</TabsTrigger>
           <TabsTrigger value="teams">Teams</TabsTrigger>
-          <TabsTrigger value="users">Users & Sub-users</TabsTrigger>
-          <TabsTrigger value="roles">Roles</TabsTrigger>
-          <TabsTrigger value="permissions">Permissions</TabsTrigger>
-          <TabsTrigger value="cost">Cost centers</TabsTrigger>
-          <TabsTrigger value="workflows">Approval workflows</TabsTrigger>
+          <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="roles">Roles & Permissions</TabsTrigger>
+          <TabsTrigger value="cost">Cost Centers</TabsTrigger>
+          <TabsTrigger value="workflows">Approval Workflows</TabsTrigger>
         </TabsList>
 
         {/* Profile */}
@@ -237,8 +245,8 @@ function OrganizationPage() {
           <UsersPanel />
         </TabsContent>
 
-        {/* Roles */}
-        <TabsContent value="roles" className="mt-4">
+        {/* Roles & Permissions */}
+        <TabsContent value="roles" className="mt-4 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
             {ROLE_GROUPS.map((g) => (
               <Card key={g.label} className="p-5 shadow-card">
@@ -254,10 +262,6 @@ function OrganizationPage() {
               </Card>
             ))}
           </div>
-        </TabsContent>
-
-        {/* Permissions */}
-        <TabsContent value="permissions" className="mt-4">
           <PermissionsMatrix />
         </TabsContent>
 
@@ -575,11 +579,11 @@ function PermissionsMatrix() {
         <tbody>
           {PERMISSIONS.map((g) => (
             <>
-              <tr key={g.group} className="bg-secondary/20">
+              <tr key={`h-${g.group}`} className="bg-secondary/20">
                 <td colSpan={roles.length + 1} className="px-3 py-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">{g.group}</td>
               </tr>
               {g.items.map((p) => (
-                <tr key={p} className="border-t border-border">
+                <tr key={`${g.group}-${p}`} className="border-t border-border">
                   <td className="px-3 py-2 font-medium sticky left-0 bg-background">{p}</td>
                   {roles.map((r) => {
                     const has = ROLE_TEMPLATES[r]?.includes(p);
