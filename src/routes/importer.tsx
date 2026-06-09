@@ -170,12 +170,22 @@ function WhatsAppActions() {
 
 function MyShipments({ shipments: list }: { shipments: Shipment[] }) {
   if (list.length === 0) return <Empty msg="You don't have any shipments yet." />;
+  const FX = 1612;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {list.map((s) => {
         const docs = docState(s);
         const next = nextAction(s);
         const invoice = freightInvoices.find((i) => i.shipment === s.id);
+        const goodsUSD = s.value;
+        const freightUSD = Math.round(goodsUSD * 0.08);
+        const dutyUSD = Math.round(goodsUSD * 0.15);
+        const clearingUSD = Math.round(goodsUSD * 0.04);
+        const totalUSD = goodsUSD + freightUSD + dutyUSD + clearingUSD;
+        const totalNGN = totalUSD * FX;
+        const expectedSale = Math.round(totalNGN * 1.28);
+        const profit = expectedSale - totalNGN;
+        const missing = docs.missing.length;
         return (
           <Card key={s.id} className="p-5 shadow-card">
             <div className="flex items-start justify-between gap-3">
@@ -191,6 +201,39 @@ function MyShipments({ shipments: list }: { shipments: Shipment[] }) {
             </div>
             <div className="mt-2 text-sm text-muted-foreground flex items-center gap-1.5">
               <Calendar className="h-3.5 w-3.5" /> {etaPhrase(s)}
+            </div>
+
+            {/* PROMINENT LANDED COST */}
+            <div className="mt-4 p-4 rounded-xl border-2 border-accent/30 bg-gradient-to-br from-accent/10 via-transparent to-primary/5">
+              <div className="flex items-center gap-2 text-xs font-semibold text-accent">
+                <Sparkles className="h-3.5 w-3.5" /> Know your real cost before your goods arrive
+              </div>
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Landed cost</div>
+                  <div className="text-base font-semibold tabular-nums mt-0.5">{fmtMoney(totalNGN, "NGN")}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Expected sale</div>
+                  <div className="text-base font-semibold tabular-nums mt-0.5">{fmtMoney(expectedSale, "NGN")}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Expected profit</div>
+                  <div className="text-base font-semibold tabular-nums mt-0.5 text-success">{fmtMoney(profit, "NGN")}</div>
+                </div>
+              </div>
+              {missing > 0 && (
+                <div className="mt-3 flex items-start gap-2 text-[11px] text-amber-700">
+                  <AlertCircle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                  <span>Missing cost items: {docs.missing.slice(0, 2).join(", ")}{missing > 2 ? ` +${missing - 2} more` : ""}. Add them for an accurate estimate.</span>
+                </div>
+              )}
+              {s.status === "Delayed" && (
+                <div className="mt-2 flex items-start gap-2 text-[11px] text-destructive">
+                  <AlertCircle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                  <span>Risk warning: delay may increase demurrage and FX exposure.</span>
+                </div>
+              )}
             </div>
 
             <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
@@ -237,6 +280,7 @@ function MyShipments({ shipments: list }: { shipments: Shipment[] }) {
     </div>
   );
 }
+
 
 function ShareLinkButton({ shipment }: { shipment: Shipment }) {
   const [open, setOpen] = useState(false);
