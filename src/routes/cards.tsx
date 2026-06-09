@@ -15,6 +15,7 @@ import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogDescription,
 } from "@/components/ui/dialog";
 import { cards as baseCards, fmtMoney, type Card as MockCard } from "@/lib/mock";
+import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import {
   Plus, Snowflake, Plane, Briefcase, Ship, GraduationCap, Megaphone, Users,
   CreditCard as CreditCardIcon, User, Wallet, Banknote, AlertTriangle, CheckCircle2,
