@@ -24,6 +24,9 @@ export type Permission =
   | "view_integrations"
   | "view_whatsapp"
   | "view_admin"
+  | "view_verified_suppliers"
+  | "view_verified_buyers"
+  | "view_verification_center"
   | "initiate_tx"
   | "approve_tx"
   | "manage_beneficiaries"
@@ -34,6 +37,7 @@ export type Permission =
 const PLATFORM: Permission[] = [
   "view_trade","view_shipments","view_freight","view_importer","view_suppliers",
   "view_collections","view_cards","view_ai_growth","view_compliance","view_integrations","view_whatsapp",
+  "view_verified_suppliers","view_verified_buyers","view_verification_center",
 ];
 
 const matrix: Record<Role, Permission[]> = {

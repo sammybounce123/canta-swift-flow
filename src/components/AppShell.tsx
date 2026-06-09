@@ -36,6 +36,10 @@ const nav: NavItem[] = [
 
   { to: "/cards", label: "Global Spend Cards", icon: CreditCard, perm: "view_cards", group: "Spend Globally" },
 
+  { to: "/verified-suppliers", label: "Verified Suppliers", icon: ShieldCheck, perm: "view_verified_suppliers", group: "Trade Network" },
+  { to: "/verified-buyers", label: "Verified Buyers", icon: ShieldCheck, perm: "view_verified_buyers", group: "Trade Network" },
+  { to: "/verification-center", label: "Verification Center", icon: ShieldCheck, perm: "view_verification_center", group: "Trade Network" },
+
   { to: "/ai-growth", label: "AI Growth", icon: Brain, perm: "view_ai_growth", group: "Intelligence" },
   { to: "/ai-insights", label: "AI Insights", icon: Sparkles, perm: "view_ai", group: "Intelligence" },
   { to: "/whatsapp", label: "WhatsApp Desk", icon: MessageCircle, perm: "view_whatsapp", group: "Intelligence" },
