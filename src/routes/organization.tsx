@@ -123,6 +123,15 @@ const ROLE_GROUPS = [
       "Business Cardholder", "Card Approver", "Spend Auditor",
     ],
   },
+  {
+    label: "Canta Internal",
+    roles: [
+      "Canta Super Admin", "Canta Trade Officer", "Canta Compliance Officer",
+      "Canta Treasury Officer", "Canta Sales Agent", "Canta Support Agent",
+      "Canta Card Operations", "Canta Collections Officer",
+      "Canta Freight Operations", "Canta Auditor",
+    ],
+  },
 ];
 
 const PERMISSIONS = [
