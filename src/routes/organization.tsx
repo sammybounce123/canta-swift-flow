@@ -97,6 +97,15 @@ const ROLE_GROUPS = [
     ],
   },
   {
+    label: "Global Merchant / University",
+    roles: [
+      "Merchant Owner", "Merchant Admin", "Collections Manager",
+      "Reconciliation Officer", "Settlement Approver",
+      "Support Agent", "Regional Staff",
+      "Finance Officer", "Staff Cardholder", "Viewer",
+    ],
+  },
+  {
     label: "Cards",
     roles: ["Card Admin", "Cardholder", "Card Approver", "Spend Auditor"],
   },
@@ -176,6 +185,19 @@ const PERMISSIONS = [
     ],
   },
   {
+    group: "Global Merchant / University",
+    items: [
+      "create payment link", "create invoice",
+      "view payers", "manage payer references",
+      "view collections", "approve settlement", "view settlement reports",
+      "manage reconciliation", "export collection reports",
+      "create staff card", "assign card to regional staff",
+      "create marketing card", "create travel card",
+      "approve card spend", "view staff spend",
+      "manage merchant sub-users",
+    ],
+  },
+  {
     group: "Reporting & Compliance",
     items: ["export reports", "view compliance pack"],
   },
@@ -219,6 +241,15 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   "Warehouse Staff": ["view dashboard", "update shipment status", "manage warehouse status", "upload documents"],
   "Clearing Agent": ["view dashboard", "update shipment status", "manage clearing status", "upload documents", "send WhatsApp update"],
   "Customer Support": ["view dashboard", "view shipment", "send WhatsApp update", "view outstanding invoices", "create freight invoice"],
+
+  // Global Merchant / University role templates
+  "Merchant Owner": PERMISSIONS.flatMap((g) => g.items),
+  "Merchant Admin": PERMISSIONS.flatMap((g) => g.items).filter((p) => p !== "manage API keys"),
+  "Collections Manager": ["view dashboard", "create payment link", "create invoice", "view payers", "manage payer references", "view collections", "view settlement reports", "export collection reports"],
+  "Reconciliation Officer": ["view dashboard", "view collections", "manage reconciliation", "view settlement reports", "export collection reports", "view audit trail"],
+  "Settlement Approver": ["view dashboard", "view collections", "approve settlement", "view settlement reports", "view audit trail"],
+  "Support Agent": ["view dashboard", "view payers", "view collections", "send WhatsApp update"],
+  "Regional Staff": ["view dashboard", "view payers", "view masked card details only", "view staff spend"],
 };
 
 // ---------- Page ----------
@@ -648,6 +679,7 @@ function PermissionsMatrix() {
     "Enterprise Owner", "Treasury Manager", "Payment Initiator", "Payment Approver", "Compliance Officer",
     "Importer Owner", "Procurement Officer", "Logistics Manager", "Sales Manager",
     "Freight Owner", "Freight Admin", "Operations Manager", "Operations Staff", "Warehouse Staff", "Clearing Agent", "Customer Support",
+    "Merchant Owner", "Merchant Admin", "Collections Manager", "Reconciliation Officer", "Settlement Approver", "Support Agent", "Regional Staff",
     "Finance Officer", "Accountant", "Auditor", "Staff Cardholder", "Viewer",
   ];
   return (
