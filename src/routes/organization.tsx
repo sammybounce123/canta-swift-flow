@@ -82,7 +82,11 @@ const ROLE_GROUPS = [
   },
   {
     label: "Importer",
-    roles: ["Importer Owner", "Procurement Officer", "Logistics Manager", "Finance Officer", "Sales Manager"],
+    roles: [
+      "Importer Owner", "Procurement Officer", "Logistics Manager",
+      "Finance Officer", "Accountant", "Sales Manager",
+      "Staff Cardholder", "Viewer",
+    ],
   },
   {
     label: "Freight",
@@ -138,6 +142,21 @@ const PERMISSIONS = [
     ],
   },
   {
+    group: "Importer",
+    items: [
+      "create trade file", "edit trade file", "view trade file",
+      "upload documents", "delete documents",
+      "create shipment", "edit shipment", "view shipment",
+      "manage suppliers", "request supplier verification",
+      "view landed cost", "edit landed cost assumptions",
+      "approve supplier payment", "approve escrow release",
+      "create importer card", "assign card to staff",
+      "link card to trade file", "link card to shipment",
+      "view card spend", "export landed cost report",
+      "send WhatsApp update", "manage importer sub-users",
+    ],
+  },
+  {
     group: "Reporting & Compliance",
     items: ["export reports", "view compliance pack"],
   },
@@ -166,6 +185,12 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   Accountant: ["view dashboard", "view wallet balances", "view card spend", "require receipts", "export transaction reports"],
   Auditor: ["view dashboard", "view wallet balances", "view card spend", "view compliance reports", "view audit trail", "export transaction reports"],
   "Staff Cardholder": ["view dashboard", "view masked card details only", "view card spend"],
+
+  // Importer role templates
+  "Importer Owner": PERMISSIONS.flatMap((g) => g.items),
+  "Procurement Officer": ["view dashboard", "create trade file", "edit trade file", "view trade file", "upload documents", "manage suppliers", "request supplier verification", "view landed cost", "send WhatsApp update", "create importer card", "link card to trade file", "view card spend"],
+  "Logistics Manager": ["view dashboard", "view trade file", "create shipment", "edit shipment", "view shipment", "upload documents", "view landed cost", "send WhatsApp update", "link card to shipment", "view card spend"],
+  "Sales Manager": ["view dashboard", "view trade file", "view shipment", "manage suppliers", "view card spend", "send WhatsApp update"],
 };
 
 // ---------- Page ----------
@@ -591,9 +616,10 @@ function InviteUserDialog() {
 
 function PermissionsMatrix() {
   const roles = [
-    "Owner", "Admin", "Enterprise Owner", "Treasury Manager", "Finance Officer",
-    "Payment Initiator", "Payment Approver", "Compliance Officer",
-    "Accountant", "Auditor", "Staff Cardholder", "Viewer",
+    "Owner", "Admin",
+    "Enterprise Owner", "Treasury Manager", "Payment Initiator", "Payment Approver", "Compliance Officer",
+    "Importer Owner", "Procurement Officer", "Logistics Manager", "Sales Manager",
+    "Finance Officer", "Accountant", "Auditor", "Staff Cardholder", "Viewer",
   ];
   return (
     <Card className="p-5 shadow-card overflow-x-auto">
