@@ -574,3 +574,77 @@ function FF({ label, children }: { label: string; children: React.ReactNode }) {
     </div>
   );
 }
+
+function BroadcastPanel() {
+  const [message, setMessage] = useState("");
+  const [audience, setAudience] = useState("arriving-week");
+  const quick = [
+    { l: "Send update to all customers arriving this week", a: "arriving-week", m: "Hi {{customer}}, your shipment {{shipment_id}} is arriving in {{port}} this week. We'll send the BL and clearing checklist shortly. — Canta" },
+    { l: "Send missing document reminder", a: "missing-docs", m: "Hi {{customer}}, please send the missing documents for {{shipment_id}}: {{missing_docs}}. Reply on WhatsApp and our agent will upload them for you." },
+    { l: "Send payment reminder", a: "payment-pending", m: "Hi {{customer}}, friendly reminder: freight invoice {{invoice_id}} for {{amount}} is due {{due_date}}. Pay via the Canta link in this chat." },
+    { l: "Send delay notice", a: "delayed", m: "Hi {{customer}}, vessel for {{shipment_id}} has been delayed. New ETA: {{new_eta}}. We're tracking it closely — no action needed from your side." },
+    { l: "Send arrival notice", a: "arrived", m: "Hi {{customer}}, your shipment {{shipment_id}} has arrived at {{port}}. Customs clearing begins now. We'll request duty payment shortly." },
+  ];
+  return (
+    <Card className="p-5 shadow-card border-[#25D366]/30 bg-gradient-to-br from-[#25D366]/10 to-transparent">
+      <div className="flex items-center gap-2">
+        <MessageCircle className="h-4 w-4 text-[#25D366]" />
+        <div className="text-sm font-semibold">Customer WhatsApp Broadcast</div>
+      </div>
+      <p className="text-xs text-muted-foreground mt-1">Send one message to a smart segment of your customers in seconds.</p>
+
+      <div className="mt-4 grid grid-cols-1 lg:grid-cols-5 gap-2">
+        {quick.map((q) => (
+          <Button
+            key={q.a}
+            variant="outline"
+            className={`h-auto py-3 justify-start text-left ${audience === q.a ? "border-[#25D366] bg-[#25D366]/10" : ""}`}
+            onClick={() => { setAudience(q.a); setMessage(q.m); }}
+          >
+            <Send className="h-3.5 w-3.5 mr-2 shrink-0 text-[#25D366]" />
+            <span className="text-xs">{q.l}</span>
+          </Button>
+        ))}
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div>
+          <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Audience</Label>
+          <Select value={audience} onValueChange={setAudience}>
+            <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="arriving-week">Customers arriving this week</SelectItem>
+              <SelectItem value="missing-docs">Customers with missing documents</SelectItem>
+              <SelectItem value="payment-pending">Customers with outstanding invoices</SelectItem>
+              <SelectItem value="delayed">Customers with delayed shipments</SelectItem>
+              <SelectItem value="arrived">Customers with arrived shipments</SelectItem>
+              <SelectItem value="all">All active customers</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="mt-3 text-[11px] text-muted-foreground">
+            Estimated recipients: <span className="font-semibold text-foreground">{audience === "all" ? importers.length : Math.max(1, Math.floor(importers.length / 2))}</span>
+          </div>
+        </div>
+        <div className="lg:col-span-2">
+          <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Message</Label>
+          <Textarea
+            className="mt-1 h-28"
+            placeholder="Type a broadcast message…"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <div className="mt-2 flex items-center justify-between flex-wrap gap-2">
+            <div className="text-[11px] text-muted-foreground">Variables: {"{{customer}}, {{shipment_id}}, {{port}}, {{eta}}"} auto-filled per recipient.</div>
+            <Button
+              size="sm"
+              className="bg-[#25D366] hover:bg-[#1FB855] text-white"
+              onClick={() => { if (!message) { toast.error("Pick a quick action or type a message"); return; } toast.success("Broadcast sent on WhatsApp"); setMessage(""); }}
+            >
+              <Send className="h-3.5 w-3.5 mr-1.5" /> Send broadcast
+            </Button>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
