@@ -226,8 +226,7 @@ export function getAllowedRoutes(workspace: WorkspaceType, flags: FeatureFlags):
       if (flags.treasury_module_enabled) add("/treasury", "/wallets", "/fx", "/transactions", "/beneficiaries");
       break;
     case "supplier_dashboard":
-      add("/suppliers");
-      if (flags.trade_module_enabled) add("/trade-desk");
+      add("/suppliers", "/trade-desk", "/shipments");
       if (flags.collections_module_enabled) add("/collections");
       if (flags.cards_module_enabled) add("/cards");
       break;
