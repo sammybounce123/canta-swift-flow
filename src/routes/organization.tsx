@@ -127,6 +127,17 @@ const PERMISSIONS = [
     ],
   },
   {
+    group: "Enterprise",
+    items: [
+      "view wallet balances", "create FX conversion", "approve FX conversion",
+      "create beneficiary", "approve beneficiary",
+      "initiate payment", "approve payment",
+      "create staff card", "approve staff card", "fund staff card", "freeze staff card",
+      "view card spend", "require receipts",
+      "view compliance reports", "export transaction reports", "manage enterprise users",
+    ],
+  },
+  {
     group: "Reporting & Compliance",
     items: ["export reports", "view compliance pack"],
   },
