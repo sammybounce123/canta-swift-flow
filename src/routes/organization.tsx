@@ -205,6 +205,18 @@ const PERMISSIONS = [
     ],
   },
   {
+    group: "Supplier / Exporter",
+    items: [
+      "create buyer record", "view buyer verification status",
+      "create invoice", "upload supplier documents",
+      "view payment status", "view funds secured",
+      "manage escrow milestones", "request escrow release",
+      "view settlement status", "download settlement receipt",
+      "export invoice reports", "export settlement reports",
+      "manage supplier users",
+    ],
+  },
+  {
     group: "Reporting & Compliance",
     items: ["export reports", "view compliance pack"],
   },
