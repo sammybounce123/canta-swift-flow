@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, 
 import { Calendar, Layers } from "lucide-react";
 import { useActions } from "@/components/ActionsProvider";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
+import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 
 const allocation = [
   { name: "USD", value: 62 },
