@@ -548,6 +548,36 @@ function Collections() {
           { id: "C6", label: "Meta Ads — Recruit",  holder: "Marketing", last4: "9905", status: "Active", monthlySpend: 2700, limit: 6000,  category: "Marketing" },
         ]}
       />
+
+      <Card className="p-5 shadow-card">
+        <div className="text-sm font-semibold">Spend by department</div>
+        <div className="text-xs text-muted-foreground mb-4">Where merchant staff spend goes this month · USD</div>
+        <div className="space-y-3">
+          {[
+            { dept: "Admissions",      amount: 6_300, limit: 10_000 },
+            { dept: "Regional Offices",amount: 8_800, limit: 14_000 },
+            { dept: "Marketing",       amount: 6_500, limit: 12_000 },
+            { dept: "Events",          amount: 3_800, limit: 10_000 },
+            { dept: "Travel",          amount: 1_900, limit: 5_000 },
+            { dept: "Support",         amount: 1_200, limit: 3_000 },
+          ].map((d) => {
+            const pct = Math.round((d.amount / d.limit) * 100);
+            return (
+              <div key={d.dept}>
+                <div className="flex items-center justify-between text-xs mb-1">
+                  <span className="font-medium">{d.dept}</span>
+                  <span className="tabular-nums text-muted-foreground">
+                    ${d.amount.toLocaleString()} / ${d.limit.toLocaleString()} ({pct}%)
+                  </span>
+                </div>
+                <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
+                  <div className={`h-full ${pct > 85 ? "bg-destructive" : pct > 60 ? "bg-warning" : "bg-success"}`} style={{ width: `${pct}%` }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
     </div>
   );
 }
