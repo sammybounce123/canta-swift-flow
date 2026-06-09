@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { shipments, suppliers, freightInvoices, fmtMoney, type Shipment } from "@/lib/mock";
 import { buildWhatsAppUrl, type WhatsAppTemplateKey } from "@/lib/whatsapp";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
+import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import {
   MessageCircle, Upload, Sparkles, FileQuestion, Ship, Calendar, Truck, Bell, ShieldCheck,
   CheckCircle2, AlertCircle, ArrowRight, Receipt, Package, Send, Link as LinkIcon, Copy,
