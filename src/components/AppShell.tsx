@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRole, ALL_ROLES, type Permission, type Role } from "@/components/RoleProvider";
+import { loadProfile, getAllowedRoutes, defaultFlagsFor } from "@/lib/profile";
 import { useMode, ALL_MODES } from "@/components/ModeProvider";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
