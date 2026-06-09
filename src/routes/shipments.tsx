@@ -2,47 +2,83 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { shipments, fmtMoney } from "@/lib/mock";
-import { Plus, Search, Filter, Ship, Anchor, Truck, MapPin } from "lucide-react";
-import { useState, useMemo } from "react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { shipments, shippingLines, fmtMoney, type Shipment, type ShipmentVertical } from "@/lib/mock";
+import { Plus, Search, Ship, Anchor, Truck, Plane, Package, Calendar as CalendarIcon, List, FileText, ExternalLink } from "lucide-react";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/shipments")({
   head: () => ({ meta: [{ title: "Shipments — Canta" }] }),
-  component: Shipments,
+  component: ShipmentsPage,
 });
 
-const statusGroups: { label: string; statuses: string[]; tone: string }[] = [
+const STATUS_CARDS: { label: string; statuses: Shipment["status"][]; tone: string }[] = [
   { label: "Active", statuses: ["Booked", "At Origin", "Loaded"], tone: "bg-primary/10 text-primary border-primary/20" },
   { label: "On Vessel", statuses: ["On Vessel"], tone: "bg-blue-500/10 text-blue-700 border-blue-500/20" },
-  { label: "Arrived", statuses: ["Arrived", "Customs"], tone: "bg-amber-500/10 text-amber-700 border-amber-500/20" },
+  { label: "Arrived", statuses: ["Arrived"], tone: "bg-amber-500/10 text-amber-700 border-amber-500/20" },
+  { label: "Clearing", statuses: ["Customs"], tone: "bg-orange-500/10 text-orange-700 border-orange-500/20" },
   { label: "Delivered", statuses: ["Released", "Delivered"], tone: "bg-success/10 text-success border-success/20" },
   { label: "Delayed", statuses: ["Delayed"], tone: "bg-destructive/10 text-destructive border-destructive/20" },
 ];
 
-function Shipments() {
+function ShipmentsPage() {
   const [q, setQ] = useState("");
-  const [active, setActive] = useState<string | null>(null);
+  const [statusCard, setStatusCard] = useState<string | null>(null);
+  const [view, setView] = useState<"list" | "calendar">("list");
+  const [fStatus, setFStatus] = useState("all");
+  const [fLine, setFLine] = useState("all");
+  const [fOrigin, setFOrigin] = useState("all");
+  const [fDest, setFDest] = useState("all");
+  const [fImporter, setFImporter] = useState("all");
+  const [fSupplier, setFSupplier] = useState("all");
+  const [fForwarder, setFForwarder] = useState("all");
+  const [fEta, setFEta] = useState("");
+  const [selected, setSelected] = useState<Shipment | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
+
+  const uniq = (k: keyof Shipment) => Array.from(new Set(shipments.map((s) => s[k] as string).filter(Boolean)));
+
   const filtered = useMemo(() => shipments.filter((s) => {
-    const okQ = `${s.id} ${s.name} ${s.importer} ${s.supplier} ${s.container} ${s.bl} ${s.category}`.toLowerCase().includes(q.toLowerCase());
-    const okS = !active || statusGroups.find((g) => g.label === active)?.statuses.includes(s.status);
-    return okQ && okS;
-  }), [q, active]);
+    const cardOk = !statusCard || STATUS_CARDS.find((c) => c.label === statusCard)?.statuses.includes(s.status);
+    const qOk = !q || `${s.id} ${s.name} ${s.shipmentNumber} ${s.container ?? ""} ${s.bl ?? ""} ${s.supplier} ${s.importer} ${s.category} ${(s.vertical.kind === "Vehicles" ? s.vertical.vin : "")}`.toLowerCase().includes(q.toLowerCase());
+    if (!cardOk || !qOk) return false;
+    if (fStatus !== "all" && s.status !== fStatus) return false;
+    if (fLine !== "all" && s.shippingLine !== fLine) return false;
+    if (fOrigin !== "all" && s.origin !== fOrigin) return false;
+    if (fDest !== "all" && s.destination !== fDest) return false;
+    if (fImporter !== "all" && s.importer !== fImporter) return false;
+    if (fSupplier !== "all" && s.supplier !== fSupplier) return false;
+    if (fForwarder !== "all" && s.forwarder !== fForwarder) return false;
+    if (fEta && s.eta !== fEta) return false;
+    return true;
+  }), [q, statusCard, fStatus, fLine, fOrigin, fDest, fImporter, fSupplier, fForwarder, fEta]);
 
   return (
     <div className="space-y-6">
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Shipments</h1>
-          <p className="text-sm text-muted-foreground mt-1">All shipments across containers, RORO, air freight & courier.</p>
+          <p className="text-sm text-muted-foreground mt-1">Containers, RORO, air freight, courier & loose cargo — all in one operating view.</p>
         </div>
-        <Button className="bg-primary"><Plus className="h-4 w-4 mr-1.5" /> New Shipment</Button>
+        <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+          <DialogTrigger asChild><Button className="bg-primary"><Plus className="h-4 w-4 mr-1.5" /> New Shipment</Button></DialogTrigger>
+          <NewShipmentDialog onClose={() => setCreateOpen(false)} />
+        </Dialog>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-        {statusGroups.map((g) => {
+      {/* Status cards */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        {STATUS_CARDS.map((g) => {
           const count = shipments.filter((s) => g.statuses.includes(s.status)).length;
+          const active = statusCard === g.label;
           return (
-            <button key={g.label} onClick={() => setActive(active === g.label ? null : g.label)} className={`p-4 rounded-xl border text-left transition ${active === g.label ? "ring-2 ring-primary " + g.tone : g.tone + " hover:opacity-80"}`}>
+            <button key={g.label} onClick={() => setStatusCard(active ? null : g.label)} className={`p-4 rounded-xl border text-left transition ${active ? "ring-2 ring-primary " + g.tone : g.tone + " hover:opacity-80"}`}>
               <div className="text-[10px] uppercase tracking-widest">{g.label}</div>
               <div className="text-2xl font-semibold tabular-nums mt-1">{count}</div>
             </button>
@@ -50,61 +86,76 @@ function Shipments() {
         })}
       </div>
 
-      <Card className="p-3 shadow-card flex items-center gap-3 flex-wrap">
-        <Search className="h-4 w-4 text-muted-foreground ml-2" />
-        <input value={q} onChange={(e) => setQ(e.target.value)} className="flex-1 min-w-[200px] bg-transparent outline-none text-sm" placeholder="Container, BL, VIN, supplier, importer, category…" />
-        <Button variant="outline" size="sm"><Filter className="h-3.5 w-3.5 mr-1" /> Filters</Button>
-        <Button variant="outline" size="sm"><MapPin className="h-3.5 w-3.5 mr-1" /> Map view</Button>
-      </Card>
-
-      <Card className="shadow-card overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs text-muted-foreground bg-secondary/40">
-                <th className="px-4 py-3">Shipment</th>
-                <th className="px-4 py-3">Type</th>
-                <th className="px-4 py-3">Route</th>
-                <th className="px-4 py-3">Importer · Supplier</th>
-                <th className="px-4 py-3">Forwarder</th>
-                <th className="px-4 py-3">ETA</th>
-                <th className="px-4 py-3 text-right">Value</th>
-                <th className="px-4 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((s) => (
-                <tr key={s.id} className="border-t border-border hover:bg-secondary/30">
-                  <td className="px-4 py-3">
-                    <div className="font-medium flex items-center gap-2">
-                      {s.type === "RORO" ? <Truck className="h-3.5 w-3.5 text-muted-foreground" /> : s.type === "Air Freight" ? <Anchor className="h-3.5 w-3.5 text-muted-foreground" /> : <Ship className="h-3.5 w-3.5 text-muted-foreground" />}
-                      {s.id}
-                    </div>
-                    <div className="text-xs text-muted-foreground truncate max-w-[260px]">{s.name}</div>
-                    {s.container && <div className="text-[10px] font-mono text-muted-foreground">{s.container} · {s.bl}</div>}
-                  </td>
-                  <td className="px-4 py-3"><Badge variant="outline" className="text-[10px]">{s.type}</Badge></td>
-                  <td className="px-4 py-3"><div>{s.origin}</div><div className="text-xs text-muted-foreground">→ {s.destination}</div></td>
-                  <td className="px-4 py-3"><div>{s.importer}</div><div className="text-xs text-muted-foreground">{s.supplier}</div></td>
-                  <td className="px-4 py-3">{s.forwarder}</td>
-                  <td className="px-4 py-3 tabular-nums">{s.eta}</td>
-                  <td className="px-4 py-3 text-right tabular-nums font-semibold">{fmtMoney(s.value, s.ccy)}</td>
-                  <td className="px-4 py-3"><StatusBadge status={s.status} /></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {/* Filters */}
+      <Card className="p-4 shadow-card space-y-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="relative flex-1 min-w-[260px]">
+            <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Container, BL, shipment #, VIN, supplier, client, category…" className="pl-9" />
+          </div>
+          <Tabs value={view} onValueChange={(v) => setView(v as "list" | "calendar")}>
+            <TabsList>
+              <TabsTrigger value="list"><List className="h-3.5 w-3.5 mr-1.5" /> List</TabsTrigger>
+              <TabsTrigger value="calendar"><CalendarIcon className="h-3.5 w-3.5 mr-1.5" /> ETA Calendar</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
+          <FilterSelect label="Status" value={fStatus} onChange={setFStatus} options={["Booked","At Origin","Loaded","On Vessel","Arrived","Customs","Released","Delivered","Delayed"]} />
+          <FilterSelect label="Shipping line" value={fLine} onChange={setFLine} options={shippingLines} />
+          <FilterSelect label="Origin" value={fOrigin} onChange={setFOrigin} options={uniq("origin")} />
+          <FilterSelect label="Destination" value={fDest} onChange={setFDest} options={uniq("destination")} />
+          <FilterSelect label="Client" value={fImporter} onChange={setFImporter} options={uniq("importer")} />
+          <FilterSelect label="Supplier" value={fSupplier} onChange={setFSupplier} options={uniq("supplier")} />
+          <FilterSelect label="Forwarder" value={fForwarder} onChange={setFForwarder} options={uniq("forwarder")} />
+          <div>
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">ETA</div>
+            <Input type="date" value={fEta} onChange={(e) => setFEta(e.target.value)} className="h-9 text-xs" />
+          </div>
         </div>
       </Card>
+
+      {view === "list" ? (
+        <ShipmentTable rows={filtered} onSelect={setSelected} />
+      ) : (
+        <EtaCalendar rows={filtered} onSelect={setSelected} />
+      )}
+
+      <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
+        {selected && <ShipmentDetail s={selected} />}
+      </Dialog>
     </div>
   );
+}
+
+function FilterSelect({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: string[] }) {
+  return (
+    <div>
+      <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">{label}</div>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All</SelectItem>
+          {options.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function TypeIcon({ type }: { type: Shipment["type"] }) {
+  if (type === "RORO") return <Truck className="h-3.5 w-3.5 text-muted-foreground" />;
+  if (type === "Air Freight") return <Plane className="h-3.5 w-3.5 text-muted-foreground" />;
+  if (type === "Courier") return <Package className="h-3.5 w-3.5 text-muted-foreground" />;
+  if (type === "Loose Cargo") return <Anchor className="h-3.5 w-3.5 text-muted-foreground" />;
+  return <Ship className="h-3.5 w-3.5 text-muted-foreground" />;
 }
 
 function StatusBadge({ status }: { status: string }) {
   const tones: Record<string, string> = {
     "On Vessel": "bg-blue-500/15 text-blue-700 border-blue-500/30",
     "Arrived": "bg-amber-500/15 text-amber-700 border-amber-500/30",
-    "Customs": "bg-amber-500/15 text-amber-700 border-amber-500/30",
+    "Customs": "bg-orange-500/15 text-orange-700 border-orange-500/30",
     "Delivered": "bg-success/15 text-success border-success/30",
     "Released": "bg-success/15 text-success border-success/30",
     "Delayed": "bg-destructive/15 text-destructive border-destructive/30",
@@ -112,5 +163,316 @@ function StatusBadge({ status }: { status: string }) {
     "At Origin": "bg-secondary text-secondary-foreground border-border",
     "Booked": "bg-secondary text-secondary-foreground border-border",
   };
-  return <span className={`text-[10px] px-2 py-0.5 rounded-full border ${tones[status]}`}>{status}</span>;
+  return <span className={`text-[10px] px-2 py-0.5 rounded-full border ${tones[status] ?? "bg-secondary"}`}>{status}</span>;
+}
+
+function ShipmentTable({ rows, onSelect }: { rows: Shipment[]; onSelect: (s: Shipment) => void }) {
+  return (
+    <Card className="shadow-card overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-xs text-muted-foreground bg-secondary/40">
+              <th className="px-4 py-3">Shipment</th>
+              <th className="px-4 py-3">Type · Line</th>
+              <th className="px-4 py-3">Route</th>
+              <th className="px-4 py-3">Client · Supplier</th>
+              <th className="px-4 py-3">Forwarder</th>
+              <th className="px-4 py-3">ETA</th>
+              <th className="px-4 py-3 text-right">Value</th>
+              <th className="px-4 py-3">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((s) => (
+              <tr key={s.id} onClick={() => onSelect(s)} className="border-t border-border hover:bg-secondary/30 cursor-pointer">
+                <td className="px-4 py-3">
+                  <div className="font-medium flex items-center gap-2"><TypeIcon type={s.type} /> {s.shipmentNumber}</div>
+                  <div className="text-xs text-muted-foreground truncate max-w-[280px]">{s.name}</div>
+                  {s.container && <div className="text-[10px] font-mono text-muted-foreground">{s.container} · {s.bl}</div>}
+                  {s.vertical.kind === "Vehicles" && <div className="text-[10px] font-mono text-muted-foreground">VIN {s.vertical.vin}</div>}
+                </td>
+                <td className="px-4 py-3"><Badge variant="outline" className="text-[10px]">{s.type}</Badge><div className="text-xs text-muted-foreground mt-1">{s.shippingLine}</div></td>
+                <td className="px-4 py-3"><div>{s.origin}</div><div className="text-xs text-muted-foreground">→ {s.destination}</div></td>
+                <td className="px-4 py-3"><div className="truncate max-w-[180px]">{s.importer}</div><div className="text-xs text-muted-foreground truncate max-w-[180px]">{s.supplier}</div></td>
+                <td className="px-4 py-3 text-xs">{s.forwarder}</td>
+                <td className="px-4 py-3 tabular-nums text-xs">{s.eta}</td>
+                <td className="px-4 py-3 text-right tabular-nums font-semibold">{fmtMoney(s.value, s.ccy)}</td>
+                <td className="px-4 py-3"><StatusBadge status={s.status} /></td>
+              </tr>
+            ))}
+            {rows.length === 0 && (
+              <tr><td colSpan={8} className="px-4 py-12 text-center text-sm text-muted-foreground">No shipments match these filters.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  );
+}
+
+function EtaCalendar({ rows, onSelect }: { rows: Shipment[]; onSelect: (s: Shipment) => void }) {
+  // Group by ETA month
+  const groups = useMemo(() => {
+    const map = new Map<string, Shipment[]>();
+    rows.forEach((s) => {
+      const month = s.eta.slice(0, 7); // YYYY-MM
+      if (!map.has(month)) map.set(month, []);
+      map.get(month)!.push(s);
+    });
+    return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b));
+  }, [rows]);
+
+  return (
+    <div className="space-y-6">
+      {groups.map(([month, list]) => {
+        const [y, m] = month.split("-").map(Number);
+        const monthName = new Date(y, m - 1, 1).toLocaleString(undefined, { month: "long", year: "numeric" });
+        const firstDay = new Date(y, m - 1, 1).getDay();
+        const daysInMonth = new Date(y, m, 0).getDate();
+        const cells: { day: number | null; ships: Shipment[] }[] = [];
+        for (let i = 0; i < firstDay; i++) cells.push({ day: null, ships: [] });
+        for (let d = 1; d <= daysInMonth; d++) {
+          const dateStr = `${month}-${String(d).padStart(2, "0")}`;
+          cells.push({ day: d, ships: list.filter((s) => s.eta === dateStr) });
+        }
+        return (
+          <Card key={month} className="p-4 shadow-card">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold">{monthName}</h3>
+              <Badge variant="outline" className="text-[10px]">{list.length} ETA{list.length === 1 ? "" : "s"}</Badge>
+            </div>
+            <div className="grid grid-cols-7 gap-1 text-[10px] text-muted-foreground mb-1">
+              {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((d) => <div key={d} className="px-2 py-1 uppercase tracking-widest">{d}</div>)}
+            </div>
+            <div className="grid grid-cols-7 gap-1">
+              {cells.map((c, i) => (
+                <div key={i} className={`min-h-[88px] rounded-md border p-1.5 ${c.day ? "bg-card" : "bg-secondary/20 border-dashed"}`}>
+                  {c.day && <div className="text-[10px] text-muted-foreground tabular-nums mb-1">{c.day}</div>}
+                  <div className="space-y-1">
+                    {c.ships.slice(0, 3).map((s) => (
+                      <button key={s.id} onClick={() => onSelect(s)} className="w-full text-left text-[10px] px-1.5 py-1 rounded bg-primary/10 text-primary hover:bg-primary/20 truncate">
+                        {s.shipmentNumber}
+                      </button>
+                    ))}
+                    {c.ships.length > 3 && <div className="text-[10px] text-muted-foreground">+{c.ships.length - 3} more</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        );
+      })}
+      {groups.length === 0 && (
+        <Card className="p-12 text-center text-sm text-muted-foreground shadow-card">No shipments with matching ETAs.</Card>
+      )}
+    </div>
+  );
+}
+
+function ShipmentDetail({ s }: { s: Shipment }) {
+  return (
+    <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogHeader>
+        <DialogTitle className="flex items-center gap-2"><TypeIcon type={s.type} /> {s.shipmentNumber} <StatusBadge status={s.status} /></DialogTitle>
+        <p className="text-xs text-muted-foreground">{s.name}</p>
+      </DialogHeader>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+        <Field label="Shipment type" value={s.type} />
+        <Field label="Shipping line" value={s.shippingLine} />
+        <Field label="Vessel" value={s.vessel ?? "—"} />
+        <Field label="Container #" value={s.container ?? "—"} mono />
+        <Field label="BL #" value={s.bl ?? "—"} mono />
+        <Field label="Origin" value={s.origin} />
+        <Field label="Destination" value={s.destination} />
+        <Field label="ETA" value={s.eta} />
+        <Field label="Value" value={fmtMoney(s.value, s.ccy)} />
+        <Field label="Client / Importer" value={s.importer} />
+        <Field label="Supplier" value={s.supplier} />
+        <Field label="Freight Forwarder" value={s.forwarder} />
+        <Field label="Goods category" value={s.category} />
+      </div>
+
+      <VerticalDetails v={s.vertical} />
+
+      <div>
+        <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Documents</div>
+        <div className="flex flex-wrap gap-2">
+          {s.documents.map((d) => (
+            <Badge key={d} variant="outline" className="text-[10px] gap-1"><FileText className="h-3 w-3" /> {d}</Badge>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Notes</div>
+        <p className="text-sm text-foreground/80">{s.notes}</p>
+      </div>
+    </DialogContent>
+  );
+}
+
+function Field({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+  return (
+    <div>
+      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</div>
+      <div className={`mt-0.5 ${mono ? "font-mono" : ""}`}>{value}</div>
+    </div>
+  );
+}
+
+function VerticalDetails({ v }: { v: ShipmentVertical }) {
+  return (
+    <Card className="p-4 bg-secondary/30 border-dashed">
+      <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Vertical · {v.kind}</div>
+      {v.kind === "Vehicles" && (
+        <div className="grid md:grid-cols-[160px_1fr] gap-4">
+          <img src={v.image} alt={`${v.make} ${v.model}`} className="rounded-lg object-cover w-full h-32" />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+            <Field label="VIN" value={v.vin} mono />
+            <Field label="Make" value={v.make} />
+            <Field label="Model" value={v.model} />
+            <Field label="Year" value={String(v.year)} />
+            <Field label="Color" value={v.color} />
+            <Field label="Vehicle status" value={v.vehicleStatus} />
+            <div className="col-span-full">
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Auction / source</div>
+              <a href="#" className="text-primary text-xs inline-flex items-center gap-1 mt-0.5">{v.source} <ExternalLink className="h-3 w-3" /></a>
+            </div>
+          </div>
+        </div>
+      )}
+      {v.kind === "Electronics" && (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+          <Field label="SKU" value={v.sku} mono />
+          <Field label="Cartons" value={String(v.cartons)} />
+          <Field label="Units" value={v.units.toLocaleString()} />
+          <Field label="Product category" value={v.productCategory} />
+          <Field label="Supplier invoice #" value={v.supplierInvoice} mono />
+        </div>
+      )}
+      {v.kind === "Fashion" && (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+          <Field label="Bales / cartons" value={String(v.bales)} />
+          <Field label="Size mix" value={v.sizeMix} />
+          <Field label="Product category" value={v.productCategory} />
+        </div>
+      )}
+      {v.kind === "Machinery" && (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+          <Field label="Serial #" value={v.serial} mono />
+          <Field label="Weight" value={`${v.weightKg.toLocaleString()} kg`} />
+          <Field label="Machine category" value={v.machineCategory} />
+          <div className="col-span-full">
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Installation documents</div>
+            <div className="text-xs mt-0.5">{v.installDocs}</div>
+          </div>
+        </div>
+      )}
+      {v.kind === "General" && (
+        <div className="text-xs"><Field label="Product category" value={v.productCategory} /></div>
+      )}
+    </Card>
+  );
+}
+
+function NewShipmentDialog({ onClose }: { onClose: () => void }) {
+  const [template, setTemplate] = useState<"Vehicles" | "Electronics" | "Fashion" | "Machinery" | "General">("Electronics");
+  return (
+    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogHeader>
+        <DialogTitle>New shipment</DialogTitle>
+        <p className="text-xs text-muted-foreground">Pick a vertical template — fields adapt to the goods you're shipping.</p>
+      </DialogHeader>
+
+      <div>
+        <Label className="text-xs uppercase tracking-widest text-muted-foreground">Vertical template</Label>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mt-2">
+          {(["Vehicles","Electronics","Fashion","Machinery","General"] as const).map((t) => (
+            <button key={t} onClick={() => setTemplate(t)} className={`text-xs px-3 py-2 rounded-lg border transition ${template === t ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-secondary"}`}>{t}</button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <FormField label="Shipment name"><Input placeholder="e.g. Shenzhen → Lagos Q3" /></FormField>
+        <FormField label="Shipment type">
+          <Select defaultValue="Container"><SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>{["Container","RORO","Air Freight","Courier","Loose Cargo"].map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+          </Select>
+        </FormField>
+        <FormField label="Shipping line">
+          <Select><SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+            <SelectContent>{shippingLines.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}</SelectContent>
+          </Select>
+        </FormField>
+        <FormField label="Vessel name"><Input placeholder="e.g. MSC Antonia" /></FormField>
+        <FormField label="Container #"><Input placeholder="MSCU7762213" /></FormField>
+        <FormField label="BL #"><Input placeholder="BL-998211" /></FormField>
+        <FormField label="Shipment #"><Input placeholder="Auto-generated" /></FormField>
+        <FormField label="ETA"><Input type="date" /></FormField>
+        <FormField label="Origin"><Input placeholder="Guangzhou, CN" /></FormField>
+        <FormField label="Destination"><Input placeholder="Apapa, LOS" /></FormField>
+        <FormField label="Client / Importer"><Input placeholder="ABC Electronics" /></FormField>
+        <FormField label="Supplier"><Input placeholder="Guangzhou Tech Factory" /></FormField>
+        <FormField label="Freight forwarder"><Input placeholder="Dragon Freight Nigeria" /></FormField>
+        <FormField label="Goods category"><Input placeholder="Consumer Electronics" /></FormField>
+      </div>
+
+      {/* Vertical-specific fields */}
+      <div className="rounded-lg border border-dashed p-3 space-y-3 bg-secondary/30">
+        <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{template} fields</div>
+        <div className="grid grid-cols-2 gap-3">
+          {template === "Vehicles" && (<>
+            <FormField label="VIN"><Input placeholder="1HGCM82633A123456" /></FormField>
+            <FormField label="Make"><Input placeholder="Toyota" /></FormField>
+            <FormField label="Model"><Input placeholder="Highlander" /></FormField>
+            <FormField label="Year"><Input type="number" placeholder="2020" /></FormField>
+            <FormField label="Color"><Input placeholder="Pearl White" /></FormField>
+            <FormField label="Vehicle status"><Input placeholder="Loaded on vessel" /></FormField>
+            <FormField label="Image URL"><Input placeholder="https://…" /></FormField>
+            <FormField label="Auction / source"><Input placeholder="Copart · Lot #88210" /></FormField>
+          </>)}
+          {template === "Electronics" && (<>
+            <FormField label="SKU"><Input placeholder="ELC-MIX-Q2" /></FormField>
+            <FormField label="Cartons"><Input type="number" placeholder="240" /></FormField>
+            <FormField label="Units"><Input type="number" placeholder="6480" /></FormField>
+            <FormField label="Product category"><Input placeholder="Consumer Electronics" /></FormField>
+            <FormField label="Supplier invoice #"><Input placeholder="INV-2241" /></FormField>
+          </>)}
+          {template === "Fashion" && (<>
+            <FormField label="Bale / carton count"><Input type="number" placeholder="180" /></FormField>
+            <FormField label="Size mix"><Input placeholder="S 25% · M 40% · L 25% · XL 10%" /></FormField>
+            <FormField label="Product category"><Input placeholder="Mixed Apparel" /></FormField>
+          </>)}
+          {template === "Machinery" && (<>
+            <FormField label="Serial #"><Input placeholder="CNC-9981-22A" /></FormField>
+            <FormField label="Weight (kg)"><Input type="number" placeholder="4200" /></FormField>
+            <FormField label="Machine category"><Input placeholder="CNC Milling" /></FormField>
+            <FormField label="Installation documents"><Input placeholder="Install manual + schematics" /></FormField>
+          </>)}
+          {template === "General" && (
+            <FormField label="Product category"><Input placeholder="Office Furniture" /></FormField>
+          )}
+        </div>
+      </div>
+
+      <FormField label="Notes"><Textarea placeholder="Any handling instructions, risk notes, or comments…" /></FormField>
+
+      <DialogFooter>
+        <Button variant="outline" onClick={onClose}>Cancel</Button>
+        <Button className="bg-primary" onClick={() => { toast.success("Shipment created"); onClose(); }}>Create shipment</Button>
+      </DialogFooter>
+    </DialogContent>
+  );
+}
+
+function FormField({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</Label>
+      <div className="mt-1">{children}</div>
+    </div>
+  );
 }

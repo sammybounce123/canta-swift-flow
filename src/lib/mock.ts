@@ -93,10 +93,19 @@ export const freightForwarders = [
   { name: "Global Route Freight", routes: 7, activeShipments: 12, rating: 4.4 },
 ];
 
+export type ShipmentVertical =
+  | { kind: "Vehicles"; vin: string; make: string; model: string; year: number; color: string; image: string; source: string; vehicleStatus: string }
+  | { kind: "Electronics"; sku: string; cartons: number; units: number; productCategory: string; supplierInvoice: string }
+  | { kind: "Fashion"; bales: number; sizeMix: string; productCategory: string }
+  | { kind: "Machinery"; serial: string; weightKg: number; installDocs: string; machineCategory: string }
+  | { kind: "General"; productCategory: string };
+
 export type Shipment = {
   id: string;
   name: string;
+  shipmentNumber: string;
   type: "Container" | "RORO" | "Air Freight" | "Courier" | "Loose Cargo";
+  shippingLine: string;
   origin: string;
   destination: string;
   eta: string;
@@ -110,16 +119,23 @@ export type Shipment = {
   category: string;
   value: number;
   ccy: string;
+  documents: string[];
+  notes: string;
+  vertical: ShipmentVertical;
 };
 
+export const shippingLines = ["MSC", "Maersk", "CMA CGM", "COSCO", "OOCL", "Grimaldi", "Hapag-Lloyd", "Evergreen", "Emirates SkyCargo", "DHL"];
+
 export const shipments: Shipment[] = [
-  { id: "SHP-10421", name: "Guangzhou → Lagos electronics", type: "Container", origin: "Guangzhou, CN", destination: "Apapa, LOS", eta: "2026-06-18", status: "On Vessel", importer: "ABC Electronics", supplier: "Guangzhou Tech Factory", forwarder: "Dragon Freight Nigeria", container: "MSCU7762213", bl: "BL-998211", vessel: "MSC ANTONIA", category: "Electronics", value: 184_000, ccy: "USD" },
-  { id: "SHP-10422", name: "Yiwu → Lagos fashion bales", type: "Container", origin: "Yiwu, CN", destination: "Tin Can, LOS", eta: "2026-06-22", status: "Loaded", importer: "Balogun Trade Hub", supplier: "Yiwu General Trading", forwarder: "Lagos-China Cargo", container: "TGHU4421021", bl: "BL-998244", vessel: "COSCO SHIPPING ARIES", category: "Fashion", value: 67_400, ccy: "USD" },
-  { id: "SHP-10423", name: "Dubai → Lagos auto spares", type: "Container", origin: "Jebel Ali, AE", destination: "Apapa, LOS", eta: "2026-06-14", status: "Customs", importer: "Dav Excel Autos", supplier: "Dubai Auto Parts Hub", forwarder: "SwiftPort Logistics", container: "DUBU1102234", bl: "BL-998191", vessel: "CMA CGM IVANHOE", category: "Auto", value: 41_900, ccy: "USD" },
-  { id: "SHP-10424", name: "Houston → Lagos vehicles", type: "RORO", origin: "Houston, US", destination: "Tin Can, LOS", eta: "2026-06-29", status: "On Vessel", importer: "Global Motors", supplier: "BidCar Auctions LLC", forwarder: "Global Route Freight", vessel: "GRIMALDI EUROPA", category: "Vehicles", value: 312_500, ccy: "USD" },
-  { id: "SHP-10425", name: "Shenzhen → Lagos machinery", type: "Container", origin: "Shenzhen, CN", destination: "Apapa, LOS", eta: "2026-06-09", status: "Arrived", importer: "Billion Trend Autos", supplier: "Shenzhen Electronics Co.", forwarder: "Dragon Freight Nigeria", container: "OOLU9981122", bl: "BL-998260", vessel: "OOCL HONG KONG", category: "Machinery", value: 96_200, ccy: "USD" },
-  { id: "SHP-10426", name: "Foshan → Lagos furniture", type: "Container", origin: "Foshan, CN", destination: "Tin Can, LOS", eta: "2026-07-02", status: "At Origin", importer: "Trade Fair Imports", supplier: "Foshan Furniture Works", forwarder: "Lagos-China Cargo", container: "CCLU3399012", bl: "BL-998270", vessel: "—", category: "Furniture", value: 28_700, ccy: "USD" },
-  { id: "SHP-10427", name: "Yiwu → Lagos accessories (Air)", type: "Air Freight", origin: "Yiwu, CN", destination: "MMIA Lagos", eta: "2026-06-12", status: "Delayed", importer: "ABC Electronics", supplier: "Yiwu General Trading", forwarder: "SwiftPort Logistics", category: "Accessories", value: 9_400, ccy: "USD" },
+  { id: "SHP-10421", name: "Guangzhou → Lagos electronics", shipmentNumber: "CNT-2026-0421", type: "Container", shippingLine: "MSC", origin: "Guangzhou, CN", destination: "Apapa, LOS", eta: "2026-06-18", status: "On Vessel", importer: "ABC Electronics", supplier: "Guangzhou Tech Factory", forwarder: "Dragon Freight Nigeria", container: "MSCU7762213", bl: "BL-998211", vessel: "MSC ANTONIA", category: "Electronics", value: 184_000, ccy: "USD", documents: ["Commercial Invoice", "Packing List", "BL", "Form M"], notes: "Mixed consumer electronics, 240 cartons.", vertical: { kind: "Electronics", sku: "ELC-MIX-Q2", cartons: 240, units: 6480, productCategory: "Consumer Electronics", supplierInvoice: "INV-GZTF-2241" } },
+  { id: "SHP-10422", name: "Yiwu → Lagos fashion bales", shipmentNumber: "CNT-2026-0422", type: "Container", shippingLine: "COSCO", origin: "Yiwu, CN", destination: "Tin Can, LOS", eta: "2026-06-22", status: "Loaded", importer: "Balogun Trade Hub", supplier: "Yiwu General Trading", forwarder: "Lagos-China Cargo", container: "TGHU4421021", bl: "BL-998244", vessel: "COSCO SHIPPING ARIES", category: "Fashion", value: 67_400, ccy: "USD", documents: ["Commercial Invoice", "Packing List", "BL"], notes: "Mixed fashion bales for retail market.", vertical: { kind: "Fashion", bales: 180, sizeMix: "S 25% · M 40% · L 25% · XL 10%", productCategory: "Mixed Apparel" } },
+  { id: "SHP-10423", name: "Dubai → Lagos auto spares", shipmentNumber: "CNT-2026-0423", type: "Container", shippingLine: "CMA CGM", origin: "Jebel Ali, AE", destination: "Apapa, LOS", eta: "2026-06-14", status: "Customs", importer: "Dav Excel Autos", supplier: "Dubai Auto Parts Hub", forwarder: "SwiftPort Logistics", container: "DUBU1102234", bl: "BL-998191", vessel: "CMA CGM IVANHOE", category: "Auto Parts", value: 41_900, ccy: "USD", documents: ["Commercial Invoice", "Packing List", "BL", "SONCAP"], notes: "Spare parts mostly for Toyota & Honda.", vertical: { kind: "Electronics", sku: "AUTO-SP-088", cartons: 88, units: 1320, productCategory: "Auto Spare Parts", supplierInvoice: "INV-DAPH-1190" } },
+  { id: "SHP-10424", name: "Houston → Lagos vehicles", shipmentNumber: "RORO-2026-0424", type: "RORO", shippingLine: "Grimaldi", origin: "Houston, US", destination: "Tin Can, LOS", eta: "2026-06-29", status: "On Vessel", importer: "Global Motors", supplier: "BidCar Auctions LLC", forwarder: "Global Route Freight", vessel: "GRIMALDI EUROPA", category: "Vehicles", value: 312_500, ccy: "USD", documents: ["Bill of Sale", "Title", "BL"], notes: "12 vehicles, mixed makes from Houston auction.", vertical: { kind: "Vehicles", vin: "1HGCM82633A123456", make: "Toyota", model: "Highlander XLE", year: 2020, color: "Pearl White", image: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600", source: "Copart · Houston Lot #88210", vehicleStatus: "Loaded on vessel" } },
+  { id: "SHP-10425", name: "Shenzhen → Lagos machinery", shipmentNumber: "CNT-2026-0425", type: "Container", shippingLine: "OOCL", origin: "Shenzhen, CN", destination: "Apapa, LOS", eta: "2026-06-09", status: "Arrived", importer: "Billion Trend Autos", supplier: "Shenzhen Electronics Co.", forwarder: "Dragon Freight Nigeria", container: "OOLU9981122", bl: "BL-998260", vessel: "OOCL HONG KONG", category: "Machinery", value: 96_200, ccy: "USD", documents: ["Commercial Invoice", "Packing List", "BL", "Installation Manual"], notes: "Industrial CNC milling machine.", vertical: { kind: "Machinery", serial: "CNC-9981-22A", weightKg: 4200, installDocs: "Install + commissioning manual + electrical schematics", machineCategory: "CNC Milling" } },
+  { id: "SHP-10426", name: "Foshan → Lagos furniture", shipmentNumber: "CNT-2026-0426", type: "Container", shippingLine: "Maersk", origin: "Foshan, CN", destination: "Tin Can, LOS", eta: "2026-07-02", status: "At Origin", importer: "Trade Fair Imports", supplier: "Foshan Furniture Works", forwarder: "Lagos-China Cargo", container: "CCLU3399012", bl: "BL-998270", vessel: "—", category: "Furniture", value: 28_700, ccy: "USD", documents: ["Pro-forma Invoice"], notes: "Awaiting full payment before pickup.", vertical: { kind: "General", productCategory: "Office Furniture" } },
+  { id: "SHP-10427", name: "Yiwu → Lagos accessories (Air)", shipmentNumber: "AIR-2026-0427", type: "Air Freight", shippingLine: "Emirates SkyCargo", origin: "Yiwu, CN", destination: "MMIA Lagos", eta: "2026-06-12", status: "Delayed", importer: "ABC Electronics", supplier: "Yiwu General Trading", forwarder: "SwiftPort Logistics", category: "Accessories", value: 9_400, ccy: "USD", documents: ["Commercial Invoice", "AWB"], notes: "Delay at Dubai hub — rebooked to next flight.", vertical: { kind: "Electronics", sku: "ACC-PHONE-K12", cartons: 14, units: 1680, productCategory: "Phone Accessories", supplierInvoice: "INV-YWGT-3382" } },
+  { id: "SHP-10428", name: "Long Beach → Lagos vehicles", shipmentNumber: "RORO-2026-0428", type: "RORO", shippingLine: "Grimaldi", origin: "Long Beach, US", destination: "Tin Can, LOS", eta: "2026-07-11", status: "Booked", importer: "Dav Excel Autos", supplier: "Manheim Auctions", forwarder: "Global Route Freight", vessel: "GRANDE LAGOS", category: "Vehicles", value: 28_400, ccy: "USD", documents: ["Bill of Sale", "Title"], notes: "Single vehicle — Lexus RX350.", vertical: { kind: "Vehicles", vin: "2T2HK31U68C083421", make: "Lexus", model: "RX 350", year: 2019, color: "Obsidian Black", image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=600", source: "Manheim · Long Beach Lot #44120", vehicleStatus: "Awaiting loading" } },
+  { id: "SHP-10429", name: "Hamburg → Lagos courier parcels", shipmentNumber: "CUR-2026-0429", type: "Courier", shippingLine: "DHL", origin: "Hamburg, DE", destination: "MMIA Lagos", eta: "2026-06-10", status: "Released", importer: "ABC Electronics", supplier: "Berlin Tech Supply", forwarder: "SwiftPort Logistics", category: "Samples", value: 1_240, ccy: "EUR", documents: ["AWB", "Commercial Invoice"], notes: "Sample units for QA before bulk order.", vertical: { kind: "General", productCategory: "Samples" } },
 ];
 
 export type TradeFile = {
