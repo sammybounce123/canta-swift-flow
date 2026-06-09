@@ -9,6 +9,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { shipments, importers, freightInvoices, monthlyShipmentVolume, shippingLines, fmtMoney, type Shipment, type FreightInvoice } from "@/lib/mock";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { Truck, Plus, MessageCircle, FileText, DollarSign, Users as UsersIcon, AlertTriangle, Ship, Eye, Upload, CheckCircle2, Clock, TrendingUp, BarChart3, Send } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -558,8 +559,22 @@ Reply here if you have questions.
       <Textarea value={text} onChange={(e) => setText(e.target.value)} className="min-h-[260px] font-mono text-xs" />
       <DialogFooter>
         <Button variant="outline" onClick={onClose}>Cancel</Button>
-        <Button className="bg-[#25D366] hover:bg-[#1ebe5d] text-white" onClick={() => { toast.success(`WhatsApp sent to ${c.name}`); onClose(); }}>
-          <Send className="h-3.5 w-3.5 mr-1.5" /> Send via WhatsApp
+        <Button asChild className="bg-[#25D366] hover:bg-[#1FB855] text-white hover:shadow-lg hover:shadow-[#25D366]/30 transition">
+          <a
+            href={buildWhatsAppUrl("shipmentUpdate", {
+              shipment: `${s.shipmentNumber} (${s.name})`,
+              status: s.status,
+              eta: `${s.eta} — ${s.destination}`,
+              missingDocs: missingDocs.join(", ") || "None",
+              payment: invoice ? `${fmtMoney(invoice.amount, invoice.ccy)} due (invoice ${invoice.id})` : "Up to date",
+              nextAction: s.status === "Customs" ? "Pay duty & submit clearing docs" : s.status === "Delayed" ? "Rebooking — new ETA being confirmed" : "Monitoring vessel movement",
+            })}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => { toast.success(`WhatsApp opening for ${c.name}`); setTimeout(onClose, 200); }}
+          >
+            <Send className="h-3.5 w-3.5 mr-1.5" /> Send via WhatsApp
+          </a>
         </Button>
       </DialogFooter>
     </DialogContent>

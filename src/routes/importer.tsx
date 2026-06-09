@@ -7,6 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { shipments, suppliers, freightInvoices, fmtMoney, type Shipment } from "@/lib/mock";
+import { buildWhatsAppUrl, type WhatsAppTemplateKey } from "@/lib/whatsapp";
 import {
   MessageCircle, Upload, Sparkles, FileQuestion, Ship, Calendar, Truck, Bell, ShieldCheck,
   CheckCircle2, AlertCircle, ArrowRight, Receipt, Package, Send, Link as LinkIcon, Copy,
@@ -143,13 +144,13 @@ function SimpleKpi({ label, value, tone }: { label: string; value: string; tone?
 }
 
 function WhatsAppActions() {
-  const actions = [
-    { i: Upload,        l: "Send invoice on WhatsApp" },
-    { i: Upload,        l: "Upload shipment document" },
-    { i: FileQuestion,  l: "Request landed cost estimate" },
-    { i: ShieldCheck,   l: "Request supplier verification" },
-    { i: Bell,          l: "Request shipment update" },
-    { i: Sparkles,      l: "Ask Canta Assistant" },
+  const actions: { i: any; l: string; tpl: WhatsAppTemplateKey }[] = [
+    { i: Upload,        l: "Send invoice on WhatsApp",      tpl: "sendInvoice" },
+    { i: Upload,        l: "Upload shipment document",      tpl: "sendInvoice" },
+    { i: FileQuestion,  l: "Request landed cost estimate",  tpl: "landedCost" },
+    { i: ShieldCheck,   l: "Request supplier verification", tpl: "verifySupplier" },
+    { i: Bell,          l: "Request shipment update",       tpl: "trackShipment" },
+    { i: Sparkles,      l: "Ask Canta Assistant",           tpl: "general" },
   ];
   return (
     <Card className="p-5 shadow-card border-accent/30 bg-gradient-to-br from-accent/10 to-transparent">
@@ -159,8 +160,10 @@ function WhatsAppActions() {
       <p className="text-sm text-muted-foreground mt-2">Don't worry about forms — just send us a message and we'll handle the rest.</p>
       <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
         {actions.map((a) => (
-          <Button key={a.l} variant="outline" className="justify-start h-auto py-3" onClick={() => toast.success(a.l)}>
-            <a.i className="h-4 w-4 mr-2 shrink-0" /><span className="text-xs text-left">{a.l}</span>
+          <Button asChild key={a.l} variant="outline" className="justify-start h-auto py-3 hover:border-[#25D366] hover:bg-[#25D366]/10 hover:text-foreground transition">
+            <a href={buildWhatsAppUrl(a.tpl)} target="_blank" rel="noopener noreferrer">
+              <a.i className="h-4 w-4 mr-2 shrink-0 text-[#25D366]" /><span className="text-xs text-left">{a.l}</span>
+            </a>
           </Button>
         ))}
       </div>
