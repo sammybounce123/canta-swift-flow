@@ -560,10 +560,18 @@ function TemplateFlowButton({ template }: { template: typeof templates[number] }
   const [reference, setReference] = useState("");
   const [amount, setAmount] = useState("");
   const [ccy, setCcy] = useState<SettlementCcy>("USD");
+  // University-specific
+  const [studentId, setStudentId] = useState("");
+  const [programme, setProgramme] = useState("");
+  const [term, setTerm] = useState("");
+  const isTuition = template.l === "Tuition Collection";
   const Icon = template.i;
   const totalSteps = 6;
 
-  function reset() { setStep(1); setPayer(""); setEmail(""); setReference(""); setAmount(""); setCcy("USD"); }
+  function reset() {
+    setStep(1); setPayer(""); setEmail(""); setReference(""); setAmount(""); setCcy("USD");
+    setStudentId(""); setProgramme(""); setTerm("");
+  }
   function finish() {
     toast.success(`${template.l} link created for ${payer || "payer"}`);
     setOpen(false); reset();
@@ -586,15 +594,31 @@ function TemplateFlowButton({ template }: { template: typeof templates[number] }
         <div className="space-y-3">
           {step === 1 && (
             <>
-              <Label>Payer name</Label>
-              <Input value={payer} onChange={(e) => setPayer(e.target.value)} placeholder="e.g. Adaeze Okafor" />
-              <Label>Payer email or phone</Label>
+              <Label>{isTuition ? "Student name" : "Payer name"}</Label>
+              <Input value={payer} onChange={(e) => setPayer(e.target.value)} placeholder={isTuition ? "e.g. Adaeze Okafor" : "e.g. Adaeze Okafor"} />
+              <Label>{isTuition ? "Parent / payer email or phone" : "Payer email or phone"}</Label>
               <Input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="payer@example.com" />
+              {isTuition && (
+                <>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Label>Student ID / Admission no.</Label>
+                      <Input value={studentId} onChange={(e) => setStudentId(e.target.value)} placeholder="e.g. ADM-2026-0421" />
+                    </div>
+                    <div>
+                      <Label>Term / Session</Label>
+                      <Input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="e.g. Spring 2026" />
+                    </div>
+                  </div>
+                  <Label>Programme</Label>
+                  <Input value={programme} onChange={(e) => setProgramme(e.target.value)} placeholder="e.g. MSc Computer Science" />
+                </>
+              )}
             </>
           )}
           {step === 2 && (
             <>
-              <Label>Invoice / reference</Label>
+              <Label>{isTuition ? "Tuition invoice / payment reference" : "Invoice / reference"}</Label>
               <Input value={reference} onChange={(e) => setReference(e.target.value)} placeholder={`${template.purpose} ref`} />
               <Label>Amount</Label>
               <Input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0.00" />
