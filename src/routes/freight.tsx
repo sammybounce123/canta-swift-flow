@@ -652,8 +652,18 @@ function BroadcastPanel() {
             <div className="text-[11px] text-muted-foreground">Variables: {"{{customer}}, {{shipment_id}}, {{port}}, {{eta}}"} auto-filled per recipient.</div>
             <Button
               size="sm"
-              className="bg-[#25D366] hover:bg-[#1FB855] text-white"
-              onClick={() => { if (!message) { toast.error("Pick a quick action or type a message"); return; } toast.success("Broadcast sent on WhatsApp"); setMessage(""); }}
+              className="bg-[#25D366] hover:bg-[#1FB855] text-white hover:shadow-lg hover:shadow-[#25D366]/30 transition"
+              onClick={() => {
+                if (!message) { toast.error("Pick a quick action or type a message"); return; }
+                const tpl = audience === "missing-docs" ? "missingDocument" : "shipmentUpdate";
+                const url = audience === "missing-docs"
+                  ? buildWhatsAppUrl("missingDocument", { document: "Bill of Lading / Packing List", shipment: "(see chat)", eta: "(see chat)" })
+                  : buildWhatsAppUrl("shipmentUpdate", { shipment: "(broadcast)", status: audience, eta: "(see chat)", missingDocs: "—", payment: "—", nextAction: message.slice(0, 80) });
+                window.open(url, "_blank", "noopener,noreferrer");
+                toast.success("WhatsApp opening for broadcast");
+                setMessage("");
+                void tpl;
+              }}
             >
               <Send className="h-3.5 w-3.5 mr-1.5" /> Send broadcast
             </Button>
