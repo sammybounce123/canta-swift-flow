@@ -174,15 +174,14 @@ function OrganizationPage() {
 
       <Tabs defaultValue="profile">
         <TabsList className="flex-wrap h-auto">
-          <TabsTrigger value="profile">Organization</TabsTrigger>
+          <TabsTrigger value="profile">Organization Profile</TabsTrigger>
           <TabsTrigger value="branches">Branches</TabsTrigger>
           <TabsTrigger value="departments">Departments</TabsTrigger>
           <TabsTrigger value="teams">Teams</TabsTrigger>
-          <TabsTrigger value="users">Users & Sub-users</TabsTrigger>
-          <TabsTrigger value="roles">Roles</TabsTrigger>
-          <TabsTrigger value="permissions">Permissions</TabsTrigger>
-          <TabsTrigger value="cost">Cost centers</TabsTrigger>
-          <TabsTrigger value="workflows">Approval workflows</TabsTrigger>
+          <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="roles">Roles & Permissions</TabsTrigger>
+          <TabsTrigger value="cost">Cost Centers</TabsTrigger>
+          <TabsTrigger value="workflows">Approval Workflows</TabsTrigger>
         </TabsList>
 
         {/* Profile */}
