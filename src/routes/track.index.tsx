@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Ship, MessageCircle } from "lucide-react";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { useState } from "react";
 import { shipments } from "@/lib/mock";
 
@@ -46,9 +47,9 @@ function TrackIndex() {
             </div>
           </div>
         </Card>
-        <a href="https://wa.me/2348012345566" target="_blank" rel="noreferrer" className="mt-4 block">
-          <Card className="p-4 bg-[#25D366] text-white shadow-card flex items-center justify-center gap-2">
-            <MessageCircle className="h-4 w-4" /> <span className="text-sm font-semibold">Contact Canta on WhatsApp</span>
+        <a href={buildWhatsAppUrl("trackShipment")} target="_blank" rel="noopener noreferrer" className="mt-4 block group">
+          <Card className="p-4 bg-[#25D366] text-white shadow-card flex items-center justify-center gap-2 transition group-hover:bg-[#1FB855] group-hover:shadow-lg group-hover:shadow-[#25D366]/30">
+            <MessageCircle className="h-4 w-4" /> <span className="text-sm font-semibold">Track My Shipment on WhatsApp</span>
           </Card>
         </a>
       </main>

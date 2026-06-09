@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { shipments, freightInvoices, fmtMoney, type Shipment } from "@/lib/mock";
 import { MessageCircle, CheckCircle2, Circle, AlertCircle, Calendar, Ship, MapPin, ArrowRight, FileText, Receipt } from "lucide-react";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/track/$id")({
   head: ({ params }) => ({ meta: [{ title: `Track ${params.id} — Canta` }] }),
@@ -57,7 +58,12 @@ function TrackPage() {
   const missing = REQUIRED_DOCS.filter((d) => !s.documents.includes(d));
   const invoice = freightInvoices.find((i) => i.shipment === s.id);
   const delayed = s.status === "Delayed";
-  const whatsappHref = `https://wa.me/2348012345566?text=${encodeURIComponent(`Hi Canta — I have a question about shipment ${s.shipmentNumber}.`)}`;
+  const whatsappHref = buildWhatsAppUrl("trackShipment", {
+    reference: s.shipmentNumber,
+    origin: s.origin,
+    destination: s.destination,
+    eta: s.eta,
+  });
 
   return (
     <PublicShell>
@@ -153,16 +159,16 @@ function TrackPage() {
         </Card>
 
         {/* WhatsApp CTA */}
-        <a href={whatsappHref} target="_blank" rel="noreferrer" className="block">
-          <Card className="p-5 shadow-card flex items-center justify-between bg-[#25D366] hover:bg-[#1ebe5d] transition text-white">
+        <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="block group">
+          <Card className="p-5 shadow-card flex items-center justify-between bg-[#25D366] hover:bg-[#1FB855] hover:shadow-lg hover:shadow-[#25D366]/30 transition text-white">
             <div className="flex items-center gap-3">
               <MessageCircle className="h-6 w-6" />
               <div>
-                <div className="font-semibold">Contact Canta on WhatsApp</div>
-                <div className="text-xs opacity-90">We usually reply within minutes.</div>
+                <div className="font-semibold">Continue on WhatsApp</div>
+                <div className="text-xs opacity-90">Pre-filled with your shipment details. We reply within minutes.</div>
               </div>
             </div>
-            <ArrowRight className="h-5 w-5" />
+            <ArrowRight className="h-5 w-5 transition group-hover:translate-x-1" />
           </Card>
         </a>
 

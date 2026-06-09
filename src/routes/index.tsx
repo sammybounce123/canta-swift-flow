@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import {
   ArrowRight, Zap, Shield, Globe2, Sparkles, TrendingUp, CheckCircle2,
   Building2, Lock, Quote, Wallet, Ship, CreditCard, Brain, FileText,
@@ -140,11 +141,15 @@ function Landing() {
             spend globally — from one trusted operating system.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="bg-[#25D366] text-white hover:bg-[#1FB855] h-12 px-6 font-semibold">
-              <Link to="/whatsapp"><MessageCircle className="h-4 w-4 mr-1.5" /> Send Invoice on WhatsApp</Link>
+            <Button asChild size="lg" className="bg-[#25D366] text-white hover:bg-[#1FB855] hover:shadow-lg hover:shadow-[#25D366]/30 transition h-12 px-6 font-semibold">
+              <a href={buildWhatsAppUrl("sendInvoice")} target="_blank" rel="noopener noreferrer">
+                <MessageCircle className="h-4 w-4 mr-1.5" /> Send Invoice on WhatsApp
+              </a>
             </Button>
             <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold">
-              <Link to="/track"><Ship className="h-4 w-4 mr-1.5" /> Track My Shipment</Link>
+              <a href={buildWhatsAppUrl("trackShipment")} target="_blank" rel="noopener noreferrer">
+                <Ship className="h-4 w-4 mr-1.5" /> Track My Shipment
+              </a>
             </Button>
             <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
               <Link to="/trade-desk">Start with Canta Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
