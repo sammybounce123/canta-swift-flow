@@ -142,35 +142,48 @@ function KPI({ label, value, sub, icon: Icon, tone }: { label: string; value: st
   );
 }
 
-// ---------- Create Card Wizard (7 steps) ----------
+// ---------- Create Card Wizard (9 steps) ----------
 function CreateCardDialog() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [purpose, setPurpose] = useState<Purpose | null>(null);
+  const [workspace, setWorkspace] = useState("Enterprise Treasury");
+  const [who, setWho] = useState("Me");
   const [holder, setHolder] = useState("");
-  const [limit, setLimit] = useState("5000");
   const [wallet, setWallet] = useState("USD Wallet");
-  const [approval, setApproval] = useState("none");
-  const [receipts, setReceipts] = useState("optional");
-  const TOTAL = 7;
+  const [dailyLimit, setDailyLimit] = useState("1000");
+  const [monthlyLimit, setMonthlyLimit] = useState("5000");
+  const [totalLimit, setTotalLimit] = useState("20000");
+  const [singleTxn, setSingleTxn] = useState("2000");
+  const [approvalAbove, setApprovalAbove] = useState("500");
+  const [approver, setApprover] = useState("Finance Admin");
+  const [approvalFlow, setApprovalFlow] = useState("single");
+  const [receipts, setReceipts] = useState("over-100");
+  const [receiptsAbove, setReceiptsAbove] = useState("100");
+  const [category, setCategory] = useState("Staff Expense");
+  const TOTAL = 9;
 
   const reset = () => {
-    setStep(1); setPurpose(null); setHolder("");
-    setLimit("5000"); setWallet("USD Wallet"); setApproval("none"); setReceipts("optional");
+    setStep(1); setPurpose(null); setWorkspace("Enterprise Treasury"); setWho("Me"); setHolder("");
+    setWallet("USD Wallet"); setDailyLimit("1000"); setMonthlyLimit("5000"); setTotalLimit("20000");
+    setSingleTxn("2000"); setApprovalAbove("500"); setApprover("Finance Admin"); setApprovalFlow("single");
+    setReceipts("over-100"); setReceiptsAbove("100"); setCategory("Staff Expense");
   };
 
   const stepTitles = [
-    "What is the card for?",
-    "Who will use it?",
-    "Monthly limit",
-    "Funding wallet",
-    "Approval rules",
-    "Receipt requirement",
+    "What is this card for?",
+    "Which workspace should this card be linked to?",
+    "Who will use this card?",
+    "Which wallet funds this card?",
+    "What spending limit should apply?",
+    "Does spending need approval?",
+    "Are receipts required?",
+    "What category should this card belong to?",
     "Review & create",
   ];
 
   function finish() {
-    toast.success(`${purpose ?? "Business"} card created for ${holder || "you"}`);
+    toast.success(`${purpose ?? "Business"} card created — linked to ${workspace}`);
     setOpen(false); reset();
   }
 
@@ -179,7 +192,7 @@ function CreateCardDialog() {
       <DialogTrigger asChild>
         <Button className="bg-primary"><Plus className="h-4 w-4 mr-1.5" /> Create Card</Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{stepTitles[step - 1]}</DialogTitle>
           <DialogDescription>Step {step} of {TOTAL} · Create Card Wizard</DialogDescription>
@@ -189,7 +202,7 @@ function CreateCardDialog() {
           <div className="h-full bg-primary transition-all" style={{ width: `${(step / TOTAL) * 100}%` }} />
         </div>
 
-        <div className="min-h-[220px]">
+        <div className="min-h-[240px]">
           {step === 1 && (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {PURPOSES.map((p) => (
@@ -205,20 +218,44 @@ function CreateCardDialog() {
               ))}
             </div>
           )}
+
           {step === 2 && (
             <div className="space-y-3">
-              <Label>Cardholder name</Label>
-              <Input value={holder} onChange={(e) => setHolder(e.target.value)} placeholder="e.g. James Okafor" />
-              <div className="text-xs text-muted-foreground">For team cards, this becomes the assigned user. For business cards, this prints on the card.</div>
+              <Label>Link this card to</Label>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                {WORKSPACES.map((w) => (
+                  <button
+                    key={w}
+                    onClick={() => setWorkspace(w)}
+                    className={`p-3 rounded-lg border text-xs text-left transition ${workspace === w ? "border-accent bg-accent/5 font-semibold" : "border-border hover:border-accent"}`}
+                  >{w}</button>
+                ))}
+              </div>
+              <div className="text-xs text-muted-foreground">Cards are a shared capability — they can be created from any workspace.</div>
             </div>
           )}
+
           {step === 3 && (
             <div className="space-y-3">
-              <Label>Monthly spend limit (USD)</Label>
-              <Input type="number" value={limit} onChange={(e) => setLimit(e.target.value)} placeholder="5000" />
-              <div className="text-xs text-muted-foreground">You can change this at any time. Hard-stop triggers at the limit.</div>
+              <Label>Who will use this card?</Label>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                {WHO_OPTIONS.map((o) => (
+                  <button
+                    key={o}
+                    onClick={() => setWho(o)}
+                    className={`p-3 rounded-lg border text-xs text-left transition ${who === o ? "border-accent bg-accent/5 font-semibold" : "border-border hover:border-accent"}`}
+                  >{o}</button>
+                ))}
+              </div>
+              {who !== "Me" && (
+                <div>
+                  <Label className="mt-2">Name / identifier</Label>
+                  <Input value={holder} onChange={(e) => setHolder(e.target.value)} placeholder="e.g. James Okafor / Sales Team" />
+                </div>
+              )}
             </div>
           )}
+
           {step === 4 && (
             <div className="space-y-3">
               <Label>Funding wallet</Label>
@@ -229,50 +266,100 @@ function CreateCardDialog() {
                   <SelectItem value="GBP Wallet">GBP Wallet</SelectItem>
                   <SelectItem value="EUR Wallet">EUR Wallet</SelectItem>
                   <SelectItem value="NGN Wallet">NGN Wallet (auto FX)</SelectItem>
+                  <SelectItem value="Multi-currency">Multi-currency Wallet</SelectItem>
                 </SelectContent>
               </Select>
               <div className="text-xs text-muted-foreground">Card debits the chosen wallet — auto FX runs if the merchant currency differs.</div>
             </div>
           )}
+
           {step === 5 && (
-            <div className="space-y-3">
-              <Label>Approval rules</Label>
-              <Select value={approval} onValueChange={setApproval}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">No approval needed</SelectItem>
-                  <SelectItem value="over-500">Approval required over $500</SelectItem>
-                  <SelectItem value="over-2000">Approval required over $2,000</SelectItem>
-                  <SelectItem value="every">Approval required for every transaction</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="text-xs text-muted-foreground">Approvers can act in-app or directly from WhatsApp.</div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><Label>Daily limit (USD)</Label><Input type="number" value={dailyLimit} onChange={(e) => setDailyLimit(e.target.value)} /></div>
+              <div><Label>Monthly limit (USD)</Label><Input type="number" value={monthlyLimit} onChange={(e) => setMonthlyLimit(e.target.value)} /></div>
+              <div><Label>Total card limit (USD)</Label><Input type="number" value={totalLimit} onChange={(e) => setTotalLimit(e.target.value)} /></div>
+              <div><Label>Single transaction limit (USD)</Label><Input type="number" value={singleTxn} onChange={(e) => setSingleTxn(e.target.value)} /></div>
             </div>
           )}
+
           {step === 6 && (
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2">
+                <Label>Approval workflow</Label>
+                <Select value={approvalFlow} onValueChange={setApprovalFlow}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">No approvals needed</SelectItem>
+                    <SelectItem value="single">Single approver</SelectItem>
+                    <SelectItem value="chain">Manager → Finance Admin</SelectItem>
+                    <SelectItem value="dual">Dual approval (Finance + Compliance)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div><Label>Approval required above (USD)</Label><Input type="number" value={approvalAbove} onChange={(e) => setApprovalAbove(e.target.value)} /></div>
+              <div>
+                <Label>Approver</Label>
+                <Select value={approver} onValueChange={setApprover}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {["Finance Admin", "Treasury Manager", "Compliance Admin", "Owner", "Operations Admin"].map((r) => (
+                      <SelectItem key={r} value={r}>{r}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+
+          {step === 7 && (
             <div className="space-y-3">
               <Label>Receipt requirement</Label>
               <Select value={receipts} onValueChange={setReceipts}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="optional">Optional</SelectItem>
-                  <SelectItem value="over-100">Required over $100</SelectItem>
-                  <SelectItem value="all">Required for every transaction</SelectItem>
+                  <SelectItem value="always">Always required</SelectItem>
+                  <SelectItem value="over-100">Required above amount</SelectItem>
+                  <SelectItem value="none">Not required</SelectItem>
                 </SelectContent>
               </Select>
+              {receipts === "over-100" && (
+                <div>
+                  <Label>Threshold (USD)</Label>
+                  <Input type="number" value={receiptsAbove} onChange={(e) => setReceiptsAbove(e.target.value)} />
+                </div>
+              )}
               <div className="text-xs text-muted-foreground">Missing receipts are auto-chased on WhatsApp.</div>
             </div>
           )}
-          {step === 7 && (
+
+          {step === 8 && (
+            <div className="space-y-3">
+              <Label>Category</Label>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {CATEGORIES.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => setCategory(c)}
+                    className={`p-2.5 rounded-lg border text-xs transition ${category === c ? "border-accent bg-accent/5 font-semibold" : "border-border hover:border-accent"}`}
+                  >{c}</button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {step === 9 && (
             <div className="p-4 rounded-lg bg-secondary/40 border border-border text-sm space-y-2">
               <div className="font-semibold">Review</div>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div><span className="text-muted-foreground">Purpose:</span> {purpose ?? "—"}</div>
-                <div><span className="text-muted-foreground">User:</span> {holder || "—"}</div>
-                <div><span className="text-muted-foreground">Monthly limit:</span> ${limit}</div>
-                <div><span className="text-muted-foreground">Funding wallet:</span> {wallet}</div>
-                <div><span className="text-muted-foreground">Approval:</span> {approval}</div>
-                <div><span className="text-muted-foreground">Receipts:</span> {receipts}</div>
+                <div><span className="text-muted-foreground">Workspace:</span> {workspace}</div>
+                <div><span className="text-muted-foreground">User:</span> {who === "Me" ? "Me" : holder || who}</div>
+                <div><span className="text-muted-foreground">Wallet:</span> {wallet}</div>
+                <div><span className="text-muted-foreground">Daily / Monthly:</span> ${dailyLimit} / ${monthlyLimit}</div>
+                <div><span className="text-muted-foreground">Total / per txn:</span> ${totalLimit} / ${singleTxn}</div>
+                <div><span className="text-muted-foreground">Approval:</span> {approvalFlow} (≥ ${approvalAbove}, {approver})</div>
+                <div><span className="text-muted-foreground">Receipts:</span> {receipts === "over-100" ? `over $${receiptsAbove}` : receipts}</div>
+                <div><span className="text-muted-foreground">Category:</span> {category}</div>
               </div>
             </div>
           )}
@@ -286,7 +373,7 @@ function CreateCardDialog() {
           )}
           <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
           {step < TOTAL && step > 1 && (
-            <Button onClick={() => setStep(step + 1)} disabled={step === 2 && !holder}>Next</Button>
+            <Button onClick={() => setStep(step + 1)} disabled={step === 3 && who !== "Me" && !holder}>Next</Button>
           )}
           {step === TOTAL && <Button onClick={finish}>Create card</Button>}
         </DialogFooter>
