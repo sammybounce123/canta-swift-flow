@@ -142,6 +142,21 @@ const PERMISSIONS = [
     ],
   },
   {
+    group: "Importer",
+    items: [
+      "create trade file", "edit trade file", "view trade file",
+      "upload documents", "delete documents",
+      "create shipment", "edit shipment", "view shipment",
+      "manage suppliers", "request supplier verification",
+      "view landed cost", "edit landed cost assumptions",
+      "approve supplier payment", "approve escrow release",
+      "create importer card", "assign card to staff",
+      "link card to trade file", "link card to shipment",
+      "view card spend", "export landed cost report",
+      "send WhatsApp update", "manage importer sub-users",
+    ],
+  },
+  {
     group: "Reporting & Compliance",
     items: ["export reports", "view compliance pack"],
   },
