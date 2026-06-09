@@ -89,13 +89,23 @@ function FxTicker() {
   );
 }
 
+const MODE_TO_WORKSPACE: Record<string, "enterprise_treasury" | "importer_portal" | "freight_workspace" | "supplier_dashboard" | "global_collections" | "canta_admin"> = {
+  "Enterprise Treasury": "enterprise_treasury",
+  "Importer": "importer_portal",
+  "Freight Forwarder": "freight_workspace",
+  "Supplier": "supplier_dashboard",
+  "Global Merchant": "global_collections",
+  "Canta Admin": "canta_admin",
+};
+
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   const { role, can, profile } = useRole();
+  const { mode } = useMode();
   const userProfile = loadProfile();
-  const allowed = userProfile
-    ? getAllowedRoutes(userProfile.workspace_type, userProfile.feature_flags ?? defaultFlagsFor(userProfile.workspace_type))
-    : null;
-  const visibleNav = nav.filter((n) => can(n.perm) && (!allowed || allowed.has(n.to) || n.to === "/admin" && userProfile?.workspace_type === "canta_admin"));
+  const workspace = MODE_TO_WORKSPACE[mode] ?? userProfile?.workspace_type ?? "enterprise_treasury";
+  const flags = userProfile?.feature_flags ?? defaultFlagsFor(workspace);
+  const allowed = getAllowedRoutes(workspace, flags);
+  const visibleNav = nav.filter((n) => can(n.perm) && (allowed.has(n.to) || (n.to === "/admin" && workspace === "canta_admin")));
   const groups = Array.from(new Set(visibleNav.map((n) => n.group ?? "Other")));
   return (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
