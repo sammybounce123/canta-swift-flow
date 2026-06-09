@@ -124,6 +124,39 @@ function Treasury() {
           { id: "T6", label: "Sales Per-Diem",     holder: "Sales",     last4: "2204", status: "Active", monthlySpend: 2240,  limit: 6000,  category: "Staff" },
         ]}
       />
+
+      <Card className="p-5 shadow-card">
+        <div className="text-sm font-semibold">Spend by staff</div>
+        <div className="text-xs text-muted-foreground mb-4">Top cardholders this month · USD</div>
+        <div className="space-y-3">
+          {[
+            { name: "Tunde Bakare",   role: "Procurement Officer", amount: 12_400, limit: 25_000 },
+            { name: "Marketing Team", role: "Ad Spend",            amount: 5_150,  limit: 10_000 },
+            { name: "Ops Team",       role: "Project Atlantic",    amount: 6_800,  limit: 15_000 },
+            { name: "Adaeze Okonkwo", role: "CFO",                 amount: 3_850,  limit: 8_000 },
+            { name: "Sales Team",     role: "Per-Diem",            amount: 2_240,  limit: 6_000 },
+            { name: "Femi Adeyemi",   role: "Lagos HQ Office",     amount: 1_280,  limit: 5_000 },
+          ].map((s) => {
+            const pct = Math.round((s.amount / s.limit) * 100);
+            return (
+              <div key={s.name}>
+                <div className="flex items-center justify-between text-xs mb-1">
+                  <div>
+                    <span className="font-medium">{s.name}</span>
+                    <span className="text-muted-foreground"> · {s.role}</span>
+                  </div>
+                  <span className="tabular-nums text-muted-foreground">
+                    ${s.amount.toLocaleString()} / ${s.limit.toLocaleString()} ({pct}%)
+                  </span>
+                </div>
+                <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
+                  <div className={`h-full ${pct > 85 ? "bg-destructive" : pct > 60 ? "bg-warning" : "bg-success"}`} style={{ width: `${pct}%` }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
     </div>
   );
 }
