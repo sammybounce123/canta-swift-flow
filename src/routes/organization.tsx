@@ -82,7 +82,11 @@ const ROLE_GROUPS = [
   },
   {
     label: "Importer",
-    roles: ["Importer Owner", "Procurement Officer", "Logistics Manager", "Finance Officer", "Sales Manager"],
+    roles: [
+      "Importer Owner", "Procurement Officer", "Logistics Manager",
+      "Finance Officer", "Accountant", "Sales Manager",
+      "Staff Cardholder", "Viewer",
+    ],
   },
   {
     label: "Freight",
