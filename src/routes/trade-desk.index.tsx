@@ -7,6 +7,7 @@ import { tradeFiles, fmtMoney } from "@/lib/mock";
 import { FileText, Plus, Search, ArrowRight, Ship, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 
 export const Route = createFileRoute("/trade-desk/")({
   head: () => ({ meta: [{ title: "Trade Desk — Canta" }] }),
