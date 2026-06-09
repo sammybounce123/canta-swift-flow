@@ -97,6 +97,15 @@ const ROLE_GROUPS = [
     ],
   },
   {
+    label: "Global Merchant / University",
+    roles: [
+      "Merchant Owner", "Merchant Admin", "Collections Manager",
+      "Reconciliation Officer", "Settlement Approver",
+      "Support Agent", "Regional Staff",
+      "Finance Officer", "Staff Cardholder", "Viewer",
+    ],
+  },
+  {
     label: "Cards",
     roles: ["Card Admin", "Cardholder", "Card Approver", "Spend Auditor"],
   },
