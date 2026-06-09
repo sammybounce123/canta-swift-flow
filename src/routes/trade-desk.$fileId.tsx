@@ -71,6 +71,8 @@ function TradeFileDetail() {
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
           <TabsTrigger value="landed">Landed Cost</TabsTrigger>
+          <TabsTrigger value="escrow">Escrow</TabsTrigger>
+          <TabsTrigger value="whatsapp">WhatsApp History</TabsTrigger>
           <TabsTrigger value="activity">Activity Log</TabsTrigger>
         </TabsList>
 
