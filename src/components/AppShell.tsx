@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Wallet, ArrowLeftRight, Receipt, Users, Building2,
   Sparkles, Shield, Settings, Bell, Search, ChevronDown, TrendingUp, TrendingDown,
   UserCog, Check, Menu, FileText, Ship, Truck, Factory, Globe, CreditCard,
-  Brain, ShieldCheck, Plug, MessageCircle,
+  Brain, ShieldCheck, Plug, MessageCircle, CheckSquare,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRole, ALL_ROLES, type Permission, type Role } from "@/components/RoleProvider";
@@ -38,6 +38,7 @@ const nav: NavItem[] = [
   { to: "/whatsapp", label: "WhatsApp Desk", icon: MessageCircle, perm: "view_whatsapp", group: "Intelligence" },
 
   { to: "/compliance", label: "Compliance Pack", icon: ShieldCheck, perm: "view_compliance", group: "Workspace" },
+  { to: "/approvals", label: "Approvals", icon: CheckSquare, perm: "view_team", group: "Workspace" },
   { to: "/team", label: "Team & Roles", icon: Shield, perm: "view_team", group: "Workspace" },
   { to: "/integrations", label: "Integrations", icon: Plug, perm: "view_integrations", group: "Workspace" },
   { to: "/settings", label: "Settings", icon: Settings, perm: "view_settings", group: "Workspace" },
