@@ -31,6 +31,8 @@ import { Route as BeneficiariesRouteImport } from './routes/beneficiaries'
 import { Route as AiInsightsRouteImport } from './routes/ai-insights'
 import { Route as AiGrowthRouteImport } from './routes/ai-growth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TradeDeskIndexRouteImport } from './routes/trade-desk.index'
+import { Route as TradeDeskFileIdRouteImport } from './routes/trade-desk.$fileId'
 
 const WhatsappRoute = WhatsappRouteImport.update({
   id: '/whatsapp',
@@ -142,6 +144,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TradeDeskIndexRoute = TradeDeskIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TradeDeskRoute,
+} as any)
+const TradeDeskFileIdRoute = TradeDeskFileIdRouteImport.update({
+  id: '/$fileId',
+  path: '/$fileId',
+  getParentRoute: () => TradeDeskRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -161,11 +173,13 @@ export interface FileRoutesByFullPath {
   '/shipments': typeof ShipmentsRoute
   '/suppliers': typeof SuppliersRoute
   '/team': typeof TeamRoute
-  '/trade-desk': typeof TradeDeskRoute
+  '/trade-desk': typeof TradeDeskRouteWithChildren
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRoute
   '/wallets': typeof WalletsRoute
   '/whatsapp': typeof WhatsappRoute
+  '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/trade-desk/': typeof TradeDeskIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -185,11 +199,12 @@ export interface FileRoutesByTo {
   '/shipments': typeof ShipmentsRoute
   '/suppliers': typeof SuppliersRoute
   '/team': typeof TeamRoute
-  '/trade-desk': typeof TradeDeskRoute
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRoute
   '/wallets': typeof WalletsRoute
   '/whatsapp': typeof WhatsappRoute
+  '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/trade-desk': typeof TradeDeskIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -210,11 +225,13 @@ export interface FileRoutesById {
   '/shipments': typeof ShipmentsRoute
   '/suppliers': typeof SuppliersRoute
   '/team': typeof TeamRoute
-  '/trade-desk': typeof TradeDeskRoute
+  '/trade-desk': typeof TradeDeskRouteWithChildren
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRoute
   '/wallets': typeof WalletsRoute
   '/whatsapp': typeof WhatsappRoute
+  '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/trade-desk/': typeof TradeDeskIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -241,6 +258,8 @@ export interface FileRouteTypes {
     | '/treasury'
     | '/wallets'
     | '/whatsapp'
+    | '/trade-desk/$fileId'
+    | '/trade-desk/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -260,11 +279,12 @@ export interface FileRouteTypes {
     | '/shipments'
     | '/suppliers'
     | '/team'
-    | '/trade-desk'
     | '/transactions'
     | '/treasury'
     | '/wallets'
     | '/whatsapp'
+    | '/trade-desk/$fileId'
+    | '/trade-desk'
   id:
     | '__root__'
     | '/'
@@ -289,6 +309,8 @@ export interface FileRouteTypes {
     | '/treasury'
     | '/wallets'
     | '/whatsapp'
+    | '/trade-desk/$fileId'
+    | '/trade-desk/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -309,7 +331,7 @@ export interface RootRouteChildren {
   ShipmentsRoute: typeof ShipmentsRoute
   SuppliersRoute: typeof SuppliersRoute
   TeamRoute: typeof TeamRoute
-  TradeDeskRoute: typeof TradeDeskRoute
+  TradeDeskRoute: typeof TradeDeskRouteWithChildren
   TransactionsRoute: typeof TransactionsRoute
   TreasuryRoute: typeof TreasuryRoute
   WalletsRoute: typeof WalletsRoute
@@ -472,8 +494,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/trade-desk/': {
+      id: '/trade-desk/'
+      path: '/'
+      fullPath: '/trade-desk/'
+      preLoaderRoute: typeof TradeDeskIndexRouteImport
+      parentRoute: typeof TradeDeskRoute
+    }
+    '/trade-desk/$fileId': {
+      id: '/trade-desk/$fileId'
+      path: '/$fileId'
+      fullPath: '/trade-desk/$fileId'
+      preLoaderRoute: typeof TradeDeskFileIdRouteImport
+      parentRoute: typeof TradeDeskRoute
+    }
   }
 }
+
+interface TradeDeskRouteChildren {
+  TradeDeskFileIdRoute: typeof TradeDeskFileIdRoute
+  TradeDeskIndexRoute: typeof TradeDeskIndexRoute
+}
+
+const TradeDeskRouteChildren: TradeDeskRouteChildren = {
+  TradeDeskFileIdRoute: TradeDeskFileIdRoute,
+  TradeDeskIndexRoute: TradeDeskIndexRoute,
+}
+
+const TradeDeskRouteWithChildren = TradeDeskRoute._addFileChildren(
+  TradeDeskRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -493,7 +543,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShipmentsRoute: ShipmentsRoute,
   SuppliersRoute: SuppliersRoute,
   TeamRoute: TeamRoute,
-  TradeDeskRoute: TradeDeskRoute,
+  TradeDeskRoute: TradeDeskRouteWithChildren,
   TransactionsRoute: TransactionsRoute,
   TreasuryRoute: TreasuryRoute,
   WalletsRoute: WalletsRoute,
