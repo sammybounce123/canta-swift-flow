@@ -241,6 +241,15 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   "Warehouse Staff": ["view dashboard", "update shipment status", "manage warehouse status", "upload documents"],
   "Clearing Agent": ["view dashboard", "update shipment status", "manage clearing status", "upload documents", "send WhatsApp update"],
   "Customer Support": ["view dashboard", "view shipment", "send WhatsApp update", "view outstanding invoices", "create freight invoice"],
+
+  // Global Merchant / University role templates
+  "Merchant Owner": PERMISSIONS.flatMap((g) => g.items),
+  "Merchant Admin": PERMISSIONS.flatMap((g) => g.items).filter((p) => p !== "manage API keys"),
+  "Collections Manager": ["view dashboard", "create payment link", "create invoice", "view payers", "manage payer references", "view collections", "view settlement reports", "export collection reports"],
+  "Reconciliation Officer": ["view dashboard", "view collections", "manage reconciliation", "view settlement reports", "export collection reports", "view audit trail"],
+  "Settlement Approver": ["view dashboard", "view collections", "approve settlement", "view settlement reports", "view audit trail"],
+  "Support Agent": ["view dashboard", "view payers", "view collections", "send WhatsApp update"],
+  "Regional Staff": ["view dashboard", "view payers", "view masked card details only", "view staff spend"],
 };
 
 // ---------- Page ----------
