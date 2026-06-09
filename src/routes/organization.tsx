@@ -319,6 +319,18 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   "Parent / Sponsor": ["view dashboard", "fund card", "freeze card", "view transactions", "set budget", "approve top-up", "view spend reports"],
   "Student Cardholder": ["view dashboard", "view masked card details only", "view transactions", "upload receipt", "request top-up"],
   "Business Cardholder": ["view dashboard", "view masked card details only", "view transactions", "upload receipt", "request top-up", "view spend reports"],
+
+  // Canta Internal role templates
+  "Canta Super Admin": PERMISSIONS.flatMap((g) => g.items),
+  "Canta Trade Officer": ["view dashboard", "view all customers", "create trade file for customer", "edit trade file", "upload documents", "view trade file", "send WhatsApp update", "review supplier verification", "view audit trail"],
+  "Canta Compliance Officer": ["view dashboard", "view all customers", "approve KYB", "flag transaction", "view compliance pack", "view compliance reports", "view audit trail", "export reports"],
+  "Canta Treasury Officer": ["view dashboard", "view all customers", "approve settlement", "process payout", "approve FX conversion", "view wallet balances", "view audit trail", "export transaction reports"],
+  "Canta Sales Agent": ["view dashboard", "view all customers", "assign customer to sales agent", "review WhatsApp conversations", "create trade file for customer", "send WhatsApp update"],
+  "Canta Support Agent": ["view dashboard", "view all customers", "review WhatsApp conversations", "impersonate customer view for support", "assign support tickets", "send WhatsApp update"],
+  "Canta Card Operations": ["view dashboard", "view all customers", "manage card operations", "freeze card", "view card details", "view card spend", "approve card requests"],
+  "Canta Collections Officer": ["view dashboard", "view all customers", "view collections", "approve settlement", "manage reconciliation", "view settlement reports", "export collection reports"],
+  "Canta Freight Operations": ["view dashboard", "view all customers", "update shipment status", "manage clearing status", "manage warehouse status", "view route reports", "send WhatsApp update"],
+  "Canta Auditor": ["view dashboard", "view all customers", "view audit trail", "view compliance pack", "view compliance reports", "export reports", "export transaction reports"],
 };
 
 // ---------- Page ----------
