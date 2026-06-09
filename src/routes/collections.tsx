@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { collections, fmtMoney } from "@/lib/mock";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
+import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import {
   Globe, Plus, Link as LinkIcon, GraduationCap, Home, Stethoscope, Plane, ShoppingBag, Receipt,
   Banknote, TrendingUp, AlertTriangle, Users, FileText, ArrowRight, Copy, Download,
