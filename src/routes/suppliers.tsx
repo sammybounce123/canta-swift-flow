@@ -12,6 +12,7 @@ import { fmtMoney } from "@/lib/mock";
 import {
   Users, FileText, ShieldCheck, Wallet, CheckCircle2, AlertTriangle, Plus, Copy,
   Lock, Banknote, Calendar, Download, Globe, Award, Receipt, Upload, Building2,
+  MessageCircle, Clock, TrendingUp,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -140,6 +141,40 @@ function SupplierDashboard() {
           <NewInvoiceDialog onClose={() => setCreateOpen(false)} />
         </Dialog>
       </div>
+
+      {/* Foreign Supplier Trust Pack (especially for Chinese exporters) */}
+      <Card className="p-5 shadow-card border-accent/30 bg-gradient-to-br from-accent/5 to-primary/5">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <div className="text-sm font-semibold flex items-center gap-2">
+              <Globe className="h-4 w-4 text-accent" /> Foreign Supplier Trust Pack
+            </div>
+            <div className="text-xs text-muted-foreground mt-1">Built for exporters in China, Turkey, UAE & beyond — sell to African buyers with confidence.</div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" onClick={() => toast.success("Language: 中文")}>中文</Button>
+            <Button size="sm" variant="outline" onClick={() => toast.success("Language: English")}>EN</Button>
+          </div>
+        </div>
+        <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          {[
+            { i: MessageCircle, l: "WeChat support", v: "@CantaSupportCN", tone: "bg-success/10 text-success" },
+            { i: Users, l: "China rep on the ground", v: "Shenzhen · Guangzhou", tone: "bg-primary/10 text-primary" },
+            { i: Clock, l: "Settlement SLA", v: "T+2 to RMB account", tone: "bg-accent/15 text-accent" },
+            { i: ShieldCheck, l: "Verified African Buyer", v: "KYB + business licence", tone: "bg-success/10 text-success" },
+            { i: TrendingUp, l: "Buyer reliability score", v: "Average 87 / 100", tone: "bg-primary/10 text-primary" },
+            { i: Award, l: "Funds Secured certificate", v: "Issued per invoice", tone: "bg-warning/10 text-warning" },
+          ].map((b) => (
+            <div key={b.l} className="p-3 rounded-xl bg-card border border-border">
+              <div className={`h-8 w-8 rounded-lg grid place-items-center ${b.tone}`}>
+                <b.i className="h-4 w-4" />
+              </div>
+              <div className="mt-2 text-xs font-semibold">{b.l}</div>
+              <div className="text-[11px] text-muted-foreground mt-0.5">{b.v}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
 
       {/* Trust signals strip */}
       <div className="flex flex-wrap gap-2">

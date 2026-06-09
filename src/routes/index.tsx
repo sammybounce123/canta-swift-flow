@@ -135,8 +135,18 @@ function Landing() {
             Canta helps African businesses manage FX, trade shipments, supplier payments, local
             collections, freight workflows, global cards, and compliance from one operating system.
           </p>
+          <p className="mt-4 max-w-3xl text-base text-primary-foreground/90 font-medium">
+            Canta helps African businesses pay suppliers, track shipments, collect locally, and
+            spend globally — from one trusted operating system.
+          </p>
           <div className="mt-10 flex flex-wrap gap-3">
+            <Button asChild size="lg" className="bg-[#25D366] text-white hover:bg-[#1FB855] h-12 px-6 font-semibold">
+              <Link to="/whatsapp"><MessageCircle className="h-4 w-4 mr-1.5" /> Send Invoice on WhatsApp</Link>
+            </Button>
             <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold">
+              <Link to="/track"><Ship className="h-4 w-4 mr-1.5" /> Track My Shipment</Link>
+            </Button>
+            <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
               <Link to="/trade-desk">Start with Canta Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
             </Button>
             <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">

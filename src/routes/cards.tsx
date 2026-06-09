@@ -128,13 +128,37 @@ function KPI({ label, value, sub, icon: Icon, tone }: { label: string; value: st
   );
 }
 
-// ---------- Create Card Dialog (purpose first) ----------
+// ---------- Create Card Wizard (7 steps) ----------
 function CreateCardDialog() {
   const [open, setOpen] = useState(false);
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState(1);
   const [purpose, setPurpose] = useState<Purpose | null>(null);
+  const [holder, setHolder] = useState("");
+  const [limit, setLimit] = useState("5000");
+  const [wallet, setWallet] = useState("USD Wallet");
+  const [approval, setApproval] = useState("none");
+  const [receipts, setReceipts] = useState("optional");
+  const TOTAL = 7;
 
-  const reset = () => { setStep(1); setPurpose(null); };
+  const reset = () => {
+    setStep(1); setPurpose(null); setHolder("");
+    setLimit("5000"); setWallet("USD Wallet"); setApproval("none"); setReceipts("optional");
+  };
+
+  const stepTitles = [
+    "What is the card for?",
+    "Who will use it?",
+    "Monthly limit",
+    "Funding wallet",
+    "Approval rules",
+    "Receipt requirement",
+    "Review & create",
+  ];
+
+  function finish() {
+    toast.success(`${purpose ?? "Business"} card created for ${holder || "you"}`);
+    setOpen(false); reset();
+  }
 
   return (
     <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) reset(); }}>
@@ -143,49 +167,120 @@ function CreateCardDialog() {
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{step === 1 ? "What do you need this card for?" : `New ${purpose} card`}</DialogTitle>
-          <DialogDescription>
-            {step === 1
-              ? "We tailor controls, limits, and reporting to your purpose — not a generic dollar card."
-              : "Set up controls and limits. You can change these later."}
-          </DialogDescription>
+          <DialogTitle>{stepTitles[step - 1]}</DialogTitle>
+          <DialogDescription>Step {step} of {TOTAL} · Create Card Wizard</DialogDescription>
         </DialogHeader>
 
-        {step === 1 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {PURPOSES.map((p) => (
-              <button
-                key={p.l}
-                onClick={() => { setPurpose(p.l); setStep(2); }}
-                className="text-left p-4 rounded-xl border border-border hover:border-accent hover:shadow-card transition"
-              >
-                <div className={`h-9 w-9 rounded-lg grid place-items-center ${p.tone}`}><p.i className="h-4 w-4" /></div>
-                <div className="text-sm font-semibold mt-2">{p.l}</div>
-                <div className="text-[11px] text-muted-foreground">{p.d}</div>
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="h-1 w-full bg-secondary rounded-full overflow-hidden">
+          <div className="h-full bg-primary transition-all" style={{ width: `${(step / TOTAL) * 100}%` }} />
+        </div>
 
-        {step === 2 && purpose && <CardSetupFields purpose={purpose} />}
+        <div className="min-h-[220px]">
+          {step === 1 && (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {PURPOSES.map((p) => (
+                <button
+                  key={p.l}
+                  onClick={() => { setPurpose(p.l); setStep(2); }}
+                  className={`text-left p-4 rounded-xl border transition ${purpose === p.l ? "border-accent bg-accent/5" : "border-border hover:border-accent hover:shadow-card"}`}
+                >
+                  <div className={`h-9 w-9 rounded-lg grid place-items-center ${p.tone}`}><p.i className="h-4 w-4" /></div>
+                  <div className="text-sm font-semibold mt-2">{p.l}</div>
+                  <div className="text-[11px] text-muted-foreground">{p.d}</div>
+                </button>
+              ))}
+            </div>
+          )}
+          {step === 2 && (
+            <div className="space-y-3">
+              <Label>Cardholder name</Label>
+              <Input value={holder} onChange={(e) => setHolder(e.target.value)} placeholder="e.g. James Okafor" />
+              <div className="text-xs text-muted-foreground">For team cards, this becomes the assigned user. For business cards, this prints on the card.</div>
+            </div>
+          )}
+          {step === 3 && (
+            <div className="space-y-3">
+              <Label>Monthly spend limit (USD)</Label>
+              <Input type="number" value={limit} onChange={(e) => setLimit(e.target.value)} placeholder="5000" />
+              <div className="text-xs text-muted-foreground">You can change this at any time. Hard-stop triggers at the limit.</div>
+            </div>
+          )}
+          {step === 4 && (
+            <div className="space-y-3">
+              <Label>Funding wallet</Label>
+              <Select value={wallet} onValueChange={setWallet}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="USD Wallet">USD Wallet</SelectItem>
+                  <SelectItem value="GBP Wallet">GBP Wallet</SelectItem>
+                  <SelectItem value="EUR Wallet">EUR Wallet</SelectItem>
+                  <SelectItem value="NGN Wallet">NGN Wallet (auto FX)</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="text-xs text-muted-foreground">Card debits the chosen wallet — auto FX runs if the merchant currency differs.</div>
+            </div>
+          )}
+          {step === 5 && (
+            <div className="space-y-3">
+              <Label>Approval rules</Label>
+              <Select value={approval} onValueChange={setApproval}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No approval needed</SelectItem>
+                  <SelectItem value="over-500">Approval required over $500</SelectItem>
+                  <SelectItem value="over-2000">Approval required over $2,000</SelectItem>
+                  <SelectItem value="every">Approval required for every transaction</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="text-xs text-muted-foreground">Approvers can act in-app or directly from WhatsApp.</div>
+            </div>
+          )}
+          {step === 6 && (
+            <div className="space-y-3">
+              <Label>Receipt requirement</Label>
+              <Select value={receipts} onValueChange={setReceipts}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="optional">Optional</SelectItem>
+                  <SelectItem value="over-100">Required over $100</SelectItem>
+                  <SelectItem value="all">Required for every transaction</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="text-xs text-muted-foreground">Missing receipts are auto-chased on WhatsApp.</div>
+            </div>
+          )}
+          {step === 7 && (
+            <div className="p-4 rounded-lg bg-secondary/40 border border-border text-sm space-y-2">
+              <div className="font-semibold">Review</div>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div><span className="text-muted-foreground">Purpose:</span> {purpose ?? "—"}</div>
+                <div><span className="text-muted-foreground">User:</span> {holder || "—"}</div>
+                <div><span className="text-muted-foreground">Monthly limit:</span> ${limit}</div>
+                <div><span className="text-muted-foreground">Funding wallet:</span> {wallet}</div>
+                <div><span className="text-muted-foreground">Approval:</span> {approval}</div>
+                <div><span className="text-muted-foreground">Receipts:</span> {receipts}</div>
+              </div>
+            </div>
+          )}
+        </div>
 
         <DialogFooter>
-          {step === 2 && (
-            <Button variant="ghost" onClick={() => setStep(1)}>
-              <ArrowLeft className="h-3.5 w-3.5 mr-1.5" /> Change purpose
+          {step > 1 && (
+            <Button variant="ghost" onClick={() => setStep(step - 1)}>
+              <ArrowLeft className="h-3.5 w-3.5 mr-1.5" /> Back
             </Button>
           )}
           <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-          {step === 2 && (
-            <Button onClick={() => { setOpen(false); toast.success(`${purpose} card created`); reset(); }}>
-              Create card
-            </Button>
+          {step < TOTAL && step > 1 && (
+            <Button onClick={() => setStep(step + 1)} disabled={step === 2 && !holder}>Next</Button>
           )}
+          {step === TOTAL && <Button onClick={finish}>Create card</Button>}
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
+
 
 function CardSetupFields({ purpose }: { purpose: Purpose }) {
   const common = (
