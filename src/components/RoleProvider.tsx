@@ -12,6 +12,17 @@ export type Permission =
   | "view_ai"
   | "view_team"
   | "view_settings"
+  | "view_trade"
+  | "view_shipments"
+  | "view_freight"
+  | "view_importer"
+  | "view_suppliers"
+  | "view_collections"
+  | "view_cards"
+  | "view_ai_growth"
+  | "view_compliance"
+  | "view_integrations"
+  | "view_whatsapp"
   | "initiate_tx"
   | "approve_tx"
   | "manage_beneficiaries"
@@ -19,26 +30,35 @@ export type Permission =
   | "export_reports"
   | "view_balances";
 
+const PLATFORM: Permission[] = [
+  "view_trade","view_shipments","view_freight","view_importer","view_suppliers",
+  "view_collections","view_cards","view_ai_growth","view_compliance","view_integrations","view_whatsapp",
+];
+
 const matrix: Record<Role, Permission[]> = {
   Admin: [
     "view_dashboard","view_wallets","view_fx","view_transactions","view_beneficiaries",
     "view_treasury","view_ai","view_team","view_settings",
     "initiate_tx","approve_tx","manage_beneficiaries","manage_team","export_reports","view_balances",
+    ...PLATFORM,
   ],
   Treasury: [
     "view_dashboard","view_wallets","view_fx","view_transactions","view_beneficiaries",
     "view_treasury","view_ai","view_settings",
     "initiate_tx","approve_tx","manage_beneficiaries","export_reports","view_balances",
+    ...PLATFORM,
   ],
   Finance: [
     "view_dashboard","view_wallets","view_transactions","view_beneficiaries","view_settings",
     "initiate_tx","manage_beneficiaries","export_reports","view_balances",
+    ...PLATFORM,
   ],
   Compliance: [
     "view_dashboard","view_transactions","view_team","view_ai","view_settings",
     "approve_tx","export_reports","view_balances",
+    ...PLATFORM,
   ],
-  Viewer: ["view_dashboard","view_transactions","view_settings","export_reports"],
+  Viewer: ["view_dashboard","view_transactions","view_settings","export_reports", ...PLATFORM],
 };
 
 export const ROLE_PROFILES: Record<Role, { name: string; initials: string; title: string; email: string }> = {
