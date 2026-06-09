@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { fmtMoney } from "@/lib/mock";
+import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import {
   Crown, Users, FileText, ShieldCheck, Wallet, MessageCircle, CreditCard,
   AlertTriangle, ClipboardList, TrendingUp, Search, ArrowRight, CheckCircle2,
