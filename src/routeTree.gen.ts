@@ -32,7 +32,9 @@ import { Route as AiInsightsRouteImport } from './routes/ai-insights'
 import { Route as AiGrowthRouteImport } from './routes/ai-growth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TradeDeskIndexRouteImport } from './routes/trade-desk.index'
+import { Route as TrackIndexRouteImport } from './routes/track.index'
 import { Route as TradeDeskFileIdRouteImport } from './routes/trade-desk.$fileId'
+import { Route as TrackIdRouteImport } from './routes/track.$id'
 
 const WhatsappRoute = WhatsappRouteImport.update({
   id: '/whatsapp',
@@ -149,10 +151,20 @@ const TradeDeskIndexRoute = TradeDeskIndexRouteImport.update({
   path: '/',
   getParentRoute: () => TradeDeskRoute,
 } as any)
+const TrackIndexRoute = TrackIndexRouteImport.update({
+  id: '/track/',
+  path: '/track/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TradeDeskFileIdRoute = TradeDeskFileIdRouteImport.update({
   id: '/$fileId',
   path: '/$fileId',
   getParentRoute: () => TradeDeskRoute,
+} as any)
+const TrackIdRoute = TrackIdRouteImport.update({
+  id: '/track/$id',
+  path: '/track/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -178,7 +190,9 @@ export interface FileRoutesByFullPath {
   '/treasury': typeof TreasuryRoute
   '/wallets': typeof WalletsRoute
   '/whatsapp': typeof WhatsappRoute
+  '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/track/': typeof TrackIndexRoute
   '/trade-desk/': typeof TradeDeskIndexRoute
 }
 export interface FileRoutesByTo {
@@ -203,7 +217,9 @@ export interface FileRoutesByTo {
   '/treasury': typeof TreasuryRoute
   '/wallets': typeof WalletsRoute
   '/whatsapp': typeof WhatsappRoute
+  '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/track': typeof TrackIndexRoute
   '/trade-desk': typeof TradeDeskIndexRoute
 }
 export interface FileRoutesById {
@@ -230,7 +246,9 @@ export interface FileRoutesById {
   '/treasury': typeof TreasuryRoute
   '/wallets': typeof WalletsRoute
   '/whatsapp': typeof WhatsappRoute
+  '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/track/': typeof TrackIndexRoute
   '/trade-desk/': typeof TradeDeskIndexRoute
 }
 export interface FileRouteTypes {
@@ -258,7 +276,9 @@ export interface FileRouteTypes {
     | '/treasury'
     | '/wallets'
     | '/whatsapp'
+    | '/track/$id'
     | '/trade-desk/$fileId'
+    | '/track/'
     | '/trade-desk/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -283,7 +303,9 @@ export interface FileRouteTypes {
     | '/treasury'
     | '/wallets'
     | '/whatsapp'
+    | '/track/$id'
     | '/trade-desk/$fileId'
+    | '/track'
     | '/trade-desk'
   id:
     | '__root__'
@@ -309,7 +331,9 @@ export interface FileRouteTypes {
     | '/treasury'
     | '/wallets'
     | '/whatsapp'
+    | '/track/$id'
     | '/trade-desk/$fileId'
+    | '/track/'
     | '/trade-desk/'
   fileRoutesById: FileRoutesById
 }
@@ -336,6 +360,8 @@ export interface RootRouteChildren {
   TreasuryRoute: typeof TreasuryRoute
   WalletsRoute: typeof WalletsRoute
   WhatsappRoute: typeof WhatsappRoute
+  TrackIdRoute: typeof TrackIdRoute
+  TrackIndexRoute: typeof TrackIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -501,12 +527,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TradeDeskIndexRouteImport
       parentRoute: typeof TradeDeskRoute
     }
+    '/track/': {
+      id: '/track/'
+      path: '/track'
+      fullPath: '/track/'
+      preLoaderRoute: typeof TrackIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/trade-desk/$fileId': {
       id: '/trade-desk/$fileId'
       path: '/$fileId'
       fullPath: '/trade-desk/$fileId'
       preLoaderRoute: typeof TradeDeskFileIdRouteImport
       parentRoute: typeof TradeDeskRoute
+    }
+    '/track/$id': {
+      id: '/track/$id'
+      path: '/track/$id'
+      fullPath: '/track/$id'
+      preLoaderRoute: typeof TrackIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -548,6 +588,8 @@ const rootRouteChildren: RootRouteChildren = {
   TreasuryRoute: TreasuryRoute,
   WalletsRoute: WalletsRoute,
   WhatsappRoute: WhatsappRoute,
+  TrackIdRoute: TrackIdRoute,
+  TrackIndexRoute: TrackIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
