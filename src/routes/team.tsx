@@ -9,7 +9,7 @@ import { team } from "@/lib/mock";
 import { useActions } from "@/components/ActionsProvider";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { useMemo, useState } from "react";
+import { useMemo, useState, Fragment } from "react";
 
 export const Route = createFileRoute("/team")({
   head: () => ({ meta: [{ title: "Team & Roles — Canta" }] }),
@@ -235,8 +235,8 @@ function Team() {
                 </thead>
                 <tbody>
                   {permissions.map((grp) => (
-                    <>
-                      <tr key={grp.group} className="bg-secondary/20">
+                    <Fragment key={grp.group}>
+                      <tr className="bg-secondary/20">
                         <td colSpan={filteredRoles.length + 1} className="px-5 py-2 text-[11px] uppercase tracking-widest text-muted-foreground font-semibold">
                           {grp.group}
                         </td>
@@ -251,7 +251,7 @@ function Team() {
                           ))}
                         </tr>
                       ))}
-                    </>
+                    </Fragment>
                   ))}
                 </tbody>
               </table>
