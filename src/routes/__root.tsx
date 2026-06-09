@@ -100,7 +100,7 @@ function RootComponent() {
   const isPublic = pathname.startsWith("/track");
   return (
     <QueryClientProvider client={queryClient}>
-      {isLanding ? (
+      {isLanding || isPublic ? (
         <Outlet />
       ) : (
         <RoleProvider>
