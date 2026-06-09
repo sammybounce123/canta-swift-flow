@@ -17,21 +17,23 @@ import { toast } from "sonner";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean; perm: Permission; group?: string };
 const nav: NavItem[] = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true, perm: "view_dashboard", group: "Treasury" },
-  { to: "/wallets", label: "Wallets", icon: Wallet, perm: "view_wallets", group: "Treasury" },
-  { to: "/fx", label: "FX Conversion", icon: ArrowLeftRight, perm: "view_fx", group: "Treasury" },
-  { to: "/transactions", label: "Transactions", icon: Receipt, perm: "view_transactions", group: "Treasury" },
-  { to: "/beneficiaries", label: "Beneficiaries", icon: Users, perm: "view_beneficiaries", group: "Treasury" },
-  { to: "/treasury", label: "Treasury", icon: Building2, perm: "view_treasury", group: "Treasury" },
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true, perm: "view_dashboard", group: "Overview" },
 
-  { to: "/trade-desk", label: "Trade Desk", icon: FileText, perm: "view_trade", group: "Trade" },
-  { to: "/shipments", label: "Shipments", icon: Ship, perm: "view_shipments", group: "Trade" },
-  { to: "/freight", label: "Freight Workspace", icon: Truck, perm: "view_freight", group: "Trade" },
-  { to: "/suppliers", label: "Suppliers", icon: Factory, perm: "view_suppliers", group: "Trade" },
-  { to: "/importer", label: "Importer Portal", icon: Building2, perm: "view_importer", group: "Trade" },
+  { to: "/wallets", label: "Wallets", icon: Wallet, perm: "view_wallets", group: "Move Money" },
+  { to: "/fx", label: "FX Conversion", icon: ArrowLeftRight, perm: "view_fx", group: "Move Money" },
+  { to: "/transactions", label: "Transactions", icon: Receipt, perm: "view_transactions", group: "Move Money" },
+  { to: "/beneficiaries", label: "Beneficiaries", icon: Users, perm: "view_beneficiaries", group: "Move Money" },
+  { to: "/treasury", label: "Enterprise Treasury", icon: Building2, perm: "view_treasury", group: "Move Money" },
 
-  { to: "/collections", label: "Global Collections", icon: Globe, perm: "view_collections", group: "Global" },
-  { to: "/cards", label: "Global Spend Cards", icon: CreditCard, perm: "view_cards", group: "Global" },
+  { to: "/trade-desk", label: "Trade Desk", icon: FileText, perm: "view_trade", group: "Move Goods" },
+  { to: "/shipments", label: "Shipments", icon: Ship, perm: "view_shipments", group: "Move Goods" },
+  { to: "/freight", label: "Freight Workspace", icon: Truck, perm: "view_freight", group: "Move Goods" },
+  { to: "/suppliers", label: "Suppliers", icon: Factory, perm: "view_suppliers", group: "Move Goods" },
+  { to: "/importer", label: "Importer Portal", icon: Building2, perm: "view_importer", group: "Move Goods" },
+
+  { to: "/collections", label: "Global Collections", icon: Globe, perm: "view_collections", group: "Collect Globally" },
+
+  { to: "/cards", label: "Global Spend Cards", icon: CreditCard, perm: "view_cards", group: "Spend Globally" },
 
   { to: "/ai-growth", label: "AI Growth", icon: Brain, perm: "view_ai_growth", group: "Intelligence" },
   { to: "/ai-insights", label: "AI Insights", icon: Sparkles, perm: "view_ai", group: "Intelligence" },
