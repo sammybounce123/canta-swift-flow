@@ -579,11 +579,11 @@ function PermissionsMatrix() {
         <tbody>
           {PERMISSIONS.map((g) => (
             <>
-              <tr key={g.group} className="bg-secondary/20">
+              <tr key={`h-${g.group}`} className="bg-secondary/20">
                 <td colSpan={roles.length + 1} className="px-3 py-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">{g.group}</td>
               </tr>
               {g.items.map((p) => (
-                <tr key={p} className="border-t border-border">
+                <tr key={`${g.group}-${p}`} className="border-t border-border">
                   <td className="px-3 py-2 font-medium sticky left-0 bg-background">{p}</td>
                   {roles.map((r) => {
                     const has = ROLE_TEMPLATES[r]?.includes(p);
