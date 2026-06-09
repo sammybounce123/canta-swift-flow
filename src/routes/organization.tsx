@@ -161,6 +161,21 @@ const PERMISSIONS = [
     ],
   },
   {
+    group: "Freight",
+    items: [
+      "create customer", "edit customer",
+      "create shipment", "update shipment status", "upload documents",
+      "send WhatsApp update",
+      "create freight invoice", "mark invoice as paid", "view outstanding invoices",
+      "manage clearing status", "manage warehouse status",
+      "create staff card", "create port expense card",
+      "assign card to staff", "link card to shipment",
+      "approve card spend", "require receipts",
+      "view route reports", "view customer reports",
+      "manage freight sub-users",
+    ],
+  },
+  {
     group: "Reporting & Compliance",
     items: ["export reports", "view compliance pack"],
   },
