@@ -123,6 +123,15 @@ const ROLE_GROUPS = [
       "Business Cardholder", "Card Approver", "Spend Auditor",
     ],
   },
+  {
+    label: "Canta Internal",
+    roles: [
+      "Canta Super Admin", "Canta Trade Officer", "Canta Compliance Officer",
+      "Canta Treasury Officer", "Canta Sales Agent", "Canta Support Agent",
+      "Canta Card Operations", "Canta Collections Officer",
+      "Canta Freight Operations", "Canta Auditor",
+    ],
+  },
 ];
 
 const PERMISSIONS = [
@@ -232,6 +241,18 @@ const PERMISSIONS = [
     ],
   },
   {
+    group: "Canta Internal",
+    items: [
+      "view all customers", "create trade file for customer", "edit trade file",
+      "assign customer to sales agent", "review WhatsApp conversations",
+      "extract documents", "approve KYB", "flag transaction",
+      "approve settlement", "process payout", "review supplier verification",
+      "manage card operations", "freeze card", "manage integrations",
+      "view audit trail", "export reports",
+      "impersonate customer view for support", "assign support tickets",
+    ],
+  },
+  {
     group: "Reporting & Compliance",
     items: ["export reports", "view compliance pack"],
   },
@@ -298,6 +319,18 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   "Parent / Sponsor": ["view dashboard", "fund card", "freeze card", "view transactions", "set budget", "approve top-up", "view spend reports"],
   "Student Cardholder": ["view dashboard", "view masked card details only", "view transactions", "upload receipt", "request top-up"],
   "Business Cardholder": ["view dashboard", "view masked card details only", "view transactions", "upload receipt", "request top-up", "view spend reports"],
+
+  // Canta Internal role templates
+  "Canta Super Admin": PERMISSIONS.flatMap((g) => g.items),
+  "Canta Trade Officer": ["view dashboard", "view all customers", "create trade file for customer", "edit trade file", "upload documents", "view trade file", "send WhatsApp update", "review supplier verification", "view audit trail"],
+  "Canta Compliance Officer": ["view dashboard", "view all customers", "approve KYB", "flag transaction", "view compliance pack", "view compliance reports", "view audit trail", "export reports"],
+  "Canta Treasury Officer": ["view dashboard", "view all customers", "approve settlement", "process payout", "approve FX conversion", "view wallet balances", "view audit trail", "export transaction reports"],
+  "Canta Sales Agent": ["view dashboard", "view all customers", "assign customer to sales agent", "review WhatsApp conversations", "create trade file for customer", "send WhatsApp update"],
+  "Canta Support Agent": ["view dashboard", "view all customers", "review WhatsApp conversations", "impersonate customer view for support", "assign support tickets", "send WhatsApp update"],
+  "Canta Card Operations": ["view dashboard", "view all customers", "manage card operations", "freeze card", "view card details", "view card spend", "approve card requests"],
+  "Canta Collections Officer": ["view dashboard", "view all customers", "view collections", "approve settlement", "manage reconciliation", "view settlement reports", "export collection reports"],
+  "Canta Freight Operations": ["view dashboard", "view all customers", "update shipment status", "manage clearing status", "manage warehouse status", "view route reports", "send WhatsApp update"],
+  "Canta Auditor": ["view dashboard", "view all customers", "view audit trail", "view compliance pack", "view compliance reports", "export reports", "export transaction reports"],
 };
 
 // ---------- Page ----------
@@ -730,6 +763,7 @@ function PermissionsMatrix() {
     "Merchant Owner", "Merchant Admin", "Collections Manager", "Reconciliation Officer", "Settlement Approver", "Support Agent", "Regional Staff",
     "Supplier Owner", "Supplier Admin", "Supplier Finance", "Supplier Operations", "Sales Representative", "Settlement Manager",
     "Card Owner", "Parent / Sponsor", "Student Cardholder", "Business Cardholder",
+    "Canta Super Admin", "Canta Trade Officer", "Canta Compliance Officer", "Canta Treasury Officer", "Canta Sales Agent", "Canta Support Agent", "Canta Card Operations", "Canta Collections Officer", "Canta Freight Operations", "Canta Auditor",
     "Finance Officer", "Accountant", "Auditor", "Staff Cardholder", "Viewer",
   ];
   return (

@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Wallet, ArrowLeftRight, Receipt, Users, Building2,
   Sparkles, Shield, Settings, Bell, Search, ChevronDown, TrendingUp, TrendingDown,
   UserCog, Check, Menu, FileText, Ship, Truck, Factory, Globe, CreditCard,
-  Brain, ShieldCheck, Plug, MessageCircle, CheckSquare, Network,
+  Brain, ShieldCheck, Plug, MessageCircle, CheckSquare, Network, Crown,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRole, ALL_ROLES, type Permission, type Role } from "@/components/RoleProvider";
@@ -45,6 +45,8 @@ const nav: NavItem[] = [
   { to: "/organization", label: "Organization", icon: Network, perm: "view_team", group: "Workspace" },
   { to: "/integrations", label: "Integrations", icon: Plug, perm: "view_integrations", group: "Workspace" },
   { to: "/settings", label: "Settings", icon: Settings, perm: "view_settings", group: "Workspace" },
+
+  { to: "/admin", label: "Canta Admin", icon: Crown, perm: "view_admin", group: "Canta Internal" },
 ];
 
 const initialRates = [
