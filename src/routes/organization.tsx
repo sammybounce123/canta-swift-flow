@@ -224,6 +224,14 @@ const PERMISSIONS = [
     ],
   },
   {
+    group: "Standalone Card User",
+    items: [
+      "create personal card", "request card", "fund card", "freeze card",
+      "view transactions", "upload receipt", "set budget",
+      "request top-up", "approve top-up", "view spend reports",
+    ],
+  },
+  {
     group: "Reporting & Compliance",
     items: ["export reports", "view compliance pack"],
   },
