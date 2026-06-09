@@ -709,3 +709,92 @@ function FF({ label, children, wide }: { label: string; children: React.ReactNod
     </div>
   );
 }
+
+function SupplierReportsPanel() {
+  const reports = [
+    { l: "Invoice register",          d: "All invoices, statuses and buyers", icon: FileText },
+    { l: "Settlement report",         d: "Payouts to home currency with FX rates", icon: Banknote },
+    { l: "Escrow activity",           d: "Milestones, releases and disputes", icon: Lock },
+    { l: "Buyer reliability summary", d: "Average score, late payments, disputes", icon: TrendingUp },
+    { l: "Documents log",             d: "Uploaded invoices, BLs, certificates", icon: Upload },
+    { l: "Compliance pack",           d: "KYB, sanctions, audit trail", icon: ShieldCheck },
+  ];
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      {reports.map((r) => (
+        <Card key={r.l} className="p-4 shadow-card flex items-start gap-3">
+          <div className="h-9 w-9 rounded-lg bg-primary/10 text-primary grid place-items-center">
+            <r.icon className="h-4 w-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold">{r.l}</div>
+            <div className="text-xs text-muted-foreground mt-0.5">{r.d}</div>
+            <div className="mt-3 flex gap-2">
+              <Button size="sm" variant="outline" onClick={() => toast.success(`${r.l} · CSV exported`)}>
+                <Download className="h-3.5 w-3.5 mr-1.5" /> CSV
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => toast.success(`${r.l} · PDF exported`)}>PDF</Button>
+            </div>
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+function SupplierTeamPanel() {
+  const team = [
+    { name: "Wei Chen",        email: "wei@guangzhou-elec.cn",   role: "Supplier Owner",      status: "Active",  last: "2 min ago" },
+    { name: "Mei Lin",         email: "mei@guangzhou-elec.cn",   role: "Supplier Admin",      status: "Active",  last: "1 hour ago" },
+    { name: "Faruk Demir",     email: "faruk@istanbul-textile.tr", role: "Supplier Finance",  status: "Active",  last: "Today" },
+    { name: "Hao Zhang",       email: "hao@guangzhou-elec.cn",   role: "Supplier Operations", status: "Active",  last: "Today" },
+    { name: "Priya Nair",      email: "priya@mumbai-export.in",  role: "Sales Representative",status: "Active",  last: "Yesterday" },
+    { name: "Ahmed Al-Sayed",  email: "ahmed@dubai-trade.ae",    role: "Settlement Manager",  status: "Active",  last: "2 days ago" },
+    { name: "Lucia Wang",      email: "lucia@guangzhou-elec.cn", role: "Support Agent",       status: "Pending", last: "Never (invited)" },
+  ];
+  const tone: Record<string, string> = {
+    Active:  "bg-success/15 text-success border-success/30",
+    Pending: "bg-amber-500/15 text-amber-700 border-amber-500/30",
+  };
+  return (
+    <Card className="shadow-card overflow-hidden">
+      <div className="p-4 flex items-center justify-between flex-wrap gap-2 border-b border-border">
+        <div>
+          <div className="text-sm font-semibold">Supplier team</div>
+          <div className="text-xs text-muted-foreground">Invite colleagues and assign supplier roles. Owners can manage everyone; finance and ops have scoped access.</div>
+        </div>
+        <Button size="sm" onClick={() => toast.success("Invite sent")}>
+          <Plus className="h-4 w-4 mr-1.5" /> Invite user
+        </Button>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-secondary/40 text-xs text-muted-foreground">
+            <tr>
+              <th className="px-4 py-2 text-left">Name</th>
+              <th className="px-4 py-2 text-left">Email</th>
+              <th className="px-4 py-2 text-left">Role</th>
+              <th className="px-4 py-2 text-left">Status</th>
+              <th className="px-4 py-2 text-left">Last active</th>
+              <th className="px-4 py-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {team.map((u) => (
+              <tr key={u.email} className="border-t border-border">
+                <td className="px-4 py-3 font-medium">{u.name}</td>
+                <td className="px-4 py-3 text-muted-foreground">{u.email}</td>
+                <td className="px-4 py-3">{u.role}</td>
+                <td className="px-4 py-3"><Badge variant="outline" className={tone[u.status]}>{u.status}</Badge></td>
+                <td className="px-4 py-3 text-muted-foreground">{u.last}</td>
+                <td className="px-4 py-3 text-right">
+                  <Button size="sm" variant="ghost" onClick={() => toast.success(`${u.name} · permissions updated`)}>Manage</Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  );
+}
