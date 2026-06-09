@@ -77,6 +77,7 @@ function Freight() {
 
   return (
     <div className="space-y-6">
+      <WorkspaceWelcome workspace="freight_workspace" />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Freight Forwarder Workspace</h1>
