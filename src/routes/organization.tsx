@@ -131,15 +131,15 @@ const PERMISSIONS = [
 // Suggested role-permission templates (read-only preview)
 const ROLE_TEMPLATES: Record<string, string[]> = {
   Owner: PERMISSIONS.flatMap((g) => g.items),
-  Admin: PERMISSIONS.flatMap((g) => g.items),
-  "Finance Admin": ["view wallets", "approve supplier payments", "approve FX conversions", "manage beneficiaries", "approve collections settlement", "export reports"],
-  "Compliance Admin": ["view compliance pack", "approve supplier payments", "export reports", "view card details"],
-  "Operations Admin": ["create trade files", "edit trade files", "upload documents", "send WhatsApp updates", "view landed cost"],
-  Viewer: ["view wallets", "view landed cost", "view compliance pack"],
-  "Card Admin": ["create card", "fund card", "freeze card", "set card limits", "assign cards to staff", "view card details"],
-  Cardholder: ["view masked card details only"],
-  "Card Approver": ["approve card requests", "view card details"],
-  "Spend Auditor": ["view card details", "export reports"],
+  Admin: PERMISSIONS.flatMap((g) => g.items).filter((p) => p !== "manage API keys"),
+  "Finance Admin": ["view dashboard", "view wallets", "create payments", "approve payments", "approve supplier payments", "approve FX conversions", "manage beneficiaries", "approve collections settlement", "export reports", "view audit trail"],
+  "Compliance Admin": ["view dashboard", "view compliance pack", "approve payments", "approve supplier payments", "export reports", "view audit trail", "view card details"],
+  "Operations Admin": ["view dashboard", "manage departments", "create trade files", "edit trade files", "upload documents", "send WhatsApp updates", "view landed cost", "create cards"],
+  Viewer: ["view dashboard", "view wallets", "view landed cost", "view compliance pack"],
+  "Card Admin": ["view dashboard", "create cards", "create card", "fund card", "freeze card", "set card limits", "assign cards to staff", "view card details", "approve card requests"],
+  Cardholder: ["view dashboard", "view masked card details only"],
+  "Card Approver": ["view dashboard", "approve card requests", "view card details"],
+  "Spend Auditor": ["view dashboard", "view card details", "export reports", "view audit trail"],
 };
 
 // ---------- Page ----------
