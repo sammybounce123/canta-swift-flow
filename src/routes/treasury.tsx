@@ -32,6 +32,7 @@ function Treasury() {
   const { openBulk, openSchedule } = useActions();
   return (
     <div className="space-y-6">
+      <WorkspaceWelcome workspace="enterprise_treasury" />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Treasury & Liquidity</h1>
