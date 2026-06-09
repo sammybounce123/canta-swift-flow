@@ -9,18 +9,34 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WhatsappRouteImport } from './routes/whatsapp'
 import { Route as WalletsRouteImport } from './routes/wallets'
 import { Route as TreasuryRouteImport } from './routes/treasury'
 import { Route as TransactionsRouteImport } from './routes/transactions'
+import { Route as TradeDeskRouteImport } from './routes/trade-desk'
 import { Route as TeamRouteImport } from './routes/team'
+import { Route as SuppliersRouteImport } from './routes/suppliers'
+import { Route as ShipmentsRouteImport } from './routes/shipments'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as IntegrationsRouteImport } from './routes/integrations'
+import { Route as ImporterRouteImport } from './routes/importer'
 import { Route as FxRouteImport } from './routes/fx'
+import { Route as FreightRouteImport } from './routes/freight'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ComplianceRouteImport } from './routes/compliance'
+import { Route as CollectionsRouteImport } from './routes/collections'
+import { Route as CardsRouteImport } from './routes/cards'
 import { Route as BeneficiariesRouteImport } from './routes/beneficiaries'
 import { Route as AiInsightsRouteImport } from './routes/ai-insights'
+import { Route as AiGrowthRouteImport } from './routes/ai-growth'
 import { Route as IndexRouteImport } from './routes/index'
 
+const WhatsappRoute = WhatsappRouteImport.update({
+  id: '/whatsapp',
+  path: '/whatsapp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WalletsRoute = WalletsRouteImport.update({
   id: '/wallets',
   path: '/wallets',
@@ -36,9 +52,24 @@ const TransactionsRoute = TransactionsRouteImport.update({
   path: '/transactions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TradeDeskRoute = TradeDeskRouteImport.update({
+  id: '/trade-desk',
+  path: '/trade-desk',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
   path: '/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuppliersRoute = SuppliersRouteImport.update({
+  id: '/suppliers',
+  path: '/suppliers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShipmentsRoute = ShipmentsRouteImport.update({
+  id: '/shipments',
+  path: '/shipments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -51,14 +82,44 @@ const OnboardingRoute = OnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IntegrationsRoute = IntegrationsRouteImport.update({
+  id: '/integrations',
+  path: '/integrations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImporterRoute = ImporterRouteImport.update({
+  id: '/importer',
+  path: '/importer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FxRoute = FxRouteImport.update({
   id: '/fx',
   path: '/fx',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FreightRoute = FreightRouteImport.update({
+  id: '/freight',
+  path: '/freight',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComplianceRoute = ComplianceRouteImport.update({
+  id: '/compliance',
+  path: '/compliance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectionsRoute = CollectionsRouteImport.update({
+  id: '/collections',
+  path: '/collections',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CardsRoute = CardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BeneficiariesRoute = BeneficiariesRouteImport.update({
@@ -71,6 +132,11 @@ const AiInsightsRoute = AiInsightsRouteImport.update({
   path: '/ai-insights',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AiGrowthRoute = AiGrowthRouteImport.update({
+  id: '/ai-growth',
+  path: '/ai-growth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -79,102 +145,186 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ai-growth': typeof AiGrowthRoute
   '/ai-insights': typeof AiInsightsRoute
   '/beneficiaries': typeof BeneficiariesRoute
+  '/cards': typeof CardsRoute
+  '/collections': typeof CollectionsRoute
+  '/compliance': typeof ComplianceRoute
   '/dashboard': typeof DashboardRoute
+  '/freight': typeof FreightRoute
   '/fx': typeof FxRoute
+  '/importer': typeof ImporterRoute
+  '/integrations': typeof IntegrationsRoute
   '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
+  '/shipments': typeof ShipmentsRoute
+  '/suppliers': typeof SuppliersRoute
   '/team': typeof TeamRoute
+  '/trade-desk': typeof TradeDeskRoute
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRoute
   '/wallets': typeof WalletsRoute
+  '/whatsapp': typeof WhatsappRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ai-growth': typeof AiGrowthRoute
   '/ai-insights': typeof AiInsightsRoute
   '/beneficiaries': typeof BeneficiariesRoute
+  '/cards': typeof CardsRoute
+  '/collections': typeof CollectionsRoute
+  '/compliance': typeof ComplianceRoute
   '/dashboard': typeof DashboardRoute
+  '/freight': typeof FreightRoute
   '/fx': typeof FxRoute
+  '/importer': typeof ImporterRoute
+  '/integrations': typeof IntegrationsRoute
   '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
+  '/shipments': typeof ShipmentsRoute
+  '/suppliers': typeof SuppliersRoute
   '/team': typeof TeamRoute
+  '/trade-desk': typeof TradeDeskRoute
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRoute
   '/wallets': typeof WalletsRoute
+  '/whatsapp': typeof WhatsappRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ai-growth': typeof AiGrowthRoute
   '/ai-insights': typeof AiInsightsRoute
   '/beneficiaries': typeof BeneficiariesRoute
+  '/cards': typeof CardsRoute
+  '/collections': typeof CollectionsRoute
+  '/compliance': typeof ComplianceRoute
   '/dashboard': typeof DashboardRoute
+  '/freight': typeof FreightRoute
   '/fx': typeof FxRoute
+  '/importer': typeof ImporterRoute
+  '/integrations': typeof IntegrationsRoute
   '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
+  '/shipments': typeof ShipmentsRoute
+  '/suppliers': typeof SuppliersRoute
   '/team': typeof TeamRoute
+  '/trade-desk': typeof TradeDeskRoute
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRoute
   '/wallets': typeof WalletsRoute
+  '/whatsapp': typeof WhatsappRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/ai-growth'
     | '/ai-insights'
     | '/beneficiaries'
+    | '/cards'
+    | '/collections'
+    | '/compliance'
     | '/dashboard'
+    | '/freight'
     | '/fx'
+    | '/importer'
+    | '/integrations'
     | '/onboarding'
     | '/settings'
+    | '/shipments'
+    | '/suppliers'
     | '/team'
+    | '/trade-desk'
     | '/transactions'
     | '/treasury'
     | '/wallets'
+    | '/whatsapp'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ai-growth'
     | '/ai-insights'
     | '/beneficiaries'
+    | '/cards'
+    | '/collections'
+    | '/compliance'
     | '/dashboard'
+    | '/freight'
     | '/fx'
+    | '/importer'
+    | '/integrations'
     | '/onboarding'
     | '/settings'
+    | '/shipments'
+    | '/suppliers'
     | '/team'
+    | '/trade-desk'
     | '/transactions'
     | '/treasury'
     | '/wallets'
+    | '/whatsapp'
   id:
     | '__root__'
     | '/'
+    | '/ai-growth'
     | '/ai-insights'
     | '/beneficiaries'
+    | '/cards'
+    | '/collections'
+    | '/compliance'
     | '/dashboard'
+    | '/freight'
     | '/fx'
+    | '/importer'
+    | '/integrations'
     | '/onboarding'
     | '/settings'
+    | '/shipments'
+    | '/suppliers'
     | '/team'
+    | '/trade-desk'
     | '/transactions'
     | '/treasury'
     | '/wallets'
+    | '/whatsapp'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AiGrowthRoute: typeof AiGrowthRoute
   AiInsightsRoute: typeof AiInsightsRoute
   BeneficiariesRoute: typeof BeneficiariesRoute
+  CardsRoute: typeof CardsRoute
+  CollectionsRoute: typeof CollectionsRoute
+  ComplianceRoute: typeof ComplianceRoute
   DashboardRoute: typeof DashboardRoute
+  FreightRoute: typeof FreightRoute
   FxRoute: typeof FxRoute
+  ImporterRoute: typeof ImporterRoute
+  IntegrationsRoute: typeof IntegrationsRoute
   OnboardingRoute: typeof OnboardingRoute
   SettingsRoute: typeof SettingsRoute
+  ShipmentsRoute: typeof ShipmentsRoute
+  SuppliersRoute: typeof SuppliersRoute
   TeamRoute: typeof TeamRoute
+  TradeDeskRoute: typeof TradeDeskRoute
   TransactionsRoute: typeof TransactionsRoute
   TreasuryRoute: typeof TreasuryRoute
   WalletsRoute: typeof WalletsRoute
+  WhatsappRoute: typeof WhatsappRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/whatsapp': {
+      id: '/whatsapp'
+      path: '/whatsapp'
+      fullPath: '/whatsapp'
+      preLoaderRoute: typeof WhatsappRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/wallets': {
       id: '/wallets'
       path: '/wallets'
@@ -196,11 +346,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TransactionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/trade-desk': {
+      id: '/trade-desk'
+      path: '/trade-desk'
+      fullPath: '/trade-desk'
+      preLoaderRoute: typeof TradeDeskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/team': {
       id: '/team'
       path: '/team'
       fullPath: '/team'
       preLoaderRoute: typeof TeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/suppliers': {
+      id: '/suppliers'
+      path: '/suppliers'
+      fullPath: '/suppliers'
+      preLoaderRoute: typeof SuppliersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shipments': {
+      id: '/shipments'
+      path: '/shipments'
+      fullPath: '/shipments'
+      preLoaderRoute: typeof ShipmentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -217,6 +388,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/integrations': {
+      id: '/integrations'
+      path: '/integrations'
+      fullPath: '/integrations'
+      preLoaderRoute: typeof IntegrationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/importer': {
+      id: '/importer'
+      path: '/importer'
+      fullPath: '/importer'
+      preLoaderRoute: typeof ImporterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/fx': {
       id: '/fx'
       path: '/fx'
@@ -224,11 +409,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FxRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/freight': {
+      id: '/freight'
+      path: '/freight'
+      fullPath: '/freight'
+      preLoaderRoute: typeof FreightRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compliance': {
+      id: '/compliance'
+      path: '/compliance'
+      fullPath: '/compliance'
+      preLoaderRoute: typeof ComplianceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collections': {
+      id: '/collections'
+      path: '/collections'
+      fullPath: '/collections'
+      preLoaderRoute: typeof CollectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cards': {
+      id: '/cards'
+      path: '/cards'
+      fullPath: '/cards'
+      preLoaderRoute: typeof CardsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/beneficiaries': {
@@ -245,6 +458,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AiInsightsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ai-growth': {
+      id: '/ai-growth'
+      path: '/ai-growth'
+      fullPath: '/ai-growth'
+      preLoaderRoute: typeof AiGrowthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -257,27 +477,28 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AiGrowthRoute: AiGrowthRoute,
   AiInsightsRoute: AiInsightsRoute,
   BeneficiariesRoute: BeneficiariesRoute,
+  CardsRoute: CardsRoute,
+  CollectionsRoute: CollectionsRoute,
+  ComplianceRoute: ComplianceRoute,
   DashboardRoute: DashboardRoute,
+  FreightRoute: FreightRoute,
   FxRoute: FxRoute,
+  ImporterRoute: ImporterRoute,
+  IntegrationsRoute: IntegrationsRoute,
   OnboardingRoute: OnboardingRoute,
   SettingsRoute: SettingsRoute,
+  ShipmentsRoute: ShipmentsRoute,
+  SuppliersRoute: SuppliersRoute,
   TeamRoute: TeamRoute,
+  TradeDeskRoute: TradeDeskRoute,
   TransactionsRoute: TransactionsRoute,
   TreasuryRoute: TreasuryRoute,
   WalletsRoute: WalletsRoute,
+  WhatsappRoute: WhatsappRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

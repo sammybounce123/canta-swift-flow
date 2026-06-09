@@ -13,6 +13,7 @@ import { wallets, transactions, cashFlow, fmtMoney, fmtNGN } from "@/lib/mock";
 import { StatusPill } from "@/components/StatusPill";
 import { useActions } from "@/components/ActionsProvider";
 import { useRole } from "@/components/RoleProvider";
+import { useMode } from "@/components/ModeProvider";
 import { Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 
@@ -26,6 +27,7 @@ const MASK = "•••••••";
 function Dashboard() {
   const { openFund, openConvert, openSend } = useActions();
   const { profile, role, can } = useRole();
+  const { mode } = useMode();
   const [hidden, setHidden] = useState(false);
   const [onboardingDone, setOnboardingDone] = useState(true);
   useEffect(() => {
@@ -40,6 +42,30 @@ function Dashboard() {
   const greet = role === "Viewer" ? "Welcome" : role === "Compliance" ? "Hello" : "Good morning";
   return (
     <div className="space-y-6">
+      <Card className="p-4 flex flex-wrap items-center gap-3 justify-between bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="h-9 w-9 rounded-lg bg-primary/10 grid place-items-center text-primary font-bold text-xs flex-shrink-0">{mode.split(" ").map((w) => w[0]).join("").slice(0, 2)}</div>
+          <div className="min-w-0">
+            <div className="text-sm font-semibold truncate">{mode} Mode</div>
+            <div className="text-xs text-muted-foreground">
+              {mode === "Importer" ? "Track shipments, documents, suppliers and landed cost."
+              : mode === "Freight Forwarder" ? "Manage operations, customers and invoices."
+              : mode === "Supplier" ? "Issue invoices, escrow & global settlement."
+              : mode === "Global Merchant" ? "Collect locally, settle globally."
+              : mode === "Canta Admin" ? "Internal control panel — leads, ops, compliance."
+              : "Move money, FX, wallets and settlements at enterprise scale."}
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          {mode === "Importer" && <Button asChild size="sm" variant="outline"><Link to="/importer">Open Importer Portal</Link></Button>}
+          {mode === "Freight Forwarder" && <Button asChild size="sm" variant="outline"><Link to="/freight">Open Workspace</Link></Button>}
+          {mode === "Supplier" && <Button asChild size="sm" variant="outline"><Link to="/suppliers">Open Suppliers</Link></Button>}
+          {mode === "Global Merchant" && <Button asChild size="sm" variant="outline"><Link to="/collections">Open Collections</Link></Button>}
+          {mode === "Canta Admin" && <Button asChild size="sm" variant="outline"><Link to="/ai-growth">Open AI Growth</Link></Button>}
+          <Button asChild size="sm" variant="ghost"><Link to="/trade-desk">Trade Desk</Link></Button>
+        </div>
+      </Card>
       {!onboardingDone && (
         <Card className="p-4 flex flex-wrap items-center gap-4 justify-between border-accent/40 bg-gradient-to-r from-accent/10 to-transparent shadow-card">
           <div className="flex items-center gap-3 min-w-0">

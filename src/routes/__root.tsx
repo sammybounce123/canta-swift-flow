@@ -10,6 +10,7 @@ import {
 import { AppShell } from "@/components/AppShell";
 import { ActionsProvider } from "@/components/ActionsProvider";
 import { RoleProvider } from "@/components/RoleProvider";
+import { ModeProvider } from "@/components/ModeProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { useRouterState } from "@tanstack/react-router";
 
@@ -102,11 +103,13 @@ function RootComponent() {
         <Outlet />
       ) : (
         <RoleProvider>
-          <ActionsProvider>
-            <AppShell>
-              <Outlet />
-            </AppShell>
-          </ActionsProvider>
+          <ModeProvider>
+            <ActionsProvider>
+              <AppShell>
+                <Outlet />
+              </AppShell>
+            </ActionsProvider>
+          </ModeProvider>
         </RoleProvider>
       )}
       <Toaster />

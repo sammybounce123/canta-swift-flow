@@ -94,6 +94,32 @@ function Landing() {
         </div>
       </section>
 
+      {/* Platform pillars */}
+      <section id="pillars" className="max-w-7xl mx-auto px-6 py-24">
+        <div className="text-center max-w-2xl mx-auto">
+          <div className="text-xs uppercase tracking-widest text-accent-foreground/80 font-semibold">The Canta Platform</div>
+          <h2 className="text-3xl md:text-5xl font-semibold tracking-tight mt-3">Move money. Move goods. Collect and spend globally.</h2>
+          <p className="text-muted-foreground mt-4">Canta is the financial and trade operating system for African businesses moving money, goods and spend globally.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-14">
+          {[
+            { t: "Enterprise Treasury", d: "Manage FX, wallets, beneficiaries, approvals and global settlements." },
+            { t: "Trade Desk", d: "Track shipments, organize documents, manage suppliers and calculate landed cost." },
+            { t: "Freight Forwarders", d: "Reduce customer calls. Send shipment updates, manage invoices, track every customer." },
+            { t: "Global Collections", d: "Help global businesses collect locally from African customers and settle globally." },
+            { t: "Global Spend Cards", d: "Purpose-built cards for business, travel, import expenses, students and ad spend." },
+            { t: "AI Growth & Intelligence", d: "Extract documents, score leads, estimate landed cost and guide sales teams." },
+          ].map((f) => (
+            <div key={f.t} className="p-6 rounded-2xl border border-border bg-card hover:shadow-elevated transition">
+              <div className="font-semibold">{f.t}</div>
+              <div className="text-sm text-muted-foreground mt-1.5">{f.d}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+
+
       {/* Platform features */}
       <section id="platform" className="max-w-7xl mx-auto px-6 py-24">
         <div className="text-center max-w-2xl mx-auto">
