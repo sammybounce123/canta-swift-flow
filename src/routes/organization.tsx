@@ -269,6 +269,14 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   "Settlement Approver": ["view dashboard", "view collections", "approve settlement", "view settlement reports", "view audit trail"],
   "Support Agent": ["view dashboard", "view payers", "view collections", "send WhatsApp update"],
   "Regional Staff": ["view dashboard", "view payers", "view masked card details only", "view staff spend"],
+
+  // Supplier / Exporter role templates
+  "Supplier Owner": PERMISSIONS.flatMap((g) => g.items),
+  "Supplier Admin": PERMISSIONS.flatMap((g) => g.items).filter((p) => p !== "manage API keys"),
+  "Supplier Finance": ["view dashboard", "create invoice", "view payment status", "view funds secured", "view settlement status", "download settlement receipt", "export invoice reports", "export settlement reports", "request escrow release"],
+  "Supplier Operations": ["view dashboard", "create buyer record", "create invoice", "upload supplier documents", "manage escrow milestones", "view payment status", "view funds secured", "send WhatsApp update"],
+  "Sales Representative": ["view dashboard", "create buyer record", "view buyer verification status", "create invoice", "view payment status"],
+  "Settlement Manager": ["view dashboard", "view settlement status", "download settlement receipt", "request escrow release", "manage escrow milestones", "export settlement reports", "view funds secured"],
 };
 
 // ---------- Page ----------
