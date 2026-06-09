@@ -208,6 +208,8 @@ function SupplierDashboard() {
           <TabsTrigger value="settlements">Settlements</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="profile">Supplier Profile</TabsTrigger>
+          <TabsTrigger value="reports">Reports</TabsTrigger>
+          <TabsTrigger value="team">Team</TabsTrigger>
         </TabsList>
 
         <TabsContent value="buyers" className="mt-6"><BuyersTable /></TabsContent>
@@ -217,6 +219,8 @@ function SupplierDashboard() {
         <TabsContent value="settlements" className="mt-6"><SettlementsTable /></TabsContent>
         <TabsContent value="documents" className="mt-6"><DocumentsPanel /></TabsContent>
         <TabsContent value="profile" className="mt-6"><ProfilePanel /></TabsContent>
+        <TabsContent value="reports" className="mt-6"><SupplierReportsPanel /></TabsContent>
+        <TabsContent value="team" className="mt-6"><SupplierTeamPanel /></TabsContent>
       </Tabs>
 
       <WorkspaceCardsPanel
