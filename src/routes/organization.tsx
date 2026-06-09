@@ -185,6 +185,19 @@ const PERMISSIONS = [
     ],
   },
   {
+    group: "Global Merchant / University",
+    items: [
+      "create payment link", "create invoice",
+      "view payers", "manage payer references",
+      "view collections", "approve settlement", "view settlement reports",
+      "manage reconciliation", "export collection reports",
+      "create staff card", "assign card to regional staff",
+      "create marketing card", "create travel card",
+      "approve card spend", "view staff spend",
+      "manage merchant sub-users",
+    ],
+  },
+  {
     group: "Reporting & Compliance",
     items: ["export reports", "view compliance pack"],
   },
