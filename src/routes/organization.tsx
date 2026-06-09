@@ -116,6 +116,13 @@ const ROLE_GROUPS = [
     label: "Cards",
     roles: ["Card Admin", "Cardholder", "Card Approver", "Spend Auditor"],
   },
+  {
+    label: "Standalone Card User",
+    roles: [
+      "Card Owner", "Cardholder", "Parent / Sponsor", "Student Cardholder",
+      "Business Cardholder", "Card Approver", "Spend Auditor",
+    ],
+  },
 ];
 
 const PERMISSIONS = [
@@ -217,6 +224,14 @@ const PERMISSIONS = [
     ],
   },
   {
+    group: "Standalone Card User",
+    items: [
+      "create personal card", "request card", "fund card", "freeze card",
+      "view transactions", "upload receipt", "set budget",
+      "request top-up", "approve top-up", "view spend reports",
+    ],
+  },
+  {
     group: "Reporting & Compliance",
     items: ["export reports", "view compliance pack"],
   },
@@ -277,6 +292,12 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   "Supplier Operations": ["view dashboard", "create buyer record", "create invoice", "upload supplier documents", "manage escrow milestones", "view payment status", "view funds secured", "send WhatsApp update"],
   "Sales Representative": ["view dashboard", "create buyer record", "view buyer verification status", "create invoice", "view payment status"],
   "Settlement Manager": ["view dashboard", "view settlement status", "download settlement receipt", "request escrow release", "manage escrow milestones", "export settlement reports", "view funds secured"],
+
+  // Standalone Card User role templates
+  "Card Owner": ["view dashboard", "create personal card", "request card", "fund card", "freeze card", "view transactions", "upload receipt", "set budget", "request top-up", "approve top-up", "view spend reports", "view masked card details only"],
+  "Parent / Sponsor": ["view dashboard", "fund card", "freeze card", "view transactions", "set budget", "approve top-up", "view spend reports"],
+  "Student Cardholder": ["view dashboard", "view masked card details only", "view transactions", "upload receipt", "request top-up"],
+  "Business Cardholder": ["view dashboard", "view masked card details only", "view transactions", "upload receipt", "request top-up", "view spend reports"],
 };
 
 // ---------- Page ----------
@@ -708,6 +729,7 @@ function PermissionsMatrix() {
     "Freight Owner", "Freight Admin", "Operations Manager", "Operations Staff", "Warehouse Staff", "Clearing Agent", "Customer Support",
     "Merchant Owner", "Merchant Admin", "Collections Manager", "Reconciliation Officer", "Settlement Approver", "Support Agent", "Regional Staff",
     "Supplier Owner", "Supplier Admin", "Supplier Finance", "Supplier Operations", "Sales Representative", "Settlement Manager",
+    "Card Owner", "Parent / Sponsor", "Student Cardholder", "Business Cardholder",
     "Finance Officer", "Accountant", "Auditor", "Staff Cardholder", "Viewer",
   ];
   return (
