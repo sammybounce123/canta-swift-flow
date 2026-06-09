@@ -241,6 +241,18 @@ const PERMISSIONS = [
     ],
   },
   {
+    group: "Canta Internal",
+    items: [
+      "view all customers", "create trade file for customer", "edit trade file",
+      "assign customer to sales agent", "review WhatsApp conversations",
+      "extract documents", "approve KYB", "flag transaction",
+      "approve settlement", "process payout", "review supplier verification",
+      "manage card operations", "freeze card", "manage integrations",
+      "view audit trail", "export reports",
+      "impersonate customer view for support", "assign support tickets",
+    ],
+  },
+  {
     group: "Reporting & Compliance",
     items: ["export reports", "view compliance pack"],
   },
