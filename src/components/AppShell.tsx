@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Wallet, ArrowLeftRight, Receipt, Users, Building2,
   Sparkles, Shield, Settings, Bell, Search, ChevronDown, TrendingUp, TrendingDown,
   UserCog, Check, Menu, FileText, Ship, Truck, Factory, Globe, CreditCard,
-  Brain, ShieldCheck, Plug, MessageCircle, CheckSquare, Network,
+  Brain, ShieldCheck, Plug, MessageCircle, CheckSquare, Network, Crown,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRole, ALL_ROLES, type Permission, type Role } from "@/components/RoleProvider";
