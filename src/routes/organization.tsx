@@ -90,7 +90,11 @@ const ROLE_GROUPS = [
   },
   {
     label: "Freight",
-    roles: ["Freight Admin", "Operations Staff", "Warehouse Staff", "Clearing Agent", "Customer Support"],
+    roles: [
+      "Freight Owner", "Freight Admin", "Operations Manager", "Operations Staff",
+      "Warehouse Staff", "Clearing Agent", "Customer Support",
+      "Finance Officer", "Staff Cardholder", "Viewer",
+    ],
   },
   {
     label: "Cards",
