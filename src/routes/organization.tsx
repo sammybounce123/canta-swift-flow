@@ -616,9 +616,10 @@ function InviteUserDialog() {
 
 function PermissionsMatrix() {
   const roles = [
-    "Owner", "Admin", "Enterprise Owner", "Treasury Manager", "Finance Officer",
-    "Payment Initiator", "Payment Approver", "Compliance Officer",
-    "Accountant", "Auditor", "Staff Cardholder", "Viewer",
+    "Owner", "Admin",
+    "Enterprise Owner", "Treasury Manager", "Payment Initiator", "Payment Approver", "Compliance Officer",
+    "Importer Owner", "Procurement Officer", "Logistics Manager", "Sales Manager",
+    "Finance Officer", "Accountant", "Auditor", "Staff Cardholder", "Viewer",
   ];
   return (
     <Card className="p-5 shadow-card overflow-x-auto">
