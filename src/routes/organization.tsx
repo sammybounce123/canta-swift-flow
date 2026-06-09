@@ -185,6 +185,12 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   Accountant: ["view dashboard", "view wallet balances", "view card spend", "require receipts", "export transaction reports"],
   Auditor: ["view dashboard", "view wallet balances", "view card spend", "view compliance reports", "view audit trail", "export transaction reports"],
   "Staff Cardholder": ["view dashboard", "view masked card details only", "view card spend"],
+
+  // Importer role templates
+  "Importer Owner": PERMISSIONS.flatMap((g) => g.items),
+  "Procurement Officer": ["view dashboard", "create trade file", "edit trade file", "view trade file", "upload documents", "manage suppliers", "request supplier verification", "view landed cost", "send WhatsApp update", "create importer card", "link card to trade file", "view card spend"],
+  "Logistics Manager": ["view dashboard", "view trade file", "create shipment", "edit shipment", "view shipment", "upload documents", "view landed cost", "send WhatsApp update", "link card to shipment", "view card spend"],
+  "Sales Manager": ["view dashboard", "view trade file", "view shipment", "manage suppliers", "view card spend", "send WhatsApp update"],
 };
 
 // ---------- Page ----------
