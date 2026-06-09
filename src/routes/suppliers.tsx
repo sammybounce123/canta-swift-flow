@@ -12,6 +12,7 @@ import { fmtMoney } from "@/lib/mock";
 import {
   Users, FileText, ShieldCheck, Wallet, CheckCircle2, AlertTriangle, Plus, Copy,
   Lock, Banknote, Calendar, Download, Globe, Award, Receipt, Upload, Building2,
+  MessageCircle, Clock, TrendingUp,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
