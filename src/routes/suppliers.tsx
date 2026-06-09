@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { fmtMoney } from "@/lib/mock";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
+import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import {
   Users, FileText, ShieldCheck, Wallet, CheckCircle2, AlertTriangle, Plus, Copy,
   Lock, Banknote, Calendar, Download, Globe, Award, Receipt, Upload, Building2,
@@ -130,6 +131,7 @@ function SupplierDashboard() {
 
   return (
     <div className="space-y-6">
+      <WorkspaceWelcome workspace="supplier_dashboard" />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Supplier Dashboard</h1>

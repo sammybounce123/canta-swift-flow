@@ -1,0 +1,114 @@
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Building2, Ship, Truck, Globe, Factory, CreditCard, Crown,
+  ArrowRight, CheckCircle2,
+} from "lucide-react";
+import { toast } from "sonner";
+import { SEGMENTS, saveProfile, type WorkspaceType } from "@/lib/profile";
+
+export const Route = createFileRoute("/welcome")({
+  head: () => ({ meta: [{ title: "Welcome to Canta — Choose your workspace" }] }),
+  component: WelcomePage,
+});
+
+const ICONS: Record<WorkspaceType, typeof Building2> = {
+  enterprise_treasury: Building2,
+  importer_portal: Ship,
+  freight_workspace: Truck,
+  global_collections: Globe,
+  supplier_dashboard: Factory,
+  global_spend_cards: CreditCard,
+  canta_admin: Crown,
+};
+
+const TONES: Record<WorkspaceType, string> = {
+  enterprise_treasury: "bg-primary/10 text-primary",
+  importer_portal: "bg-accent/15 text-accent",
+  freight_workspace: "bg-warning/15 text-warning",
+  global_collections: "bg-success/10 text-success",
+  supplier_dashboard: "bg-amber-500/15 text-amber-700",
+  global_spend_cards: "bg-destructive/10 text-destructive",
+  canta_admin: "bg-muted text-foreground",
+};
+
+function WelcomePage() {
+  const navigate = useNavigate();
+  const [selected, setSelected] = useState<WorkspaceType | null>(null);
+
+  const choose = (id: WorkspaceType) => {
+    const segment = SEGMENTS.find((s) => s.id === id)!;
+    saveProfile(segment);
+    toast.success(`Workspace set: ${segment.shortLabel}`, {
+      description: segment.welcome,
+    });
+    setTimeout(() => navigate({ to: segment.route as never }), 400);
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <header className="border-b border-border bg-card">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2">
+            <div className="h-7 w-7 rounded-md bg-primary grid place-items-center text-primary-foreground text-sm font-bold">C</div>
+            <span className="font-semibold">Canta</span>
+            <Badge variant="secondary" className="ml-2 hidden sm:inline-flex">Choose workspace</Badge>
+          </Link>
+          <div className="text-xs text-muted-foreground hidden sm:block">
+            Already onboarded? <Link to="/dashboard" className="text-primary font-medium">Continue to app</Link>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-5xl mx-auto px-6 py-12">
+        <div className="text-center mb-10">
+          <Badge variant="outline" className="mb-3">Step 1 · Tell us about you</Badge>
+          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">What best describes you?</h1>
+          <p className="text-sm text-muted-foreground mt-2 max-w-2xl mx-auto">
+            We'll set up the right workspace, roles, and tools for how you use Canta. You can switch later from your account menu.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {SEGMENTS.map((s) => {
+            const Icon = ICONS[s.id];
+            const isSelected = selected === s.id;
+            return (
+              <button
+                key={s.id}
+                onMouseEnter={() => setSelected(s.id)}
+                onClick={() => choose(s.id)}
+                className={`text-left p-5 rounded-2xl border bg-card transition-all hover:shadow-card hover:-translate-y-0.5 ${
+                  isSelected ? "border-accent shadow-card" : "border-border"
+                }`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className={`h-10 w-10 rounded-xl grid place-items-center ${TONES[s.id]}`}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  {isSelected && <CheckCircle2 className="h-4 w-4 text-accent" />}
+                </div>
+                <div className="mt-4 text-base font-semibold">{s.label}</div>
+                <div className="text-xs text-muted-foreground mt-1">{s.tagline}</div>
+                <div className="mt-3 text-xs text-foreground/80 leading-relaxed">{s.welcome}</div>
+                <div className="mt-4 flex items-center justify-between text-[11px]">
+                  <span className="text-muted-foreground">Routes to <span className="font-medium text-foreground">{s.shortLabel}</span></span>
+                  <span className="inline-flex items-center gap-1 text-accent font-medium">
+                    Continue <ArrowRight className="h-3 w-3" />
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-10 text-center text-xs text-muted-foreground">
+          Need full enterprise verification? <Link to="/onboarding" className="text-primary font-medium">Start KYB onboarding</Link>
+        </div>
+      </div>
+    </div>
+  );
+}

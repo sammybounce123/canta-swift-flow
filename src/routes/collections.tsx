@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { collections, fmtMoney } from "@/lib/mock";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
+import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import {
   Globe, Plus, Link as LinkIcon, GraduationCap, Home, Stethoscope, Plane, ShoppingBag, Receipt,
   Banknote, TrendingUp, AlertTriangle, Users, FileText, ArrowRight, Copy, Download,
@@ -240,6 +241,7 @@ function Collections() {
 
   return (
     <div className="space-y-6">
+      <WorkspaceWelcome workspace="global_collections" />
       {/* Header */}
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>

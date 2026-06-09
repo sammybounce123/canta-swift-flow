@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { shipments, suppliers, freightInvoices, fmtMoney, type Shipment } from "@/lib/mock";
 import { buildWhatsAppUrl, type WhatsAppTemplateKey } from "@/lib/whatsapp";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
+import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import {
   MessageCircle, Upload, Sparkles, FileQuestion, Ship, Calendar, Truck, Bell, ShieldCheck,
   CheckCircle2, AlertCircle, ArrowRight, Receipt, Package, Send, Link as LinkIcon, Copy,
@@ -81,6 +82,7 @@ function ImporterPortal() {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
+      <WorkspaceWelcome workspace="importer_portal" />
       <div>
         <h1 className="text-2xl font-semibold">Welcome back, Tunde 👋</h1>
         <p className="text-sm text-muted-foreground mt-1">Here's a simple view of your goods, suppliers and payments.</p>

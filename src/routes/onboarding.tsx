@@ -105,8 +105,8 @@ function Onboarding() {
 
   const submit = () => {
     setState((s) => ({ ...s, completedAt: new Date().toISOString() }));
-    toast.success("Onboarding submitted", { description: "Compliance review typically completes within 24 hours." });
-    setTimeout(() => navigate({ to: "/dashboard" }), 800);
+    toast.success("Onboarding submitted", { description: "Now choose the workspace that fits how you'll use Canta." });
+    setTimeout(() => navigate({ to: "/welcome" }), 800);
   };
 
   const Step = steps[state.step];
