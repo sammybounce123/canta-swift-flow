@@ -155,6 +155,17 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   Cardholder: ["view dashboard", "view masked card details only"],
   "Card Approver": ["view dashboard", "approve card requests", "view card details"],
   "Spend Auditor": ["view dashboard", "view card details", "export reports", "view audit trail"],
+
+  // Enterprise role templates
+  "Enterprise Owner": PERMISSIONS.flatMap((g) => g.items),
+  "Treasury Manager": ["view dashboard", "view wallet balances", "view wallets", "create FX conversion", "approve FX conversion", "create beneficiary", "approve beneficiary", "initiate payment", "approve payment", "fund staff card", "view card spend", "export transaction reports", "view audit trail"],
+  "Finance Officer": ["view dashboard", "view wallet balances", "create FX conversion", "create beneficiary", "initiate payment", "view card spend", "require receipts", "export transaction reports"],
+  "Payment Initiator": ["view dashboard", "view wallet balances", "create beneficiary", "initiate payment"],
+  "Payment Approver": ["view dashboard", "view wallet balances", "approve payment", "approve beneficiary", "approve FX conversion", "view audit trail"],
+  "Compliance Officer": ["view dashboard", "view compliance reports", "view compliance pack", "approve beneficiary", "approve payment", "export transaction reports", "view audit trail"],
+  Accountant: ["view dashboard", "view wallet balances", "view card spend", "require receipts", "export transaction reports"],
+  Auditor: ["view dashboard", "view wallet balances", "view card spend", "view compliance reports", "view audit trail", "export transaction reports"],
+  "Staff Cardholder": ["view dashboard", "view masked card details only", "view card spend"],
 };
 
 // ---------- Page ----------
