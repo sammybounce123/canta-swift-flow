@@ -90,7 +90,11 @@ function FxTicker() {
 
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   const { role, can, profile } = useRole();
-  const visibleNav = nav.filter((n) => can(n.perm));
+  const userProfile = loadProfile();
+  const allowed = userProfile
+    ? getAllowedRoutes(userProfile.workspace_type, userProfile.feature_flags ?? defaultFlagsFor(userProfile.workspace_type))
+    : null;
+  const visibleNav = nav.filter((n) => can(n.perm) && (!allowed || allowed.has(n.to) || n.to === "/admin" && userProfile?.workspace_type === "canta_admin"));
   const groups = Array.from(new Set(visibleNav.map((n) => n.group ?? "Other")));
   return (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
