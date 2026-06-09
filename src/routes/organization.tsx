@@ -763,6 +763,7 @@ function PermissionsMatrix() {
     "Merchant Owner", "Merchant Admin", "Collections Manager", "Reconciliation Officer", "Settlement Approver", "Support Agent", "Regional Staff",
     "Supplier Owner", "Supplier Admin", "Supplier Finance", "Supplier Operations", "Sales Representative", "Settlement Manager",
     "Card Owner", "Parent / Sponsor", "Student Cardholder", "Business Cardholder",
+    "Canta Super Admin", "Canta Trade Officer", "Canta Compliance Officer", "Canta Treasury Officer", "Canta Sales Agent", "Canta Support Agent", "Canta Card Operations", "Canta Collections Officer", "Canta Freight Operations", "Canta Auditor",
     "Finance Officer", "Accountant", "Auditor", "Staff Cardholder", "Viewer",
   ];
   return (
