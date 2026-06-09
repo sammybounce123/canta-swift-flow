@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { Calendar, Layers } from "lucide-react";
 import { useActions } from "@/components/ActionsProvider";
+import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 
 const allocation = [
   { name: "USD", value: 62 },
@@ -99,6 +100,30 @@ function Treasury() {
           </div>
         </Card>
       </div>
+
+      <WorkspaceCardsPanel
+        title="Company Cards"
+        subtitle="Staff, department, travel, procurement, ad-spend and project cards across the enterprise."
+        categories={["Staff", "Department", "Travel", "Procurement", "Ad Spend", "Project"]}
+        pendingApprovals={3}
+        receiptsMissing={5}
+        groupedLabel="department"
+        groupedSpend={[
+          { label: "Procurement", amount: 84_200 },
+          { label: "Sales", amount: 41_800 },
+          { label: "Operations", amount: 36_400 },
+          { label: "Marketing", amount: 28_900 },
+          { label: "Treasury", amount: 12_400 },
+        ]}
+        cards={[
+          { id: "T1", label: "CFO Travel",         holder: "Adaeze O.", last4: "4421", status: "Active", monthlySpend: 3850, limit: 8000,  category: "Travel",     linked: "Trip: Dubai Sourcing" },
+          { id: "T2", label: "Procurement Dept",   holder: "Tunde B.",  last4: "7782", status: "Active", monthlySpend: 12400, limit: 25000, category: "Procurement", linked: "Cost Center CC-100" },
+          { id: "T3", label: "Meta Ads — Brand",   holder: "Marketing", last4: "9012", status: "Active", monthlySpend: 5150,  limit: 10000, category: "Ad Spend",    linked: "Campaign: Brand-Q2" },
+          { id: "T4", label: "Lagos HQ Office",    holder: "Femi A.",   last4: "3318", status: "Frozen", monthlySpend: 1280,  limit: 5000,  category: "Staff" },
+          { id: "T5", label: "Project Atlantic",   holder: "Ops Team",  last4: "5567", status: "Active", monthlySpend: 6800,  limit: 15000, category: "Project",     linked: "Project: Atlantic" },
+          { id: "T6", label: "Sales Per-Diem",     holder: "Sales",     last4: "2204", status: "Active", monthlySpend: 2240,  limit: 6000,  category: "Staff" },
+        ]}
+      />
     </div>
   );
 }
