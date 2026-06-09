@@ -70,12 +70,35 @@ export const fxHistory = [
 
 // ---------- Trade & Logistics ----------
 export const importers = [
-  { name: "ABC Electronics", country: "Nigeria", shipments: 14, outstanding: 24_500, status: "Active" },
-  { name: "Global Motors", country: "Nigeria", shipments: 9, outstanding: 0, status: "Active" },
-  { name: "Balogun Trade Hub", country: "Nigeria", shipments: 22, outstanding: 8_900, status: "Active" },
-  { name: "Trade Fair Imports", country: "Nigeria", shipments: 6, outstanding: 12_000, status: "Pending KYB" },
-  { name: "Dav Excel Autos", country: "Nigeria", shipments: 11, outstanding: 3_200, status: "Active" },
-  { name: "Billion Trend Autos", country: "Nigeria", shipments: 7, outstanding: 0, status: "Active" },
+  { name: "ABC Electronics",     country: "Nigeria", phone: "+234 801 234 5566", shipments: 14, active: 3, outstanding: 24_500, status: "Active",      lastShipment: "2026-06-04" },
+  { name: "Global Motors",       country: "Nigeria", phone: "+234 802 991 1108", shipments: 9,  active: 2, outstanding: 0,      status: "Active",      lastShipment: "2026-06-01" },
+  { name: "Balogun Trade Hub",   country: "Nigeria", phone: "+234 803 442 7765", shipments: 22, active: 4, outstanding: 8_900,  status: "Active",      lastShipment: "2026-06-06" },
+  { name: "Trade Fair Imports",  country: "Nigeria", phone: "+234 805 119 2230", shipments: 6,  active: 1, outstanding: 12_000, status: "Pending KYB", lastShipment: "2026-05-28" },
+  { name: "Dav Excel Autos",     country: "Nigeria", phone: "+234 806 700 4423", shipments: 11, active: 2, outstanding: 3_200,  status: "Active",      lastShipment: "2026-06-05" },
+  { name: "Billion Trend Autos", country: "Nigeria", phone: "+234 807 552 1190", shipments: 7,  active: 1, outstanding: 0,      status: "Active",      lastShipment: "2026-05-30" },
+];
+
+export type FreightInvoice = {
+  id: string; customer: string; shipment: string; amount: number; ccy: string;
+  status: "Paid" | "Unpaid" | "Partially Paid" | "Overdue"; due: string; issued: string;
+};
+
+export const freightInvoices: FreightInvoice[] = [
+  { id: "FINV-3041", customer: "ABC Electronics",    shipment: "SHP-10421", amount: 4_800, ccy: "USD", status: "Unpaid",         due: "2026-06-20", issued: "2026-06-05" },
+  { id: "FINV-3042", customer: "Balogun Trade Hub",  shipment: "SHP-10422", amount: 3_200, ccy: "USD", status: "Partially Paid", due: "2026-06-22", issued: "2026-06-06" },
+  { id: "FINV-3043", customer: "Dav Excel Autos",    shipment: "SHP-10423", amount: 2_100, ccy: "USD", status: "Paid",           due: "2026-06-12", issued: "2026-05-28" },
+  { id: "FINV-3044", customer: "Global Motors",      shipment: "SHP-10424", amount: 9_400, ccy: "USD", status: "Unpaid",         due: "2026-07-01", issued: "2026-06-08" },
+  { id: "FINV-3045", customer: "Trade Fair Imports", shipment: "SHP-10426", amount: 1_750, ccy: "USD", status: "Overdue",        due: "2026-06-01", issued: "2026-05-15" },
+  { id: "FINV-3046", customer: "ABC Electronics",    shipment: "SHP-10427", amount: 640,   ccy: "USD", status: "Paid",           due: "2026-06-10", issued: "2026-06-01" },
+];
+
+export const monthlyShipmentVolume = [
+  { m: "Jan", count: 18, revenue: 22_400 },
+  { m: "Feb", count: 21, revenue: 26_900 },
+  { m: "Mar", count: 24, revenue: 31_200 },
+  { m: "Apr", count: 28, revenue: 36_800 },
+  { m: "May", count: 31, revenue: 42_500 },
+  { m: "Jun", count: 34, revenue: 47_900 },
 ];
 
 export const suppliers = [
