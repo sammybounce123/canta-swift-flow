@@ -31,16 +31,30 @@ export const Route = createFileRoute("/cards")({
 // ---------- Purpose definitions ----------
 type Purpose =
   | "Business Expenses" | "Travel" | "Import/Trade Expenses"
-  | "Student Abroad" | "Online Ads" | "Team Spending" | "Personal Global Spend";
+  | "Student Abroad" | "Online Ads" | "Team Spending" | "Personal Global Spend"
+  | "Shipment/Project Expense";
 
 const PURPOSES: { i: any; l: Purpose; d: string; type: MockCard["type"]; tone: string }[] = [
-  { i: Briefcase,      l: "Business Expenses",       d: "Day-to-day company spend",         type: "Business", tone: "bg-primary/10 text-primary" },
-  { i: Plane,          l: "Travel",                  d: "Trips, hotels, per-diem",          type: "Travel",   tone: "bg-accent/15 text-accent" },
-  { i: Ship,           l: "Import/Trade Expenses",   d: "Samples, inspection, logistics",   type: "Importer", tone: "bg-warning/10 text-warning" },
-  { i: GraduationCap,  l: "Student Abroad",          d: "Monthly allowance & emergencies",  type: "Student",  tone: "bg-success/10 text-success" },
-  { i: Megaphone,      l: "Online Ads",              d: "Meta, Google, TikTok campaigns",   type: "Ad Spend", tone: "bg-destructive/10 text-destructive" },
-  { i: Users,          l: "Team Spending",           d: "Staff cards with approvals",       type: "Team",     tone: "bg-primary/10 text-primary" },
-  { i: Globe,          l: "Personal Global Spend",   d: "Worldwide personal use",           type: "Business", tone: "bg-muted text-foreground" },
+  { i: Briefcase,      l: "Business Expenses",         d: "Day-to-day company spend",         type: "Business", tone: "bg-primary/10 text-primary" },
+  { i: Plane,          l: "Travel",                    d: "Trips, hotels, per-diem",          type: "Travel",   tone: "bg-accent/15 text-accent" },
+  { i: Ship,           l: "Import/Trade Expenses",     d: "Samples, inspection, logistics",   type: "Importer", tone: "bg-warning/10 text-warning" },
+  { i: GraduationCap,  l: "Student Abroad",            d: "Monthly allowance & emergencies",  type: "Student",  tone: "bg-success/10 text-success" },
+  { i: Megaphone,      l: "Online Ads",                d: "Meta, Google, TikTok campaigns",   type: "Ad Spend", tone: "bg-destructive/10 text-destructive" },
+  { i: Users,          l: "Team Spending",             d: "Staff cards with approvals",       type: "Team",     tone: "bg-primary/10 text-primary" },
+  { i: Globe,          l: "Personal Global Spend",     d: "Worldwide personal use",           type: "Business", tone: "bg-muted text-foreground" },
+  { i: Ship,           l: "Shipment/Project Expense",  d: "Linked to a shipment or project",  type: "Importer", tone: "bg-warning/10 text-warning" },
+];
+
+const CATEGORIES = [
+  "Travel", "Supplier Samples", "Inspection Fees", "Logistics",
+  "Ads", "SaaS", "Staff Expense", "Project Expense", "Other",
+];
+const WORKSPACES = [
+  "Enterprise Treasury", "Trade File", "Shipment", "Freight Customer",
+  "Global Collections", "Department", "Project", "Cost Center",
+];
+const WHO_OPTIONS = [
+  "Me", "Existing staff member", "New staff member", "Department", "Team",
 ];
 
 // ---------- Extended card data ----------
