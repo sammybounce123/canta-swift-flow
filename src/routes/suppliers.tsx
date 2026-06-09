@@ -9,6 +9,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { fmtMoney } from "@/lib/mock";
+import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import {
   Users, FileText, ShieldCheck, Wallet, CheckCircle2, AlertTriangle, Plus, Copy,
   Lock, Banknote, Calendar, Download, Globe, Award, Receipt, Upload, Building2,
@@ -217,6 +218,25 @@ function SupplierDashboard() {
         <TabsContent value="documents" className="mt-6"><DocumentsPanel /></TabsContent>
         <TabsContent value="profile" className="mt-6"><ProfilePanel /></TabsContent>
       </Tabs>
+
+      <WorkspaceCardsPanel
+        title="Supplier Cards"
+        subtitle="Cards for sample shipping, factory inspections, certifications, sourcing trips and platform fees."
+        categories={["Sample shipping", "Inspections", "Certifications", "Sourcing travel", "Platform fees"]}
+        pendingApprovals={1}
+        receiptsMissing={2}
+        groupedLabel="buyer"
+        groupedSpend={[
+          { label: "ABC Electronics",   amount: 4_200 },
+          { label: "Global Motors",     amount: 2_900 },
+          { label: "Balogun Trade Hub", amount: 1_700 },
+        ]}
+        cards={[
+          { id: "S1", label: "Sample Shipping",   holder: "Logistics", last4: "2240", status: "Active", monthlySpend: 1800, limit: 4000, category: "Sample shipping" },
+          { id: "S2", label: "QC Inspections",    holder: "Quality",   last4: "8814", status: "Active", monthlySpend: 950,  limit: 3000, category: "Inspections" },
+          { id: "S3", label: "Sourcing Travel",   holder: "Sales",     last4: "5567", status: "Active", monthlySpend: 1400, limit: 5000, category: "Sourcing travel" },
+        ]}
+      />
     </div>
   );
 }

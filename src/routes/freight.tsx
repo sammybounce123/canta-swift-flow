@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { shipments, importers, freightInvoices, monthlyShipmentVolume, shippingLines, fmtMoney, type Shipment, type FreightInvoice } from "@/lib/mock";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import { Truck, Plus, MessageCircle, FileText, DollarSign, Users as UsersIcon, AlertTriangle, Ship, Eye, Upload, CheckCircle2, Clock, TrendingUp, BarChart3, Send } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -170,6 +171,30 @@ function Freight() {
           <ReportsPanel />
         </TabsContent>
       </Tabs>
+
+      {/* Cards panel */}
+      <WorkspaceCardsPanel
+        title="Freight Cards"
+        subtitle="Cards for operations staff, port expenses, warehouse, customer support and branch routes."
+        categories={["Operations", "Port expense", "Travel", "Warehouse", "Customer support", "Branch/Route"]}
+        pendingApprovals={1}
+        receiptsMissing={4}
+        groupedLabel="branch / route"
+        groupedSpend={[
+          { label: "Apapa Port",   amount: 14_200 },
+          { label: "Tin Can",      amount: 11_800 },
+          { label: "Tema, Ghana",  amount: 6_400 },
+          { label: "Dubai Hub",    amount: 3_900 },
+        ]}
+        cards={[
+          { id: "F1", label: "Apapa Port Ops",     holder: "Femi A.",  last4: "5510", status: "Active", monthlySpend: 5400, limit: 12000, category: "Port expense" },
+          { id: "F2", label: "Warehouse Lagos",    holder: "Warehouse",last4: "3382", status: "Active", monthlySpend: 1820, limit: 5000,  category: "Warehouse" },
+          { id: "F3", label: "Customer Support",   holder: "Support",  last4: "7741", status: "Active", monthlySpend: 480,  limit: 2000,  category: "Customer support" },
+          { id: "F4", label: "Shipment SH-9012",   holder: "Ops Team", last4: "1124", status: "Active", monthlySpend: 3300, limit: 8000,  category: "Operations", linked: "Shenzhen → Lagos" },
+          { id: "F5", label: "Dubai Hub Travel",   holder: "Adaeze O.",last4: "9920", status: "Active", monthlySpend: 1750, limit: 4000,  category: "Travel" },
+          { id: "F6", label: "Tin Can Clearing",   holder: "Clearing", last4: "6603", status: "Frozen", monthlySpend: 920,  limit: 3000,  category: "Port expense" },
+        ]}
+      />
 
       {/* WhatsApp compose modal */}
       <Dialog open={!!waCustomer || !!waShipment} onOpenChange={(o) => { if (!o) { setWaCustomer(null); setWaShipment(null); } }}>

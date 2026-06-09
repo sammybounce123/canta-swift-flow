@@ -18,6 +18,7 @@ import { Route as TeamRouteImport } from './routes/team'
 import { Route as SuppliersRouteImport } from './routes/suppliers'
 import { Route as ShipmentsRouteImport } from './routes/shipments'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as OrganizationRouteImport } from './routes/organization'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as IntegrationsRouteImport } from './routes/integrations'
 import { Route as ImporterRouteImport } from './routes/importer'
@@ -80,6 +81,11 @@ const ShipmentsRoute = ShipmentsRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrganizationRoute = OrganizationRouteImport.update({
+  id: '/organization',
+  path: '/organization',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -188,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/importer': typeof ImporterRoute
   '/integrations': typeof IntegrationsRoute
   '/onboarding': typeof OnboardingRoute
+  '/organization': typeof OrganizationRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
   '/suppliers': typeof SuppliersRoute
@@ -217,6 +224,7 @@ export interface FileRoutesByTo {
   '/importer': typeof ImporterRoute
   '/integrations': typeof IntegrationsRoute
   '/onboarding': typeof OnboardingRoute
+  '/organization': typeof OrganizationRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
   '/suppliers': typeof SuppliersRoute
@@ -246,6 +254,7 @@ export interface FileRoutesById {
   '/importer': typeof ImporterRoute
   '/integrations': typeof IntegrationsRoute
   '/onboarding': typeof OnboardingRoute
+  '/organization': typeof OrganizationRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
   '/suppliers': typeof SuppliersRoute
@@ -277,6 +286,7 @@ export interface FileRouteTypes {
     | '/importer'
     | '/integrations'
     | '/onboarding'
+    | '/organization'
     | '/settings'
     | '/shipments'
     | '/suppliers'
@@ -306,6 +316,7 @@ export interface FileRouteTypes {
     | '/importer'
     | '/integrations'
     | '/onboarding'
+    | '/organization'
     | '/settings'
     | '/shipments'
     | '/suppliers'
@@ -334,6 +345,7 @@ export interface FileRouteTypes {
     | '/importer'
     | '/integrations'
     | '/onboarding'
+    | '/organization'
     | '/settings'
     | '/shipments'
     | '/suppliers'
@@ -364,6 +376,7 @@ export interface RootRouteChildren {
   ImporterRoute: typeof ImporterRoute
   IntegrationsRoute: typeof IntegrationsRoute
   OnboardingRoute: typeof OnboardingRoute
+  OrganizationRoute: typeof OrganizationRoute
   SettingsRoute: typeof SettingsRoute
   ShipmentsRoute: typeof ShipmentsRoute
   SuppliersRoute: typeof SuppliersRoute
@@ -440,6 +453,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/organization': {
+      id: '/organization'
+      path: '/organization'
+      fullPath: '/organization'
+      preLoaderRoute: typeof OrganizationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -600,6 +620,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImporterRoute: ImporterRoute,
   IntegrationsRoute: IntegrationsRoute,
   OnboardingRoute: OnboardingRoute,
+  OrganizationRoute: OrganizationRoute,
   SettingsRoute: SettingsRoute,
   ShipmentsRoute: ShipmentsRoute,
   SuppliersRoute: SuppliersRoute,
