@@ -74,7 +74,11 @@ const ROLE_GROUPS = [
   },
   {
     label: "Enterprise",
-    roles: ["Treasury Manager", "Finance Officer", "Approver", "Accountant", "Auditor"],
+    roles: [
+      "Enterprise Owner", "Treasury Manager", "Finance Officer",
+      "Payment Initiator", "Payment Approver", "Compliance Officer",
+      "Accountant", "Auditor", "Staff Cardholder", "Viewer",
+    ],
   },
   {
     label: "Importer",
