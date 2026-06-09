@@ -74,7 +74,11 @@ const ROLE_GROUPS = [
   },
   {
     label: "Enterprise",
-    roles: ["Treasury Manager", "Finance Officer", "Approver", "Accountant", "Auditor"],
+    roles: [
+      "Enterprise Owner", "Treasury Manager", "Finance Officer",
+      "Payment Initiator", "Payment Approver", "Compliance Officer",
+      "Accountant", "Auditor", "Staff Cardholder", "Viewer",
+    ],
   },
   {
     label: "Importer",
@@ -123,6 +127,17 @@ const PERMISSIONS = [
     ],
   },
   {
+    group: "Enterprise",
+    items: [
+      "view wallet balances", "create FX conversion", "approve FX conversion",
+      "create beneficiary", "approve beneficiary",
+      "initiate payment", "approve payment",
+      "create staff card", "approve staff card", "fund staff card", "freeze staff card",
+      "view card spend", "require receipts",
+      "view compliance reports", "export transaction reports", "manage enterprise users",
+    ],
+  },
+  {
     group: "Reporting & Compliance",
     items: ["export reports", "view compliance pack"],
   },
@@ -140,6 +155,17 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   Cardholder: ["view dashboard", "view masked card details only"],
   "Card Approver": ["view dashboard", "approve card requests", "view card details"],
   "Spend Auditor": ["view dashboard", "view card details", "export reports", "view audit trail"],
+
+  // Enterprise role templates
+  "Enterprise Owner": PERMISSIONS.flatMap((g) => g.items),
+  "Treasury Manager": ["view dashboard", "view wallet balances", "view wallets", "create FX conversion", "approve FX conversion", "create beneficiary", "approve beneficiary", "initiate payment", "approve payment", "fund staff card", "view card spend", "export transaction reports", "view audit trail"],
+  "Finance Officer": ["view dashboard", "view wallet balances", "create FX conversion", "create beneficiary", "initiate payment", "view card spend", "require receipts", "export transaction reports"],
+  "Payment Initiator": ["view dashboard", "view wallet balances", "create beneficiary", "initiate payment"],
+  "Payment Approver": ["view dashboard", "view wallet balances", "approve payment", "approve beneficiary", "approve FX conversion", "view audit trail"],
+  "Compliance Officer": ["view dashboard", "view compliance reports", "view compliance pack", "approve beneficiary", "approve payment", "export transaction reports", "view audit trail"],
+  Accountant: ["view dashboard", "view wallet balances", "view card spend", "require receipts", "export transaction reports"],
+  Auditor: ["view dashboard", "view wallet balances", "view card spend", "view compliance reports", "view audit trail", "export transaction reports"],
+  "Staff Cardholder": ["view dashboard", "view masked card details only", "view card spend"],
 };
 
 // ---------- Page ----------
@@ -564,7 +590,11 @@ function InviteUserDialog() {
 }
 
 function PermissionsMatrix() {
-  const roles = ["Owner", "Admin", "Finance Admin", "Compliance Admin", "Operations Admin", "Card Admin", "Cardholder", "Viewer"];
+  const roles = [
+    "Owner", "Admin", "Enterprise Owner", "Treasury Manager", "Finance Officer",
+    "Payment Initiator", "Payment Approver", "Compliance Officer",
+    "Accountant", "Auditor", "Staff Cardholder", "Viewer",
+  ];
   return (
     <Card className="p-5 shadow-card overflow-x-auto">
       <div className="text-sm font-semibold mb-1">Permissions matrix</div>
