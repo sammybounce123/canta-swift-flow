@@ -275,7 +275,9 @@ export function saveProfile(segment: Segment): Profile {
     permissions: segment.defaultPermissions,
     welcome_message: segment.welcome,
     created_at: new Date().toISOString(),
+    feature_flags: defaultFlagsFor(segment.id),
   };
+  if (typeof window !== "undefined") saveFlags(profile.feature_flags);
   if (typeof window !== "undefined") {
     window.localStorage.setItem(KEY, JSON.stringify(profile));
   }
