@@ -23,6 +23,7 @@ export type Permission =
   | "view_compliance"
   | "view_integrations"
   | "view_whatsapp"
+  | "view_admin"
   | "initiate_tx"
   | "approve_tx"
   | "manage_beneficiaries"
