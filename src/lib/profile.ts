@@ -212,7 +212,7 @@ export function getAllowedRoutes(workspace: WorkspaceType, flags: FeatureFlags):
       if (flags.trade_module_enabled) add("/trade-desk", "/shipments", "/freight", "/importer", "/suppliers");
       break;
     case "importer_portal":
-      add("/trade-desk", "/shipments", "/suppliers", "/importer", "/whatsapp");
+      add("/trade-desk", "/shipments", "/suppliers", "/importer", "/whatsapp", "/verified-suppliers");
       if (flags.cards_module_enabled) add("/cards");
       if (flags.freight_module_enabled) add("/freight");
       if (flags.treasury_module_enabled) add("/treasury", "/wallets", "/fx", "/transactions", "/beneficiaries");
@@ -226,7 +226,7 @@ export function getAllowedRoutes(workspace: WorkspaceType, flags: FeatureFlags):
       if (flags.treasury_module_enabled) add("/treasury", "/wallets", "/fx", "/transactions", "/beneficiaries");
       break;
     case "supplier_dashboard":
-      add("/suppliers", "/trade-desk", "/shipments");
+      add("/suppliers", "/trade-desk", "/shipments", "/verified-buyers");
       if (flags.collections_module_enabled) add("/collections");
       if (flags.cards_module_enabled) add("/cards");
       break;
@@ -235,7 +235,7 @@ export function getAllowedRoutes(workspace: WorkspaceType, flags: FeatureFlags):
       if (flags.cards_module_enabled) add("/cards");
       if (flags.compliance_module_enabled) add("/compliance");
       if (flags.collections_module_enabled) add("/collections");
-      if (flags.trade_module_enabled) add("/trade-desk", "/shipments", "/importer", "/suppliers");
+      if (flags.trade_module_enabled) add("/trade-desk", "/shipments", "/importer", "/suppliers", "/verified-suppliers");
       if (flags.freight_module_enabled) add("/freight");
       break;
     case "global_spend_cards":
@@ -247,6 +247,7 @@ export function getAllowedRoutes(workspace: WorkspaceType, flags: FeatureFlags):
         "/trade-desk","/shipments","/freight","/importer","/suppliers",
         "/collections","/cards","/ai-growth","/ai-insights","/whatsapp",
         "/compliance","/integrations","/organization","/admin",
+        "/verified-suppliers","/verified-buyers","/verification-center",
       );
       break;
   }
