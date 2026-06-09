@@ -45,6 +45,8 @@ const nav: NavItem[] = [
   { to: "/organization", label: "Organization", icon: Network, perm: "view_team", group: "Workspace" },
   { to: "/integrations", label: "Integrations", icon: Plug, perm: "view_integrations", group: "Workspace" },
   { to: "/settings", label: "Settings", icon: Settings, perm: "view_settings", group: "Workspace" },
+
+  { to: "/admin", label: "Canta Admin", icon: Crown, perm: "view_admin", group: "Canta Internal" },
 ];
 
 const initialRates = [
