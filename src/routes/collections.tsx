@@ -527,3 +527,105 @@ function Collections() {
     </div>
   );
 }
+
+function TemplateFlowButton({ template }: { template: typeof templates[number] }) {
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState(1);
+  const [payer, setPayer] = useState("");
+  const [email, setEmail] = useState("");
+  const [reference, setReference] = useState("");
+  const [amount, setAmount] = useState("");
+  const [ccy, setCcy] = useState<SettlementCcy>("USD");
+  const Icon = template.i;
+  const totalSteps = 6;
+
+  function reset() { setStep(1); setPayer(""); setEmail(""); setReference(""); setAmount(""); setCcy("USD"); }
+  function finish() {
+    toast.success(`${template.l} link created for ${payer || "payer"}`);
+    setOpen(false); reset();
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) reset(); }}>
+      <DialogTrigger asChild>
+        <button className="text-left p-4 rounded-xl border border-border hover:border-accent hover:shadow-card transition">
+          <div className="h-9 w-9 rounded-lg bg-primary/10 grid place-items-center"><Icon className="h-4 w-4 text-primary" /></div>
+          <div className="text-sm font-semibold mt-2">{template.l}</div>
+          <div className="text-[11px] text-muted-foreground">{template.d}</div>
+        </button>
+      </DialogTrigger>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2"><Icon className="h-4 w-4 text-primary" /> {template.l} — guided flow</DialogTitle>
+          <DialogDescription>Step {step} of {totalSteps}</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3">
+          {step === 1 && (
+            <>
+              <Label>Payer name</Label>
+              <Input value={payer} onChange={(e) => setPayer(e.target.value)} placeholder="e.g. Adaeze Okafor" />
+              <Label>Payer email or phone</Label>
+              <Input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="payer@example.com" />
+            </>
+          )}
+          {step === 2 && (
+            <>
+              <Label>Invoice / reference</Label>
+              <Input value={reference} onChange={(e) => setReference(e.target.value)} placeholder={`${template.purpose} ref`} />
+              <Label>Amount</Label>
+              <Input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0.00" />
+            </>
+          )}
+          {step === 3 && (
+            <div className="p-4 rounded-lg bg-secondary/40 border border-border text-sm space-y-2">
+              <div className="font-semibold">NGN collection instruction</div>
+              <div className="text-muted-foreground">Share this with the payer in Nigeria.</div>
+              <div className="mt-2 p-3 rounded-lg bg-card border border-border font-mono text-xs">
+                Bank: Canta Collections (Wema)<br />
+                Account: 0123456789<br />
+                Reference: <span className="text-primary">{reference || "AUTO-REF"}</span>
+              </div>
+            </div>
+          )}
+          {step === 4 && (
+            <>
+              <Label>Settlement currency</Label>
+              <Select value={ccy} onValueChange={(v) => setCcy(v as SettlementCcy)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {(["USD", "GBP", "EUR", "RMB", "AED", "CAD"] as SettlementCcy[]).map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="text-xs text-muted-foreground">Funds collected in NGN, settled to your {ccy} wallet at the live FX rate.</div>
+            </>
+          )}
+          {step === 5 && (
+            <div className="p-4 rounded-lg bg-secondary/40 border border-border text-sm">
+              <div className="font-semibold flex items-center gap-2"><FileText className="h-4 w-4" /> Reconciliation report</div>
+              <div className="text-xs text-muted-foreground mt-1">A matching report is generated automatically when NGN funds arrive — matched against {reference || "AUTO-REF"}.</div>
+              <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                <div><span className="text-muted-foreground">Payer:</span> {payer || "—"}</div>
+                <div><span className="text-muted-foreground">Reference:</span> {reference || "AUTO-REF"}</div>
+                <div><span className="text-muted-foreground">Amount:</span> {amount || "0.00"} {ccy}</div>
+                <div><span className="text-muted-foreground">Settle to:</span> {ccy} wallet</div>
+              </div>
+            </div>
+          )}
+          {step === 6 && (
+            <div className="p-4 rounded-lg bg-success/10 border border-success/30 text-sm">
+              <div className="font-semibold text-success flex items-center gap-2"><CheckCircle2 className="h-4 w-4" /> Settlement status</div>
+              <div className="mt-2 text-xs">Once payer funds arrive, settlement to your {ccy} wallet is scheduled <strong>T+1</strong>. You and the payer both receive a confirmation receipt.</div>
+            </div>
+          )}
+        </div>
+        <DialogFooter>
+          {step > 1 && <Button variant="outline" onClick={() => setStep(step - 1)}>Back</Button>}
+          {step < totalSteps && <Button onClick={() => setStep(step + 1)}>Next</Button>}
+          {step === totalSteps && <Button onClick={finish}>Create collection</Button>}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
