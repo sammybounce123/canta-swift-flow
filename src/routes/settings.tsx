@@ -1,8 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Key, Building2, Activity, Copy } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Shield, Key, Building2, Activity, Copy, Workflow, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({ meta: [{ title: "Settings — Canta" }] }),

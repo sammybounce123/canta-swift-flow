@@ -28,6 +28,7 @@ import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as CardsRouteImport } from './routes/cards'
 import { Route as BeneficiariesRouteImport } from './routes/beneficiaries'
+import { Route as ApprovalsRouteImport } from './routes/approvals'
 import { Route as AiInsightsRouteImport } from './routes/ai-insights'
 import { Route as AiGrowthRouteImport } from './routes/ai-growth'
 import { Route as IndexRouteImport } from './routes/index'
@@ -131,6 +132,11 @@ const BeneficiariesRoute = BeneficiariesRouteImport.update({
   path: '/beneficiaries',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApprovalsRoute = ApprovalsRouteImport.update({
+  id: '/approvals',
+  path: '/approvals',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AiInsightsRoute = AiInsightsRouteImport.update({
   id: '/ai-insights',
   path: '/ai-insights',
@@ -171,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ai-growth': typeof AiGrowthRoute
   '/ai-insights': typeof AiInsightsRoute
+  '/approvals': typeof ApprovalsRoute
   '/beneficiaries': typeof BeneficiariesRoute
   '/cards': typeof CardsRoute
   '/collections': typeof CollectionsRoute
@@ -199,6 +206,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ai-growth': typeof AiGrowthRoute
   '/ai-insights': typeof AiInsightsRoute
+  '/approvals': typeof ApprovalsRoute
   '/beneficiaries': typeof BeneficiariesRoute
   '/cards': typeof CardsRoute
   '/collections': typeof CollectionsRoute
@@ -227,6 +235,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/ai-growth': typeof AiGrowthRoute
   '/ai-insights': typeof AiInsightsRoute
+  '/approvals': typeof ApprovalsRoute
   '/beneficiaries': typeof BeneficiariesRoute
   '/cards': typeof CardsRoute
   '/collections': typeof CollectionsRoute
@@ -257,6 +266,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ai-growth'
     | '/ai-insights'
+    | '/approvals'
     | '/beneficiaries'
     | '/cards'
     | '/collections'
@@ -285,6 +295,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ai-growth'
     | '/ai-insights'
+    | '/approvals'
     | '/beneficiaries'
     | '/cards'
     | '/collections'
@@ -312,6 +323,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ai-growth'
     | '/ai-insights'
+    | '/approvals'
     | '/beneficiaries'
     | '/cards'
     | '/collections'
@@ -341,6 +353,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AiGrowthRoute: typeof AiGrowthRoute
   AiInsightsRoute: typeof AiInsightsRoute
+  ApprovalsRoute: typeof ApprovalsRoute
   BeneficiariesRoute: typeof BeneficiariesRoute
   CardsRoute: typeof CardsRoute
   CollectionsRoute: typeof CollectionsRoute
@@ -499,6 +512,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BeneficiariesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/approvals': {
+      id: '/approvals'
+      path: '/approvals'
+      fullPath: '/approvals'
+      preLoaderRoute: typeof ApprovalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ai-insights': {
       id: '/ai-insights'
       path: '/ai-insights'
@@ -569,6 +589,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AiGrowthRoute: AiGrowthRoute,
   AiInsightsRoute: AiInsightsRoute,
+  ApprovalsRoute: ApprovalsRoute,
   BeneficiariesRoute: BeneficiariesRoute,
   CardsRoute: CardsRoute,
   CollectionsRoute: CollectionsRoute,
