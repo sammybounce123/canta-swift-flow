@@ -110,15 +110,15 @@ function statusTone(s: string) {
 
 function KPI({ label, value, sub, tone, icon: Icon }: { label: string; value: string; sub?: string; tone?: string; icon: any }) {
   return (
-    <Card className="p-4 shadow-card">
-      <div className="flex items-start justify-between">
-        <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</div>
-        <div className={`h-7 w-7 rounded-lg grid place-items-center ${tone ?? "bg-primary/10 text-primary"}`}>
+    <Card className="p-3 sm:p-4 shadow-card min-w-0 overflow-hidden">
+      <div className="flex items-start justify-between gap-2">
+        <div className="text-[10px] uppercase tracking-widest text-muted-foreground truncate">{label}</div>
+        <div className={`h-7 w-7 shrink-0 rounded-lg grid place-items-center ${tone ?? "bg-primary/10 text-primary"}`}>
           <Icon className="h-3.5 w-3.5" />
         </div>
       </div>
-      <div className="text-xl font-semibold mt-2 tabular-nums">{value}</div>
-      {sub && <div className="text-[11px] text-muted-foreground mt-1">{sub}</div>}
+      <div className="text-base sm:text-lg lg:text-xl font-semibold mt-2 tabular-nums truncate" title={value}>{value}</div>
+      {sub && <div className="text-[11px] text-muted-foreground mt-1 truncate">{sub}</div>}
     </Card>
   );
 }
