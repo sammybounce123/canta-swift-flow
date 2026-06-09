@@ -90,7 +90,11 @@ const ROLE_GROUPS = [
   },
   {
     label: "Freight",
-    roles: ["Freight Admin", "Operations Staff", "Warehouse Staff", "Clearing Agent", "Customer Support"],
+    roles: [
+      "Freight Owner", "Freight Admin", "Operations Manager", "Operations Staff",
+      "Warehouse Staff", "Clearing Agent", "Customer Support",
+      "Finance Officer", "Staff Cardholder", "Viewer",
+    ],
   },
   {
     label: "Cards",
@@ -157,6 +161,21 @@ const PERMISSIONS = [
     ],
   },
   {
+    group: "Freight",
+    items: [
+      "create customer", "edit customer",
+      "create shipment", "update shipment status", "upload documents",
+      "send WhatsApp update",
+      "create freight invoice", "mark invoice as paid", "view outstanding invoices",
+      "manage clearing status", "manage warehouse status",
+      "create staff card", "create port expense card",
+      "assign card to staff", "link card to shipment",
+      "approve card spend", "require receipts",
+      "view route reports", "view customer reports",
+      "manage freight sub-users",
+    ],
+  },
+  {
     group: "Reporting & Compliance",
     items: ["export reports", "view compliance pack"],
   },
@@ -191,6 +210,15 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   "Procurement Officer": ["view dashboard", "create trade file", "edit trade file", "view trade file", "upload documents", "manage suppliers", "request supplier verification", "view landed cost", "send WhatsApp update", "create importer card", "link card to trade file", "view card spend"],
   "Logistics Manager": ["view dashboard", "view trade file", "create shipment", "edit shipment", "view shipment", "upload documents", "view landed cost", "send WhatsApp update", "link card to shipment", "view card spend"],
   "Sales Manager": ["view dashboard", "view trade file", "view shipment", "manage suppliers", "view card spend", "send WhatsApp update"],
+
+  // Freight role templates
+  "Freight Owner": PERMISSIONS.flatMap((g) => g.items),
+  "Freight Admin": PERMISSIONS.flatMap((g) => g.items).filter((p) => p !== "manage API keys"),
+  "Operations Manager": ["view dashboard", "create customer", "edit customer", "create shipment", "update shipment status", "upload documents", "send WhatsApp update", "manage clearing status", "manage warehouse status", "view route reports", "view customer reports", "create staff card", "assign card to staff", "link card to shipment", "approve card spend"],
+  "Operations Staff": ["view dashboard", "create shipment", "update shipment status", "upload documents", "send WhatsApp update", "view card spend"],
+  "Warehouse Staff": ["view dashboard", "update shipment status", "manage warehouse status", "upload documents"],
+  "Clearing Agent": ["view dashboard", "update shipment status", "manage clearing status", "upload documents", "send WhatsApp update"],
+  "Customer Support": ["view dashboard", "view shipment", "send WhatsApp update", "view outstanding invoices", "create freight invoice"],
 };
 
 // ---------- Page ----------
@@ -619,6 +647,7 @@ function PermissionsMatrix() {
     "Owner", "Admin",
     "Enterprise Owner", "Treasury Manager", "Payment Initiator", "Payment Approver", "Compliance Officer",
     "Importer Owner", "Procurement Officer", "Logistics Manager", "Sales Manager",
+    "Freight Owner", "Freight Admin", "Operations Manager", "Operations Staff", "Warehouse Staff", "Clearing Agent", "Customer Support",
     "Finance Officer", "Accountant", "Auditor", "Staff Cardholder", "Viewer",
   ];
   return (

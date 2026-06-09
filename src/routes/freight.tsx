@@ -196,6 +196,40 @@ function Freight() {
         ]}
       />
 
+      <Card className="p-5 shadow-card">
+        <div className="text-sm font-semibold">Spend by staff</div>
+        <div className="text-xs text-muted-foreground mb-4">Top freight cardholders this month · USD</div>
+        <div className="space-y-3">
+          {[
+            { name: "Femi Adeyemi",  role: "Operations Manager · Apapa",  amount: 5_400, limit: 12_000 },
+            { name: "Ops Team",      role: "Shipment SH-9012",             amount: 3_300, limit: 8_000 },
+            { name: "Warehouse",     role: "Lagos Warehouse",              amount: 1_820, limit: 5_000 },
+            { name: "Adaeze O.",     role: "Dubai Hub Travel",             amount: 1_750, limit: 4_000 },
+            { name: "Clearing Agent",role: "Tin Can clearing",             amount: 920,   limit: 3_000 },
+            { name: "Support",       role: "Customer Support",             amount: 480,   limit: 2_000 },
+          ].map((s) => {
+            const pct = Math.round((s.amount / s.limit) * 100);
+            return (
+              <div key={s.name}>
+                <div className="flex items-center justify-between text-xs mb-1">
+                  <div>
+                    <span className="font-medium">{s.name}</span>
+                    <span className="text-muted-foreground"> · {s.role}</span>
+                  </div>
+                  <span className="tabular-nums text-muted-foreground">
+                    ${s.amount.toLocaleString()} / ${s.limit.toLocaleString()} ({pct}%)
+                  </span>
+                </div>
+                <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
+                  <div className={`h-full ${pct > 85 ? "bg-destructive" : pct > 60 ? "bg-warning" : "bg-success"}`} style={{ width: `${pct}%` }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+
       {/* WhatsApp compose modal */}
       <Dialog open={!!waCustomer || !!waShipment} onOpenChange={(o) => { if (!o) { setWaCustomer(null); setWaShipment(null); } }}>
         <WhatsAppComposeDialog customer={waCustomer} shipment={waShipment} onClose={() => { setWaCustomer(null); setWaShipment(null); }} />
