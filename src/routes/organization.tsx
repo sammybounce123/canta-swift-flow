@@ -292,6 +292,12 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   "Supplier Operations": ["view dashboard", "create buyer record", "create invoice", "upload supplier documents", "manage escrow milestones", "view payment status", "view funds secured", "send WhatsApp update"],
   "Sales Representative": ["view dashboard", "create buyer record", "view buyer verification status", "create invoice", "view payment status"],
   "Settlement Manager": ["view dashboard", "view settlement status", "download settlement receipt", "request escrow release", "manage escrow milestones", "export settlement reports", "view funds secured"],
+
+  // Standalone Card User role templates
+  "Card Owner": ["view dashboard", "create personal card", "request card", "fund card", "freeze card", "view transactions", "upload receipt", "set budget", "request top-up", "approve top-up", "view spend reports", "view masked card details only"],
+  "Parent / Sponsor": ["view dashboard", "fund card", "freeze card", "view transactions", "set budget", "approve top-up", "view spend reports"],
+  "Student Cardholder": ["view dashboard", "view masked card details only", "view transactions", "upload receipt", "request top-up"],
+  "Business Cardholder": ["view dashboard", "view masked card details only", "view transactions", "upload receipt", "request top-up", "view spend reports"],
 };
 
 // ---------- Page ----------
