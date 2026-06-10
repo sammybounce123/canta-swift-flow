@@ -164,8 +164,6 @@ export function defaultFlagsFor(workspace: WorkspaceType): FeatureFlags {
       return { ...ALL_OFF, collections_module_enabled: true, cards_module_enabled: true, compliance_module_enabled: true };
     case "global_spend_cards":
       return { ...ALL_OFF, cards_module_enabled: true };
-    case "canta_admin":
-      return ALL_ON;
   }
 }
 
