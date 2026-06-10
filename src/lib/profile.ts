@@ -102,19 +102,6 @@ export const SEGMENTS: Segment[] = [
     welcome: "Create and manage purpose-built cards for travel, business, students, ads, and global spending.",
     tagline: "Individuals & small businesses using cards globally",
   },
-  {
-    id: "canta_admin",
-    label: "Canta Internal Staff",
-    shortLabel: "Canta Admin",
-    accountType: "internal",
-    customerSegment: "canta_internal",
-    primaryUseCase: "Operations, compliance, support across customers",
-    defaultRole: "Canta Super Admin",
-    defaultPermissions: ["view dashboard", "view all customers", "approve KYB", "approve settlement"],
-    route: "/admin",
-    welcome: "Manage customers, trade files, compliance, settlements, WhatsApp onboarding, cards, and support.",
-    tagline: "Canta team — operations, trade, compliance, treasury, support",
-  },
 ];
 
 export type FeatureFlags = {
