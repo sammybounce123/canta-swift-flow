@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
-  Building2, Ship, Truck, Globe, Factory, CreditCard, Crown,
+  Building2, Ship, Truck, Globe, Factory, CreditCard,
   ArrowRight, CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
