@@ -3,11 +3,12 @@ import {
   LayoutDashboard, Wallet, ArrowLeftRight, Receipt, Users, Building2,
   Sparkles, Shield, Settings, Bell, Search, ChevronDown, TrendingUp, TrendingDown,
   UserCog, Check, Menu, FileText, Ship, Truck, Factory, Globe, CreditCard,
-  Brain, ShieldCheck, Plug, MessageCircle, CheckSquare, Network, Crown,
+  Brain, ShieldCheck, Plug, MessageCircle, CheckSquare, Crown, Calculator,
+  Link as LinkIcon, BarChart3,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useRole, ALL_ROLES, type Permission, type Role } from "@/components/RoleProvider";
-import { loadProfile, getAllowedRoutes, defaultFlagsFor } from "@/lib/profile";
+import { useRole, ALL_ROLES, type Role } from "@/components/RoleProvider";
+import { loadProfile, getSidebarForWorkspace, defaultFlagsFor, type SidebarItem } from "@/lib/profile";
 import { useMode, ALL_MODES } from "@/components/ModeProvider";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
@@ -16,7 +17,15 @@ import {
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { toast } from "sonner";
 
-type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean; perm: Permission; group?: string };
+const ICONS: Record<string, typeof LayoutDashboard> = {
+  dashboard: LayoutDashboard, wallet: Wallet, fx: ArrowLeftRight, receipt: Receipt,
+  users: Users, building: Building2, settings: Settings, team: Shield,
+  trade: FileText, ship: Ship, freight: Truck, factory: Factory, globe: Globe,
+  card: CreditCard, brain: Brain, "shield-check": ShieldCheck, plug: Plug,
+  whatsapp: MessageCircle, check: CheckSquare, crown: Crown, calculator: Calculator,
+  file: FileText, link: LinkIcon, chart: BarChart3, importer: Building2,
+  shield: ShieldCheck, sparkles: Sparkles,
+};
 const nav: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true, perm: "view_dashboard", group: "Overview" },
 
