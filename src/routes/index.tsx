@@ -129,16 +129,12 @@ function Landing() {
             <Sparkles className="h-3 w-3 mr-1" /> The financial & trade operating system for Africa
           </Badge>
           <h1 className="mt-6 text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05] max-w-5xl">
-            Move Money. Move Goods.<br />
-            <span className="text-accent">Collect Globally. Spend Globally.</span>
+            Move money, move goods, collect globally, and{" "}
+            <span className="text-accent">spend globally</span> — from one trusted Canta workspace.
           </h1>
-          <p className="mt-6 max-w-3xl text-lg text-primary-foreground/75">
-            Canta helps African businesses manage FX, trade shipments, supplier payments, local
-            collections, freight workflows, global cards, and compliance from one operating system.
-          </p>
-          <p className="mt-4 max-w-3xl text-base text-primary-foreground/90 font-medium">
-            Canta helps African businesses pay suppliers, track shipments, collect locally, and
-            spend globally — from one trusted operating system.
+          <p className="mt-6 max-w-3xl text-lg text-primary-foreground/80">
+            Canta helps African businesses manage FX, supplier payments, shipments, local
+            collections, global cards, and compliance across one operating system.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <Button asChild size="lg" className="bg-[#25D366] text-white hover:bg-[#1FB855] hover:shadow-lg hover:shadow-[#25D366]/30 transition h-12 px-6 font-semibold">
