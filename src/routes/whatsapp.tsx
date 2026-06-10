@@ -158,13 +158,13 @@ function WhatsAppDesk() {
 
       {/* Tabs */}
       <Tabs defaultValue="inbox" className="space-y-4">
-        <TabsList className="flex-wrap h-auto">
-          <TabsTrigger value="inbox"><InboxIcon className="h-3.5 w-3.5 mr-1.5" /> Inbox</TabsTrigger>
-          <TabsTrigger value="intake"><Paperclip className="h-3.5 w-3.5 mr-1.5" /> Document Intake</TabsTrigger>
-          <TabsTrigger value="drafts"><FilePlus2 className="h-3.5 w-3.5 mr-1.5" /> Trade File Drafts</TabsTrigger>
-          <TabsTrigger value="templates"><MessageSquareText className="h-3.5 w-3.5 mr-1.5" /> Message Templates</TabsTrigger>
-          <TabsTrigger value="alerts"><AlertTriangle className="h-3.5 w-3.5 mr-1.5" /> Alerts</TabsTrigger>
-          <TabsTrigger value="agents"><Users className="h-3.5 w-3.5 mr-1.5" /> Assigned Agents</TabsTrigger>
+        <TabsList className="flex flex-wrap h-auto w-full justify-start gap-1 p-1">
+          <TabsTrigger value="inbox" className="shrink-0"><InboxIcon className="h-3.5 w-3.5 mr-1.5" /> Inbox</TabsTrigger>
+          <TabsTrigger value="intake" className="shrink-0"><Paperclip className="h-3.5 w-3.5 mr-1.5" /> Document Intake</TabsTrigger>
+          <TabsTrigger value="drafts" className="shrink-0"><FilePlus2 className="h-3.5 w-3.5 mr-1.5" /> Trade File Drafts</TabsTrigger>
+          <TabsTrigger value="templates" className="shrink-0"><MessageSquareText className="h-3.5 w-3.5 mr-1.5" /> Message Templates</TabsTrigger>
+          <TabsTrigger value="alerts" className="shrink-0"><AlertTriangle className="h-3.5 w-3.5 mr-1.5" /> Alerts</TabsTrigger>
+          <TabsTrigger value="agents" className="shrink-0"><Users className="h-3.5 w-3.5 mr-1.5" /> Assigned Agents</TabsTrigger>
         </TabsList>
 
         {/* ------------- INBOX ------------- */}
