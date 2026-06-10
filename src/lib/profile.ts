@@ -274,23 +274,6 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Activity" },
         Settings,
       ];
-    case "canta_admin":
-      return [
-        { to: "/admin", label: "Admin Dashboard", iconKey: "crown", group: "Canta Internal", exact: true },
-        { to: "/ai-growth", label: "AI Growth", iconKey: "brain", group: "Intelligence" },
-        { to: "/whatsapp", label: "WhatsApp Desk", iconKey: "whatsapp", group: "Intelligence" },
-        { to: "/trade-desk", label: "Trade Desk", iconKey: "trade", group: "Customer Ops" },
-        { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Customer Ops" },
-        { to: "/freight", label: "Freight Workspace", iconKey: "freight", group: "Customer Ops" },
-        { to: "/suppliers", label: "Supplier Dashboard", iconKey: "factory", group: "Customer Ops" },
-        { to: "/collections", label: "Global Collections", iconKey: "globe", group: "Customer Ops" },
-        { to: "/cards", label: "Global Spend Cards", iconKey: "card", group: "Money" },
-        { to: "/verification-center", label: "Verification Center", iconKey: "shield-check", group: "Trust & Safety" },
-        { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
-        { to: "/approvals", label: "Approvals", iconKey: "check", group: "Governance" },
-        { to: "/integrations", label: "Integrations", iconKey: "plug", group: "Platform" },
-        Team, Settings,
-      ];
   }
 }
 
