@@ -77,14 +77,13 @@ const MODE_TO_WORKSPACE: Record<string, "enterprise_treasury" | "importer_portal
 };
 
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
-  const { role, can, profile } = useRole();
+  const { role, profile } = useRole();
   const { mode } = useMode();
   const userProfile = loadProfile();
   const workspace = MODE_TO_WORKSPACE[mode] ?? userProfile?.workspace_type ?? "enterprise_treasury";
   const flags = userProfile?.feature_flags ?? defaultFlagsFor(workspace);
-  const allowed = getAllowedRoutes(workspace, flags);
-  const visibleNav = nav.filter((n) => can(n.perm) && (allowed.has(n.to) || (n.to === "/admin" && workspace === "canta_admin")));
-  const groups = Array.from(new Set(visibleNav.map((n) => n.group ?? "Other")));
+  const items: SidebarItem[] = getSidebarForWorkspace(workspace, flags);
+  const groups: string[] = Array.from(new Set(items.map((n) => n.group)));
   return (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
       <Link to="/dashboard" onClick={onNavigate} className="px-6 py-5 flex items-center gap-2 border-b border-sidebar-border hover:bg-sidebar-accent/30">
@@ -100,12 +99,12 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
           <div key={g}>
             <div className="px-3 mb-1 text-[10px] uppercase tracking-widest text-sidebar-foreground/40">{g}</div>
             <div className="space-y-0.5">
-              {visibleNav.filter((n) => (n.group ?? "Other") === g).map((item) => {
-                const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
-                const Icon = item.icon;
+              {items.filter((n) => n.group === g).map((item) => {
+                const active = item.exact ? pathname === item.to : pathname === item.to || pathname.startsWith(item.to + "/");
+                const Icon = ICONS[item.iconKey] ?? LayoutDashboard;
                 return (
                   <Link
-                    key={item.to}
+                    key={`${item.to}-${item.label}`}
                     to={item.to as never}
                     onClick={onNavigate}
                     className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
@@ -123,6 +122,7 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
           </div>
         ))}
       </nav>
+
 
       <div className="p-4 border-t border-sidebar-border space-y-3">
         <div className="rounded-xl p-3 bg-sidebar-accent/60 border border-sidebar-border">
