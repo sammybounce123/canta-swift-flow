@@ -105,8 +105,25 @@ function Onboarding() {
 
   const submit = () => {
     setState((s) => ({ ...s, completedAt: new Date().toISOString() }));
-    toast.success("Onboarding submitted", { description: "Now choose the workspace that fits how you'll use Canta." });
-    setTimeout(() => navigate({ to: "/welcome" }), 800);
+    let to = "/dashboard";
+    try {
+      const raw = typeof window !== "undefined" ? window.localStorage.getItem("canta:profile") : null;
+      if (raw) {
+        const p = JSON.parse(raw) as { workspace_type?: string };
+        const map: Record<string, string> = {
+          enterprise_treasury: "/treasury",
+          importer_portal: "/importer",
+          freight_workspace: "/freight",
+          supplier_dashboard: "/suppliers",
+          global_collections: "/collections",
+          global_spend_cards: "/cards",
+          canta_admin: "/admin",
+        };
+        if (p.workspace_type && map[p.workspace_type]) to = map[p.workspace_type];
+      }
+    } catch {}
+    toast.success("Onboarding submitted", { description: "Welcome to your Canta workspace." });
+    setTimeout(() => navigate({ to: to as never }), 800);
   };
 
   const Step = steps[state.step];
