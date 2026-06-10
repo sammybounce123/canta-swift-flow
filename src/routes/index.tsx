@@ -112,7 +112,7 @@ function Landing() {
           <div className="flex items-center gap-2">
             <Button asChild variant="ghost" size="sm"><Link to="/dashboard">Sign in</Link></Button>
             <Button asChild size="sm" className="bg-accent text-accent-foreground hover:bg-accent/90">
-              <Link to="/onboarding">Get started <ArrowRight className="h-3.5 w-3.5 ml-1" /></Link>
+              <Link to="/welcome">Get started <ArrowRight className="h-3.5 w-3.5 ml-1" /></Link>
             </Button>
           </div>
         </div>
