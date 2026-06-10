@@ -1,7 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Building2, Ship, Truck, Globe, Factory, CreditCard, Crown,
@@ -16,15 +14,10 @@ export const Route = createFileRoute("/welcome")({
 });
 
 const ICONS: Record<WorkspaceType, typeof Building2> = {
-  enterprise_treasury: Building2,
-  importer_portal: Ship,
-  freight_workspace: Truck,
-  global_collections: Globe,
-  supplier_dashboard: Factory,
-  global_spend_cards: CreditCard,
-  canta_admin: Crown,
+  enterprise_treasury: Building2, importer_portal: Ship, freight_workspace: Truck,
+  global_collections: Globe, supplier_dashboard: Factory,
+  global_spend_cards: CreditCard, canta_admin: Crown,
 };
-
 const TONES: Record<WorkspaceType, string> = {
   enterprise_treasury: "bg-primary/10 text-primary",
   importer_portal: "bg-accent/15 text-accent",
@@ -34,18 +27,43 @@ const TONES: Record<WorkspaceType, string> = {
   global_spend_cards: "bg-destructive/10 text-destructive",
   canta_admin: "bg-muted text-foreground",
 };
+const WHO_FOR: Record<WorkspaceType, string> = {
+  enterprise_treasury: "Multinationals, corporates, oil & gas, large SMEs",
+  importer_portal: "Importers buying from China, UAE, Turkey, India",
+  freight_workspace: "Freight forwarders, clearing agents, logistics operators",
+  supplier_dashboard: "Exporters in China, UAE, Turkey, India, Europe",
+  global_collections: "Universities, hospitals, airlines, travel, e-commerce",
+  global_spend_cards: "Individuals & small businesses spending globally",
+  canta_admin: "Canta team — ops, trade, compliance, treasury, support",
+};
+const DO_BULLETS: Record<WorkspaceType, string[]> = {
+  enterprise_treasury: ["FX & multi-currency wallets", "Approvals & beneficiaries", "Company cards & compliance"],
+  importer_portal: ["Track shipments & landed cost", "Manage suppliers & documents", "Pay in any currency"],
+  freight_workspace: ["Run shipment pipeline", "Invoice customers & collect", "WhatsApp updates at scale"],
+  supplier_dashboard: ["Invoice African buyers", "Confirm funds via escrow", "Receive global settlement"],
+  global_collections: ["Collect locally via links", "Reconcile and settle globally", "Manage staff cards"],
+  global_spend_cards: ["Create purpose-built cards", "Travel, students, ads", "Track every transaction"],
+  canta_admin: ["Manage customer trade files", "Approve KYB & verifications", "Operate cards & settlements"],
+};
+const CTA: Record<WorkspaceType, string> = {
+  enterprise_treasury: "Enter Treasury",
+  importer_portal: "Enter Importer Portal",
+  freight_workspace: "Enter Freight Workspace",
+  supplier_dashboard: "Enter Supplier Dashboard",
+  global_collections: "Enter Global Collections",
+  global_spend_cards: "Enter Spend Cards",
+  canta_admin: "Enter Admin Console",
+};
 
 function WelcomePage() {
   const navigate = useNavigate();
-  const [selected, setSelected] = useState<WorkspaceType | null>(null);
+  const [hovered, setHovered] = useState<WorkspaceType | null>(null);
 
   const choose = (id: WorkspaceType) => {
     const segment = SEGMENTS.find((s) => s.id === id)!;
     saveProfile(segment);
-    toast.success(`Workspace set: ${segment.shortLabel}`, {
-      description: segment.welcome,
-    });
-    setTimeout(() => navigate({ to: segment.route as never }), 400);
+    toast.success(`Workspace set: ${segment.shortLabel}`, { description: segment.welcome });
+    setTimeout(() => navigate({ to: segment.route as never }), 350);
   };
 
   return (
@@ -63,41 +81,54 @@ function WelcomePage() {
         </div>
       </header>
 
-      <div className="max-w-5xl mx-auto px-6 py-12">
+      <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="text-center mb-10">
           <Badge variant="outline" className="mb-3">Step 1 · Tell us about you</Badge>
           <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">What best describes you?</h1>
           <p className="text-sm text-muted-foreground mt-2 max-w-2xl mx-auto">
-            We'll set up the right workspace, roles, and tools for how you use Canta. You can switch later from your account menu.
+            We'll set up the right workspace, navigation, roles and tools for how you use Canta.
+            You can switch later from your account menu.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {SEGMENTS.map((s) => {
             const Icon = ICONS[s.id];
-            const isSelected = selected === s.id;
+            const hot = hovered === s.id;
             return (
               <button
                 key={s.id}
-                onMouseEnter={() => setSelected(s.id)}
+                onMouseEnter={() => setHovered(s.id)}
+                onMouseLeave={() => setHovered(null)}
                 onClick={() => choose(s.id)}
-                className={`text-left p-5 rounded-2xl border bg-card transition-all hover:shadow-card hover:-translate-y-0.5 ${
-                  isSelected ? "border-accent shadow-card" : "border-border"
+                className={`text-left p-6 rounded-2xl border bg-card transition-all hover:shadow-card hover:-translate-y-0.5 ${
+                  hot ? "border-accent shadow-card" : "border-border"
                 }`}
               >
                 <div className="flex items-start justify-between">
-                  <div className={`h-10 w-10 rounded-xl grid place-items-center ${TONES[s.id]}`}>
-                    <Icon className="h-5 w-5" />
+                  <div className={`h-12 w-12 rounded-2xl grid place-items-center ${TONES[s.id]}`}>
+                    <Icon className="h-6 w-6" />
                   </div>
-                  {isSelected && <CheckCircle2 className="h-4 w-4 text-accent" />}
+                  {hot && <CheckCircle2 className="h-4 w-4 text-accent" />}
                 </div>
-                <div className="mt-4 text-base font-semibold">{s.label}</div>
-                <div className="text-xs text-muted-foreground mt-1">{s.tagline}</div>
-                <div className="mt-3 text-xs text-foreground/80 leading-relaxed">{s.welcome}</div>
-                <div className="mt-4 flex items-center justify-between text-[11px]">
-                  <span className="text-muted-foreground">Routes to <span className="font-medium text-foreground">{s.shortLabel}</span></span>
-                  <span className="inline-flex items-center gap-1 text-accent font-medium">
-                    Continue <ArrowRight className="h-3 w-3" />
+
+                <div className="mt-5 text-lg font-semibold tracking-tight">{s.label}</div>
+                <div className="mt-1 text-[11px] uppercase tracking-widest text-muted-foreground">Who it's for</div>
+                <div className="text-xs text-foreground/80 mt-0.5">{WHO_FOR[s.id]}</div>
+
+                <div className="mt-3 text-[11px] uppercase tracking-widest text-muted-foreground">What you can do</div>
+                <ul className="mt-1 space-y-1">
+                  {DO_BULLETS[s.id].map((b) => (
+                    <li key={b} className="flex items-start gap-1.5 text-xs">
+                      <CheckCircle2 className="h-3 w-3 text-accent mt-0.5 shrink-0" /> {b}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-5 flex items-center justify-between">
+                  <Badge variant="outline" className="text-[10px]">Routes to {s.shortLabel}</Badge>
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent">
+                    {CTA[s.id]} <ArrowRight className="h-3.5 w-3.5" />
                   </span>
                 </div>
               </button>
