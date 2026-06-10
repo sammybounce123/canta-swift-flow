@@ -280,10 +280,6 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
 export function getAllowedRoutes(workspace: WorkspaceType, flags: FeatureFlags): Set<string> {
   const allow = new Set<string>(COMMON_ROUTES);
   getSidebarForWorkspace(workspace, flags).forEach((i) => allow.add(i.to));
-  if (workspace === "canta_admin") {
-    ["/treasury","/wallets","/fx","/transactions","/beneficiaries","/importer",
-     "/verified-suppliers","/verified-buyers","/organization","/ai-insights"].forEach((r) => allow.add(r));
-  }
   return allow;
 }
 
