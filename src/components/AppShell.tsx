@@ -246,4 +246,3 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 function RouteGuard({ pathname: _pathname, children }: { pathname: string; children: React.ReactNode }) {
   return <>{children}</>;
 }
-}
