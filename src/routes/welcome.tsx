@@ -62,8 +62,8 @@ function WelcomePage() {
   const choose = (id: WorkspaceType) => {
     const segment = SEGMENTS.find((s) => s.id === id)!;
     saveProfile(segment);
-    toast.success(`Workspace set: ${segment.shortLabel}`, { description: segment.welcome });
-    setTimeout(() => navigate({ to: segment.route as never }), 350);
+    toast.success(`Workspace set: ${segment.shortLabel}`, { description: "Let's complete a quick onboarding." });
+    setTimeout(() => navigate({ to: "/onboarding" }), 350);
   };
 
   return (
