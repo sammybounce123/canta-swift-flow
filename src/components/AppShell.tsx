@@ -243,22 +243,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function RouteGuard({ pathname, children }: { pathname: string; children: React.ReactNode }) {
-  const { can, role } = useRole();
-  const match = nav.find((n) => (n.exact ? pathname === n.to : pathname.startsWith(n.to)));
-  if (match && !can(match.perm)) {
-    return (
-      <div className="max-w-lg mx-auto mt-16 text-center">
-        <div className="h-14 w-14 rounded-2xl bg-destructive/10 grid place-items-center mx-auto mb-4">
-          <Shield className="h-6 w-6 text-destructive" />
-        </div>
-        <h2 className="text-xl font-semibold">Access restricted</h2>
-        <p className="text-sm text-muted-foreground mt-2">
-          Your role <span className="font-semibold text-foreground">{role}</span> doesn't have permission to view this page.
-        </p>
-        <Link to="/dashboard" className="inline-block mt-6 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium">Back to Dashboard</Link>
-      </div>
-    );
-  }
+function RouteGuard({ pathname: _pathname, children }: { pathname: string; children: React.ReactNode }) {
   return <>{children}</>;
+}
 }
