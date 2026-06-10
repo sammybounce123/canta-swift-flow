@@ -112,7 +112,7 @@ function Landing() {
           <div className="flex items-center gap-2">
             <Button asChild variant="ghost" size="sm"><Link to="/dashboard">Sign in</Link></Button>
             <Button asChild size="sm" className="bg-accent text-accent-foreground hover:bg-accent/90">
-              <Link to="/onboarding">Get started <ArrowRight className="h-3.5 w-3.5 ml-1" /></Link>
+              <Link to="/welcome">Get started <ArrowRight className="h-3.5 w-3.5 ml-1" /></Link>
             </Button>
           </div>
         </div>
@@ -129,16 +129,12 @@ function Landing() {
             <Sparkles className="h-3 w-3 mr-1" /> The financial & trade operating system for Africa
           </Badge>
           <h1 className="mt-6 text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05] max-w-5xl">
-            Move Money. Move Goods.<br />
-            <span className="text-accent">Collect Globally. Spend Globally.</span>
+            Move money, move goods, collect globally, and{" "}
+            <span className="text-accent">spend globally</span> — from one trusted Canta workspace.
           </h1>
-          <p className="mt-6 max-w-3xl text-lg text-primary-foreground/75">
-            Canta helps African businesses manage FX, trade shipments, supplier payments, local
-            collections, freight workflows, global cards, and compliance from one operating system.
-          </p>
-          <p className="mt-4 max-w-3xl text-base text-primary-foreground/90 font-medium">
-            Canta helps African businesses pay suppliers, track shipments, collect locally, and
-            spend globally — from one trusted operating system.
+          <p className="mt-6 max-w-3xl text-lg text-primary-foreground/80">
+            Canta helps African businesses manage FX, supplier payments, shipments, local
+            collections, global cards, and compliance across one operating system.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <Button asChild size="lg" className="bg-[#25D366] text-white hover:bg-[#1FB855] hover:shadow-lg hover:shadow-[#25D366]/30 transition h-12 px-6 font-semibold">
@@ -185,6 +181,43 @@ function Landing() {
           {["Importers", "Freight Forwarders", "Suppliers", "Global Merchants", "Enterprises", "Universities"].map((n) => (
             <div key={n} className="text-sm font-semibold text-muted-foreground/80 tracking-tight">{n}</div>
           ))}
+        </div>
+      </section>
+
+      {/* What do you want to do with Canta? */}
+      <section id="do" className="max-w-7xl mx-auto px-6 py-24">
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <div className="text-xs uppercase tracking-widest text-accent-foreground/80 font-semibold">Pick your workspace</div>
+          <h2 className="text-3xl md:text-5xl font-semibold tracking-tight mt-3">
+            What do you want to do with Canta?
+          </h2>
+          <p className="text-muted-foreground mt-4">
+            Choose how you'll use Canta. Each workspace comes with its own dashboard, navigation, and tools.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[
+            { icon: Ship, tag: "Track My Shipment", desc: "For importers managing goods, suppliers, documents, landed cost, and arrival readiness.", cta: "Start Import Desk", to: "/welcome", tone: "bg-accent/15 text-accent" },
+            { icon: Truck, tag: "Manage Freight Customers", desc: "For freight forwarders and clearing agents managing shipments, documents, invoices, and WhatsApp updates.", cta: "Open Freight Workspace", to: "/welcome", tone: "bg-warning/15 text-warning" },
+            { icon: Globe2, tag: "Collect from African Customers", desc: "For universities, hospitals, airlines, property firms, travel companies, and global merchants collecting locally and settling globally.", cta: "Start Global Collections", to: "/welcome", tone: "bg-success/15 text-success" },
+            { icon: Factory, tag: "Invoice African Buyers", desc: "For suppliers and exporters in China, UAE, Turkey, India, and other markets selling to African buyers.", cta: "Open Supplier Dashboard", to: "/welcome", tone: "bg-amber-500/15 text-amber-700" },
+            { icon: Building2, tag: "Manage Company Treasury", desc: "For enterprises managing FX, wallets, beneficiaries, approvals, settlement, and company cards.", cta: "Explore Treasury", to: "/welcome", tone: "bg-primary/10 text-primary" },
+            { icon: CreditCard, tag: "Create Global Spend Cards", desc: "For businesses, travelers, students, teams, importers, and ad spend.", cta: "Create Card", to: "/welcome", tone: "bg-destructive/10 text-destructive" },
+          ].map((c) => {
+            const Icon = c.icon;
+            return (
+              <Link key={c.tag} to={c.to} className="group p-6 rounded-2xl border border-border bg-card hover:shadow-elevated hover:-translate-y-0.5 transition">
+                <div className={`h-12 w-12 rounded-2xl grid place-items-center ${c.tone}`}>
+                  <Icon className="h-6 w-6" />
+                </div>
+                <div className="mt-5 text-lg font-semibold tracking-tight">{c.tag}</div>
+                <p className="mt-2 text-sm text-muted-foreground">{c.desc}</p>
+                <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-accent">
+                  {c.cta} <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
