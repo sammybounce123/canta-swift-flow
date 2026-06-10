@@ -200,56 +200,122 @@ export function saveFlags(flags: FeatureFlags) {
 // Routes always visible regardless of workspace
 const COMMON_ROUTES = ["/dashboard", "/settings", "/team"];
 
-export function getAllowedRoutes(workspace: WorkspaceType, flags: FeatureFlags): Set<string> {
-  const allow = new Set<string>(COMMON_ROUTES);
-  const add = (...rs: string[]) => rs.forEach((r) => allow.add(r));
+export type SidebarItem = {
+  to: string;
+  label: string;
+  iconKey: string;
+  group: string;
+  exact?: boolean;
+};
+
+/** Exact per-workspace sidebar. Each workspace sees ONLY its own menus. */
+export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: FeatureFlags): SidebarItem[] {
+  const D: SidebarItem = { to: "/dashboard", label: "Dashboard", iconKey: "dashboard", group: "Overview", exact: true };
+  const Settings: SidebarItem = { to: "/settings", label: "Settings", iconKey: "settings", group: "Workspace" };
+  const Team: SidebarItem = { to: "/team", label: "Team", iconKey: "team", group: "Workspace" };
 
   switch (workspace) {
-    case "global_collections":
-      add("/collections");
-      if (flags.compliance_module_enabled) add("/compliance");
-      if (flags.cards_module_enabled) add("/cards");
-      if (flags.trade_module_enabled) add("/trade-desk", "/shipments", "/freight", "/importer", "/suppliers");
-      break;
     case "importer_portal":
-      add("/trade-desk", "/shipments", "/suppliers", "/importer", "/whatsapp", "/verified-suppliers");
-      if (flags.cards_module_enabled) add("/cards");
-      if (flags.freight_module_enabled) add("/freight");
-      if (flags.treasury_module_enabled) add("/treasury", "/wallets", "/fx", "/transactions", "/beneficiaries");
-      if (flags.compliance_module_enabled) add("/compliance");
-      break;
+      return [
+        D,
+        { to: "/importer", label: "Importer Portal", iconKey: "importer", group: "My Workspace" },
+        { to: "/trade-desk", label: "Trade Desk", iconKey: "trade", group: "Move Goods" },
+        { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Move Goods" },
+        { to: "/verified-suppliers", label: "Verified Suppliers", iconKey: "shield-check", group: "Trade Network" },
+        { to: "/my-suppliers", label: "My Suppliers", iconKey: "factory", group: "Trade Network" },
+        { to: "/documents", label: "Documents", iconKey: "file", group: "Trade Ops" },
+        { to: "/landed-cost", label: "Landed Cost", iconKey: "calculator", group: "Trade Ops" },
+        { to: "/payments", label: "Payments", iconKey: "receipt", group: "Money" },
+        { to: "/cards", label: "Importer Cards", iconKey: "card", group: "Money" },
+        { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
+        Team, Settings,
+      ];
     case "freight_workspace":
-      add("/freight", "/shipments", "/whatsapp");
-      if (flags.cards_module_enabled) add("/cards");
-      if (flags.trade_module_enabled) add("/importer", "/trade-desk");
-      if (flags.collections_module_enabled) add("/collections");
-      if (flags.treasury_module_enabled) add("/treasury", "/wallets", "/fx", "/transactions", "/beneficiaries");
-      break;
+      return [
+        D,
+        { to: "/freight", label: "Freight Workspace", iconKey: "freight", group: "My Workspace" },
+        { to: "/customers", label: "Customers", iconKey: "users", group: "Operations" },
+        { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Operations" },
+        { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
+        { to: "/freight-invoices", label: "Freight Invoices", iconKey: "receipt", group: "Money" },
+        { to: "/cards", label: "Freight Cards", iconKey: "card", group: "Money" },
+        { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
+        { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        Team, Settings,
+      ];
     case "supplier_dashboard":
-      add("/suppliers", "/trade-desk", "/shipments", "/verified-buyers");
-      if (flags.collections_module_enabled) add("/collections");
-      if (flags.cards_module_enabled) add("/cards");
-      break;
+      return [
+        D,
+        { to: "/suppliers", label: "Supplier Dashboard", iconKey: "factory", group: "My Workspace" },
+        { to: "/verified-buyers", label: "Verified Buyers", iconKey: "shield-check", group: "Trade Network" },
+        { to: "/buyers", label: "Buyers", iconKey: "users", group: "Trade Network" },
+        { to: "/invoices", label: "Invoices", iconKey: "receipt", group: "Money" },
+        { to: "/escrow", label: "Escrow", iconKey: "shield", group: "Money" },
+        { to: "/collections", label: "Settlements", iconKey: "globe", group: "Money" },
+        { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
+        { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        Team, Settings,
+      ];
+    case "global_collections":
+      return [
+        D,
+        { to: "/collections", label: "Global Collections", iconKey: "globe", group: "My Workspace" },
+        { to: "/payment-links", label: "Payment Links", iconKey: "link", group: "Collect" },
+        { to: "/invoices", label: "Invoices", iconKey: "receipt", group: "Collect" },
+        { to: "/payers", label: "Payers", iconKey: "users", group: "Collect" },
+        { to: "/reconciliation", label: "Reconciliation", iconKey: "check", group: "Money" },
+        { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        { to: "/cards", label: "Staff Cards", iconKey: "card", group: "Spend" },
+        { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
+        Team, Settings,
+      ];
     case "enterprise_treasury":
-      add("/treasury", "/wallets", "/fx", "/beneficiaries", "/transactions", "/approvals");
-      if (flags.cards_module_enabled) add("/cards");
-      if (flags.compliance_module_enabled) add("/compliance");
-      if (flags.collections_module_enabled) add("/collections");
-      if (flags.trade_module_enabled) add("/trade-desk", "/shipments", "/importer", "/suppliers", "/verified-suppliers");
-      if (flags.freight_module_enabled) add("/freight");
-      break;
+      return [
+        D,
+        { to: "/treasury", label: "Enterprise Treasury", iconKey: "building", group: "My Workspace" },
+        { to: "/wallets", label: "Wallets", iconKey: "wallet", group: "Move Money" },
+        { to: "/fx", label: "FX Conversion", iconKey: "fx", group: "Move Money" },
+        { to: "/beneficiaries", label: "Beneficiaries", iconKey: "users", group: "Move Money" },
+        { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Move Money" },
+        { to: "/approvals", label: "Approvals", iconKey: "check", group: "Governance" },
+        { to: "/cards", label: "Company Cards", iconKey: "card", group: "Spend" },
+        { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
+        { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        Team, Settings,
+      ];
     case "global_spend_cards":
-      add("/cards", "/transactions");
-      break;
+      return [
+        D,
+        { to: "/cards", label: "Global Spend Cards", iconKey: "card", group: "My Workspace" },
+        { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Activity" },
+        Settings,
+      ];
     case "canta_admin":
-      add(
-        "/treasury","/wallets","/fx","/transactions","/beneficiaries","/approvals",
-        "/trade-desk","/shipments","/freight","/importer","/suppliers",
-        "/collections","/cards","/ai-growth","/ai-insights","/whatsapp",
-        "/compliance","/integrations","/organization","/admin",
-        "/verified-suppliers","/verified-buyers","/verification-center",
-      );
-      break;
+      return [
+        { to: "/admin", label: "Admin Dashboard", iconKey: "crown", group: "Canta Internal", exact: true },
+        { to: "/ai-growth", label: "AI Growth", iconKey: "brain", group: "Intelligence" },
+        { to: "/whatsapp", label: "WhatsApp Desk", iconKey: "whatsapp", group: "Intelligence" },
+        { to: "/trade-desk", label: "Trade Desk", iconKey: "trade", group: "Customer Ops" },
+        { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Customer Ops" },
+        { to: "/freight", label: "Freight Workspace", iconKey: "freight", group: "Customer Ops" },
+        { to: "/suppliers", label: "Supplier Dashboard", iconKey: "factory", group: "Customer Ops" },
+        { to: "/collections", label: "Global Collections", iconKey: "globe", group: "Customer Ops" },
+        { to: "/cards", label: "Global Spend Cards", iconKey: "card", group: "Money" },
+        { to: "/verification-center", label: "Verification Center", iconKey: "shield-check", group: "Trust & Safety" },
+        { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
+        { to: "/approvals", label: "Approvals", iconKey: "check", group: "Governance" },
+        { to: "/integrations", label: "Integrations", iconKey: "plug", group: "Platform" },
+        Team, Settings,
+      ];
+  }
+}
+
+export function getAllowedRoutes(workspace: WorkspaceType, flags: FeatureFlags): Set<string> {
+  const allow = new Set<string>(COMMON_ROUTES);
+  getSidebarForWorkspace(workspace, flags).forEach((i) => allow.add(i.to));
+  if (workspace === "canta_admin") {
+    ["/treasury","/wallets","/fx","/transactions","/beneficiaries","/importer",
+     "/verified-suppliers","/verified-buyers","/organization","/ai-insights"].forEach((r) => allow.add(r));
   }
   return allow;
 }

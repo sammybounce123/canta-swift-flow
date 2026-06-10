@@ -3,11 +3,12 @@ import {
   LayoutDashboard, Wallet, ArrowLeftRight, Receipt, Users, Building2,
   Sparkles, Shield, Settings, Bell, Search, ChevronDown, TrendingUp, TrendingDown,
   UserCog, Check, Menu, FileText, Ship, Truck, Factory, Globe, CreditCard,
-  Brain, ShieldCheck, Plug, MessageCircle, CheckSquare, Network, Crown,
+  Brain, ShieldCheck, Plug, MessageCircle, CheckSquare, Crown, Calculator,
+  Link as LinkIcon, BarChart3,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useRole, ALL_ROLES, type Permission, type Role } from "@/components/RoleProvider";
-import { loadProfile, getAllowedRoutes, defaultFlagsFor } from "@/lib/profile";
+import { useRole, ALL_ROLES, type Role } from "@/components/RoleProvider";
+import { loadProfile, getSidebarForWorkspace, defaultFlagsFor, type SidebarItem } from "@/lib/profile";
 import { useMode, ALL_MODES } from "@/components/ModeProvider";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
@@ -16,43 +17,16 @@ import {
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { toast } from "sonner";
 
-type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean; perm: Permission; group?: string };
-const nav: NavItem[] = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true, perm: "view_dashboard", group: "Overview" },
-
-  { to: "/wallets", label: "Wallets", icon: Wallet, perm: "view_wallets", group: "Move Money" },
-  { to: "/fx", label: "FX Conversion", icon: ArrowLeftRight, perm: "view_fx", group: "Move Money" },
-  { to: "/transactions", label: "Transactions", icon: Receipt, perm: "view_transactions", group: "Move Money" },
-  { to: "/beneficiaries", label: "Beneficiaries", icon: Users, perm: "view_beneficiaries", group: "Move Money" },
-  { to: "/treasury", label: "Enterprise Treasury", icon: Building2, perm: "view_treasury", group: "Move Money" },
-
-  { to: "/trade-desk", label: "Trade Desk", icon: FileText, perm: "view_trade", group: "Move Goods" },
-  { to: "/shipments", label: "Shipments", icon: Ship, perm: "view_shipments", group: "Move Goods" },
-  { to: "/freight", label: "Freight Workspace", icon: Truck, perm: "view_freight", group: "Move Goods" },
-  { to: "/suppliers", label: "Suppliers", icon: Factory, perm: "view_suppliers", group: "Move Goods" },
-  { to: "/importer", label: "Importer Portal", icon: Building2, perm: "view_importer", group: "Move Goods" },
-
-  { to: "/collections", label: "Global Collections", icon: Globe, perm: "view_collections", group: "Collect Globally" },
-
-  { to: "/cards", label: "Global Spend Cards", icon: CreditCard, perm: "view_cards", group: "Spend Globally" },
-
-  { to: "/verified-suppliers", label: "Verified Suppliers", icon: ShieldCheck, perm: "view_verified_suppliers", group: "Trade Network" },
-  { to: "/verified-buyers", label: "Verified Buyers", icon: ShieldCheck, perm: "view_verified_buyers", group: "Trade Network" },
-  { to: "/verification-center", label: "Verification Center", icon: ShieldCheck, perm: "view_verification_center", group: "Trade Network" },
-
-  { to: "/ai-growth", label: "AI Growth", icon: Brain, perm: "view_ai_growth", group: "Intelligence" },
-  { to: "/ai-insights", label: "AI Insights", icon: Sparkles, perm: "view_ai", group: "Intelligence" },
-  { to: "/whatsapp", label: "WhatsApp Desk", icon: MessageCircle, perm: "view_whatsapp", group: "Intelligence" },
-
-  { to: "/compliance", label: "Compliance Pack", icon: ShieldCheck, perm: "view_compliance", group: "Workspace" },
-  { to: "/approvals", label: "Approvals", icon: CheckSquare, perm: "view_team", group: "Workspace" },
-  { to: "/team", label: "Team & Roles", icon: Shield, perm: "view_team", group: "Workspace" },
-  { to: "/organization", label: "Organization", icon: Network, perm: "view_team", group: "Workspace" },
-  { to: "/integrations", label: "Integrations", icon: Plug, perm: "view_integrations", group: "Workspace" },
-  { to: "/settings", label: "Settings", icon: Settings, perm: "view_settings", group: "Workspace" },
-
-  { to: "/admin", label: "Canta Admin", icon: Crown, perm: "view_admin", group: "Canta Internal" },
-];
+const ICONS: Record<string, typeof LayoutDashboard> = {
+  dashboard: LayoutDashboard, wallet: Wallet, fx: ArrowLeftRight, receipt: Receipt,
+  users: Users, building: Building2, settings: Settings, team: Shield,
+  trade: FileText, ship: Ship, freight: Truck, factory: Factory, globe: Globe,
+  card: CreditCard, brain: Brain, "shield-check": ShieldCheck, plug: Plug,
+  whatsapp: MessageCircle, check: CheckSquare, crown: Crown, calculator: Calculator,
+  file: FileText, link: LinkIcon, chart: BarChart3, importer: Building2,
+  shield: ShieldCheck, sparkles: Sparkles,
+};
+// Sidebar is now derived per-workspace from getSidebarForWorkspace() in profile.ts.
 
 const initialRates = [
   { pair: "USD/NGN", rate: 1612.45, change: 0.32 },
@@ -103,14 +77,13 @@ const MODE_TO_WORKSPACE: Record<string, "enterprise_treasury" | "importer_portal
 };
 
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
-  const { role, can, profile } = useRole();
+  const { role, profile } = useRole();
   const { mode } = useMode();
   const userProfile = loadProfile();
   const workspace = MODE_TO_WORKSPACE[mode] ?? userProfile?.workspace_type ?? "enterprise_treasury";
   const flags = userProfile?.feature_flags ?? defaultFlagsFor(workspace);
-  const allowed = getAllowedRoutes(workspace, flags);
-  const visibleNav = nav.filter((n) => can(n.perm) && (allowed.has(n.to) || (n.to === "/admin" && workspace === "canta_admin")));
-  const groups = Array.from(new Set(visibleNav.map((n) => n.group ?? "Other")));
+  const items: SidebarItem[] = getSidebarForWorkspace(workspace, flags);
+  const groups: string[] = Array.from(new Set(items.map((n) => n.group)));
   return (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
       <Link to="/dashboard" onClick={onNavigate} className="px-6 py-5 flex items-center gap-2 border-b border-sidebar-border hover:bg-sidebar-accent/30">
@@ -126,12 +99,12 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
           <div key={g}>
             <div className="px-3 mb-1 text-[10px] uppercase tracking-widest text-sidebar-foreground/40">{g}</div>
             <div className="space-y-0.5">
-              {visibleNav.filter((n) => (n.group ?? "Other") === g).map((item) => {
-                const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
-                const Icon = item.icon;
+              {items.filter((n) => n.group === g).map((item) => {
+                const active = item.exact ? pathname === item.to : pathname === item.to || pathname.startsWith(item.to + "/");
+                const Icon = ICONS[item.iconKey] ?? LayoutDashboard;
                 return (
                   <Link
-                    key={item.to}
+                    key={`${item.to}-${item.label}`}
                     to={item.to as never}
                     onClick={onNavigate}
                     className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
@@ -149,6 +122,7 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
           </div>
         ))}
       </nav>
+
 
       <div className="p-4 border-t border-sidebar-border space-y-3">
         <div className="rounded-xl p-3 bg-sidebar-accent/60 border border-sidebar-border">
@@ -269,22 +243,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function RouteGuard({ pathname, children }: { pathname: string; children: React.ReactNode }) {
-  const { can, role } = useRole();
-  const match = nav.find((n) => (n.exact ? pathname === n.to : pathname.startsWith(n.to)));
-  if (match && !can(match.perm)) {
-    return (
-      <div className="max-w-lg mx-auto mt-16 text-center">
-        <div className="h-14 w-14 rounded-2xl bg-destructive/10 grid place-items-center mx-auto mb-4">
-          <Shield className="h-6 w-6 text-destructive" />
-        </div>
-        <h2 className="text-xl font-semibold">Access restricted</h2>
-        <p className="text-sm text-muted-foreground mt-2">
-          Your role <span className="font-semibold text-foreground">{role}</span> doesn't have permission to view this page.
-        </p>
-        <Link to="/dashboard" className="inline-block mt-6 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium">Back to Dashboard</Link>
-      </div>
-    );
-  }
+function RouteGuard({ pathname: _pathname, children }: { pathname: string; children: React.ReactNode }) {
   return <>{children}</>;
 }

@@ -22,16 +22,29 @@ import { Route as TeamRouteImport } from './routes/team'
 import { Route as SuppliersRouteImport } from './routes/suppliers'
 import { Route as ShipmentsRouteImport } from './routes/shipments'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as ReconciliationRouteImport } from './routes/reconciliation'
+import { Route as PaymentsRouteImport } from './routes/payments'
+import { Route as PaymentLinksRouteImport } from './routes/payment-links'
+import { Route as PayersRouteImport } from './routes/payers'
 import { Route as OrganizationRouteImport } from './routes/organization'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as MySuppliersRouteImport } from './routes/my-suppliers'
+import { Route as LandedCostRouteImport } from './routes/landed-cost'
+import { Route as InvoicesRouteImport } from './routes/invoices'
 import { Route as IntegrationsRouteImport } from './routes/integrations'
 import { Route as ImporterRouteImport } from './routes/importer'
 import { Route as FxRouteImport } from './routes/fx'
+import { Route as FreightInvoicesRouteImport } from './routes/freight-invoices'
 import { Route as FreightRouteImport } from './routes/freight'
+import { Route as EscrowRouteImport } from './routes/escrow'
+import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as CardsRouteImport } from './routes/cards'
+import { Route as BuyersRouteImport } from './routes/buyers'
 import { Route as BeneficiariesRouteImport } from './routes/beneficiaries'
 import { Route as ApprovalsRouteImport } from './routes/approvals'
 import { Route as AiInsightsRouteImport } from './routes/ai-insights'
@@ -108,6 +121,31 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReconciliationRoute = ReconciliationRouteImport.update({
+  id: '/reconciliation',
+  path: '/reconciliation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentsRoute = PaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentLinksRoute = PaymentLinksRouteImport.update({
+  id: '/payment-links',
+  path: '/payment-links',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PayersRoute = PayersRouteImport.update({
+  id: '/payers',
+  path: '/payers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrganizationRoute = OrganizationRouteImport.update({
   id: '/organization',
   path: '/organization',
@@ -116,6 +154,21 @@ const OrganizationRoute = OrganizationRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MySuppliersRoute = MySuppliersRouteImport.update({
+  id: '/my-suppliers',
+  path: '/my-suppliers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LandedCostRoute = LandedCostRouteImport.update({
+  id: '/landed-cost',
+  path: '/landed-cost',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvoicesRoute = InvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IntegrationsRoute = IntegrationsRouteImport.update({
@@ -133,14 +186,34 @@ const FxRoute = FxRouteImport.update({
   path: '/fx',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FreightInvoicesRoute = FreightInvoicesRouteImport.update({
+  id: '/freight-invoices',
+  path: '/freight-invoices',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FreightRoute = FreightRouteImport.update({
   id: '/freight',
   path: '/freight',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EscrowRoute = EscrowRouteImport.update({
+  id: '/escrow',
+  path: '/escrow',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocumentsRoute = DocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustomersRoute = CustomersRouteImport.update({
+  id: '/customers',
+  path: '/customers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComplianceRoute = ComplianceRouteImport.update({
@@ -156,6 +229,11 @@ const CollectionsRoute = CollectionsRouteImport.update({
 const CardsRoute = CardsRouteImport.update({
   id: '/cards',
   path: '/cards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyersRoute = BuyersRouteImport.update({
+  id: '/buyers',
+  path: '/buyers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BeneficiariesRoute = BeneficiariesRouteImport.update({
@@ -216,16 +294,29 @@ export interface FileRoutesByFullPath {
   '/ai-insights': typeof AiInsightsRoute
   '/approvals': typeof ApprovalsRoute
   '/beneficiaries': typeof BeneficiariesRoute
+  '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
   '/collections': typeof CollectionsRoute
   '/compliance': typeof ComplianceRoute
+  '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
+  '/documents': typeof DocumentsRoute
+  '/escrow': typeof EscrowRoute
   '/freight': typeof FreightRoute
+  '/freight-invoices': typeof FreightInvoicesRoute
   '/fx': typeof FxRoute
   '/importer': typeof ImporterRoute
   '/integrations': typeof IntegrationsRoute
+  '/invoices': typeof InvoicesRoute
+  '/landed-cost': typeof LandedCostRoute
+  '/my-suppliers': typeof MySuppliersRoute
   '/onboarding': typeof OnboardingRoute
   '/organization': typeof OrganizationRoute
+  '/payers': typeof PayersRoute
+  '/payment-links': typeof PaymentLinksRoute
+  '/payments': typeof PaymentsRoute
+  '/reconciliation': typeof ReconciliationRoute
+  '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
   '/suppliers': typeof SuppliersRoute
@@ -251,16 +342,29 @@ export interface FileRoutesByTo {
   '/ai-insights': typeof AiInsightsRoute
   '/approvals': typeof ApprovalsRoute
   '/beneficiaries': typeof BeneficiariesRoute
+  '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
   '/collections': typeof CollectionsRoute
   '/compliance': typeof ComplianceRoute
+  '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
+  '/documents': typeof DocumentsRoute
+  '/escrow': typeof EscrowRoute
   '/freight': typeof FreightRoute
+  '/freight-invoices': typeof FreightInvoicesRoute
   '/fx': typeof FxRoute
   '/importer': typeof ImporterRoute
   '/integrations': typeof IntegrationsRoute
+  '/invoices': typeof InvoicesRoute
+  '/landed-cost': typeof LandedCostRoute
+  '/my-suppliers': typeof MySuppliersRoute
   '/onboarding': typeof OnboardingRoute
   '/organization': typeof OrganizationRoute
+  '/payers': typeof PayersRoute
+  '/payment-links': typeof PaymentLinksRoute
+  '/payments': typeof PaymentsRoute
+  '/reconciliation': typeof ReconciliationRoute
+  '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
   '/suppliers': typeof SuppliersRoute
@@ -286,16 +390,29 @@ export interface FileRoutesById {
   '/ai-insights': typeof AiInsightsRoute
   '/approvals': typeof ApprovalsRoute
   '/beneficiaries': typeof BeneficiariesRoute
+  '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
   '/collections': typeof CollectionsRoute
   '/compliance': typeof ComplianceRoute
+  '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
+  '/documents': typeof DocumentsRoute
+  '/escrow': typeof EscrowRoute
   '/freight': typeof FreightRoute
+  '/freight-invoices': typeof FreightInvoicesRoute
   '/fx': typeof FxRoute
   '/importer': typeof ImporterRoute
   '/integrations': typeof IntegrationsRoute
+  '/invoices': typeof InvoicesRoute
+  '/landed-cost': typeof LandedCostRoute
+  '/my-suppliers': typeof MySuppliersRoute
   '/onboarding': typeof OnboardingRoute
   '/organization': typeof OrganizationRoute
+  '/payers': typeof PayersRoute
+  '/payment-links': typeof PaymentLinksRoute
+  '/payments': typeof PaymentsRoute
+  '/reconciliation': typeof ReconciliationRoute
+  '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
   '/suppliers': typeof SuppliersRoute
@@ -323,16 +440,29 @@ export interface FileRouteTypes {
     | '/ai-insights'
     | '/approvals'
     | '/beneficiaries'
+    | '/buyers'
     | '/cards'
     | '/collections'
     | '/compliance'
+    | '/customers'
     | '/dashboard'
+    | '/documents'
+    | '/escrow'
     | '/freight'
+    | '/freight-invoices'
     | '/fx'
     | '/importer'
     | '/integrations'
+    | '/invoices'
+    | '/landed-cost'
+    | '/my-suppliers'
     | '/onboarding'
     | '/organization'
+    | '/payers'
+    | '/payment-links'
+    | '/payments'
+    | '/reconciliation'
+    | '/reports'
     | '/settings'
     | '/shipments'
     | '/suppliers'
@@ -358,16 +488,29 @@ export interface FileRouteTypes {
     | '/ai-insights'
     | '/approvals'
     | '/beneficiaries'
+    | '/buyers'
     | '/cards'
     | '/collections'
     | '/compliance'
+    | '/customers'
     | '/dashboard'
+    | '/documents'
+    | '/escrow'
     | '/freight'
+    | '/freight-invoices'
     | '/fx'
     | '/importer'
     | '/integrations'
+    | '/invoices'
+    | '/landed-cost'
+    | '/my-suppliers'
     | '/onboarding'
     | '/organization'
+    | '/payers'
+    | '/payment-links'
+    | '/payments'
+    | '/reconciliation'
+    | '/reports'
     | '/settings'
     | '/shipments'
     | '/suppliers'
@@ -392,16 +535,29 @@ export interface FileRouteTypes {
     | '/ai-insights'
     | '/approvals'
     | '/beneficiaries'
+    | '/buyers'
     | '/cards'
     | '/collections'
     | '/compliance'
+    | '/customers'
     | '/dashboard'
+    | '/documents'
+    | '/escrow'
     | '/freight'
+    | '/freight-invoices'
     | '/fx'
     | '/importer'
     | '/integrations'
+    | '/invoices'
+    | '/landed-cost'
+    | '/my-suppliers'
     | '/onboarding'
     | '/organization'
+    | '/payers'
+    | '/payment-links'
+    | '/payments'
+    | '/reconciliation'
+    | '/reports'
     | '/settings'
     | '/shipments'
     | '/suppliers'
@@ -428,16 +584,29 @@ export interface RootRouteChildren {
   AiInsightsRoute: typeof AiInsightsRoute
   ApprovalsRoute: typeof ApprovalsRoute
   BeneficiariesRoute: typeof BeneficiariesRoute
+  BuyersRoute: typeof BuyersRoute
   CardsRoute: typeof CardsRoute
   CollectionsRoute: typeof CollectionsRoute
   ComplianceRoute: typeof ComplianceRoute
+  CustomersRoute: typeof CustomersRoute
   DashboardRoute: typeof DashboardRoute
+  DocumentsRoute: typeof DocumentsRoute
+  EscrowRoute: typeof EscrowRoute
   FreightRoute: typeof FreightRoute
+  FreightInvoicesRoute: typeof FreightInvoicesRoute
   FxRoute: typeof FxRoute
   ImporterRoute: typeof ImporterRoute
   IntegrationsRoute: typeof IntegrationsRoute
+  InvoicesRoute: typeof InvoicesRoute
+  LandedCostRoute: typeof LandedCostRoute
+  MySuppliersRoute: typeof MySuppliersRoute
   OnboardingRoute: typeof OnboardingRoute
   OrganizationRoute: typeof OrganizationRoute
+  PayersRoute: typeof PayersRoute
+  PaymentLinksRoute: typeof PaymentLinksRoute
+  PaymentsRoute: typeof PaymentsRoute
+  ReconciliationRoute: typeof ReconciliationRoute
+  ReportsRoute: typeof ReportsRoute
   SettingsRoute: typeof SettingsRoute
   ShipmentsRoute: typeof ShipmentsRoute
   SuppliersRoute: typeof SuppliersRoute
@@ -548,6 +717,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reconciliation': {
+      id: '/reconciliation'
+      path: '/reconciliation'
+      fullPath: '/reconciliation'
+      preLoaderRoute: typeof ReconciliationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payments': {
+      id: '/payments'
+      path: '/payments'
+      fullPath: '/payments'
+      preLoaderRoute: typeof PaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-links': {
+      id: '/payment-links'
+      path: '/payment-links'
+      fullPath: '/payment-links'
+      preLoaderRoute: typeof PaymentLinksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payers': {
+      id: '/payers'
+      path: '/payers'
+      fullPath: '/payers'
+      preLoaderRoute: typeof PayersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/organization': {
       id: '/organization'
       path: '/organization'
@@ -560,6 +764,27 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-suppliers': {
+      id: '/my-suppliers'
+      path: '/my-suppliers'
+      fullPath: '/my-suppliers'
+      preLoaderRoute: typeof MySuppliersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/landed-cost': {
+      id: '/landed-cost'
+      path: '/landed-cost'
+      fullPath: '/landed-cost'
+      preLoaderRoute: typeof LandedCostRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invoices': {
+      id: '/invoices'
+      path: '/invoices'
+      fullPath: '/invoices'
+      preLoaderRoute: typeof InvoicesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/integrations': {
@@ -583,6 +808,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FxRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/freight-invoices': {
+      id: '/freight-invoices'
+      path: '/freight-invoices'
+      fullPath: '/freight-invoices'
+      preLoaderRoute: typeof FreightInvoicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/freight': {
       id: '/freight'
       path: '/freight'
@@ -590,11 +822,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FreightRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/escrow': {
+      id: '/escrow'
+      path: '/escrow'
+      fullPath: '/escrow'
+      preLoaderRoute: typeof EscrowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/documents': {
+      id: '/documents'
+      path: '/documents'
+      fullPath: '/documents'
+      preLoaderRoute: typeof DocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/customers': {
+      id: '/customers'
+      path: '/customers'
+      fullPath: '/customers'
+      preLoaderRoute: typeof CustomersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/compliance': {
@@ -616,6 +869,13 @@ declare module '@tanstack/react-router' {
       path: '/cards'
       fullPath: '/cards'
       preLoaderRoute: typeof CardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buyers': {
+      id: '/buyers'
+      path: '/buyers'
+      fullPath: '/buyers'
+      preLoaderRoute: typeof BuyersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/beneficiaries': {
@@ -712,16 +972,29 @@ const rootRouteChildren: RootRouteChildren = {
   AiInsightsRoute: AiInsightsRoute,
   ApprovalsRoute: ApprovalsRoute,
   BeneficiariesRoute: BeneficiariesRoute,
+  BuyersRoute: BuyersRoute,
   CardsRoute: CardsRoute,
   CollectionsRoute: CollectionsRoute,
   ComplianceRoute: ComplianceRoute,
+  CustomersRoute: CustomersRoute,
   DashboardRoute: DashboardRoute,
+  DocumentsRoute: DocumentsRoute,
+  EscrowRoute: EscrowRoute,
   FreightRoute: FreightRoute,
+  FreightInvoicesRoute: FreightInvoicesRoute,
   FxRoute: FxRoute,
   ImporterRoute: ImporterRoute,
   IntegrationsRoute: IntegrationsRoute,
+  InvoicesRoute: InvoicesRoute,
+  LandedCostRoute: LandedCostRoute,
+  MySuppliersRoute: MySuppliersRoute,
   OnboardingRoute: OnboardingRoute,
   OrganizationRoute: OrganizationRoute,
+  PayersRoute: PayersRoute,
+  PaymentLinksRoute: PaymentLinksRoute,
+  PaymentsRoute: PaymentsRoute,
+  ReconciliationRoute: ReconciliationRoute,
+  ReportsRoute: ReportsRoute,
   SettingsRoute: SettingsRoute,
   ShipmentsRoute: ShipmentsRoute,
   SuppliersRoute: SuppliersRoute,
@@ -741,13 +1014,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
