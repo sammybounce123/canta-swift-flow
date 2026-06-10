@@ -7,8 +7,7 @@ export type WorkspaceType =
   | "freight_workspace"
   | "global_collections"
   | "supplier_dashboard"
-  | "global_spend_cards"
-  | "canta_admin";
+  | "global_spend_cards";
 
 export type Segment = {
   id: WorkspaceType;
@@ -103,19 +102,6 @@ export const SEGMENTS: Segment[] = [
     welcome: "Create and manage purpose-built cards for travel, business, students, ads, and global spending.",
     tagline: "Individuals & small businesses using cards globally",
   },
-  {
-    id: "canta_admin",
-    label: "Canta Internal Staff",
-    shortLabel: "Canta Admin",
-    accountType: "internal",
-    customerSegment: "canta_internal",
-    primaryUseCase: "Operations, compliance, support across customers",
-    defaultRole: "Canta Super Admin",
-    defaultPermissions: ["view dashboard", "view all customers", "approve KYB", "approve settlement"],
-    route: "/admin",
-    welcome: "Manage customers, trade files, compliance, settlements, WhatsApp onboarding, cards, and support.",
-    tagline: "Canta team — operations, trade, compliance, treasury, support",
-  },
 ];
 
 export type FeatureFlags = {
@@ -178,8 +164,6 @@ export function defaultFlagsFor(workspace: WorkspaceType): FeatureFlags {
       return { ...ALL_OFF, collections_module_enabled: true, cards_module_enabled: true, compliance_module_enabled: true };
     case "global_spend_cards":
       return { ...ALL_OFF, cards_module_enabled: true };
-    case "canta_admin":
-      return ALL_ON;
   }
 }
 
@@ -290,33 +274,12 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Activity" },
         Settings,
       ];
-    case "canta_admin":
-      return [
-        { to: "/admin", label: "Admin Dashboard", iconKey: "crown", group: "Canta Internal", exact: true },
-        { to: "/ai-growth", label: "AI Growth", iconKey: "brain", group: "Intelligence" },
-        { to: "/whatsapp", label: "WhatsApp Desk", iconKey: "whatsapp", group: "Intelligence" },
-        { to: "/trade-desk", label: "Trade Desk", iconKey: "trade", group: "Customer Ops" },
-        { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Customer Ops" },
-        { to: "/freight", label: "Freight Workspace", iconKey: "freight", group: "Customer Ops" },
-        { to: "/suppliers", label: "Supplier Dashboard", iconKey: "factory", group: "Customer Ops" },
-        { to: "/collections", label: "Global Collections", iconKey: "globe", group: "Customer Ops" },
-        { to: "/cards", label: "Global Spend Cards", iconKey: "card", group: "Money" },
-        { to: "/verification-center", label: "Verification Center", iconKey: "shield-check", group: "Trust & Safety" },
-        { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
-        { to: "/approvals", label: "Approvals", iconKey: "check", group: "Governance" },
-        { to: "/integrations", label: "Integrations", iconKey: "plug", group: "Platform" },
-        Team, Settings,
-      ];
   }
 }
 
 export function getAllowedRoutes(workspace: WorkspaceType, flags: FeatureFlags): Set<string> {
   const allow = new Set<string>(COMMON_ROUTES);
   getSidebarForWorkspace(workspace, flags).forEach((i) => allow.add(i.to));
-  if (workspace === "canta_admin") {
-    ["/treasury","/wallets","/fx","/transactions","/beneficiaries","/importer",
-     "/verified-suppliers","/verified-buyers","/organization","/ai-insights"].forEach((r) => allow.add(r));
-  }
   return allow;
 }
 

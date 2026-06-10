@@ -67,13 +67,12 @@ function FxTicker() {
   );
 }
 
-const MODE_TO_WORKSPACE: Record<string, "enterprise_treasury" | "importer_portal" | "freight_workspace" | "supplier_dashboard" | "global_collections" | "canta_admin"> = {
+const MODE_TO_WORKSPACE: Record<string, "enterprise_treasury" | "importer_portal" | "freight_workspace" | "supplier_dashboard" | "global_collections"> = {
   "Enterprise Treasury": "enterprise_treasury",
   "Importer": "importer_portal",
   "Freight Forwarder": "freight_workspace",
   "Supplier": "supplier_dashboard",
   "Global Merchant": "global_collections",
-  "Canta Admin": "canta_admin",
 };
 
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
