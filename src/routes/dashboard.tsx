@@ -52,7 +52,7 @@ function Dashboard() {
               : mode === "Freight Forwarder" ? "Manage operations, customers and invoices."
               : mode === "Supplier" ? "Issue invoices, escrow & global settlement."
               : mode === "Global Merchant" ? "Collect locally, settle globally."
-              : mode === "Canta Admin" ? "Internal control panel — leads, ops, compliance."
+              : mode === "Global Merchant" ? "Collect locally, settle globally."
               : "Move money, FX, wallets and settlements at enterprise scale."}
             </div>
           </div>
