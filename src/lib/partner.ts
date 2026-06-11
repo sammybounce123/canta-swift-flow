@@ -2,52 +2,88 @@
 // Pure presentation data; no backend.
 
 export type CaseStatus =
+  | "Draft"
   | "Referred"
+  | "Referral Created"
   | "KYC Pending"
+  | "KYC Documents Uploaded"
+  | "Awaiting FX Quote"
+  | "FX Quote Generated"
+  | "Payment Link Generated"
+  | "Payment Link Sent"
+  | "Client Verification Pending"
+  | "BVN Pending"
+  | "BVN Submitted"
+  | "Client Consent Completed"
   | "Awaiting Client Funding"
   | "Funding Received"
+  | "Funding Review"
   | "FX Quote Sent"
   | "FX Accepted"
   | "FX Converted"
   | "Payout Processing"
   | "Paid to Solicitor"
   | "Receipt Uploaded"
+  | "Client Invited to Canta"
+  | "Completed"
   | "Failed / Returned"
-  | "Cancelled";
+  | "Cancelled"
+  | "Expired Quote";
 
 export const CASE_STATUSES: CaseStatus[] = [
+  "Draft",
   "Referred",
+  "Referral Created",
   "KYC Pending",
+  "KYC Documents Uploaded",
+  "Awaiting FX Quote",
+  "FX Quote Generated",
+  "Payment Link Generated",
+  "Payment Link Sent",
+  "Client Verification Pending",
+  "BVN Pending",
+  "BVN Submitted",
+  "Client Consent Completed",
   "Awaiting Client Funding",
   "Funding Received",
+  "Funding Review",
   "FX Quote Sent",
   "FX Accepted",
   "FX Converted",
   "Payout Processing",
   "Paid to Solicitor",
   "Receipt Uploaded",
+  "Client Invited to Canta",
+  "Completed",
   "Failed / Returned",
   "Cancelled",
+  "Expired Quote",
 ];
 
 export function statusTone(s: CaseStatus): string {
   switch (s) {
     case "Paid to Solicitor":
     case "Receipt Uploaded":
+    case "Completed":
+    case "Client Invited to Canta":
       return "bg-success/15 text-success border-success/30";
     case "Failed / Returned":
     case "Cancelled":
+    case "Expired Quote":
       return "bg-destructive/15 text-destructive border-destructive/30";
     case "Payout Processing":
     case "FX Converted":
     case "FX Accepted":
+    case "FX Quote Generated":
+    case "Payment Link Generated":
+    case "Payment Link Sent":
       return "bg-primary/15 text-primary border-primary/30";
     case "Funding Received":
+    case "Funding Review":
     case "FX Quote Sent":
+    case "BVN Submitted":
+    case "Client Consent Completed":
       return "bg-accent/15 text-accent border-accent/30";
-    case "Referred":
-    case "KYC Pending":
-    case "Awaiting Client Funding":
     default:
       return "bg-warning/15 text-warning border-warning/30";
   }

@@ -297,13 +297,16 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/partner", label: "Dashboard", iconKey: "dashboard", group: "Overview", exact: true },
         { to: "/partner/leads", label: "Referral Leads", iconKey: "sparkles", group: "Referrals" },
         { to: "/partner/cases", label: "Client Payment Cases", iconKey: "file", group: "Referrals" },
-        { to: "/partner/new-referral", label: "New Referral", iconKey: "sparkles", group: "Referrals" },
-        { to: "/partner/payouts", label: "Solicitor Payouts", iconKey: "receipt", group: "Payouts" },
-        { to: "/partner/marketers", label: "Marketers", iconKey: "users", group: "Team" },
+        { to: "/partner/new-referral", label: "New Payment Case", iconKey: "sparkles", group: "Referrals" },
+        { to: "/partner/fx-quotes", label: "FX Quotes", iconKey: "fx", group: "Money" },
+        { to: "/partner/payment-links", label: "Payment Links", iconKey: "link", group: "Money" },
+        { to: "/partner/payouts", label: "Solicitor Payouts", iconKey: "receipt", group: "Money" },
         { to: "/partner/solicitors", label: "Solicitors", iconKey: "shield-check", group: "Beneficiaries" },
         { to: "/partner/documents", label: "Documents", iconKey: "file", group: "Operations" },
+        { to: "/partner/marketers", label: "Marketer Performance", iconKey: "users", group: "Insights" },
         { to: "/partner/reports", label: "Reports", iconKey: "chart", group: "Insights" },
-        Team, Settings,
+        { to: "/partner/team", label: "Team", iconKey: "team", group: "Workspace" },
+        { to: "/partner/settings", label: "Settings", iconKey: "settings", group: "Workspace" },
       ];
   }
 }

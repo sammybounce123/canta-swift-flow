@@ -1,104 +1,60 @@
-# Canta Forensic Improvements Plan
+# Baron & Cabot — FX Quote & Client Payment Link Flow
 
-Scope is large but additive — no pages/modules are removed. Work is grouped into 8 focused passes that ship sequentially so the app stays buildable between steps.
+## Scope
+Expand the existing Partner Property Payments workspace with a full partner-initiated payment journey: case → KYC upload → FX quote → secure client payment link → lightweight client verification (BVN, consent) → funding instruction → FX conversion → solicitor payout → receipt → optional Canta activation. Plus audit trail, role-based KPIs, and updated sidebar.
 
----
+All data is mocked client-side (localStorage + in-memory) — no backend changes. UI only, consistent with existing premium property-focused styling.
 
-## 1. Onboarding Pass
+## Data model changes (`src/lib/partner.ts`)
+- Extend `CaseStatus` to the full 23-status list (Draft → Completed, Failed/Returned, Cancelled, Expired Quote, BVN states, etc.) and update `statusTone`.
+- Add types: `FxQuote`, `PaymentLink`, `ClientVerification`, `CaseDocument`, `FundingRecord`, `ActivityLogEntry`, `ClientActivation`.
+- Extend `PaymentCase` with: `paymentPurpose`, `paymentDeadline`, `createdBy`, `clientSource`, `documents[]`, `quotes[]`, `activeQuoteId`, `paymentLink`, `verification`, `funding`, `payout`, `activation`, `activity[]`.
+- Add helpers: `createCase`, `addDocument`, `generateQuote(caseId, validity)`, `expireQuote`, `generatePaymentLink`, `submitClientVerification`, `recordFunding`, `markPaidToSolicitor`, `appendActivity`, `inviteClientToCanta`.
+- Persist mutations to `localStorage` (`canta:partner:cases`) so the flow survives reloads; hydrate from seed on first load.
 
-**Goal:** A proper "What best describes you?" page after Get Started with large workspace cards.
+## Routes (new + updated)
+New:
+- `src/routes/partner.fx-quotes.tsx` — list of all quotes with status, expiry countdown, regenerate.
+- `src/routes/partner.payment-links.tsx` — list of links with copy/send/expire actions.
+- `src/routes/partner.team.tsx` — team roster (uses MARKETERS).
+- `src/routes/partner.settings.tsx` — workspace + permission toggles (presentation).
+- `src/routes/pay.$linkId.tsx` — **public** client-facing branded payment page with 4 steps: Review → Verification (BVN, DOB, consent) → Documents/Confirm → Funding instruction → Receipt + Canta activation CTA.
 
-- Rebuild `src/routes/welcome.tsx` into a full-bleed onboarding screen with 7 large cards (Enterprise, Importer, Freight Forwarder, Supplier, University/Global Merchant, Card User, Canta Internal Staff).
-- Each card shows: **who it's for**, **what they can do** (3 bullets), **primary CTA**, **route destination chip**.
-- Extend `src/lib/profile.ts` `UserProfile` to persist:
-  `account_type`, `workspace_type`, `customer_segment`, `primary_use_case`, `organization_id`, `role`, `permissions[]`.
-- "Get Started" CTA on `/` already routes to `/welcome` — verify and tighten copy.
+Updated:
+- `src/routes/partner.cases.$caseId.tsx` — add tabs: Overview, Documents, FX Quote, Payment Link, Verification, Funding, Payout, Activity. Buttons: Upload KYC, Generate FX Quote (validity selector), Generate Payment Link, Copy/Send Link, Mark Funding Received, Mark Paid to Solicitor, Upload Receipt, Invite to Canta. Hide full BVN (show status only).
+- `src/routes/partner.new-referral.tsx` — extend form with new fields (purpose, deadline, document uploads, proof of funds, notes); auto-tag partner/source/createdBy.
+- `src/routes/partner.index.tsx` — refresh KPI cards for admin and marketer per spec.
+- `src/routes/partner.payouts.tsx` — add payout-status filters (Pending, Processing, Paid, Failed, Returned, Receipt Uploaded).
+- `src/routes/partner.solicitors.tsx` — flag bank-detail edits as requiring re-verification.
+- `src/lib/profile.ts` — update `partner_property` sidebar to the new 13-item list.
 
----
+## Client payment page (`/pay/$linkId`)
+Public route (no auth gate). Renders:
+1. Branded header "Canta × Baron & Cabot Property Payment", quote countdown.
+2. Review card: client, property, solicitor firm, GBP→NGN, fee, expiry.
+3. Verification step: BVN (masked input), DOB, name confirm, source-of-funds, 4 consent checkboxes, explicit "Baron & Cabot will not enter this for you" notice.
+4. Documents step: list partner-uploaded docs, allow client to add missing, confirm consent.
+5. Funding instruction (only after verification complete & quote valid): dedicated Canta account, amount, reference, expiry timer, warnings.
+6. Success/Receipt step + "Activate full Canta account" CTA.
 
-## 2. Workspace-Based Sidebar Pass
+If quote expired, show "Quote expired — please contact Baron & Cabot for a new quote" and block funding.
 
-**Goal:** Each workspace sees only its own modules; the seven required menu lists below are enforced exactly.
+## RBAC & privacy
+- Reuse `usePartnerRole` + `visibleCases` / `visibleLeads`.
+- Add `canSeeBVN` (always false for partner roles — only show status).
+- Marketer KPIs filter by `assignedMarketerId === user.id`.
+- Solicitor bank details gated by `canSeeSolicitorBankDetails`.
 
-Refactor `src/components/AppShell.tsx` so sidebar items are produced by `getSidebarForWorkspace(workspace, flags)` defined in `src/lib/profile.ts`. Per-workspace lists:
+## Audit trail
+Every mutation appends `ActivityLogEntry { action, timestamp, userId, role, fromStatus?, toStatus?, notes? }` via `appendActivity`. Activity tab renders timeline with role badges.
 
-- **Importer:** Dashboard, Trade Desk, Shipments, Verified Suppliers, My Suppliers, Documents, Landed Cost, Payments, Importer Cards, WhatsApp Updates, Team, Settings.
-- **Freight Forwarder:** Dashboard, Freight Workspace, Customers, Shipments, Documents, Freight Invoices, WhatsApp Updates, Freight Cards, Reports, Team, Settings.
-- **Supplier:** Dashboard, Supplier Dashboard, Verified Buyers, Buyers, Invoices, Escrow, Settlements, Documents, Reports, Team, Settings.
-- **University / Global Merchant:** Dashboard, Global Collections, Payment Links, Invoices, Payers, Settlements, Reconciliation, Reports, Staff Cards, Compliance Pack, Team, Settings.
-- **Enterprise:** Dashboard, Enterprise Treasury, Wallets, FX Conversion, Beneficiaries, Transactions, Approvals, Company Cards, Compliance Pack, Reports, Team, Settings.
-- **Canta Internal Staff:** Admin Dashboard, AI Growth, WhatsApp Desk, Trade Desk, Shipments, Freight Workspace, Supplier Dashboard, Global Collections, Global Spend Cards, Compliance Pack, Integrations, Approvals, Team, Settings.
-- **Card User:** Dashboard, Global Spend Cards, Transactions, Settings (keep existing minimal set).
+## Out of scope
+- Real BVN verification, real FX rates, real banking rails, real payment webhooks — all simulated.
+- Backend persistence (Lovable Cloud) — keep client-side mock per existing pattern.
+- Reports page deep redesign beyond KPI parity.
 
-Sidebar still respects `ModeProvider` for the demo mode switcher and feature flags.
-
-Add lightweight stub routes where missing (`/payments`, `/landed-cost`, `/payment-links`, `/payers`, `/reconciliation`, `/reports`, `/escrow`, `/invoices`, `/customers`, `/freight-invoices`, `/documents`, `/my-suppliers`, `/buyers`) so navigation never 404s. Each stub uses `AppShell` and a "Coming soon — module placeholder" card with section overview.
-
----
-
-## 3. Trade File Detail Pass
-
-**Goal:** Trade File rows are clickable and open a tabbed detail page.
-
-- `src/routes/trade-desk.$fileId.tsx` already exists; expand it to a polished tabbed detail with: Overview, Shipment Timeline, Supplier, Freight Forwarder, Documents, Payments, Escrow, Landed Cost, WhatsApp History, Activity Log, Compliance.
-- Overview header surfaces: importer, supplier, freight forwarder, route, goods category, invoice amount, FX rate, payment status, shipment status, ETA, next action, risk level, missing documents count, landed cost summary, escrow status.
-- Wire `trade-desk.index.tsx` rows with `<Link to="/trade-desk/$fileId" params>` (no `<a href>`).
-
----
-
-## 4. Canta Trade Network Pass
-
-**Goal:** Polish existing directories and Verification Center against the requirements list.
-
-- `src/routes/verified-suppliers.tsx`: ensure cards expose factory/address verification, bank verification, completed tx, dispute history, response time, escrow eligibility, **Request Quote** and **Start Trade File** buttons.
-- `src/routes/verified-buyers.tsx`: ensure cards expose payment reliability score, completed tx, avg order size range, escrow history, dispute record, **Send Quote** and **Create Invoice** buttons.
-- `src/routes/verification-center.tsx`: review queue tabs for supplier requests, buyer requests, business docs, bank verification, trade references, sanctions/PEP/adverse media, disputes, suspension.
-
----
-
-## 5. Importer Portal Depth Pass
-
-**Goal:** Landed cost and profit prominent on each shipment.
-
-- Update `src/routes/importer.tsx` and `src/routes/shipments.tsx` shipment cards to show: estimated landed cost, expected selling price, expected profit, missing cost items, clearing estimate, "prepare clearing by" date, risk warning.
-- Hero copy: *"Know your real cost before your goods arrive."*
-
----
-
-## 6. Freight Workspace Actions Pass
-
-**Goal:** Operational action toolbar.
-
-- In `src/routes/freight.tsx` add an actions row + per-shipment menu with: Send bulk update, Create invoice, Mark document received, Assign to staff, Add clearing note, Create tracking link, Request payment, Escalate delay. Hook to `toast` for now.
-
----
-
-## 7. Cards Embedded in Workspaces Pass
-
-**Goal:** Cards surface inside each workspace, linked to that workspace's entities.
-
-- New `src/components/WorkspaceCardsPanel.tsx` with variants: `company`, `importer`, `freight`, `staff` showing card sets linked to (respectively) departments+cost centers, trade files+shipments+suppliers+staff+cost centers, routes+branches+port expenses+shipments+staff, departments+admissions+regional offices+travel.
-- Embed the panel in `treasury.tsx` (company), `importer.tsx` (importer), `freight.tsx` (freight), `collections.tsx` (staff).
-
----
-
-## 8. Team Hierarchy + Integrations Pass
-
-- `src/routes/team.tsx`: add Organization → Branches → Departments → Teams → Users tree, Roles & Permissions matrix, Cost Centers, Approval Workflows sections. Admin actions: invite, assign dept/branch/cost center, assign role, set permissions, deactivate, view activity, create approval workflow (modal stubs + toasts).
-- `src/routes/integrations.tsx`: each integration card now shows product module using it, live/test mode badge, last sync time, error reason, affected shipments/payments count, fallback provider, retry button.
-
----
-
-## Technical Notes
-
-- All new routes are TanStack file-based and registered via `routeTree.gen.ts` edits matching existing manual pattern.
-- Sidebar derives from `MODE_TO_WORKSPACE[mode]` so demo mode switching still works.
-- No business logic / backend changes — all data is mock from `src/lib/*`.
-- Tailwind + existing shadcn primitives only; no new deps.
-- Reuse design tokens already in `src/styles.css`; no hard-coded colors.
-
-## Out of Scope
-
-- No deletions of existing routes/components.
-- No auth/RLS work (Cloud not required for this pass).
-- No real WhatsApp/FX/escrow integration — UI + mock data only.
+## Technical notes
+- Single source of truth in `src/lib/partner.ts` with a tiny pub/sub (`window.dispatchEvent('partner-data-change')`) so list views refresh after mutations.
+- New `useCaseStore(caseId)` hook in `src/hooks/usePartnerCases.ts` returns live case + helpers.
+- Countdown timers via `setInterval` 1s ticking local component state.
+- No new packages required.
