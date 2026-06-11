@@ -37,10 +37,32 @@ function NewReferral() {
       toast.error("Please fill the required fields.");
       return;
     }
-    const owner = MARKETERS.find((m) => m.id === form.assignedMarketerId)?.name ?? user?.name ?? "you";
-    toast.success("Referral created", { description: `${form.clientName} — owner: ${owner}` });
-    setTimeout(() => navigate({ to: "/partner/cases" }), 600);
+    const actor = partnerActorFromUser(userId);
+    const created = createCase({
+      clientName: form.clientName, clientEmail: form.clientEmail, clientPhone: form.clientPhone,
+      property: form.property || "—", propertyLocation: form.location || "—",
+      amountGBP: Number(form.amount),
+      solicitorId: form.solicitor,
+      paymentPurpose: form.purpose,
+      paymentDeadline: form.deadline || new Date(Date.now() + 14 * 86400_000).toISOString().slice(0, 10),
+      assignedMarketerId: form.assignedMarketerId,
+      notes: form.notes,
+      createdBy: actor.id,
+      createdByName: actor.name,
+    });
+    if (form.file) {
+      addDocument(created.id, {
+        type: "Property payment instruction",
+        name: form.file.name,
+        uploadedBy: actor.id,
+        uploadedByName: actor.name,
+        uploadedByRole: actor.role,
+      });
+    }
+    toast.success("Payment case created", { description: `${created.ref} — ${created.clientName}` });
+    setTimeout(() => navigate({ to: "/partner/cases/$caseId", params: { caseId: created.id } }), 400);
   };
+  void MARKETERS; void user;
 
 
   return (
