@@ -11,10 +11,11 @@ import {
 import { Upload, Save, Send, UserPlus, Link2, UserCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { SOLICITORS, MARKETERS, canSeeAllMarketers } from "@/lib/partner";
+import { createCase, addDocument, partnerActorFromUser } from "@/lib/partner-store";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 
 export const Route = createFileRoute("/partner/new-referral")({
-  head: () => ({ meta: [{ title: "New Referral — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "New Payment Case — Baron & Cabot" }] }),
   component: NewReferral,
 });
 
