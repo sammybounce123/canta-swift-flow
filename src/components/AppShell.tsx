@@ -86,6 +86,9 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
   const flags = userProfile?.feature_flags ?? defaultFlagsFor(workspace);
   const items: SidebarItem[] = getSidebarForWorkspace(workspace, flags);
   const groups: string[] = Array.from(new Set(items.map((n) => n.group)));
+  const partner = usePartnerRole();
+  const isPartner = workspace === "partner_property";
+  const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
   return (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
       <Link to="/dashboard" onClick={onNavigate} className="px-6 py-5 flex items-center gap-2 border-b border-sidebar-border hover:bg-sidebar-accent/30">
