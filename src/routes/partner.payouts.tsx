@@ -8,7 +8,11 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Download, Receipt, FileCheck2, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
-import { CASES, SOLICITORS, formatGBP, getSolicitor, statusTone } from "@/lib/partner";
+import {
+  SOLICITORS, formatGBP, getSolicitor, statusTone, visibleCases, getMarketer,
+  MARKETERS, canSeeAllMarketers,
+} from "@/lib/partner";
+import { usePartnerRole } from "@/hooks/usePartnerRole";
 
 export const Route = createFileRoute("/partner/payouts")({
   head: () => ({ meta: [{ title: "Solicitor Payouts — Baron & Cabot" }] }),
@@ -16,12 +20,21 @@ export const Route = createFileRoute("/partner/payouts")({
 });
 
 function Payouts() {
+  const { role, userId } = usePartnerRole();
+  const data = visibleCases(userId, role);
+
   const [solicitor, setSolicitor] = useState<string>("all");
   const [status, setStatus] = useState<string>("all");
+  const [marketer, setMarketer] = useState<string>("all");
   const [q, setQ] = useState("");
+  const [minAmt, setMinAmt] = useState("");
+  const [maxAmt, setMaxAmt] = useState("");
+  const showMarketerFilter = canSeeAllMarketers(role);
 
-  const rows = useMemo(() => CASES.filter((c) => ["Paid to Solicitor", "Receipt Uploaded", "Payout Processing", "Failed / Returned"].includes(c.status))
+  const rows = useMemo(() => data
+    .filter((c) => ["Paid to Solicitor", "Receipt Uploaded", "Payout Processing", "Failed / Returned"].includes(c.status))
     .filter((c) => (solicitor === "all" || c.solicitorId === solicitor))
+    .filter((c) => (marketer === "all" || c.assignedMarketerId === marketer))
     .filter((c) => {
       if (status === "all") return true;
       if (status === "successful") return ["Paid to Solicitor", "Receipt Uploaded"].includes(c.status);
@@ -29,8 +42,10 @@ function Payouts() {
       if (status === "failed") return c.status === "Failed / Returned";
       return true;
     })
+    .filter((c) => (minAmt === "" || c.amountGBP >= Number(minAmt)))
+    .filter((c) => (maxAmt === "" || c.amountGBP <= Number(maxAmt)))
     .filter((c) => q === "" || c.clientName.toLowerCase().includes(q.toLowerCase()) || c.property.toLowerCase().includes(q.toLowerCase()))
-  , [solicitor, status, q]);
+  , [data, solicitor, status, marketer, q, minAmt, maxAmt]);
 
   const total = rows.reduce((s, c) => s + c.amountGBP, 0);
   const success = rows.filter((c) => ["Paid to Solicitor", "Receipt Uploaded"].includes(c.status)).length;
@@ -42,7 +57,9 @@ function Payouts() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Solicitor payouts</h1>
-          <p className="text-sm text-muted-foreground mt-1">Every payout sent to UK solicitors on behalf of Baron &amp; Cabot clients.</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            {role === "marketer" ? "Payouts on your referred clients." : "Every payout sent to UK solicitors on behalf of Baron & Cabot clients."}
+          </p>
         </div>
         <Button variant="outline"><Download className="h-4 w-4 mr-1.5" /> Export</Button>
       </div>
@@ -56,16 +73,27 @@ function Payouts() {
 
       <Card className="p-4 shadow-card">
         <div className="flex flex-wrap gap-3">
-          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search client or property…" className="flex-1 min-w-[220px]" />
+          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search client or property…" className="flex-1 min-w-[200px]" />
           <Select value={solicitor} onValueChange={setSolicitor}>
-            <SelectTrigger className="w-[220px]"><SelectValue placeholder="All solicitors" /></SelectTrigger>
+            <SelectTrigger className="w-[200px]"><SelectValue placeholder="All solicitors" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All solicitors</SelectItem>
               {SOLICITORS.map((s) => <SelectItem key={s.id} value={s.id}>{s.firm}</SelectItem>)}
             </SelectContent>
           </Select>
+          {showMarketerFilter && (
+            <Select value={marketer} onValueChange={setMarketer}>
+              <SelectTrigger className="w-[180px]"><SelectValue placeholder="Marketer" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All marketers</SelectItem>
+                {MARKETERS.filter((m) => m.role === "marketer").map((m) => (
+                  <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
           <Select value={status} onValueChange={setStatus}>
-            <SelectTrigger className="w-[180px]"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectTrigger className="w-[160px]"><SelectValue placeholder="Status" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All statuses</SelectItem>
               <SelectItem value="successful">Successful</SelectItem>
@@ -73,6 +101,8 @@ function Payouts() {
               <SelectItem value="failed">Failed / Returned</SelectItem>
             </SelectContent>
           </Select>
+          <Input type="number" value={minAmt} onChange={(e) => setMinAmt(e.target.value)} placeholder="Min £" className="w-[110px]" />
+          <Input type="number" value={maxAmt} onChange={(e) => setMaxAmt(e.target.value)} placeholder="Max £" className="w-[110px]" />
         </div>
       </Card>
 
@@ -84,8 +114,10 @@ function Payouts() {
                 <th className="py-3 px-3">Payout date</th>
                 <th className="py-3 px-3">Client</th>
                 <th className="py-3 px-3">Property</th>
-                <th className="py-3 px-3">Solicitor firm</th>
+                {showMarketerFilter && <th className="py-3 px-3">Marketer</th>}
+                <th className="py-3 px-3">Solicitor</th>
                 <th className="py-3 px-3 text-right">Amount</th>
+                <th className="py-3 px-3">Currency</th>
                 <th className="py-3 px-3">Status</th>
                 <th className="py-3 px-3">Reference</th>
                 <th className="py-3 px-3">Receipt</th>
@@ -94,16 +126,19 @@ function Payouts() {
             <tbody>
               {rows.map((c) => {
                 const sol = getSolicitor(c.solicitorId)!;
+                const m = getMarketer(c.assignedMarketerId);
                 const receipted = c.status === "Receipt Uploaded" || c.status === "Paid to Solicitor";
                 return (
                   <tr key={c.id} className="border-t hover:bg-secondary/30">
                     <td className="py-3 px-3 text-xs tabular-nums">{c.expectedPayout}</td>
                     <td className="py-3 px-3">{c.clientName}</td>
                     <td className="py-3 px-3"><div>{c.property}</div><div className="text-[11px] text-muted-foreground">{c.propertyLocation}</div></td>
+                    {showMarketerFilter && <td className="py-3 px-3 text-xs">{m?.name}</td>}
                     <td className="py-3 px-3 text-xs">{sol.firm}</td>
                     <td className="py-3 px-3 text-right tabular-nums font-medium">{formatGBP(c.amountGBP)}</td>
+                    <td className="py-3 px-3 text-xs">{c.currency}</td>
                     <td className="py-3 px-3"><Badge variant="outline" className={`text-[10px] ${statusTone(c.status)}`}>{c.status}</Badge></td>
-                    <td className="py-3 px-3 text-xs text-muted-foreground">BC/{c.id}/COMPL</td>
+                    <td className="py-3 px-3 text-xs text-muted-foreground">{c.paymentReference ?? `BC/${c.id}/COMPL`}</td>
                     <td className="py-3 px-3">
                       {receipted ? (
                         <Button size="sm" variant="ghost" className="text-success"><FileCheck2 className="h-3.5 w-3.5 mr-1" /> Download</Button>
@@ -113,7 +148,7 @@ function Payouts() {
                 );
               })}
               {rows.length === 0 && (
-                <tr><td colSpan={8} className="text-center text-sm text-muted-foreground py-10">No payouts match these filters.</td></tr>
+                <tr><td colSpan={showMarketerFilter ? 10 : 9} className="text-center text-sm text-muted-foreground py-10">No payouts match these filters.</td></tr>
               )}
             </tbody>
           </table>

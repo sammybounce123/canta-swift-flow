@@ -295,9 +295,11 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
     case "partner_property":
       return [
         { to: "/partner", label: "Dashboard", iconKey: "dashboard", group: "Overview", exact: true },
+        { to: "/partner/leads", label: "Referral Leads", iconKey: "sparkles", group: "Referrals" },
         { to: "/partner/cases", label: "Client Payment Cases", iconKey: "file", group: "Referrals" },
         { to: "/partner/new-referral", label: "New Referral", iconKey: "sparkles", group: "Referrals" },
         { to: "/partner/payouts", label: "Solicitor Payouts", iconKey: "receipt", group: "Payouts" },
+        { to: "/partner/marketers", label: "Marketers", iconKey: "users", group: "Team" },
         { to: "/partner/solicitors", label: "Solicitors", iconKey: "shield-check", group: "Beneficiaries" },
         { to: "/partner/documents", label: "Documents", iconKey: "file", group: "Operations" },
         { to: "/partner/reports", label: "Reports", iconKey: "chart", group: "Insights" },

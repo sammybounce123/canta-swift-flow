@@ -7,7 +7,8 @@ import {
   ArrowLeft, Download, CheckCircle2, Circle, FileText, Upload, MessageSquare,
   Mail, Phone, MapPin, Building2,
 } from "lucide-react";
-import { getCase, getSolicitor, formatGBP, formatNGN, statusTone, CASE_STATUSES } from "@/lib/partner";
+import { getCase, getSolicitor, formatGBP, formatNGN, statusTone, CASE_STATUSES, getMarketer, canSeeSolicitorBankDetails } from "@/lib/partner";
+import { usePartnerRole } from "@/hooks/usePartnerRole";
 
 export const Route = createFileRoute("/partner/cases/$caseId")({
   head: () => ({ meta: [{ title: "Client Case — Baron & Cabot" }] }),
@@ -19,6 +20,7 @@ type Tab = (typeof TABS)[number];
 
 function CaseDetail() {
   const { caseId } = useParams({ from: "/partner/cases/$caseId" });
+  const { role } = usePartnerRole();
   const c = getCase(caseId);
   const [tab, setTab] = useState<Tab>("Overview");
 
@@ -90,6 +92,8 @@ function CaseDetail() {
               <Row label="Payment deadline" value={c.expectedPayout} />
               <Row label="Date created" value={c.createdAt} />
               <Row label="Assigned officer" value={c.officer} />
+              <Row label="Referral marketer" value={getMarketer(c.assignedMarketerId)?.name ?? "—"} />
+              {c.paymentReference && <Row label="Payment reference" value={c.paymentReference} />}
             </dl>
           </Card>
           <Card className="p-5 shadow-card">
@@ -156,19 +160,34 @@ function CaseDetail() {
             </div>
             <Button variant="outline" size="sm"><Download className="h-4 w-4 mr-1.5" /> Receipt</Button>
           </div>
-          <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
-            <Row label="Firm name" value={sol.firm} />
-            <Row label="Account name" value={sol.accountName} />
-            <Row label="Bank" value={sol.bank} />
-            <Row label="Account number" value={sol.accountNumberMasked} />
-            <Row label="Sort code" value={sol.sortCode ?? "—"} />
-            <Row label="IBAN" value={sol.iban ?? "—"} />
-            <Row label="SWIFT / BIC" value={sol.swift} />
-            <Row label="Payout amount" value={formatGBP(c.amountGBP)} />
-            <Row label="Payout date" value={c.expectedPayout} />
-            <Row label="Payout status" value={c.status} />
-            <Row label="Payment reference" value={`BC/${c.id}/COMPL`} />
-          </dl>
+          {canSeeSolicitorBankDetails(role) ? (
+            <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+              <Row label="Firm name" value={sol.firm} />
+              <Row label="Account name" value={sol.accountName} />
+              <Row label="Bank" value={sol.bank} />
+              <Row label="Account number" value={sol.accountNumberMasked} />
+              <Row label="Sort code" value={sol.sortCode ?? "—"} />
+              <Row label="IBAN" value={sol.iban ?? "—"} />
+              <Row label="SWIFT / BIC" value={sol.swift} />
+              <Row label="Payout amount" value={formatGBP(c.amountGBP)} />
+              <Row label="Payout date" value={c.expectedPayout} />
+              <Row label="Payout status" value={c.status} />
+              <Row label="Payment reference" value={c.paymentReference ?? `BC/${c.id}/COMPL`} />
+            </dl>
+          ) : (
+            <div className="space-y-3">
+              <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                <Row label="Firm name" value={sol.firm} />
+                <Row label="Payout amount" value={formatGBP(c.amountGBP)} />
+                <Row label="Payout date" value={c.expectedPayout} />
+                <Row label="Payout status" value={c.status} />
+                <Row label="Payment reference" value={c.paymentReference ?? `BC/${c.id}/COMPL`} />
+              </dl>
+              <div className="text-xs text-muted-foreground italic border-t pt-3">
+                Solicitor bank details are restricted. Ask a Partner Admin or Finance Viewer for access.
+              </div>
+            </div>
+          )}
         </Card>
       )}
 
