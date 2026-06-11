@@ -4,12 +4,14 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Upload, Save, Send, UserPlus, Link2 } from "lucide-react";
+import { Upload, Save, Send, UserPlus, Link2, UserCircle2 } from "lucide-react";
 import { toast } from "sonner";
-import { SOLICITORS } from "@/lib/partner";
+import { SOLICITORS, MARKETERS, canSeeAllMarketers } from "@/lib/partner";
+import { usePartnerRole } from "@/hooks/usePartnerRole";
 
 export const Route = createFileRoute("/partner/new-referral")({
   head: () => ({ meta: [{ title: "New Referral — Baron & Cabot" }] }),
@@ -18,10 +20,13 @@ export const Route = createFileRoute("/partner/new-referral")({
 
 function NewReferral() {
   const navigate = useNavigate();
+  const { role, userId, user } = usePartnerRole();
+  const canAssign = canSeeAllMarketers(role);
   const [form, setForm] = useState({
     clientName: "", clientEmail: "", clientPhone: "",
     property: "", location: "", amount: "", currency: "GBP",
     purpose: "Property completion", solicitor: "", deadline: "", notes: "",
+    assignedMarketerId: userId,
     file: undefined as File | undefined,
   });
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => setForm((p) => ({ ...p, [k]: v }));
@@ -31,9 +36,11 @@ function NewReferral() {
       toast.error("Please fill the required fields.");
       return;
     }
-    toast.success("Referral created", { description: `${form.clientName} → ${form.property || "property"}` });
+    const owner = MARKETERS.find((m) => m.id === form.assignedMarketerId)?.name ?? user?.name ?? "you";
+    toast.success("Referral created", { description: `${form.clientName} — owner: ${owner}` });
     setTimeout(() => navigate({ to: "/partner/cases" }), 600);
   };
+
 
   return (
     <div className="space-y-5 max-w-4xl">
