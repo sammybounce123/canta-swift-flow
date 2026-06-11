@@ -92,6 +92,8 @@ function CaseDetail() {
               <Row label="Payment deadline" value={c.expectedPayout} />
               <Row label="Date created" value={c.createdAt} />
               <Row label="Assigned officer" value={c.officer} />
+              <Row label="Referral marketer" value={getMarketer(c.assignedMarketerId)?.name ?? "—"} />
+              {c.paymentReference && <Row label="Payment reference" value={c.paymentReference} />}
             </dl>
           </Card>
           <Card className="p-5 shadow-card">
