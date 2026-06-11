@@ -132,8 +132,17 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
       <div className="p-4 border-t border-sidebar-border space-y-3">
         <div className="rounded-xl p-3 bg-sidebar-accent/60 border border-sidebar-border">
           <div className="text-[10px] uppercase tracking-widest text-sidebar-foreground/60 mb-1">Signed in as</div>
-          <div className="text-sm font-semibold">{profile.name}</div>
-          <div className="text-[11px] text-sidebar-foreground/70">{role} · {profile.title}</div>
+          {isPartner && partner.user ? (
+            <>
+              <div className="text-sm font-semibold">{partner.user.name}</div>
+              <div className="text-[11px] text-sidebar-foreground/70">{partnerRoleLabel} · {PARTNER_ORG.name}</div>
+            </>
+          ) : (
+            <>
+              <div className="text-sm font-semibold">{profile.name}</div>
+              <div className="text-[11px] text-sidebar-foreground/70">{role} · {profile.title}</div>
+            </>
+          )}
         </div>
       </div>
     </div>
