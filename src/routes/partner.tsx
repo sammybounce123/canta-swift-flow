@@ -1,11 +1,8 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
 import { ShieldCheck, Building2 } from "lucide-react";
-import { MARKETERS, PARTNER_ORG, setActivePartnerUser, PARTNER_ROLES } from "@/lib/partner";
+import { PARTNER_ORG, PARTNER_ROLES } from "@/lib/partner";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 
 export const Route = createFileRoute("/partner")({
@@ -14,7 +11,7 @@ export const Route = createFileRoute("/partner")({
 });
 
 function PartnerShell() {
-  const { role, userId, user } = usePartnerRole();
+  const { role, user } = usePartnerRole();
   const roleLabel = PARTNER_ROLES.find((r) => r.id === role)?.label ?? role;
 
   return (
@@ -32,23 +29,11 @@ function PartnerShell() {
         <Badge variant="outline" className="ml-2 text-[10px]">
           <ShieldCheck className="h-3 w-3 mr-1" /> {roleLabel}
         </Badge>
-        <div className="ml-auto flex items-center gap-2">
-          <span className="text-[11px] text-muted-foreground">Sign in as</span>
-          <Select value={userId} onValueChange={setActivePartnerUser}>
-            <SelectTrigger className="w-[280px] h-8 text-xs">
-              <SelectValue>
-                {user ? `${user.name} · ${PARTNER_ROLES.find((r) => r.id === user.role)?.label}` : "Pick user"}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {MARKETERS.map((m) => (
-                <SelectItem key={m.id} value={m.id}>
-                  {m.name} · {PARTNER_ROLES.find((r) => r.id === m.role)?.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {user && (
+          <span className="ml-auto text-[11px] text-muted-foreground">
+            {user.name} — switch user from the profile menu (top right)
+          </span>
+        )}
       </Card>
       <Outlet />
     </div>
