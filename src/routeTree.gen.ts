@@ -27,6 +27,7 @@ import { Route as ReconciliationRouteImport } from './routes/reconciliation'
 import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as PaymentLinksRouteImport } from './routes/payment-links'
 import { Route as PayersRouteImport } from './routes/payers'
+import { Route as PartnerRouteImport } from './routes/partner'
 import { Route as OrganizationRouteImport } from './routes/organization'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MySuppliersRouteImport } from './routes/my-suppliers'
@@ -52,8 +53,17 @@ import { Route as AiGrowthRouteImport } from './routes/ai-growth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TradeDeskIndexRouteImport } from './routes/trade-desk.index'
 import { Route as TrackIndexRouteImport } from './routes/track.index'
+import { Route as PartnerIndexRouteImport } from './routes/partner.index'
 import { Route as TradeDeskFileIdRouteImport } from './routes/trade-desk.$fileId'
 import { Route as TrackIdRouteImport } from './routes/track.$id'
+import { Route as PartnerSolicitorsRouteImport } from './routes/partner.solicitors'
+import { Route as PartnerReportsRouteImport } from './routes/partner.reports'
+import { Route as PartnerPayoutsRouteImport } from './routes/partner.payouts'
+import { Route as PartnerNewReferralRouteImport } from './routes/partner.new-referral'
+import { Route as PartnerDocumentsRouteImport } from './routes/partner.documents'
+import { Route as PartnerCasesRouteImport } from './routes/partner.cases'
+import { Route as PartnerCasesIndexRouteImport } from './routes/partner.cases.index'
+import { Route as PartnerCasesCaseIdRouteImport } from './routes/partner.cases.$caseId'
 
 const WhatsappRoute = WhatsappRouteImport.update({
   id: '/whatsapp',
@@ -143,6 +153,11 @@ const PaymentLinksRoute = PaymentLinksRouteImport.update({
 const PayersRoute = PayersRouteImport.update({
   id: '/payers',
   path: '/payers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartnerRoute = PartnerRouteImport.update({
+  id: '/partner',
+  path: '/partner',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrganizationRoute = OrganizationRouteImport.update({
@@ -270,6 +285,11 @@ const TrackIndexRoute = TrackIndexRouteImport.update({
   path: '/track/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PartnerIndexRoute = PartnerIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PartnerRoute,
+} as any)
 const TradeDeskFileIdRoute = TradeDeskFileIdRouteImport.update({
   id: '/$fileId',
   path: '/$fileId',
@@ -279,6 +299,46 @@ const TrackIdRoute = TrackIdRouteImport.update({
   id: '/track/$id',
   path: '/track/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const PartnerSolicitorsRoute = PartnerSolicitorsRouteImport.update({
+  id: '/solicitors',
+  path: '/solicitors',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerReportsRoute = PartnerReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerPayoutsRoute = PartnerPayoutsRouteImport.update({
+  id: '/payouts',
+  path: '/payouts',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerNewReferralRoute = PartnerNewReferralRouteImport.update({
+  id: '/new-referral',
+  path: '/new-referral',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerDocumentsRoute = PartnerDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerCasesRoute = PartnerCasesRouteImport.update({
+  id: '/cases',
+  path: '/cases',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerCasesIndexRoute = PartnerCasesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PartnerCasesRoute,
+} as any)
+const PartnerCasesCaseIdRoute = PartnerCasesCaseIdRouteImport.update({
+  id: '/$caseId',
+  path: '/$caseId',
+  getParentRoute: () => PartnerCasesRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -305,6 +365,7 @@ export interface FileRoutesByFullPath {
   '/my-suppliers': typeof MySuppliersRoute
   '/onboarding': typeof OnboardingRoute
   '/organization': typeof OrganizationRoute
+  '/partner': typeof PartnerRouteWithChildren
   '/payers': typeof PayersRoute
   '/payment-links': typeof PaymentLinksRoute
   '/payments': typeof PaymentsRoute
@@ -323,10 +384,19 @@ export interface FileRoutesByFullPath {
   '/wallets': typeof WalletsRoute
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
+  '/partner/cases': typeof PartnerCasesRouteWithChildren
+  '/partner/documents': typeof PartnerDocumentsRoute
+  '/partner/new-referral': typeof PartnerNewReferralRoute
+  '/partner/payouts': typeof PartnerPayoutsRoute
+  '/partner/reports': typeof PartnerReportsRoute
+  '/partner/solicitors': typeof PartnerSolicitorsRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/partner/': typeof PartnerIndexRoute
   '/track/': typeof TrackIndexRoute
   '/trade-desk/': typeof TradeDeskIndexRoute
+  '/partner/cases/$caseId': typeof PartnerCasesCaseIdRoute
+  '/partner/cases/': typeof PartnerCasesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -369,10 +439,18 @@ export interface FileRoutesByTo {
   '/wallets': typeof WalletsRoute
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
+  '/partner/documents': typeof PartnerDocumentsRoute
+  '/partner/new-referral': typeof PartnerNewReferralRoute
+  '/partner/payouts': typeof PartnerPayoutsRoute
+  '/partner/reports': typeof PartnerReportsRoute
+  '/partner/solicitors': typeof PartnerSolicitorsRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/partner': typeof PartnerIndexRoute
   '/track': typeof TrackIndexRoute
   '/trade-desk': typeof TradeDeskIndexRoute
+  '/partner/cases/$caseId': typeof PartnerCasesCaseIdRoute
+  '/partner/cases': typeof PartnerCasesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -399,6 +477,7 @@ export interface FileRoutesById {
   '/my-suppliers': typeof MySuppliersRoute
   '/onboarding': typeof OnboardingRoute
   '/organization': typeof OrganizationRoute
+  '/partner': typeof PartnerRouteWithChildren
   '/payers': typeof PayersRoute
   '/payment-links': typeof PaymentLinksRoute
   '/payments': typeof PaymentsRoute
@@ -417,10 +496,19 @@ export interface FileRoutesById {
   '/wallets': typeof WalletsRoute
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
+  '/partner/cases': typeof PartnerCasesRouteWithChildren
+  '/partner/documents': typeof PartnerDocumentsRoute
+  '/partner/new-referral': typeof PartnerNewReferralRoute
+  '/partner/payouts': typeof PartnerPayoutsRoute
+  '/partner/reports': typeof PartnerReportsRoute
+  '/partner/solicitors': typeof PartnerSolicitorsRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/partner/': typeof PartnerIndexRoute
   '/track/': typeof TrackIndexRoute
   '/trade-desk/': typeof TradeDeskIndexRoute
+  '/partner/cases/$caseId': typeof PartnerCasesCaseIdRoute
+  '/partner/cases/': typeof PartnerCasesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -448,6 +536,7 @@ export interface FileRouteTypes {
     | '/my-suppliers'
     | '/onboarding'
     | '/organization'
+    | '/partner'
     | '/payers'
     | '/payment-links'
     | '/payments'
@@ -466,10 +555,19 @@ export interface FileRouteTypes {
     | '/wallets'
     | '/welcome'
     | '/whatsapp'
+    | '/partner/cases'
+    | '/partner/documents'
+    | '/partner/new-referral'
+    | '/partner/payouts'
+    | '/partner/reports'
+    | '/partner/solicitors'
     | '/track/$id'
     | '/trade-desk/$fileId'
+    | '/partner/'
     | '/track/'
     | '/trade-desk/'
+    | '/partner/cases/$caseId'
+    | '/partner/cases/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -512,10 +610,18 @@ export interface FileRouteTypes {
     | '/wallets'
     | '/welcome'
     | '/whatsapp'
+    | '/partner/documents'
+    | '/partner/new-referral'
+    | '/partner/payouts'
+    | '/partner/reports'
+    | '/partner/solicitors'
     | '/track/$id'
     | '/trade-desk/$fileId'
+    | '/partner'
     | '/track'
     | '/trade-desk'
+    | '/partner/cases/$caseId'
+    | '/partner/cases'
   id:
     | '__root__'
     | '/'
@@ -541,6 +647,7 @@ export interface FileRouteTypes {
     | '/my-suppliers'
     | '/onboarding'
     | '/organization'
+    | '/partner'
     | '/payers'
     | '/payment-links'
     | '/payments'
@@ -559,10 +666,19 @@ export interface FileRouteTypes {
     | '/wallets'
     | '/welcome'
     | '/whatsapp'
+    | '/partner/cases'
+    | '/partner/documents'
+    | '/partner/new-referral'
+    | '/partner/payouts'
+    | '/partner/reports'
+    | '/partner/solicitors'
     | '/track/$id'
     | '/trade-desk/$fileId'
+    | '/partner/'
     | '/track/'
     | '/trade-desk/'
+    | '/partner/cases/$caseId'
+    | '/partner/cases/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -589,6 +705,7 @@ export interface RootRouteChildren {
   MySuppliersRoute: typeof MySuppliersRoute
   OnboardingRoute: typeof OnboardingRoute
   OrganizationRoute: typeof OrganizationRoute
+  PartnerRoute: typeof PartnerRouteWithChildren
   PayersRoute: typeof PayersRoute
   PaymentLinksRoute: typeof PaymentLinksRoute
   PaymentsRoute: typeof PaymentsRoute
@@ -737,6 +854,13 @@ declare module '@tanstack/react-router' {
       path: '/payers'
       fullPath: '/payers'
       preLoaderRoute: typeof PayersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/partner': {
+      id: '/partner'
+      path: '/partner'
+      fullPath: '/partner'
+      preLoaderRoute: typeof PartnerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/organization': {
@@ -914,6 +1038,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrackIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/partner/': {
+      id: '/partner/'
+      path: '/'
+      fullPath: '/partner/'
+      preLoaderRoute: typeof PartnerIndexRouteImport
+      parentRoute: typeof PartnerRoute
+    }
     '/trade-desk/$fileId': {
       id: '/trade-desk/$fileId'
       path: '/$fileId'
@@ -928,8 +1059,101 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrackIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/partner/solicitors': {
+      id: '/partner/solicitors'
+      path: '/solicitors'
+      fullPath: '/partner/solicitors'
+      preLoaderRoute: typeof PartnerSolicitorsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/reports': {
+      id: '/partner/reports'
+      path: '/reports'
+      fullPath: '/partner/reports'
+      preLoaderRoute: typeof PartnerReportsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/payouts': {
+      id: '/partner/payouts'
+      path: '/payouts'
+      fullPath: '/partner/payouts'
+      preLoaderRoute: typeof PartnerPayoutsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/new-referral': {
+      id: '/partner/new-referral'
+      path: '/new-referral'
+      fullPath: '/partner/new-referral'
+      preLoaderRoute: typeof PartnerNewReferralRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/documents': {
+      id: '/partner/documents'
+      path: '/documents'
+      fullPath: '/partner/documents'
+      preLoaderRoute: typeof PartnerDocumentsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/cases': {
+      id: '/partner/cases'
+      path: '/cases'
+      fullPath: '/partner/cases'
+      preLoaderRoute: typeof PartnerCasesRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/cases/': {
+      id: '/partner/cases/'
+      path: '/'
+      fullPath: '/partner/cases/'
+      preLoaderRoute: typeof PartnerCasesIndexRouteImport
+      parentRoute: typeof PartnerCasesRoute
+    }
+    '/partner/cases/$caseId': {
+      id: '/partner/cases/$caseId'
+      path: '/$caseId'
+      fullPath: '/partner/cases/$caseId'
+      preLoaderRoute: typeof PartnerCasesCaseIdRouteImport
+      parentRoute: typeof PartnerCasesRoute
+    }
   }
 }
+
+interface PartnerCasesRouteChildren {
+  PartnerCasesCaseIdRoute: typeof PartnerCasesCaseIdRoute
+  PartnerCasesIndexRoute: typeof PartnerCasesIndexRoute
+}
+
+const PartnerCasesRouteChildren: PartnerCasesRouteChildren = {
+  PartnerCasesCaseIdRoute: PartnerCasesCaseIdRoute,
+  PartnerCasesIndexRoute: PartnerCasesIndexRoute,
+}
+
+const PartnerCasesRouteWithChildren = PartnerCasesRoute._addFileChildren(
+  PartnerCasesRouteChildren,
+)
+
+interface PartnerRouteChildren {
+  PartnerCasesRoute: typeof PartnerCasesRouteWithChildren
+  PartnerDocumentsRoute: typeof PartnerDocumentsRoute
+  PartnerNewReferralRoute: typeof PartnerNewReferralRoute
+  PartnerPayoutsRoute: typeof PartnerPayoutsRoute
+  PartnerReportsRoute: typeof PartnerReportsRoute
+  PartnerSolicitorsRoute: typeof PartnerSolicitorsRoute
+  PartnerIndexRoute: typeof PartnerIndexRoute
+}
+
+const PartnerRouteChildren: PartnerRouteChildren = {
+  PartnerCasesRoute: PartnerCasesRouteWithChildren,
+  PartnerDocumentsRoute: PartnerDocumentsRoute,
+  PartnerNewReferralRoute: PartnerNewReferralRoute,
+  PartnerPayoutsRoute: PartnerPayoutsRoute,
+  PartnerReportsRoute: PartnerReportsRoute,
+  PartnerSolicitorsRoute: PartnerSolicitorsRoute,
+  PartnerIndexRoute: PartnerIndexRoute,
+}
+
+const PartnerRouteWithChildren =
+  PartnerRoute._addFileChildren(PartnerRouteChildren)
 
 interface TradeDeskRouteChildren {
   TradeDeskFileIdRoute: typeof TradeDeskFileIdRoute
@@ -969,6 +1193,7 @@ const rootRouteChildren: RootRouteChildren = {
   MySuppliersRoute: MySuppliersRoute,
   OnboardingRoute: OnboardingRoute,
   OrganizationRoute: OrganizationRoute,
+  PartnerRoute: PartnerRouteWithChildren,
   PayersRoute: PayersRoute,
   PaymentLinksRoute: PaymentLinksRoute,
   PaymentsRoute: PaymentsRoute,

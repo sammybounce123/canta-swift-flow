@@ -133,10 +133,11 @@ function NewReferral() {
 }
 
 function Section({ title, children, cols = 3 }: { title: string; children: React.ReactNode; cols?: 1 | 2 | 3 }) {
+  const gridClass = cols === 1 ? "md:grid-cols-2" : cols === 2 ? "md:grid-cols-2" : "md:grid-cols-3";
   return (
     <div>
       <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">{title}</div>
-      <div className={`grid grid-cols-1 md:grid-cols-${cols === 1 ? 2 : cols} gap-4`}>{children}</div>
+      <div className={`grid grid-cols-1 ${gridClass} gap-4`}>{children}</div>
     </div>
   );
 }
