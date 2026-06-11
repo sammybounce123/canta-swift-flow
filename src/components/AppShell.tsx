@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 import { useRole, ALL_ROLES, type Role } from "@/components/RoleProvider";
 import { loadProfile, getSidebarForWorkspace, defaultFlagsFor, type SidebarItem } from "@/lib/profile";
 import { useMode, ALL_MODES } from "@/components/ModeProvider";
+import { usePartnerRole } from "@/hooks/usePartnerRole";
+import { PARTNER_ROLES, PARTNER_ORG } from "@/lib/partner";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -84,6 +86,9 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
   const flags = userProfile?.feature_flags ?? defaultFlagsFor(workspace);
   const items: SidebarItem[] = getSidebarForWorkspace(workspace, flags);
   const groups: string[] = Array.from(new Set(items.map((n) => n.group)));
+  const partner = usePartnerRole();
+  const isPartner = workspace === "partner_property";
+  const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
   return (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
       <Link to="/dashboard" onClick={onNavigate} className="px-6 py-5 flex items-center gap-2 border-b border-sidebar-border hover:bg-sidebar-accent/30">
@@ -127,8 +132,17 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
       <div className="p-4 border-t border-sidebar-border space-y-3">
         <div className="rounded-xl p-3 bg-sidebar-accent/60 border border-sidebar-border">
           <div className="text-[10px] uppercase tracking-widest text-sidebar-foreground/60 mb-1">Signed in as</div>
-          <div className="text-sm font-semibold">{profile.name}</div>
-          <div className="text-[11px] text-sidebar-foreground/70">{role} · {profile.title}</div>
+          {isPartner && partner.user ? (
+            <>
+              <div className="text-sm font-semibold">{partner.user.name}</div>
+              <div className="text-[11px] text-sidebar-foreground/70">{partnerRoleLabel} · {PARTNER_ORG.name}</div>
+            </>
+          ) : (
+            <>
+              <div className="text-sm font-semibold">{profile.name}</div>
+              <div className="text-[11px] text-sidebar-foreground/70">{role} · {profile.title}</div>
+            </>
+          )}
         </div>
       </div>
     </div>
