@@ -20,6 +20,7 @@ type Tab = (typeof TABS)[number];
 
 function CaseDetail() {
   const { caseId } = useParams({ from: "/partner/cases/$caseId" });
+  const { role } = usePartnerRole();
   const c = getCase(caseId);
   const [tab, setTab] = useState<Tab>("Overview");
 
