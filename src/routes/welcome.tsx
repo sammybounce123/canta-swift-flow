@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
-  Building2, Ship, Truck, Globe, Factory, CreditCard,
+  Building2, Ship, Truck, Globe, Factory, CreditCard, Home,
   ArrowRight, CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/welcome")({
 const ICONS: Record<WorkspaceType, typeof Building2> = {
   enterprise_treasury: Building2, importer_portal: Ship, freight_workspace: Truck,
   global_collections: Globe, supplier_dashboard: Factory,
-  global_spend_cards: CreditCard,
+  global_spend_cards: CreditCard, partner_property: Home,
 };
 const TONES: Record<WorkspaceType, string> = {
   enterprise_treasury: "bg-primary/10 text-primary",
@@ -25,6 +25,7 @@ const TONES: Record<WorkspaceType, string> = {
   global_collections: "bg-success/10 text-success",
   supplier_dashboard: "bg-amber-500/15 text-amber-700",
   global_spend_cards: "bg-destructive/10 text-destructive",
+  partner_property: "bg-primary/10 text-primary",
 };
 const WHO_FOR: Record<WorkspaceType, string> = {
   enterprise_treasury: "Multinationals, corporates, oil & gas, large SMEs",
@@ -33,6 +34,7 @@ const WHO_FOR: Record<WorkspaceType, string> = {
   supplier_dashboard: "Exporters in China, UAE, Turkey, India, Europe",
   global_collections: "Universities, hospitals, airlines, travel, e-commerce",
   global_spend_cards: "Individuals & small businesses spending globally",
+  partner_property: "Property partners like Baron & Cabot referring clients",
 };
 const DO_BULLETS: Record<WorkspaceType, string[]> = {
   enterprise_treasury: ["FX & multi-currency wallets", "Approvals & beneficiaries", "Company cards & compliance"],
@@ -41,6 +43,7 @@ const DO_BULLETS: Record<WorkspaceType, string[]> = {
   supplier_dashboard: ["Invoice African buyers", "Confirm funds via escrow", "Receive global settlement"],
   global_collections: ["Collect locally via links", "Reconcile and settle globally", "Manage staff cards"],
   global_spend_cards: ["Create purpose-built cards", "Travel, students, ads", "Track every transaction"],
+  partner_property: ["Refer property clients", "Track FX & solicitor payouts", "Download payout receipts"],
 };
 const CTA: Record<WorkspaceType, string> = {
   enterprise_treasury: "Enter Treasury",
@@ -49,6 +52,7 @@ const CTA: Record<WorkspaceType, string> = {
   supplier_dashboard: "Enter Supplier Dashboard",
   global_collections: "Enter Global Collections",
   global_spend_cards: "Enter Spend Cards",
+  partner_property: "Enter Partner Workspace",
 };
 
 function WelcomePage() {

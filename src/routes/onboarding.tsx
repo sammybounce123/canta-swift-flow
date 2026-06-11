@@ -117,7 +117,7 @@ function Onboarding() {
           supplier_dashboard: "/suppliers",
           global_collections: "/collections",
           global_spend_cards: "/cards",
-          
+          partner_property: "/partner",
         };
         if (p.workspace_type && map[p.workspace_type]) to = map[p.workspace_type];
       }
