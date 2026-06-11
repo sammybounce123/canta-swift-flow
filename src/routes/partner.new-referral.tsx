@@ -13,7 +13,7 @@ import { SOLICITORS } from "@/lib/partner";
 
 export const Route = createFileRoute("/partner/new-referral")({
   head: () => ({ meta: [{ title: "New Referral — Baron & Cabot" }] }),
-  component: NewReferral;
+  component: NewReferral,
 });
 
 function NewReferral() {
