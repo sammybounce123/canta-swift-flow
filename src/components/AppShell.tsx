@@ -11,7 +11,7 @@ import { useRole, ALL_ROLES, type Role } from "@/components/RoleProvider";
 import { loadProfile, getSidebarForWorkspace, defaultFlagsFor, type SidebarItem } from "@/lib/profile";
 import { useMode, ALL_MODES } from "@/components/ModeProvider";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
-import { PARTNER_ROLES, PARTNER_ORG } from "@/lib/partner";
+import { PARTNER_ROLES, PARTNER_ORG, MARKETERS, setActivePartnerUser } from "@/lib/partner";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -185,6 +185,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { role, setRole, profile } = useRole();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { mode } = useMode();
+  const partner = usePartnerRole();
+  const isPartner = (MODE_TO_WORKSPACE[mode] ?? "enterprise_treasury") === "partner_property";
+  const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
+  const partnerInitials = partner.user ? partner.user.name.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase() : "BC";
 
   return (
     <div className="min-h-screen flex bg-background">
