@@ -11,7 +11,7 @@ import { useRole, ALL_ROLES, type Role } from "@/components/RoleProvider";
 import { loadProfile, getSidebarForWorkspace, defaultFlagsFor, type SidebarItem } from "@/lib/profile";
 import { useMode, ALL_MODES } from "@/components/ModeProvider";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
-import { PARTNER_ROLES, PARTNER_ORG } from "@/lib/partner";
+import { PARTNER_ROLES, PARTNER_ORG, MARKETERS, setActivePartnerUser } from "@/lib/partner";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -185,6 +185,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { role, setRole, profile } = useRole();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { mode } = useMode();
+  const partner = usePartnerRole();
+  const isPartner = (MODE_TO_WORKSPACE[mode] ?? "enterprise_treasury") === "partner_property";
+  const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
+  const partnerInitials = partner.user ? partner.user.name.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase() : "BC";
 
   return (
     <div className="min-h-screen flex bg-background">
@@ -224,23 +229,50 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center gap-2 sm:pl-2 sm:border-l sm:border-border hover:opacity-80">
-                    <div className="h-8 w-8 rounded-full bg-gradient-primary text-primary-foreground grid place-items-center text-xs font-semibold flex-shrink-0">{profile.initials}</div>
+                    <div className="h-8 w-8 rounded-full bg-gradient-primary text-primary-foreground grid place-items-center text-xs font-semibold flex-shrink-0">{isPartner ? partnerInitials : profile.initials}</div>
                     <div className="hidden sm:block leading-tight text-left">
-                      <div className="text-xs font-semibold">{profile.name}</div>
-                      <div className="text-[10px] text-muted-foreground">{role} · {profile.title}</div>
+                      {isPartner && partner.user ? (
+                        <>
+                          <div className="text-xs font-semibold">{partner.user.name}</div>
+                          <div className="text-[10px] text-muted-foreground">{partnerRoleLabel} · {PARTNER_ORG.name}</div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="text-xs font-semibold">{profile.name}</div>
+                          <div className="text-[10px] text-muted-foreground">{role} · {profile.title}</div>
+                        </>
+                      )}
                     </div>
                     <ChevronDown className="h-3.5 w-3.5 text-muted-foreground hidden sm:block" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-64">
-                  <DropdownMenuLabel className="flex items-center gap-2"><UserCog className="h-3.5 w-3.5" /> Switch role (demo)</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {ALL_ROLES.map((r: Role) => (
-                    <DropdownMenuItem key={r} onClick={() => { setRole(r); toast.success(`Viewing as ${r}`); }} className="flex items-center justify-between">
-                      <span>{r}</span>
-                      {role === r && <Check className="h-4 w-4 text-accent" />}
-                    </DropdownMenuItem>
-                  ))}
+                <DropdownMenuContent align="end" className="w-72">
+                  {isPartner ? (
+                    <>
+                      <DropdownMenuLabel className="flex items-center gap-2"><UserCog className="h-3.5 w-3.5" /> Switch partner user (demo)</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {MARKETERS.map((m) => (
+                        <DropdownMenuItem key={m.id} onClick={() => { setActivePartnerUser(m.id); toast.success(`Signed in as ${m.name}`); }} className="flex items-center justify-between">
+                          <div>
+                            <div className="text-sm">{m.name}</div>
+                            <div className="text-[10px] text-muted-foreground">{PARTNER_ROLES.find((r) => r.id === m.role)?.label}</div>
+                          </div>
+                          {partner.userId === m.id && <Check className="h-4 w-4 text-accent" />}
+                        </DropdownMenuItem>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      <DropdownMenuLabel className="flex items-center gap-2"><UserCog className="h-3.5 w-3.5" /> Switch role (demo)</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {ALL_ROLES.map((r: Role) => (
+                        <DropdownMenuItem key={r} onClick={() => { setRole(r); toast.success(`Viewing as ${r}`); }} className="flex items-center justify-between">
+                          <span>{r}</span>
+                          {role === r && <Check className="h-4 w-4 text-accent" />}
+                        </DropdownMenuItem>
+                      ))}
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => toast.success("Signed out")}>Sign out</DropdownMenuItem>
                 </DropdownMenuContent>
