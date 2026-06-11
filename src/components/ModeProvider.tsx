@@ -5,7 +5,8 @@ export type Mode =
   | "Importer"
   | "Freight Forwarder"
   | "Supplier"
-  | "Global Merchant";
+  | "Global Merchant"
+  | "Partner Property";
 
 export const ALL_MODES: { id: Mode; tag: string; desc: string }[] = [
   { id: "Enterprise Treasury", tag: "ET", desc: "FX, wallets, settlements" },
@@ -13,6 +14,7 @@ export const ALL_MODES: { id: Mode; tag: string; desc: string }[] = [
   { id: "Freight Forwarder", tag: "FF", desc: "Operations workspace" },
   { id: "Supplier", tag: "SU", desc: "Invoices & global settlement" },
   { id: "Global Merchant", tag: "GM", desc: "Collections & payment links" },
+  { id: "Partner Property", tag: "PP", desc: "Property partner client referrals" },
 ];
 
 type Ctx = { mode: Mode; setMode: (m: Mode) => void };
