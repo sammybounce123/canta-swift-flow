@@ -91,6 +91,19 @@ export const SEGMENTS: Segment[] = [
     tagline: "Exporters in China, UAE, Turkey, India, Europe",
   },
   {
+    id: "partner_property",
+    label: "Property Partner",
+    shortLabel: "Baron & Cabot",
+    accountType: "business",
+    customerSegment: "partner_property",
+    primaryUseCase: "Refer clients for FX & solicitor payouts",
+    defaultRole: "Partner Admin",
+    defaultPermissions: ["create referral", "view all cases", "view solicitor details", "add solicitor", "view payouts", "download receipts", "export reports", "manage team"],
+    route: "/partner",
+    welcome: "Refer property clients, track FX conversions and solicitor payouts end-to-end.",
+    tagline: "Baron & Cabot and property partners referring clients to Canta",
+  },
+  {
     id: "global_spend_cards",
     label: "Card User",
     shortLabel: "Cards",
@@ -165,8 +178,12 @@ export function defaultFlagsFor(workspace: WorkspaceType): FeatureFlags {
       return { ...ALL_OFF, collections_module_enabled: true, cards_module_enabled: true, compliance_module_enabled: true };
     case "global_spend_cards":
       return { ...ALL_OFF, cards_module_enabled: true };
+    case "partner_property":
+      return { ...ALL_OFF, compliance_module_enabled: true };
   }
 }
+// Silence unused-export warning for ALL_ON (retained for future use)
+export const _ALL_ON_FLAGS = ALL_ON;
 
 export function loadFlags(workspace?: WorkspaceType): FeatureFlags {
   if (typeof window !== "undefined") {
@@ -183,7 +200,7 @@ export function saveFlags(flags: FeatureFlags) {
 }
 
 // Routes always visible regardless of workspace
-const COMMON_ROUTES = ["/dashboard", "/settings", "/team"];
+const COMMON_ROUTES = ["/dashboard", "/settings", "/team", "/partner"];
 
 export type SidebarItem = {
   to: string;
@@ -274,6 +291,17 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/cards", label: "Global Spend Cards", iconKey: "card", group: "My Workspace" },
         { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Activity" },
         Settings,
+      ];
+    case "partner_property":
+      return [
+        { to: "/partner", label: "Dashboard", iconKey: "dashboard", group: "Overview", exact: true },
+        { to: "/partner/cases", label: "Client Payment Cases", iconKey: "file", group: "Referrals" },
+        { to: "/partner/new-referral", label: "New Referral", iconKey: "sparkles", group: "Referrals" },
+        { to: "/partner/payouts", label: "Solicitor Payouts", iconKey: "receipt", group: "Payouts" },
+        { to: "/partner/solicitors", label: "Solicitors", iconKey: "shield-check", group: "Beneficiaries" },
+        { to: "/partner/documents", label: "Documents", iconKey: "file", group: "Operations" },
+        { to: "/partner/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        Team, Settings,
       ];
   }
 }
