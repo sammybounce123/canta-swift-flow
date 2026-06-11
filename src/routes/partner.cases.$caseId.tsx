@@ -7,7 +7,8 @@ import {
   ArrowLeft, Download, CheckCircle2, Circle, FileText, Upload, MessageSquare,
   Mail, Phone, MapPin, Building2,
 } from "lucide-react";
-import { getCase, getSolicitor, formatGBP, formatNGN, statusTone, CASE_STATUSES } from "@/lib/partner";
+import { getCase, getSolicitor, formatGBP, formatNGN, statusTone, CASE_STATUSES, getMarketer, canSeeSolicitorBankDetails } from "@/lib/partner";
+import { usePartnerRole } from "@/hooks/usePartnerRole";
 
 export const Route = createFileRoute("/partner/cases/$caseId")({
   head: () => ({ meta: [{ title: "Client Case — Baron & Cabot" }] }),
