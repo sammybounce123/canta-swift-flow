@@ -50,6 +50,33 @@ function NewReferral() {
       </div>
 
       <Card className="p-6 shadow-card space-y-6">
+        <Section title="Referral owner">
+          <div className="md:col-span-2 flex items-center gap-3 p-3 rounded-lg border bg-secondary/30">
+            <div className="h-9 w-9 rounded-full bg-primary/10 text-primary grid place-items-center text-sm font-semibold">
+              {user?.avatarInitials ?? "—"}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium flex items-center gap-2">
+                <UserCircle2 className="h-3.5 w-3.5 text-muted-foreground" />
+                {user?.name ?? "Current user"}
+              </div>
+              <div className="text-[11px] text-muted-foreground">Auto-tagged as the referral owner</div>
+            </div>
+            <Badge variant="outline" className="text-[10px]">{user?.region}</Badge>
+          </div>
+          {canAssign && (
+            <Field label="Assign to marketer">
+              <Select value={form.assignedMarketerId} onValueChange={(v) => set("assignedMarketerId", v)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {MARKETERS.filter((m) => m.role === "marketer" || m.id === userId).map((m) => (
+                    <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+          )}
+        </Section>
         <Section title="Client">
           <Field label="Client name" required><Input value={form.clientName} onChange={(e) => set("clientName", e.target.value)} placeholder="Full name" /></Field>
           <Field label="Client email" required><Input type="email" value={form.clientEmail} onChange={(e) => set("clientEmail", e.target.value)} placeholder="name@email.com" /></Field>
