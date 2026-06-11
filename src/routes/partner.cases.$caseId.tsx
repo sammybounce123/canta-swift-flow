@@ -377,9 +377,18 @@ function PaymentLinkTab({ c, actor }: any) {
             <div className="text-sm font-semibold">Branded client payment link</div>
             <div className="text-xs text-muted-foreground">Canta × Baron &amp; Cabot — expires when the FX quote expires.</div>
           </div>
-          <Button onClick={() => { generatePaymentLink(c.id, actor); toast.success("Payment link generated"); }} disabled={!c.activeQuoteId}>
+          <Button onClick={() => {
+            const newLink = generatePaymentLink(c.id, actor);
+            if (newLink) {
+              toast.success("Payment link generated");
+              if (typeof window !== "undefined") window.open(newLink.url, "_blank", "noopener,noreferrer");
+            } else {
+              toast.error("Generate an FX quote first");
+            }
+          }} disabled={!c.activeQuoteId}>
             <LinkIcon className="h-4 w-4 mr-1.5" /> {link ? "Regenerate" : "Generate"} payment link
           </Button>
+
         </div>
       </Card>
 
