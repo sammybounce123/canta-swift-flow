@@ -1,17 +1,11 @@
 import { useEffect, useState } from "react";
-import { getActivePartnerRole, getActivePartnerUserId, getMarketer, MARKETERS, type PartnerRole } from "@/lib/partner";
-
-// SSR-safe defaults to avoid hydration mismatch; sync from localStorage on mount.
-const DEFAULT_ROLE: PartnerRole = "partner_admin";
-const DEFAULT_USER_ID = MARKETERS[0]?.id ?? "U-ADMIN";
+import { getActivePartnerRole, getActivePartnerUserId, getMarketer, type PartnerRole } from "@/lib/partner";
 
 export function usePartnerRole() {
-  const [role, setRole] = useState<PartnerRole>(DEFAULT_ROLE);
-  const [userId, setUserId] = useState<string>(DEFAULT_USER_ID);
+  const [role, setRole] = useState<PartnerRole>(() => getActivePartnerRole());
+  const [userId, setUserId] = useState<string>(() => getActivePartnerUserId());
 
   useEffect(() => {
-    setRole(getActivePartnerRole());
-    setUserId(getActivePartnerUserId());
     const handler = () => {
       setRole(getActivePartnerRole());
       setUserId(getActivePartnerUserId());
