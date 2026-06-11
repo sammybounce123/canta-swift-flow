@@ -60,6 +60,8 @@ import { Route as PartnerSolicitorsRouteImport } from './routes/partner.solicito
 import { Route as PartnerReportsRouteImport } from './routes/partner.reports'
 import { Route as PartnerPayoutsRouteImport } from './routes/partner.payouts'
 import { Route as PartnerNewReferralRouteImport } from './routes/partner.new-referral'
+import { Route as PartnerMarketersRouteImport } from './routes/partner.marketers'
+import { Route as PartnerLeadsRouteImport } from './routes/partner.leads'
 import { Route as PartnerDocumentsRouteImport } from './routes/partner.documents'
 import { Route as PartnerCasesRouteImport } from './routes/partner.cases'
 import { Route as PartnerCasesIndexRouteImport } from './routes/partner.cases.index'
@@ -320,6 +322,16 @@ const PartnerNewReferralRoute = PartnerNewReferralRouteImport.update({
   path: '/new-referral',
   getParentRoute: () => PartnerRoute,
 } as any)
+const PartnerMarketersRoute = PartnerMarketersRouteImport.update({
+  id: '/marketers',
+  path: '/marketers',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerLeadsRoute = PartnerLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => PartnerRoute,
+} as any)
 const PartnerDocumentsRoute = PartnerDocumentsRouteImport.update({
   id: '/documents',
   path: '/documents',
@@ -386,6 +398,8 @@ export interface FileRoutesByFullPath {
   '/whatsapp': typeof WhatsappRoute
   '/partner/cases': typeof PartnerCasesRouteWithChildren
   '/partner/documents': typeof PartnerDocumentsRoute
+  '/partner/leads': typeof PartnerLeadsRoute
+  '/partner/marketers': typeof PartnerMarketersRoute
   '/partner/new-referral': typeof PartnerNewReferralRoute
   '/partner/payouts': typeof PartnerPayoutsRoute
   '/partner/reports': typeof PartnerReportsRoute
@@ -440,6 +454,8 @@ export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
   '/partner/documents': typeof PartnerDocumentsRoute
+  '/partner/leads': typeof PartnerLeadsRoute
+  '/partner/marketers': typeof PartnerMarketersRoute
   '/partner/new-referral': typeof PartnerNewReferralRoute
   '/partner/payouts': typeof PartnerPayoutsRoute
   '/partner/reports': typeof PartnerReportsRoute
@@ -498,6 +514,8 @@ export interface FileRoutesById {
   '/whatsapp': typeof WhatsappRoute
   '/partner/cases': typeof PartnerCasesRouteWithChildren
   '/partner/documents': typeof PartnerDocumentsRoute
+  '/partner/leads': typeof PartnerLeadsRoute
+  '/partner/marketers': typeof PartnerMarketersRoute
   '/partner/new-referral': typeof PartnerNewReferralRoute
   '/partner/payouts': typeof PartnerPayoutsRoute
   '/partner/reports': typeof PartnerReportsRoute
@@ -557,6 +575,8 @@ export interface FileRouteTypes {
     | '/whatsapp'
     | '/partner/cases'
     | '/partner/documents'
+    | '/partner/leads'
+    | '/partner/marketers'
     | '/partner/new-referral'
     | '/partner/payouts'
     | '/partner/reports'
@@ -611,6 +631,8 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/whatsapp'
     | '/partner/documents'
+    | '/partner/leads'
+    | '/partner/marketers'
     | '/partner/new-referral'
     | '/partner/payouts'
     | '/partner/reports'
@@ -668,6 +690,8 @@ export interface FileRouteTypes {
     | '/whatsapp'
     | '/partner/cases'
     | '/partner/documents'
+    | '/partner/leads'
+    | '/partner/marketers'
     | '/partner/new-referral'
     | '/partner/payouts'
     | '/partner/reports'
@@ -1087,6 +1111,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PartnerNewReferralRouteImport
       parentRoute: typeof PartnerRoute
     }
+    '/partner/marketers': {
+      id: '/partner/marketers'
+      path: '/marketers'
+      fullPath: '/partner/marketers'
+      preLoaderRoute: typeof PartnerMarketersRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/leads': {
+      id: '/partner/leads'
+      path: '/leads'
+      fullPath: '/partner/leads'
+      preLoaderRoute: typeof PartnerLeadsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
     '/partner/documents': {
       id: '/partner/documents'
       path: '/documents'
@@ -1135,6 +1173,8 @@ const PartnerCasesRouteWithChildren = PartnerCasesRoute._addFileChildren(
 interface PartnerRouteChildren {
   PartnerCasesRoute: typeof PartnerCasesRouteWithChildren
   PartnerDocumentsRoute: typeof PartnerDocumentsRoute
+  PartnerLeadsRoute: typeof PartnerLeadsRoute
+  PartnerMarketersRoute: typeof PartnerMarketersRoute
   PartnerNewReferralRoute: typeof PartnerNewReferralRoute
   PartnerPayoutsRoute: typeof PartnerPayoutsRoute
   PartnerReportsRoute: typeof PartnerReportsRoute
@@ -1145,6 +1185,8 @@ interface PartnerRouteChildren {
 const PartnerRouteChildren: PartnerRouteChildren = {
   PartnerCasesRoute: PartnerCasesRouteWithChildren,
   PartnerDocumentsRoute: PartnerDocumentsRoute,
+  PartnerLeadsRoute: PartnerLeadsRoute,
+  PartnerMarketersRoute: PartnerMarketersRoute,
   PartnerNewReferralRoute: PartnerNewReferralRoute,
   PartnerPayoutsRoute: PartnerPayoutsRoute,
   PartnerReportsRoute: PartnerReportsRoute,
