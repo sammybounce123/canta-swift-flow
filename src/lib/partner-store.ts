@@ -324,16 +324,24 @@ function validityMs(v: FxQuote["validity"]): number {
   }
 }
 
-export function generateQuote(caseId: string, validity: FxQuote["validity"], actor: { id: string; name: string; role: PartnerRole }): FxQuote | undefined {
+export function generateQuote(
+  caseId: string,
+  validity: FxQuote["validity"],
+  actor: { id: string; name: string; role: PartnerRole },
+  overrides?: { amountGBP?: number; rate?: number },
+): FxQuote | undefined {
   const c = getExtendedCase(caseId);
   if (!c) return;
-  const rate = 2050 + Math.round((Math.random() - 0.5) * 20);
-  const feeGBP = Math.max(20, Math.round(c.amountGBP * 0.0075));
-  const ngnTotal = Math.round((c.amountGBP + feeGBP) * rate);
+  const gbpAmount = overrides?.amountGBP && overrides.amountGBP > 0 ? overrides.amountGBP : c.amountGBP;
+  const rate = overrides?.rate && overrides.rate > 0
+    ? overrides.rate
+    : 2050 + Math.round((Math.random() - 0.5) * 20);
+  const feeGBP = Math.max(20, Math.round(gbpAmount * 0.0075));
+  const ngnTotal = Math.round((gbpAmount + feeGBP) * rate);
   const quote: FxQuote = {
     id: uid("FXQ"),
     caseId,
-    gbpAmount: c.amountGBP,
+    gbpAmount,
     rate,
     feeGBP,
     ngnTotal,
@@ -348,12 +356,14 @@ export function generateQuote(caseId: string, validity: FxQuote["validity"], act
   };
   updateCase(caseId, (cc) => ({
     ...cc,
+    amountGBP: gbpAmount,
     quotes: cc.quotes.map((q) => q.status === "Active" ? { ...q, status: "Replaced" as const } : q).concat(quote),
     activeQuoteId: quote.id,
   }));
   setStatus(caseId, "FX Quote Generated", actor, `Quote ${quote.reference} valid ${validity}`);
   return quote;
 }
+
 
 export function expireQuoteIfNeeded(caseId: string) {
   const c = getExtendedCase(caseId);

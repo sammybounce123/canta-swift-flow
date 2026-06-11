@@ -250,20 +250,43 @@ function DocumentsTab({ caseId, docs, actor }: any) {
 
 function FxQuoteTab({ caseId, quote, quotes, amount, actor }: { caseId: string; quote?: FxQuote; quotes: FxQuote[]; amount: number; actor: any }) {
   const [validity, setValidity] = useState<FxQuote["validity"]>("1h");
+  const [amountInput, setAmountInput] = useState(String(amount));
+  const [rateInput, setRateInput] = useState("2050");
+  const gbp = Number(amountInput.replace(/,/g, "")) || 0;
+  const rate = Number(rateInput.replace(/,/g, "")) || 0;
+  const fee = gbp > 0 ? Math.max(20, Math.round(gbp * 0.0075)) : 0;
+  const ngnPreview = gbp > 0 && rate > 0 ? Math.round((gbp + fee) * rate) : 0;
   const remaining = quote ? Math.max(0, new Date(quote.expiresAt).getTime() - Date.now()) : 0;
   const expired = !quote || quote.status !== "Active" || remaining === 0;
 
+  const onGenerate = () => {
+    if (!gbp) { toast.error("Enter GBP amount"); return; }
+    if (!rate) { toast.error("Enter FX rate"); return; }
+    const q = generateQuote(caseId, validity, actor, { amountGBP: gbp, rate });
+    if (q) toast.success(`FX quote ${q.reference} generated — now create the payment link`);
+  };
+
   return (
     <div className="space-y-5">
-      <Card className="p-6 shadow-card">
-        <div className="flex flex-wrap items-end gap-3 justify-between">
+      <Card className="p-6 shadow-card space-y-4">
+        <div>
+          <div className="text-sm font-semibold">Generate a new FX quote</div>
+          <div className="text-xs text-muted-foreground">Enter the GBP amount and the FX rate. The NGN total and Canta fee are calculated automatically.</div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <div>
-            <div className="text-sm font-semibold">Generate a new FX quote</div>
-            <div className="text-xs text-muted-foreground">Required amount: {formatGBP(amount)}</div>
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">GBP amount</div>
+            <Input value={amountInput} onChange={(e) => setAmountInput(e.target.value)} inputMode="numeric" placeholder="e.g. 248500" />
           </div>
-          <div className="flex items-end gap-2">
+          <div>
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">FX rate (1 GBP = ₦)</div>
+            <Input value={rateInput} onChange={(e) => setRateInput(e.target.value)} inputMode="decimal" placeholder="e.g. 2050" />
+          </div>
+          <div>
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">Validity</div>
             <Select value={validity} onValueChange={(v) => setValidity(v as FxQuote["validity"])}>
-              <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
+              <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="30m">30 minutes</SelectItem>
                 <SelectItem value="1h">1 hour</SelectItem>
@@ -271,10 +294,19 @@ function FxQuoteTab({ caseId, quote, quotes, amount, actor }: { caseId: string; 
                 <SelectItem value="custom">Custom (4h)</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => { generateQuote(caseId, validity, actor); toast.success("FX quote generated"); }}>
+          </div>
+          <div className="flex items-end">
+            <Button className="w-full" onClick={onGenerate}>
               <ArrowLeftRight className="h-4 w-4 mr-1.5" /> Generate quote
             </Button>
           </div>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-3 border-t text-sm">
+          <Row label="GBP solicitor receives" value={formatGBP(gbp)} />
+          <Row label="Canta fee" value={formatGBP(fee)} />
+          <Row label="Rate" value={rate ? `1 GBP = ₦${rate.toLocaleString()}` : "—"} />
+          <Row label="NGN client pays" value={ngnPreview ? `₦${ngnPreview.toLocaleString()}` : "—"} highlight />
         </div>
       </Card>
 
@@ -298,6 +330,17 @@ function FxQuoteTab({ caseId, quote, quotes, amount, actor }: { caseId: string; 
             <Row label="Generated at" value={new Date(quote.generatedAt).toLocaleString()} />
             <Row label="Expires" value={new Date(quote.expiresAt).toLocaleString()} />
           </dl>
+          <div className="flex flex-wrap gap-2 pt-2 border-t">
+            <Button size="sm" disabled={expired} onClick={() => {
+              const link = generatePaymentLink(caseId, actor);
+              if (link) {
+                toast.success("Payment link generated");
+                if (typeof window !== "undefined") window.open(link.url, "_blank", "noopener,noreferrer");
+              }
+            }}>
+              <LinkIcon className="h-4 w-4 mr-1.5" /> Create payment link from this quote
+            </Button>
+          </div>
         </Card>
       )}
 
@@ -318,6 +361,7 @@ function FxQuoteTab({ caseId, quote, quotes, amount, actor }: { caseId: string; 
   );
 }
 
+
 function PaymentLinkTab({ c, actor }: any) {
   const link = c.paymentLink;
   const copy = () => {
@@ -333,9 +377,18 @@ function PaymentLinkTab({ c, actor }: any) {
             <div className="text-sm font-semibold">Branded client payment link</div>
             <div className="text-xs text-muted-foreground">Canta × Baron &amp; Cabot — expires when the FX quote expires.</div>
           </div>
-          <Button onClick={() => { generatePaymentLink(c.id, actor); toast.success("Payment link generated"); }} disabled={!c.activeQuoteId}>
+          <Button onClick={() => {
+            const newLink = generatePaymentLink(c.id, actor);
+            if (newLink) {
+              toast.success("Payment link generated");
+              if (typeof window !== "undefined") window.open(newLink.url, "_blank", "noopener,noreferrer");
+            } else {
+              toast.error("Generate an FX quote first");
+            }
+          }} disabled={!c.activeQuoteId}>
             <LinkIcon className="h-4 w-4 mr-1.5" /> {link ? "Regenerate" : "Generate"} payment link
           </Button>
+
         </div>
       </Card>
 
