@@ -56,6 +56,7 @@ import { Route as TrackIndexRouteImport } from './routes/track.index'
 import { Route as PartnerIndexRouteImport } from './routes/partner.index'
 import { Route as TradeDeskFileIdRouteImport } from './routes/trade-desk.$fileId'
 import { Route as TrackIdRouteImport } from './routes/track.$id'
+import { Route as PayLinkIdRouteImport } from './routes/pay.$linkId'
 import { Route as PartnerTeamRouteImport } from './routes/partner.team'
 import { Route as PartnerSolicitorsRouteImport } from './routes/partner.solicitors'
 import { Route as PartnerSettingsRouteImport } from './routes/partner.settings'
@@ -306,6 +307,11 @@ const TrackIdRoute = TrackIdRouteImport.update({
   path: '/track/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PayLinkIdRoute = PayLinkIdRouteImport.update({
+  id: '/pay/$linkId',
+  path: '/pay/$linkId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PartnerTeamRoute = PartnerTeamRouteImport.update({
   id: '/team',
   path: '/team',
@@ -432,6 +438,7 @@ export interface FileRoutesByFullPath {
   '/partner/settings': typeof PartnerSettingsRoute
   '/partner/solicitors': typeof PartnerSolicitorsRoute
   '/partner/team': typeof PartnerTeamRoute
+  '/pay/$linkId': typeof PayLinkIdRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/partner/': typeof PartnerIndexRoute
@@ -492,6 +499,7 @@ export interface FileRoutesByTo {
   '/partner/settings': typeof PartnerSettingsRoute
   '/partner/solicitors': typeof PartnerSolicitorsRoute
   '/partner/team': typeof PartnerTeamRoute
+  '/pay/$linkId': typeof PayLinkIdRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/partner': typeof PartnerIndexRoute
@@ -556,6 +564,7 @@ export interface FileRoutesById {
   '/partner/settings': typeof PartnerSettingsRoute
   '/partner/solicitors': typeof PartnerSolicitorsRoute
   '/partner/team': typeof PartnerTeamRoute
+  '/pay/$linkId': typeof PayLinkIdRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/partner/': typeof PartnerIndexRoute
@@ -621,6 +630,7 @@ export interface FileRouteTypes {
     | '/partner/settings'
     | '/partner/solicitors'
     | '/partner/team'
+    | '/pay/$linkId'
     | '/track/$id'
     | '/trade-desk/$fileId'
     | '/partner/'
@@ -681,6 +691,7 @@ export interface FileRouteTypes {
     | '/partner/settings'
     | '/partner/solicitors'
     | '/partner/team'
+    | '/pay/$linkId'
     | '/track/$id'
     | '/trade-desk/$fileId'
     | '/partner'
@@ -744,6 +755,7 @@ export interface FileRouteTypes {
     | '/partner/settings'
     | '/partner/solicitors'
     | '/partner/team'
+    | '/pay/$linkId'
     | '/track/$id'
     | '/trade-desk/$fileId'
     | '/partner/'
@@ -796,6 +808,7 @@ export interface RootRouteChildren {
   WalletsRoute: typeof WalletsRoute
   WelcomeRoute: typeof WelcomeRoute
   WhatsappRoute: typeof WhatsappRoute
+  PayLinkIdRoute: typeof PayLinkIdRoute
   TrackIdRoute: typeof TrackIdRoute
   TrackIndexRoute: typeof TrackIndexRoute
 }
@@ -1131,6 +1144,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrackIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pay/$linkId': {
+      id: '/pay/$linkId'
+      path: '/pay/$linkId'
+      fullPath: '/pay/$linkId'
+      preLoaderRoute: typeof PayLinkIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/partner/team': {
       id: '/partner/team'
       path: '/team'
@@ -1338,6 +1358,7 @@ const rootRouteChildren: RootRouteChildren = {
   WalletsRoute: WalletsRoute,
   WelcomeRoute: WelcomeRoute,
   WhatsappRoute: WhatsappRoute,
+  PayLinkIdRoute: PayLinkIdRoute,
   TrackIdRoute: TrackIdRoute,
   TrackIndexRoute: TrackIndexRoute,
 }

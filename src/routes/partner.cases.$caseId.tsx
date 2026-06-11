@@ -1,28 +1,44 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  ArrowLeft, Download, CheckCircle2, Circle, FileText, Upload, MessageSquare,
-  Mail, Phone, MapPin, Building2,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import {
+  ArrowLeft, Download, FileText, Upload, Mail, MapPin, Building2, ArrowLeftRight,
+  Link as LinkIcon, ShieldCheck, Banknote, Send, Copy, Clock, AlertTriangle, CheckCircle2,
+  Sparkles, ClipboardList,
 } from "lucide-react";
-import { getCase, getSolicitor, formatGBP, formatNGN, statusTone, CASE_STATUSES, getMarketer, canSeeSolicitorBankDetails } from "@/lib/partner";
+import { getSolicitor, formatGBP, formatNGN, statusTone, getMarketer, canSeeSolicitorBankDetails, PARTNER_ORG, MARKETERS } from "@/lib/partner";
+import {
+  generateQuote, generatePaymentLink, markLinkSent, addDocument, recordFunding,
+  convertFx, markPaidToSolicitor, uploadReceipt, inviteToCanta, partnerActorFromUser,
+  DOC_TYPES, type FxQuote,
+} from "@/lib/partner-store";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
+import { usePartnerCase } from "@/hooks/usePartnerCases";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/partner/cases/$caseId")({
   head: () => ({ meta: [{ title: "Client Case — Baron & Cabot" }] }),
   component: CaseDetail,
 });
 
-const TABS = ["Overview", "Payment Timeline", "FX Details", "Solicitor Payout", "Documents", "Notes", "Activity Log"] as const;
+const TABS = ["Overview", "Documents", "FX Quote", "Payment Link", "Verification", "Funding", "Payout", "Activity"] as const;
 type Tab = (typeof TABS)[number];
 
 function CaseDetail() {
   const { caseId } = useParams({ from: "/partner/cases/$caseId" });
-  const { role } = usePartnerRole();
-  const c = getCase(caseId);
+  const { role, userId } = usePartnerRole();
+  const c = usePartnerCase(caseId);
   const [tab, setTab] = useState<Tab>("Overview");
+
+  // tick for countdowns
+  const [, force] = useState(0);
+  useEffect(() => { const i = setInterval(() => force((n) => n + 1), 1000); return () => clearInterval(i); }, []);
 
   if (!c) {
     return (
@@ -33,7 +49,8 @@ function CaseDetail() {
     );
   }
   const sol = getSolicitor(c.solicitorId)!;
-  const statusIdx = CASE_STATUSES.indexOf(c.status);
+  const actor = partnerActorFromUser(userId);
+  const activeQuote = c.quotes.find((q) => q.id === c.activeQuoteId);
 
   return (
     <div className="space-y-5">
@@ -45,8 +62,9 @@ function CaseDetail() {
       <Card className="p-6 shadow-card">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
               <Badge variant="outline" className={`text-[10px] ${statusTone(c.status)}`}>{c.status}</Badge>
+              <Badge variant="outline" className="text-[10px]"><Building2 className="h-3 w-3 mr-1" /> {PARTNER_ORG.name}</Badge>
               <span className="text-xs text-muted-foreground">{c.ref}</span>
             </div>
             <h1 className="text-2xl font-semibold">{c.clientName}</h1>
@@ -56,7 +74,7 @@ function CaseDetail() {
             </div>
           </div>
           <div className="text-right">
-            <div className="text-xs text-muted-foreground">Required payment</div>
+            <div className="text-xs text-muted-foreground">Solicitor receives</div>
             <div className="text-3xl font-semibold tabular-nums">{formatGBP(c.amountGBP)}</div>
             {c.amountNGN && <div className="text-xs text-muted-foreground tabular-nums mt-0.5">≈ {formatNGN(c.amountNGN)}</div>}
           </div>
@@ -78,87 +96,63 @@ function CaseDetail() {
       {tab === "Overview" && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           <Card className="p-5 shadow-card lg:col-span-2">
-            <div className="text-sm font-semibold mb-3">Client &amp; property</div>
+            <div className="text-sm font-semibold mb-3">Case details</div>
             <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
               <Row label="Client name" value={c.clientName} />
               <Row label="Email" value={c.clientEmail} icon={Mail} />
-              <Row label="Phone" value={c.clientPhone} icon={Phone} />
-              <Row label="Property / project" value={c.property} />
+              <Row label="Phone" value={c.clientPhone} />
+              <Row label="Property" value={c.property} />
               <Row label="Location" value={c.propertyLocation} />
-              <Row label="Currency" value={c.currency} />
+              <Row label="Payment purpose" value={c.paymentPurpose ?? "Property completion"} />
               <Row label="Required amount" value={formatGBP(c.amountGBP)} />
+              <Row label="Payment deadline" value={c.paymentDeadline ?? c.expectedPayout} />
               <Row label="Solicitor" value={sol.firm} />
-              <Row label="Status" value={c.status} />
-              <Row label="Payment deadline" value={c.expectedPayout} />
-              <Row label="Date created" value={c.createdAt} />
-              <Row label="Assigned officer" value={c.officer} />
+              <Row label="Source" value={c.clientSource} />
               <Row label="Referral marketer" value={getMarketer(c.assignedMarketerId)?.name ?? "—"} />
-              {c.paymentReference && <Row label="Payment reference" value={c.paymentReference} />}
+              <Row label="Created by" value={getMarketer(c.createdBy ?? c.assignedMarketerId)?.name ?? "—"} />
+              <Row label="Date created" value={c.createdAt} />
+              <Row label="Status" value={c.status} />
             </dl>
           </Card>
           <Card className="p-5 shadow-card">
             <div className="text-sm font-semibold mb-3">Quick actions</div>
             <div className="space-y-2">
-              <Button variant="outline" className="w-full justify-start"><Upload className="h-4 w-4 mr-2" /> Upload payment receipt</Button>
-              <Button variant="outline" className="w-full justify-start"><Download className="h-4 w-4 mr-2" /> Download case summary</Button>
-              <Button variant="outline" className="w-full justify-start"><MessageSquare className="h-4 w-4 mr-2" /> Message Canta officer</Button>
-              <Button variant="outline" className="w-full justify-start"><Mail className="h-4 w-4 mr-2" /> Email client update</Button>
+              <Button className="w-full justify-start" onClick={() => setTab("FX Quote")}><ArrowLeftRight className="h-4 w-4 mr-2" /> Generate FX quote</Button>
+              <Button variant="outline" className="w-full justify-start" onClick={() => setTab("Payment Link")} disabled={!c.activeQuoteId}><LinkIcon className="h-4 w-4 mr-2" /> Generate payment link</Button>
+              <Button variant="outline" className="w-full justify-start" onClick={() => setTab("Documents")}><Upload className="h-4 w-4 mr-2" /> Upload KYC documents</Button>
+              <Button variant="outline" className="w-full justify-start" onClick={() => { inviteToCanta(c.id, actor); toast.success("Client invited to activate Canta"); }}>
+                <Sparkles className="h-4 w-4 mr-2" /> Invite client to Canta
+              </Button>
             </div>
           </Card>
         </div>
       )}
 
-      {tab === "Payment Timeline" && (
-        <Card className="p-6 shadow-card">
-          <div className="text-sm font-semibold mb-4">Payment timeline</div>
-          <ol className="relative border-l border-border ml-3 space-y-4">
-            {[
-              "Referred", "KYC Pending", "Awaiting Client Funding", "Funding Received",
-              "FX Quote Sent", "FX Accepted", "FX Converted", "Payout Processing",
-              "Paid to Solicitor", "Receipt Uploaded",
-            ].map((step, i) => {
-              const done = i <= statusIdx;
-              const active = i === statusIdx;
-              return (
-                <li key={step} className="ml-5">
-                  <span className={`absolute -left-[7px] mt-1 h-3.5 w-3.5 rounded-full border-2 ${
-                    done ? "bg-success border-success" : active ? "bg-primary border-primary" : "bg-background border-border"
-                  }`} />
-                  <div className="text-sm font-medium flex items-center gap-2">
-                    {done ? <CheckCircle2 className="h-3.5 w-3.5 text-success" /> : <Circle className="h-3.5 w-3.5 text-muted-foreground" />}
-                    {step}
-                  </div>
-                  <div className="text-[11px] text-muted-foreground">{done ? `Completed · ${c.createdAt}` : "Pending"}</div>
-                </li>
-              );
-            })}
-          </ol>
-        </Card>
-      )}
+      {tab === "Documents" && <DocumentsTab caseId={c.id} docs={c.documents} actor={actor} />}
 
-      {tab === "FX Details" && (
-        <Card className="p-6 shadow-card">
-          <div className="text-sm font-semibold mb-4">FX conversion details</div>
-          <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
-            <Row label="NGN amount received" value={c.amountNGN ? formatNGN(c.amountNGN) : "—"} />
-            <Row label="Exchange rate" value="1 GBP = ₦ 2,054.10" />
-            <Row label="Converted GBP" value={formatGBP(c.amountGBP)} />
-            <Row label="Canta fees" value={formatGBP(Math.round(c.amountGBP * 0.0075))} />
-            <Row label="Quote expiry" value="2026-06-15 17:00 UTC" />
-            <Row label="Conversion date" value="2026-06-10 09:42 UTC" />
-            <Row label="Transaction reference" value={`CFX-${c.id.replace("CS-", "")}-LON`} />
-          </dl>
-        </Card>
-      )}
+      {tab === "FX Quote" && <FxQuoteTab caseId={c.id} quote={activeQuote} quotes={c.quotes} amount={c.amountGBP} actor={actor} />}
 
-      {tab === "Solicitor Payout" && (
+      {tab === "Payment Link" && <PaymentLinkTab c={c} actor={actor} />}
+
+      {tab === "Verification" && <VerificationTab c={c} />}
+
+      {tab === "Funding" && <FundingTab c={c} actor={actor} />}
+
+      {tab === "Payout" && (
         <Card className="p-6 shadow-card">
           <div className="flex items-start justify-between mb-4">
             <div>
               <div className="text-sm font-semibold">Solicitor payout</div>
               <div className="text-xs text-muted-foreground">{sol.firm}</div>
             </div>
-            <Button variant="outline" size="sm"><Download className="h-4 w-4 mr-1.5" /> Receipt</Button>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={() => { markPaidToSolicitor(c.id, actor); toast.success("Marked paid to solicitor"); }}>
+                <CheckCircle2 className="h-4 w-4 mr-1" /> Mark paid
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => { uploadReceipt(c.id, actor); toast.success("Receipt uploaded"); }}>
+                <Upload className="h-4 w-4 mr-1" /> Upload receipt
+              </Button>
+            </div>
           </div>
           {canSeeSolicitorBankDetails(role) ? (
             <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
@@ -170,81 +164,31 @@ function CaseDetail() {
               <Row label="IBAN" value={sol.iban ?? "—"} />
               <Row label="SWIFT / BIC" value={sol.swift} />
               <Row label="Payout amount" value={formatGBP(c.amountGBP)} />
-              <Row label="Payout date" value={c.expectedPayout} />
-              <Row label="Payout status" value={c.status} />
-              <Row label="Payment reference" value={c.paymentReference ?? `BC/${c.id}/COMPL`} />
+              <Row label="Payout status" value={c.payout?.status ?? "Pending"} />
+              <Row label="Payment reference" value={c.payout?.reference ?? `BC/${c.id}/COMPL`} />
             </dl>
           ) : (
-            <div className="space-y-3">
-              <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
-                <Row label="Firm name" value={sol.firm} />
-                <Row label="Payout amount" value={formatGBP(c.amountGBP)} />
-                <Row label="Payout date" value={c.expectedPayout} />
-                <Row label="Payout status" value={c.status} />
-                <Row label="Payment reference" value={c.paymentReference ?? `BC/${c.id}/COMPL`} />
-              </dl>
-              <div className="text-xs text-muted-foreground italic border-t pt-3">
-                Solicitor bank details are restricted. Ask a Partner Admin or Finance Viewer for access.
-              </div>
+            <div className="text-xs text-muted-foreground italic border-t pt-3">
+              Solicitor bank details are restricted. Ask a Partner Admin or Finance Viewer for access.
             </div>
           )}
         </Card>
       )}
 
-      {tab === "Documents" && (
+      {tab === "Activity" && (
         <Card className="p-6 shadow-card">
-          <div className="text-sm font-semibold mb-4">Documents</div>
-          <div className="space-y-2">
-            {[
-              "Property payment instruction",
-              "Solicitor payment instruction",
-              "Client KYC documents",
-              "Proof of funds",
-              "Payment receipt",
-              "Canta transaction receipt",
-            ].map((d) => (
-              <div key={d} className="flex items-center justify-between p-3 rounded-lg border border-border">
-                <div className="flex items-center gap-3 text-sm"><FileText className="h-4 w-4 text-muted-foreground" /> {d}</div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="ghost"><Download className="h-3.5 w-3.5" /></Button>
-                  <Button size="sm" variant="outline"><Upload className="h-3.5 w-3.5 mr-1.5" /> Upload</Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
-
-      {tab === "Notes" && (
-        <Card className="p-6 shadow-card">
-          <div className="text-sm font-semibold mb-3">Notes</div>
-          <textarea
-            rows={6}
-            placeholder="Add internal notes visible only to your Baron & Cabot team…"
-            className="w-full rounded-lg border border-border bg-background p-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-          />
-          <div className="flex justify-end mt-3"><Button size="sm">Save note</Button></div>
-        </Card>
-      )}
-
-      {tab === "Activity Log" && (
-        <Card className="p-6 shadow-card">
-          <div className="text-sm font-semibold mb-3">Activity log</div>
+          <div className="text-sm font-semibold mb-3 flex items-center gap-2"><ClipboardList className="h-4 w-4 text-primary" /> Activity log</div>
           <ul className="text-sm divide-y">
-            {[
-              { t: "Receipt uploaded", who: "Canta · Adaeze O.", when: "2026-06-04 14:22" },
-              { t: "Payout sent to solicitor", who: "Canta system", when: "2026-06-04 11:08" },
-              { t: "FX accepted", who: c.clientName, when: "2026-06-03 18:42" },
-              { t: "FX quote sent", who: "Canta · Tunde B.", when: "2026-06-03 16:10" },
-              { t: "Funding received", who: "Canta system", when: "2026-06-02 09:35" },
-              { t: "Client referred", who: "Baron & Cabot", when: c.createdAt },
-            ].map((a) => (
-              <li key={a.t} className="py-2 flex items-center justify-between">
-                <div>
-                  <div className="font-medium">{a.t}</div>
-                  <div className="text-[11px] text-muted-foreground">{a.who}</div>
+            {[...c.activity].reverse().map((a) => (
+              <li key={a.id} className="py-2.5 flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="font-medium">{a.action}</div>
+                  <div className="text-[11px] text-muted-foreground">
+                    {a.userName} · <Badge variant="outline" className="text-[9px]">{a.userRole}</Badge>
+                    {a.notes && <span className="ml-2 italic">— {a.notes}</span>}
+                  </div>
                 </div>
-                <div className="text-xs text-muted-foreground tabular-nums">{a.when}</div>
+                <div className="text-xs text-muted-foreground tabular-nums whitespace-nowrap">{new Date(a.timestamp).toLocaleString()}</div>
               </li>
             ))}
           </ul>
@@ -254,13 +198,256 @@ function CaseDetail() {
   );
 }
 
-function Row({ label, value, icon: Icon }: { label: string; value: string; icon?: React.ComponentType<{ className?: string }> }) {
+/* ---------- Tabs ---------- */
+
+function DocumentsTab({ caseId, docs, actor }: any) {
+  const [type, setType] = useState<typeof DOC_TYPES[number]>("International passport");
+  const [name, setName] = useState("");
+  const add = () => {
+    if (!name.trim()) { toast.error("Enter a document name"); return; }
+    addDocument(caseId, { type, name, uploadedBy: actor.id, uploadedByName: actor.name, uploadedByRole: actor.role, clientConsent: false });
+    setName("");
+    toast.success("Document added");
+  };
+  return (
+    <div className="space-y-5">
+      <Card className="p-5 shadow-card">
+        <div className="text-sm font-semibold mb-3">Upload document on behalf of client</div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <Select value={type} onValueChange={(v) => setType(v as any)}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>{DOC_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+          </Select>
+          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="File name (e.g. passport.pdf)" className="md:col-span-1" />
+          <Button onClick={add}><Upload className="h-4 w-4 mr-1.5" /> Add document</Button>
+        </div>
+      </Card>
+
+      <Card className="p-5 shadow-card">
+        <div className="text-sm font-semibold mb-3">Case documents ({docs.length})</div>
+        {docs.length === 0 ? (
+          <div className="text-sm text-muted-foreground py-6 text-center">No documents uploaded yet.</div>
+        ) : (
+          <ul className="text-sm divide-y border rounded-lg">
+            {docs.map((d: any) => (
+              <li key={d.id} className="px-3 py-2.5 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <div className="min-w-0">
+                    <div className="font-medium truncate">{d.name}</div>
+                    <div className="text-[11px] text-muted-foreground">{d.type} · uploaded by {d.uploadedByName} ({d.uploadedByRole}) · {new Date(d.uploadedAt).toLocaleString()}</div>
+                  </div>
+                </div>
+                <Button size="sm" variant="ghost"><Download className="h-3.5 w-3.5" /></Button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Card>
+    </div>
+  );
+}
+
+function FxQuoteTab({ caseId, quote, quotes, amount, actor }: { caseId: string; quote?: FxQuote; quotes: FxQuote[]; amount: number; actor: any }) {
+  const [validity, setValidity] = useState<FxQuote["validity"]>("1h");
+  const remaining = quote ? Math.max(0, new Date(quote.expiresAt).getTime() - Date.now()) : 0;
+  const expired = !quote || quote.status !== "Active" || remaining === 0;
+
+  return (
+    <div className="space-y-5">
+      <Card className="p-6 shadow-card">
+        <div className="flex flex-wrap items-end gap-3 justify-between">
+          <div>
+            <div className="text-sm font-semibold">Generate a new FX quote</div>
+            <div className="text-xs text-muted-foreground">Required amount: {formatGBP(amount)}</div>
+          </div>
+          <div className="flex items-end gap-2">
+            <Select value={validity} onValueChange={(v) => setValidity(v as FxQuote["validity"])}>
+              <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="30m">30 minutes</SelectItem>
+                <SelectItem value="1h">1 hour</SelectItem>
+                <SelectItem value="same_day">Same day</SelectItem>
+                <SelectItem value="custom">Custom (4h)</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button onClick={() => { generateQuote(caseId, validity, actor); toast.success("FX quote generated"); }}>
+              <ArrowLeftRight className="h-4 w-4 mr-1.5" /> Generate quote
+            </Button>
+          </div>
+        </div>
+      </Card>
+
+      {quote && (
+        <Card className="p-6 shadow-card space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-semibold">Active quote · {quote.reference}</div>
+            {expired ? (
+              <Badge variant="outline" className="text-destructive border-destructive/30"><AlertTriangle className="h-3 w-3 mr-1" /> Expired</Badge>
+            ) : (
+              <Badge variant="outline" className="text-warning border-warning/30"><Clock className="h-3 w-3 mr-1" /> {Math.floor(remaining/60000)}m {Math.floor((remaining%60000)/1000)}s</Badge>
+            )}
+          </div>
+          <dl className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-3 text-sm">
+            <Row label="GBP solicitor receives" value={formatGBP(quote.gbpAmount)} />
+            <Row label="Exchange rate" value={`1 GBP = ₦${quote.rate.toLocaleString()}`} />
+            <Row label="Canta fee" value={formatGBP(quote.feeGBP)} />
+            <Row label="NGN client pays" value={`₦${quote.ngnTotal.toLocaleString()}`} />
+            <Row label="Validity" value={quote.validity} />
+            <Row label="Generated by" value={quote.generatedByName} />
+            <Row label="Generated at" value={new Date(quote.generatedAt).toLocaleString()} />
+            <Row label="Expires" value={new Date(quote.expiresAt).toLocaleString()} />
+          </dl>
+        </Card>
+      )}
+
+      {quotes.length > 1 && (
+        <Card className="p-6 shadow-card">
+          <div className="text-sm font-semibold mb-3">Quote history</div>
+          <ul className="text-xs divide-y">
+            {quotes.slice().reverse().map((q) => (
+              <li key={q.id} className="py-2 flex justify-between">
+                <span>{q.reference} · {q.status}</span>
+                <span className="text-muted-foreground">{new Date(q.generatedAt).toLocaleString()}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function PaymentLinkTab({ c, actor }: any) {
+  const link = c.paymentLink;
+  const copy = () => {
+    if (!link || typeof window === "undefined") return;
+    navigator.clipboard?.writeText(window.location.origin + link.url);
+    toast.success("Link copied");
+  };
+  return (
+    <div className="space-y-5">
+      <Card className="p-6 shadow-card">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <div className="text-sm font-semibold">Branded client payment link</div>
+            <div className="text-xs text-muted-foreground">Canta × Baron &amp; Cabot — expires when the FX quote expires.</div>
+          </div>
+          <Button onClick={() => { generatePaymentLink(c.id, actor); toast.success("Payment link generated"); }} disabled={!c.activeQuoteId}>
+            <LinkIcon className="h-4 w-4 mr-1.5" /> {link ? "Regenerate" : "Generate"} payment link
+          </Button>
+        </div>
+      </Card>
+
+      {link && (
+        <Card className="p-6 shadow-card space-y-3">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <div className="text-xs text-muted-foreground">URL</div>
+              <div className="font-mono text-sm">{link.url}</div>
+            </div>
+            <Badge variant="outline">{link.status}</Badge>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" onClick={copy}><Copy className="h-3.5 w-3.5 mr-1.5" /> Copy</Button>
+            <Button size="sm" variant="outline" onClick={() => { markLinkSent(c.id, actor); toast.success("Marked as sent"); }}><Send className="h-3.5 w-3.5 mr-1.5" /> Mark as sent</Button>
+            <Button size="sm" asChild variant="ghost"><a href={link.url} target="_blank" rel="noreferrer">Preview client page</a></Button>
+          </div>
+          <div className="text-[11px] text-muted-foreground border-t pt-2">
+            Created {new Date(link.createdAt).toLocaleString()}{link.sentAt ? ` · sent ${new Date(link.sentAt).toLocaleString()}` : ""}{link.openedAt ? ` · opened ${new Date(link.openedAt).toLocaleString()}` : ""}
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function VerificationTab({ c }: any) {
+  const v = c.verification;
+  return (
+    <Card className="p-6 shadow-card">
+      <div className="text-sm font-semibold mb-3 flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Client verification</div>
+      {!v ? (
+        <div className="text-sm text-muted-foreground">Client has not yet completed verification. Once they open the payment link they'll enter their BVN, confirm consent and proceed to funding.</div>
+      ) : (
+        <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+          <Row label="BVN status" value={v.bvnStatus} />
+          <Row label="BVN" value={v.bvnMasked ?? "—"} />
+          <Row label="Date of birth" value={v.dob ?? "—"} />
+          <Row label="Source of funds" value={v.sourceOfFunds ?? "—"} />
+          <Row label="Name confirmed" value={v.fullNameConfirmed ? "Yes" : "No"} />
+          <Row label="Submitted at" value={v.submittedAt ? new Date(v.submittedAt).toLocaleString() : "—"} />
+          <Row label="Property purpose consent" value={v.consent?.propertyPurpose ? "✓" : "—"} />
+          <Row label="Canta processing consent" value={v.consent?.canta ? "✓" : "—"} />
+          <Row label="Shared docs consent" value={v.consent?.sharedDocs ? "✓" : "—"} />
+          <Row label="Terms accepted" value={v.consent?.terms ? "✓" : "—"} />
+          <Row label="Privacy accepted" value={v.consent?.privacy ? "✓" : "—"} />
+        </dl>
+      )}
+      <div className="mt-4 text-[11px] text-muted-foreground italic border-t pt-3">
+        Full BVN is never displayed to Baron &amp; Cabot. Only the masked value and verification status.
+      </div>
+    </Card>
+  );
+}
+
+function FundingTab({ c, actor }: any) {
+  const f = c.funding;
+  const [payer, setPayer] = useState(c.clientName);
+  const [amount, setAmount] = useState("");
+  const [ref, setRef] = useState(c.activeQuoteId ? c.quotes.find((q: any) => q.id === c.activeQuoteId)?.reference ?? "" : "");
+  const record = () => {
+    const n = Number(amount.replace(/,/g, ""));
+    if (!n) { toast.error("Enter NGN amount received"); return; }
+    recordFunding(c.id, { payerName: payer, receivedNGN: n, reference: ref });
+    toast.success("Funding recorded");
+  };
+  return (
+    <div className="space-y-5">
+      <Card className="p-6 shadow-card space-y-3">
+        <div className="text-sm font-semibold flex items-center gap-2"><Banknote className="h-4 w-4 text-primary" /> Funding</div>
+        {f ? (
+          <dl className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-3 text-sm">
+            <Row label="Expected NGN" value={`₦${f.expectedNGN.toLocaleString()}`} />
+            <Row label="Received NGN" value={f.receivedNGN ? `₦${f.receivedNGN.toLocaleString()}` : "—"} />
+            <Row label="Payer name" value={f.payerName ?? "—"} />
+            <Row label="Reference" value={f.reference ?? "—"} />
+            <Row label="Received at" value={f.receivedAt ? new Date(f.receivedAt).toLocaleString() : "—"} />
+            <Row label="Review status" value={f.reviewStatus ?? "—"} />
+          </dl>
+        ) : (
+          <div className="text-sm text-muted-foreground">No funding recorded yet.</div>
+        )}
+      </Card>
+
+      <Card className="p-6 shadow-card space-y-3">
+        <div className="text-sm font-semibold">Record funding (simulated webhook)</div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <Input value={payer} onChange={(e) => setPayer(e.target.value)} placeholder="Payer name" />
+          <Input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="NGN amount received" inputMode="numeric" />
+          <Input value={ref} onChange={(e) => setRef(e.target.value)} placeholder="Reference" />
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={record}><CheckCircle2 className="h-4 w-4 mr-1.5" /> Record funding</Button>
+          <Button variant="outline" onClick={() => { convertFx(c.id, actor); toast.success("FX converted, payout processing"); }}>
+            Convert FX &amp; start payout
+          </Button>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function Row({ label, value, icon: Icon, highlight }: { label: string; value: string; icon?: React.ComponentType<{ className?: string }>; highlight?: boolean }) {
   return (
     <div>
       <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</dt>
-      <dd className="text-sm font-medium flex items-center gap-1.5 mt-0.5">
+      <dd className={`flex items-center gap-1.5 mt-0.5 ${highlight ? "text-base font-semibold" : "text-sm font-medium"}`}>
         {Icon && <Icon className="h-3.5 w-3.5 text-muted-foreground" />} {value}
       </dd>
     </div>
   );
 }
+
+// keep unused-import silencer
+void MARKETERS;
