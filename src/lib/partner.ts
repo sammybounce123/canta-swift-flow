@@ -2,32 +2,62 @@
 // Pure presentation data; no backend.
 
 export type CaseStatus =
+  | "Draft"
   | "Referred"
+  | "Referral Created"
   | "KYC Pending"
+  | "KYC Documents Uploaded"
+  | "Awaiting FX Quote"
+  | "FX Quote Generated"
+  | "Payment Link Generated"
+  | "Payment Link Sent"
+  | "Client Verification Pending"
+  | "BVN Pending"
+  | "BVN Submitted"
+  | "Client Consent Completed"
   | "Awaiting Client Funding"
   | "Funding Received"
+  | "Funding Review"
   | "FX Quote Sent"
   | "FX Accepted"
   | "FX Converted"
   | "Payout Processing"
   | "Paid to Solicitor"
   | "Receipt Uploaded"
+  | "Client Invited to Canta"
+  | "Completed"
   | "Failed / Returned"
-  | "Cancelled";
+  | "Cancelled"
+  | "Expired Quote";
 
 export const CASE_STATUSES: CaseStatus[] = [
+  "Draft",
   "Referred",
+  "Referral Created",
   "KYC Pending",
+  "KYC Documents Uploaded",
+  "Awaiting FX Quote",
+  "FX Quote Generated",
+  "Payment Link Generated",
+  "Payment Link Sent",
+  "Client Verification Pending",
+  "BVN Pending",
+  "BVN Submitted",
+  "Client Consent Completed",
   "Awaiting Client Funding",
   "Funding Received",
+  "Funding Review",
   "FX Quote Sent",
   "FX Accepted",
   "FX Converted",
   "Payout Processing",
   "Paid to Solicitor",
   "Receipt Uploaded",
+  "Client Invited to Canta",
+  "Completed",
   "Failed / Returned",
   "Cancelled",
+  "Expired Quote",
 ];
 
 export function statusTone(s: CaseStatus): string {
