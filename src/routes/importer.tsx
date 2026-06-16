@@ -102,6 +102,22 @@ function ImporterPortal() {
       {/* WhatsApp-first action bar */}
       <WhatsAppActions />
 
+      {/* Verified Suppliers — main discovery module */}
+      <Card className="p-5 shadow-card border-success/30 bg-gradient-to-br from-success/10 to-transparent">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <div className="text-xs uppercase tracking-widest text-success font-semibold">Discovery</div>
+            <div className="text-lg font-semibold mt-1">Verified Suppliers</div>
+            <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+              Browse Canta-verified suppliers across China, UAE, Turkey, India and Europe. Request quotes, start trade files and save to My Suppliers.
+            </p>
+          </div>
+          <Button asChild>
+            <Link to="/verified-suppliers">Browse Verified Suppliers</Link>
+          </Button>
+        </div>
+      </Card>
+
       <Card className="p-5 shadow-card">
         <div className="text-xs uppercase tracking-widest text-muted-foreground mb-1">Importer quick actions</div>
         <p className="text-sm text-muted-foreground mb-3">Send RFQs, start trade files, verify suppliers, link shipments and documents, request escrow, and invite forwarders.</p>
