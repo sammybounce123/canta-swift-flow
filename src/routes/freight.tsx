@@ -541,8 +541,28 @@ function ReportsPanel() {
   const mostActive = [...importers].sort((a, b) => b.active - a.active).slice(0, 5);
   const outstanding = freightInvoices.filter((i) => i.status !== "Paid");
 
+  const exportReport = (fmt: "csv" | "pdf") => {
+    const lines = ["Section,Label,Value"];
+    byRoute.forEach(([k, v]) => lines.push(`Route,${k},${v}`));
+    revByCustomer.forEach(([k, v]) => lines.push(`Revenue,${k},${v}`));
+    delayed.forEach((s) => lines.push(`Delayed,${s.shipmentNumber},${s.eta}`));
+    outstanding.forEach((i) => lines.push(`Outstanding,${i.id} ${i.customer},${i.amount}`));
+    const ext = fmt === "csv" ? "csv" : "pdf";
+    const mime = fmt === "csv" ? "text/csv" : "application/pdf";
+    const url = URL.createObjectURL(new Blob([lines.join("\n")], { type: mime }));
+    const a = document.createElement("a"); a.href = url; a.download = `freight-reports.${ext}`; a.click(); URL.revokeObjectURL(url);
+    toast.success(`Reports exported as ${ext.toUpperCase()}`);
+  };
   return (
-    <div className="grid lg:grid-cols-2 gap-5">
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-muted-foreground">Snapshot of route volume, customer revenue, delays and outstanding invoices.</div>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={() => exportReport("csv")}><Download className="h-3.5 w-3.5 mr-1" /> Export CSV</Button>
+          <Button size="sm" variant="outline" onClick={() => exportReport("pdf")}><Download className="h-3.5 w-3.5 mr-1" /> Export PDF</Button>
+        </div>
+      </div>
+      <div className="grid lg:grid-cols-2 gap-5">
       <ReportCard title="Shipments by route" icon={<BarChart3 className="h-4 w-4" />}>
         {byRoute.map(([k, v]) => (
           <Row key={k} label={k} value={String(v)} bar={v / byRoute[0][1]} />
