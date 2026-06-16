@@ -210,6 +210,8 @@ function SupplierDashboard() {
           <TabsTrigger value="settlements">Settlements</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="profile">Supplier Profile</TabsTrigger>
+          <TabsTrigger value="kyb">KYB</TabsTrigger>
+          <TabsTrigger value="categories">Categories</TabsTrigger>
           <TabsTrigger value="reports">Reports</TabsTrigger>
           <TabsTrigger value="team">Team</TabsTrigger>
         </TabsList>
@@ -221,6 +223,8 @@ function SupplierDashboard() {
         <TabsContent value="settlements" className="mt-6"><SettlementsTable /></TabsContent>
         <TabsContent value="documents" className="mt-6"><DocumentsPanel /></TabsContent>
         <TabsContent value="profile" className="mt-6"><ProfilePanel /></TabsContent>
+        <TabsContent value="kyb" className="mt-6"><KybPanel /></TabsContent>
+        <TabsContent value="categories" className="mt-6"><CategoriesPanel /></TabsContent>
         <TabsContent value="reports" className="mt-6"><SupplierReportsPanel /></TabsContent>
         <TabsContent value="team" className="mt-6"><SupplierTeamPanel /></TabsContent>
       </Tabs>
@@ -589,28 +593,60 @@ function DocumentsPanel() {
 }
 
 function ProfilePanel() {
+  const [editing, setEditing] = useState(false);
+  const [profile, setProfile] = useState({
+    company: "Guangzhou Tech Factory Ltd.",
+    country: "China",
+    city: "Guangzhou",
+    contact: "Mr. Wei Chen",
+    email: "wei@gztech.cn",
+    phone: "+86 138 0000 1234",
+    categories: "Consumer Electronics, Accessories",
+    settlement: "RMB · ICBC ••••3421",
+    reg: "91440101MA9XXXXXXX",
+  });
+  const save = () => { setEditing(false); toast.success("Supplier profile updated"); };
   return (
     <div className="grid lg:grid-cols-3 gap-4">
       <Card className="p-5 shadow-card lg:col-span-2 space-y-4">
-        <div className="flex items-center gap-4">
-          <div className="h-14 w-14 rounded-xl bg-primary/10 grid place-items-center"><Building2 className="h-7 w-7 text-primary" /></div>
-          <div>
-            <div className="font-semibold text-lg">Guangzhou Tech Factory Ltd.</div>
-            <div className="text-xs text-muted-foreground flex items-center gap-1.5"><Globe className="h-3 w-3" /> Guangzhou, China · CN</div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="h-14 w-14 rounded-xl bg-primary/10 grid place-items-center"><Building2 className="h-7 w-7 text-primary" /></div>
+            <div>
+              <div className="font-semibold text-lg">{profile.company}</div>
+              <div className="text-xs text-muted-foreground flex items-center gap-1.5"><Globe className="h-3 w-3" /> {profile.city}, {profile.country}</div>
+            </div>
           </div>
+          {!editing
+            ? <Button size="sm" variant="outline" onClick={() => setEditing(true)}>Edit profile</Button>
+            : <div className="flex gap-2"><Button size="sm" variant="ghost" onClick={() => setEditing(false)}>Cancel</Button><Button size="sm" className="bg-primary" onClick={save}>Save</Button></div>}
         </div>
-        <div className="grid grid-cols-2 gap-3 text-xs">
-          <Field label="Business registration" value="91440101MA9XXXXXXX" />
-          <Field label="Primary contact" value="Mr. Wei Chen · wei@gztech.cn" />
-          <Field label="Trade categories" value="Consumer Electronics, Accessories" />
-          <Field label="Settlement preference" value="RMB · ICBC ••••3421" />
-          <Field label="Years on Canta" value="3 years" />
-          <Field label="Completed transactions" value="142" />
-        </div>
-        <div className="flex gap-2">
-          <Button size="sm" variant="outline">Edit profile</Button>
-          <Button size="sm" variant="outline">Settlement account</Button>
-        </div>
+        {!editing ? (
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <Field label="Company name" value={profile.company} />
+            <Field label="Business registration" value={profile.reg} />
+            <Field label="Country" value={profile.country} />
+            <Field label="City" value={profile.city} />
+            <Field label="Contact person" value={profile.contact} />
+            <Field label="Email" value={profile.email} />
+            <Field label="Phone" value={profile.phone} />
+            <Field label="Product categories" value={profile.categories} />
+            <Field label="Settlement currency" value={profile.settlement} />
+            <Field label="Verification status" value="KYB Approved · Verified Supplier" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            <FF label="Company name"><Input value={profile.company} onChange={(e) => setProfile({ ...profile, company: e.target.value })} /></FF>
+            <FF label="Business registration"><Input value={profile.reg} onChange={(e) => setProfile({ ...profile, reg: e.target.value })} /></FF>
+            <FF label="Country"><Input value={profile.country} onChange={(e) => setProfile({ ...profile, country: e.target.value })} /></FF>
+            <FF label="City"><Input value={profile.city} onChange={(e) => setProfile({ ...profile, city: e.target.value })} /></FF>
+            <FF label="Contact person"><Input value={profile.contact} onChange={(e) => setProfile({ ...profile, contact: e.target.value })} /></FF>
+            <FF label="Email"><Input value={profile.email} onChange={(e) => setProfile({ ...profile, email: e.target.value })} /></FF>
+            <FF label="Phone"><Input value={profile.phone} onChange={(e) => setProfile({ ...profile, phone: e.target.value })} /></FF>
+            <FF label="Settlement currency"><Input value={profile.settlement} onChange={(e) => setProfile({ ...profile, settlement: e.target.value })} /></FF>
+            <FF label="Product categories" wide><Input value={profile.categories} onChange={(e) => setProfile({ ...profile, categories: e.target.value })} /></FF>
+          </div>
+        )}
       </Card>
       <Card className="p-5 shadow-card">
         <div className="text-sm font-semibold mb-3">Verification & trust</div>
@@ -627,6 +663,132 @@ function ProfilePanel() {
     </div>
   );
 }
+
+type KybStatus = "KYB Not Started" | "KYB In Progress" | "KYB Submitted" | "KYB Approved" | "KYB Rejected" | "More Info Required";
+const KYB_TONES: Record<KybStatus, string> = {
+  "KYB Not Started":      "bg-secondary text-secondary-foreground border-border",
+  "KYB In Progress":      "bg-amber-500/15 text-amber-700 border-amber-500/30",
+  "KYB Submitted":        "bg-blue-500/15 text-blue-700 border-blue-500/30",
+  "KYB Approved":         "bg-success/15 text-success border-success/30",
+  "KYB Rejected":         "bg-destructive/15 text-destructive border-destructive/30",
+  "More Info Required":   "bg-warning/15 text-warning border-warning/30",
+};
+
+function KybPanel() {
+  const [status, setStatus] = useState<KybStatus>("KYB Approved");
+  const [docs, setDocs] = useState<{ name: string; uploaded: boolean }[]>([
+    { name: "Company registration certificate", uploaded: true },
+    { name: "Director / Owner ID", uploaded: true },
+    { name: "Proof of business address", uploaded: true },
+    { name: "Bank account proof", uploaded: true },
+    { name: "Trade references (3)", uploaded: false },
+  ]);
+  const upload = (i: number) => { setDocs(docs.map((d, j) => j === i ? { ...d, uploaded: true } : d)); toast.success("Document uploaded"); };
+  return (
+    <div className="grid lg:grid-cols-3 gap-4">
+      <Card className="p-5 shadow-card lg:col-span-2">
+        <div className="flex items-center justify-between">
+          <div className="text-sm font-semibold">KYB documents</div>
+          <Button size="sm" variant="outline" onClick={() => toast.success("Resubmitted to compliance")}>Resubmit for review</Button>
+        </div>
+        <div className="mt-4 divide-y divide-border">
+          {docs.map((d, i) => (
+            <div key={d.name} className="flex items-center justify-between py-3">
+              <div className="flex items-center gap-2 text-sm">
+                {d.uploaded ? <CheckCircle2 className="h-4 w-4 text-success" /> : <AlertTriangle className="h-4 w-4 text-amber-600" />}
+                {d.name}
+              </div>
+              <Button size="sm" variant={d.uploaded ? "ghost" : "outline"} onClick={() => upload(i)}>
+                <Upload className="h-3.5 w-3.5 mr-1" /> {d.uploaded ? "Replace" : "Upload"}
+              </Button>
+            </div>
+          ))}
+        </div>
+      </Card>
+      <Card className="p-5 shadow-card">
+        <div className="text-sm font-semibold mb-3">KYB status</div>
+        <span className={`text-xs px-2 py-1 rounded-full border ${KYB_TONES[status]}`}>{status}</span>
+        <div className="mt-4">
+          <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Change status (demo)</Label>
+          <Select value={status} onValueChange={(v) => setStatus(v as KybStatus)}>
+            <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {(["KYB Not Started","KYB In Progress","KYB Submitted","KYB Approved","KYB Rejected","More Info Required"] as KybStatus[]).map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="mt-4 text-xs text-muted-foreground">
+          Canta reviews KYB documents within 1–2 business days. You'll be notified once your status changes.
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+type ProductCategory = { id: string; name: string; primary: boolean; keywords: string; moq: string };
+
+function CategoriesPanel() {
+  const [cats, setCats] = useState<ProductCategory[]>([
+    { id: "c1", name: "Consumer Electronics", primary: true,  keywords: "phones, tablets, accessories", moq: "100 units" },
+    { id: "c2", name: "Phone Accessories",    primary: false, keywords: "cases, chargers, cables",      moq: "500 units" },
+    { id: "c3", name: "Smart Home",           primary: false, keywords: "bulbs, plugs, hubs",           moq: "200 units" },
+  ]);
+  const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState<ProductCategory>({ id: "", name: "", primary: false, keywords: "", moq: "" });
+
+  const add = () => {
+    if (!draft.name.trim()) { toast.error("Category name is required"); return; }
+    setCats([...cats, { ...draft, id: `c${Date.now()}` }]);
+    setDraft({ id: "", name: "", primary: false, keywords: "", moq: "" });
+    setOpen(false);
+    toast.success("Category added");
+  };
+  const remove = (id: string) => { setCats(cats.filter((c) => c.id !== id)); toast.success("Category removed"); };
+  const makePrimary = (id: string) => { setCats(cats.map((c) => ({ ...c, primary: c.id === id }))); toast.success("Primary category updated"); };
+
+  return (
+    <Card className="shadow-card overflow-hidden">
+      <div className="p-4 flex items-center justify-between border-b border-border">
+        <div className="text-sm font-semibold">Product categories</div>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild><Button size="sm" className="bg-primary"><Plus className="h-3.5 w-3.5 mr-1" /> Add category</Button></DialogTrigger>
+          <DialogContent>
+            <DialogHeader><DialogTitle>Add product category</DialogTitle></DialogHeader>
+            <div className="space-y-3">
+              <FF label="Category name"><Input value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} placeholder="e.g. Wearables" /></FF>
+              <FF label="Product keywords"><Input value={draft.keywords} onChange={(e) => setDraft({ ...draft, keywords: e.target.value })} placeholder="smartwatch, fitness tracker" /></FF>
+              <FF label="Minimum order quantity"><Input value={draft.moq} onChange={(e) => setDraft({ ...draft, moq: e.target.value })} placeholder="100 units" /></FF>
+            </div>
+            <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button><Button className="bg-primary" onClick={add}>Add</Button></DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead><tr className="text-left text-xs text-muted-foreground bg-secondary/40">
+            <th className="px-4 py-3">Category</th><th className="px-4 py-3">Keywords</th><th className="px-4 py-3">MOQ</th><th className="px-4 py-3">Primary</th><th className="px-4 py-3 text-right">Actions</th>
+          </tr></thead>
+          <tbody>
+            {cats.map((c) => (
+              <tr key={c.id} className="border-t border-border">
+                <td className="px-4 py-3 font-medium">{c.name}</td>
+                <td className="px-4 py-3 text-xs text-muted-foreground">{c.keywords}</td>
+                <td className="px-4 py-3 text-xs">{c.moq}</td>
+                <td className="px-4 py-3">{c.primary && <Badge variant="outline" className="text-[10px] border-success/30 text-success">Primary</Badge>}</td>
+                <td className="px-4 py-3 text-right space-x-2">
+                  {!c.primary && <Button size="sm" variant="ghost" onClick={() => makePrimary(c.id)}>Set primary</Button>}
+                  <Button size="sm" variant="ghost" onClick={() => remove(c.id)}>Remove</Button>
+                </td>
+              </tr>
+            ))}
+            {cats.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-xs text-muted-foreground">No categories yet.</td></tr>}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  );
+}
+
 
 function Row({ icon, label }: { icon: React.ReactNode; label: string }) {
   return <div className="flex items-center gap-2">{icon} <span>{label}</span></div>;
