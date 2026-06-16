@@ -158,6 +158,10 @@ function Freight() {
           <PipelineBoard />
         </TabsContent>
 
+        <TabsContent value="arriving" className="mt-6">
+          <ArrivingShipments />
+        </TabsContent>
+
         <TabsContent value="documents" className="mt-6">
           <DocumentsManager />
         </TabsContent>
