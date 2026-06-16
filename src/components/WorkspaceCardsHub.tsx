@@ -198,77 +198,7 @@ export function WorkspaceCardsHub({
               <Download className="h-4 w-4 mr-2" /> Export report
             </Button>
           )}
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm"><Plus className="h-4 w-4 mr-2" /> Create card</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-lg">
-              <DialogHeader>
-                <DialogTitle>Create {title.split(" ")[0]} card</DialogTitle>
-                <DialogDescription>Limits, approvals and receipts are enforced per transaction.</DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-xs">Card type</Label>
-                  <Select value={draft.type} onValueChange={(v) => setDraft({ ...draft, type: v })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {cardTypes.map((t) => (
-                        <SelectItem key={t.key} value={t.key}>{t.label} — {t.desc}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-xs">Cardholder</Label>
-                  <Input value={draft.holder} onChange={(e) => setDraft({ ...draft, holder: e.target.value })} placeholder="Staff name or team" />
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-xs">Link to</Label>
-                    <Select value={draft.linkKind} onValueChange={(v) => setDraft({ ...draft, linkKind: v })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {linkEntities.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label className="text-xs">Reference</Label>
-                    <Input value={draft.linkTo} onChange={(e) => setDraft({ ...draft, linkTo: e.target.value })} placeholder={`${draft.linkKind} #...`} />
-                  </div>
-                </div>
-                <div className="grid grid-cols-3 gap-3">
-                  <div>
-                    <Label className="text-xs">Daily limit ($)</Label>
-                    <Input type="number" value={draft.daily} onChange={(e) => setDraft({ ...draft, daily: Number(e.target.value) })} />
-                  </div>
-                  <div>
-                    <Label className="text-xs">Monthly limit ($)</Label>
-                    <Input type="number" value={draft.monthly} onChange={(e) => setDraft({ ...draft, monthly: Number(e.target.value) })} />
-                  </div>
-                  <div>
-                    <Label className="text-xs">Per-tx limit ($)</Label>
-                    <Input type="number" value={draft.tx} onChange={(e) => setDraft({ ...draft, tx: Number(e.target.value) })} />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm">
-                    <Checkbox checked={draft.requireApproval} onCheckedChange={(v) => setDraft({ ...draft, requireApproval: Boolean(v) })} />
-                    Require approval before each spend over per-tx limit
-                  </label>
-                  <label className="flex items-center gap-2 text-sm">
-                    <Checkbox checked={draft.requireReceipts} onCheckedChange={(v) => setDraft({ ...draft, requireReceipts: Boolean(v) })} />
-                    Require receipts for every transaction
-                  </label>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-                <Button onClick={create}>Create card</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <CardPurposeWizard defaultLinkKind={defaultLinkKind} onCreate={handleCreate} />
         </div>
       </header>
 
