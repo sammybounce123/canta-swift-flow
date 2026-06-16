@@ -520,7 +520,7 @@ function SendForm({
           setConfirmDetails(false); setConfirmAuth(false); setStage("review");
         }}
       >
-        Send Payment
+        Review payment details
       </Button>
     </div>
   );
