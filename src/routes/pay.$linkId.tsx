@@ -7,12 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  ShieldCheck, Building2, Clock, AlertTriangle, CheckCircle2, Lock, Sparkles, FileText, Copy,
+  ShieldCheck, Building2, Clock, AlertTriangle, CheckCircle2, Lock, Sparkles, FileText, Copy, X,
 } from "lucide-react";
 import {
   findCaseByLinkId, markLinkOpened, submitVerification, expireQuoteIfNeeded,
-  activateClientAccount, subscribe,
+  activateClientAccount, subscribe, recordFunding,
 } from "@/lib/partner-store";
+import { appendDocAudit } from "@/lib/partner-extras";
 import { getSolicitor, PARTNER_ORG, formatGBP } from "@/lib/partner";
 import { toast } from "sonner";
 
@@ -46,7 +47,7 @@ function ClientPayPage() {
   if (!c) {
     return (
       <PublicShell>
-        <Card className="p-10 text-center shadow-card">
+        <Card className="p-10 text-center shadow-card max-w-md mx-auto mt-20">
           <AlertTriangle className="h-8 w-8 text-destructive mx-auto" />
           <h2 className="mt-3 text-lg font-semibold">Payment link invalid or expired</h2>
           <p className="text-sm text-muted-foreground mt-2">Please contact Baron &amp; Cabot for a new link.</p>
@@ -57,7 +58,8 @@ function ClientPayPage() {
   const sol = getSolicitor(c.solicitorId);
   const quote = c.quotes.find((q) => q.id === c.activeQuoteId);
   const expiresMs = quote ? new Date(quote.expiresAt).getTime() - Date.now() : 0;
-  const expired = !quote || quote.status !== "Active" || expiresMs <= 0;
+  const quoteExpired = !quote || quote.status !== "Active" || expiresMs <= 0;
+  const linkCompleted = c.paymentLink?.status === "Completed" || c.payout?.status === "Paid to Solicitor" || c.payout?.status === "Receipt Uploaded";
 
   return (
     <PublicShell>
@@ -69,23 +71,38 @@ function ClientPayPage() {
             <span className="font-semibold">{PARTNER_ORG.name}</span>
             <span className="text-muted-foreground"> referred this payment · Canta will process FX and pay your UK solicitor.</span>
           </div>
-          {quote && !expired && (
+          {quote && !quoteExpired && (
             <Badge variant="outline" className="ml-auto text-warning border-warning/30">
               <Clock className="h-3 w-3 mr-1" /> Quote expires in {formatRemaining(expiresMs)}
             </Badge>
           )}
-          {expired && (
+          {quoteExpired && !linkCompleted && (
             <Badge variant="outline" className="ml-auto text-destructive border-destructive/30">Quote expired</Badge>
           )}
         </Card>
 
-        <Stepper step={step} />
-
-        {step === "review" && <ReviewStep c={c} quote={quote} sol={sol?.firm ?? "—"} expired={expired} onNext={() => setStep("verify")} />}
-        {step === "verify" && <VerifyStep caseId={c.id} clientName={c.clientName} expired={expired} onDone={() => setStep("documents")} />}
-        {step === "documents" && <DocStep c={c} onNext={() => setStep("fund")} />}
-        {step === "fund" && <FundStep c={c} quote={quote} expired={expired} onPaid={() => setStep("done")} />}
-        {step === "done" && <DoneStep caseId={c.id} sol={sol?.firm ?? "your solicitor"} amount={c.amountGBP} />}
+        {linkCompleted ? (
+          <Card className="p-8 shadow-card text-center">
+            <CheckCircle2 className="h-8 w-8 text-success mx-auto" />
+            <h2 className="mt-3 font-semibold">This payment is complete</h2>
+            <p className="text-sm text-muted-foreground mt-1">This link has already been used and cannot be reused. Please contact Baron &amp; Cabot if you need a new payment.</p>
+          </Card>
+        ) : quoteExpired ? (
+          <Card className="p-8 shadow-card text-center">
+            <AlertTriangle className="h-8 w-8 text-destructive mx-auto" />
+            <h2 className="mt-3 font-semibold">Quote expired. Please request a new quote.</h2>
+            <p className="text-sm text-muted-foreground mt-1">Your FX rate is locked for a short window. Please contact Baron &amp; Cabot to issue a fresh quote — your NGN payable amount will be recalculated.</p>
+          </Card>
+        ) : (
+          <>
+            <Stepper step={step} />
+            {step === "review" && <ReviewStep c={c} quote={quote} sol={sol?.firm ?? "—"} onNext={() => setStep("verify")} />}
+            {step === "verify" && <VerifyStep caseId={c.id} clientName={c.clientName} onDone={() => setStep("documents")} />}
+            {step === "documents" && <DocStep c={c} onNext={() => setStep("fund")} />}
+            {step === "fund" && <FundGate c={c} quote={quote} onPaid={() => setStep("done")} />}
+            {step === "done" && <DoneStep caseId={c.id} sol={sol?.firm ?? "your solicitor"} amount={c.amountGBP} />}
+          </>
+        )}
       </div>
     </PublicShell>
   );
@@ -93,9 +110,7 @@ function ClientPayPage() {
 
 /* ---------- pieces ---------- */
 
-function PublicShell({ children }: { children: React.ReactNode }) {
-  return <div className="min-h-screen bg-background">{children}</div>;
-}
+function PublicShell({ children }: { children: React.ReactNode }) { return <div className="min-h-screen bg-background">{children}</div>; }
 
 function BrandHeader() {
   return (
@@ -116,15 +131,12 @@ function BrandHeader() {
 
 function Stepper({ step }: { step: Step }) {
   const steps: { id: Step; label: string }[] = [
-    { id: "review", label: "Review" },
-    { id: "verify", label: "Verify" },
-    { id: "documents", label: "Documents" },
-    { id: "fund", label: "Pay" },
-    { id: "done", label: "Receipt" },
+    { id: "review", label: "Review" }, { id: "verify", label: "Verify" },
+    { id: "documents", label: "Documents" }, { id: "fund", label: "Pay" }, { id: "done", label: "Receipt" },
   ];
   const idx = steps.findIndex((s) => s.id === step);
   return (
-    <div className="flex items-center gap-2 text-xs">
+    <div className="flex items-center gap-2 text-xs flex-wrap">
       {steps.map((s, i) => (
         <div key={s.id} className="flex items-center gap-2">
           <div className={`h-6 w-6 rounded-full grid place-items-center font-semibold ${i <= idx ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>{i + 1}</div>
@@ -136,7 +148,7 @@ function Stepper({ step }: { step: Step }) {
   );
 }
 
-function ReviewStep({ c, quote, sol, expired, onNext }: any) {
+function ReviewStep({ c, quote, sol, onNext }: any) {
   return (
     <Card className="p-6 shadow-card space-y-4">
       <div className="text-sm font-semibold">Review your payment</div>
@@ -152,75 +164,52 @@ function ReviewStep({ c, quote, sol, expired, onNext }: any) {
         <Row label="Canta fee" value={quote ? formatGBP(quote.feeGBP) : "—"} />
         <Row label="NGN you pay" value={quote ? `₦${quote.ngnTotal.toLocaleString()}` : "—"} highlight />
       </div>
-      <div className="text-xs text-muted-foreground border-t pt-3">
-        Expected settlement: 1–2 business days after funding and verification.
-      </div>
-      <div className="flex justify-end">
-        <Button onClick={onNext} disabled={expired}>Continue to verification</Button>
-      </div>
+      <div className="text-xs text-muted-foreground border-t pt-3">Expected settlement: 1–2 business days after funding and verification.</div>
+      <div className="flex justify-end"><Button onClick={onNext}>Continue to verification</Button></div>
     </Card>
   );
 }
 
-function VerifyStep({ caseId, clientName, expired, onDone }: any) {
+function VerifyStep({ caseId, clientName, onDone }: any) {
   const [bvn, setBvn] = useState("");
   const [dob, setDob] = useState("");
   const [name, setName] = useState(false);
   const [src, setSrc] = useState("");
-  const [c1, setC1] = useState(false);
-  const [c2, setC2] = useState(false);
-  const [c3, setC3] = useState(false);
-  const [c4, setC4] = useState(false);
-  const [c5, setC5] = useState(false);
-  const valid = bvn.length === 11 && dob && name && src && c1 && c2 && c3 && c4 && c5 && !expired;
-
+  const [purpose, setPurpose] = useState(false);
+  const [canta, setCanta] = useState(false);
+  const [shared, setShared] = useState(false);
+  const [terms, setTerms] = useState(false);
+  const [privacy, setPrivacy] = useState(false);
+  const valid = bvn.length === 11 && dob && name && src && purpose && canta && shared && terms && privacy;
   const submit = () => {
-    submitVerification(caseId, {
-      bvn, dob, fullNameConfirmed: name, sourceOfFunds: src,
-      consent: { propertyPurpose: c1, canta: c2, sharedDocs: c3, terms: c4, privacy: c5 },
-    });
+    submitVerification(caseId, { bvn, dob, fullNameConfirmed: name, sourceOfFunds: src, consent: { propertyPurpose: purpose, canta, sharedDocs: shared, terms, privacy } });
+    appendDocAudit({ caseId, docType: "Consent", action: "Document consent completed", actorId: "client", actorName: clientName, actorRole: "client", consent: true });
     toast.success("Verification submitted");
     onDone();
   };
-
   return (
     <Card className="p-6 shadow-card space-y-5">
       <div>
         <div className="text-sm font-semibold flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Identity verification</div>
         <p className="text-xs text-muted-foreground mt-1">A quick check before we show you the Canta funding account.</p>
       </div>
-
-      <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs text-foreground">
-        <strong>Your BVN is collected securely by Canta</strong> for verification and compliance. Baron &amp; Cabot will not enter this on your behalf.
+      <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs">
+        <strong>Your BVN is collected securely by Canta</strong> for verification and compliance. Baron &amp; Cabot will not enter this on your behalf and will never see your full BVN.
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label className="text-xs">BVN (11 digits)</Label>
-          <Input value={bvn} onChange={(e) => setBvn(e.target.value.replace(/\D/g, "").slice(0, 11))} placeholder="•••••••••••" inputMode="numeric" />
-        </div>
-        <div>
-          <Label className="text-xs">Date of birth</Label>
-          <Input type="date" value={dob} onChange={(e) => setDob(e.target.value)} />
-        </div>
-        <div className="md:col-span-2">
-          <Label className="text-xs">Source of funds</Label>
-          <Input value={src} onChange={(e) => setSrc(e.target.value)} placeholder="e.g. Personal savings / business income / property sale" />
-        </div>
+        <div><Label className="text-xs">BVN (11 digits)</Label><Input value={bvn} onChange={(e) => setBvn(e.target.value.replace(/\D/g, "").slice(0, 11))} placeholder="•••••••••••" inputMode="numeric" /></div>
+        <div><Label className="text-xs">Date of birth</Label><Input type="date" value={dob} onChange={(e) => setDob(e.target.value)} /></div>
+        <div className="md:col-span-2"><Label className="text-xs">Source of funds</Label><Input value={src} onChange={(e) => setSrc(e.target.value)} placeholder="e.g. Personal savings / business income / property sale" /></div>
       </div>
-
       <div className="space-y-2 text-sm">
         <ConsentRow checked={name} onChange={setName} label={`I confirm my full name matches: ${clientName}`} />
-        <ConsentRow checked={c1} onChange={setC1} label="I confirm this payment is for a property purchase or property-related transaction." />
-        <ConsentRow checked={c2} onChange={setC2} label="I consent to Canta processing this payment on my behalf." />
-        <ConsentRow checked={c3} onChange={setC3} label="I consent to Canta using KYC documents already shared by Baron & Cabot." />
-        <ConsentRow checked={c4} onChange={setC4} label="I accept Canta's terms of service." />
-        <ConsentRow checked={c5} onChange={setC5} label="I accept Canta's privacy and data processing policy." />
+        <ConsentRow checked={purpose} onChange={setPurpose} label="I confirm this payment is for a property purchase or property-related transaction." />
+        <ConsentRow checked={canta} onChange={setCanta} label="I consent to Canta processing this payment on my behalf." />
+        <ConsentRow checked={shared} onChange={setShared} label="I consent to Canta using KYC documents already shared by Baron & Cabot." />
+        <ConsentRow checked={terms} onChange={setTerms} label="I accept Canta's terms of service." />
+        <ConsentRow checked={privacy} onChange={setPrivacy} label="I accept Canta's privacy and data processing policy." />
       </div>
-
-      <div className="flex justify-end">
-        <Button disabled={!valid} onClick={submit}>Submit verification</Button>
-      </div>
+      <div className="flex justify-end"><Button disabled={!valid} onClick={submit}>Submit verification</Button></div>
     </Card>
   );
 }
@@ -235,6 +224,7 @@ function ConsentRow({ checked, onChange, label }: { checked: boolean; onChange: 
 }
 
 function DocStep({ c, onNext }: any) {
+  const [confirmed, setConfirmed] = useState(false);
   return (
     <Card className="p-6 shadow-card space-y-4">
       <div className="text-sm font-semibold flex items-center gap-2"><FileText className="h-4 w-4 text-primary" /> Documents</div>
@@ -243,7 +233,7 @@ function DocStep({ c, onNext }: any) {
           <div className="text-xs text-muted-foreground">Documents already provided by Baron &amp; Cabot:</div>
           <ul className="text-sm border rounded-lg divide-y">
             {c.documents.map((d: any) => (
-              <li key={d.id} className="px-3 py-2 flex justify-between">
+              <li key={d.id} className="px-3 py-2 flex justify-between" onClick={() => appendDocAudit({ caseId: c.id, docType: d.type, action: "Document viewed by client", actorId: "client", actorName: c.clientName, actorRole: "client" })}>
                 <span className="flex items-center gap-2"><FileText className="h-3.5 w-3.5 text-muted-foreground" /> {d.type}</span>
                 <span className="text-[11px] text-muted-foreground">{d.name}</span>
               </li>
@@ -253,27 +243,69 @@ function DocStep({ c, onNext }: any) {
       ) : (
         <div className="text-sm text-muted-foreground">No documents on file yet — you can upload any required documents below.</div>
       )}
-      <div className="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">
-        Drag &amp; drop additional documents here (passport, proof of address, proof of funds)
-      </div>
-      <div className="flex justify-end">
-        <Button onClick={onNext}>Confirm &amp; continue</Button>
-      </div>
+      <div className="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">Drag &amp; drop additional documents here (passport, proof of address, proof of funds)</div>
+      <ConsentRow checked={confirmed} onChange={setConfirmed} label="I confirm all required documents have been provided or uploaded." />
+      <div className="flex justify-end"><Button disabled={!confirmed} onClick={onNext}>Confirm &amp; continue</Button></div>
     </Card>
   );
 }
 
-function FundStep({ c, quote, expired, onPaid }: any) {
-  if (expired || !quote) {
+function FundGate({ c, quote, onPaid }: any) {
+  // Build the required checklist
+  const v = c.verification;
+  const expiresMs = quote ? new Date(quote.expiresAt).getTime() - Date.now() : 0;
+  const checks = [
+    { ok: !!v?.bvnMasked, label: "BVN submitted by client" },
+    { ok: !!v?.dob, label: "Date of birth on file" },
+    { ok: !!v?.fullNameConfirmed, label: "Full name confirmation" },
+    { ok: !!v?.sourceOfFunds, label: "Source of funds declared" },
+    { ok: !!v?.consent.propertyPurpose, label: "Payment purpose confirmed" },
+    { ok: !!v?.consent.canta, label: "Consent: Canta to process transaction" },
+    { ok: !!v?.consent.sharedDocs, label: "Consent: use of B&C-shared KYC docs" },
+    { ok: !!v?.consent.terms, label: "Canta terms accepted" },
+    { ok: !!v?.consent.privacy, label: "Canta privacy & data policy accepted" },
+    { ok: !!quote && quote.status === "Active" && expiresMs > 0, label: "FX quote still valid" },
+    { ok: true, label: "Required documents confirmed" }, // doc step gates itself
+  ];
+  const incomplete = checks.filter((c) => !c.ok);
+
+  if (incomplete.length > 0) {
     return (
-      <Card className="p-6 shadow-card text-center">
-        <AlertTriangle className="h-6 w-6 text-destructive mx-auto" />
-        <div className="mt-2 font-semibold">Your FX quote has expired</div>
-        <p className="text-sm text-muted-foreground mt-1">Please contact Baron &amp; Cabot to issue a new quote.</p>
+      <Card className="p-6 shadow-card space-y-4 border-warning/30">
+        <div className="flex items-start gap-3">
+          <AlertTriangle className="h-5 w-5 text-warning mt-0.5" />
+          <div>
+            <div className="text-sm font-semibold">Funding instructions locked</div>
+            <p className="text-xs text-muted-foreground mt-1">Complete the items below before Canta shows you the funding account details.</p>
+          </div>
+        </div>
+        <ul className="space-y-1.5 text-sm">
+          {checks.map((ch, i) => (
+            <li key={i} className="flex items-center gap-2">
+              {ch.ok ? <CheckCircle2 className="h-4 w-4 text-success" /> : <X className="h-4 w-4 text-destructive" />}
+              <span className={ch.ok ? "text-muted-foreground line-through" : ""}>{ch.label}</span>
+            </li>
+          ))}
+        </ul>
       </Card>
     );
   }
+  return <FundStep c={c} quote={quote} onPaid={onPaid} />;
+}
+
+function FundStep({ c, quote, onPaid }: any) {
   const copy = (s: string) => { navigator.clipboard?.writeText(s); toast.success("Copied"); };
+  const [amount, setAmount] = useState(quote.ngnTotal);
+  const [payerName, setPayerName] = useState(c.clientName);
+  const [reference, setReference] = useState(quote.reference);
+  const submit = () => {
+    recordFunding(c.id, { receivedNGN: Number(amount), payerName, reference });
+    if (!reference) toast.warning("Marked as Payment Reference Missing");
+    else if (payerName.toLowerCase() !== c.clientName.toLowerCase()) toast.warning("Marked as Name Mismatch for review");
+    else if (Math.abs(Number(amount) - quote.ngnTotal) / quote.ngnTotal > 0.005) toast.warning("Marked as Amount Mismatch for review");
+    else toast.success("Funding recorded — ready for FX conversion");
+    onPaid();
+  };
   return (
     <Card className="p-6 shadow-card space-y-4">
       <div className="text-sm font-semibold">Pay into your dedicated Canta account</div>
@@ -289,9 +321,16 @@ function FundStep({ c, quote, expired, onPaid }: any) {
         Only pay into the Canta account details shown on this secure page. Pay from an account in your own name where possible.
         Canta will process FX conversion and the solicitor payout after funding and compliance checks.
       </div>
-      <div className="flex justify-end">
-        <Button onClick={onPaid}>I have made the payment</Button>
+
+      <div className="border-t pt-4 space-y-3">
+        <div className="text-sm font-semibold">Confirm your payment details</div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div><Label className="text-xs">Amount sent (₦)</Label><Input type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} /></div>
+          <div><Label className="text-xs">Payer name on transfer</Label><Input value={payerName} onChange={(e) => setPayerName(e.target.value)} /></div>
+          <div><Label className="text-xs">Reference used</Label><Input value={reference} onChange={(e) => setReference(e.target.value)} /></div>
+        </div>
       </div>
+      <div className="flex justify-end"><Button onClick={submit}>I have made the payment</Button></div>
     </Card>
   );
 }
@@ -302,7 +341,7 @@ function DoneStep({ caseId, sol, amount }: { caseId: string; sol: string; amount
       <div className="mx-auto h-12 w-12 rounded-full bg-success/15 grid place-items-center"><CheckCircle2 className="h-6 w-6 text-success" /></div>
       <div>
         <div className="text-lg font-semibold">Thank you — your property payment is being processed</div>
-        <p className="text-sm text-muted-foreground mt-1">Canta will pay {formatGBP(amount)} to {sol}. You'll receive a receipt once settled.</p>
+        <p className="text-sm text-muted-foreground mt-1">Canta will pay {formatGBP(amount)} to {sol}. You'll receive a receipt once settled. If any of your payment details didn't match exactly, our compliance team will reach out before processing.</p>
       </div>
       <div className="border-t pt-4 space-y-2 text-left max-w-md mx-auto">
         <div className="text-sm font-semibold flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> Activate your full Canta account</div>

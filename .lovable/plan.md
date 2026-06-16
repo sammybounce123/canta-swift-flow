@@ -1,62 +1,86 @@
-# Canta Expansion Plan
+# Canta Expansion v3 — Implementation Plan
 
-This is a large, multi-module addition. Nothing existing will be removed. I'll layer it in across ~6 phases so each is independently usable, then wire sidebars at the end.
+Scope is large but additive. No existing routes or flows removed. Below is the phased build.
 
-## Phase 1 — Trade Network foundation
-- Extend `src/lib/trade-network.ts`: add `BUYERS` dataset, `COUNTRIES_BUYER`, `Buyer` type with all required fields (payment reliability score, completed tx, avg order range USD, preferred corridors, escrow readiness, dispute history, last active).
-- New route `src/routes/verified-buyers.tsx` — directory + filter + profile sheet with actions: Send Quote, Create Invoice, Invite to Trade File, Request Proof of Funds, Offer Escrow Terms, Message via Canta. (File already partially exists — extend with the missing fields.)
-- New route `src/routes/trade-network.tsx` — landing hub explaining "Canta Trade Network" with cards linking to Verified Suppliers, Verified Buyers, Quote Requests, Supplier Invoices, Escrow Requests, Trade Files, Payment Status, Settlement Status. Role-aware: importer view vs supplier view.
-- Deepen `src/routes/verified-suppliers.tsx`: add trade references + response time SLA + factory/warehouse verification status fields to the sheet (most are present, fill the gaps).
+## Phase 1 — Partner Property hardening (`/pay/$linkId`, partner-store, solicitors)
 
-## Phase 2 — Workspace cards
-Reuse `src/components/CardsPanel.tsx` pattern. New routes:
-- `src/routes/importer.cards.tsx` — procurement / inspection / samples / trade-expenses card types, linkable to trade file / shipment / supplier / cost center, with limits, approvals, receipts, freeze, spend-by views.
-- `src/routes/freight.cards.tsx` — port / route / clearing / warehouse / operations / travel cards, spend by route/staff/shipment.
-- `src/routes/treasury.cards.tsx` — staff / department / travel / procurement / project / ad-spend, with department/project spend views + CSV export.
+**`src/lib/partner-store.ts`**
+- Extend `Case` with funding statuses: `Awaiting Client Funding | Funding Received | Funding Review | Amount Mismatch | Name Mismatch | Payment Reference Missing | Ready for FX Conversion`.
+- Extend `Quote` with `linkId` 1:1 binding; quote expiry voids link.
+- Extend `Solicitor` with statuses (`Draft | Pending Verification | Verified | More Info Required | Rejected | Suspended`), masked bank details, `pinned`, `lastVerifiedAt`.
+- BVN stored only as status enum (`Pending | Submitted | Verified | Failed`) for B&C view; raw value kept in client-only verification record.
+- Document audit log: `{ id, caseId, docType, action, actor, role, at, consent }`.
+- Helpers: `recordFunding(caseId, { amount, payerName, reference })` auto-classifies mismatch.
 
-Each uses a shared `<WorkspaceCards>` component in `src/components/WorkspaceCards.tsx` (configurable card types, link-to entities, spend dimensions) to avoid triplication.
+**`src/routes/pay.$linkId.tsx`**
+- Replace existing 4-step flow with checklist gate. Funding step is locked behind a visible incomplete checklist component listing every requirement (BVN, DOB, name confirm, source of funds, purpose, 5 consents, quote valid, docs confirmed). Each item shows ✓ / pending.
+- Quote-expired and link-completed states render dedicated cards.
+- "I have made the payment" collects amount/payer name/reference → `recordFunding` → routes to status screen showing mismatch reason if any.
 
-## Phase 3 — Partner Property deepening
-- Update `src/routes/pay.$linkId.tsx` to a 6-step wizard:
-  1. Review details (partner badge, GBP/NGN, expiry countdown)
-  2. Verification (BVN, DOB, name confirm, source of funds, purpose) — BVN masked after submission
-  3. Documents & consent (show partner-shared docs, upload missing, consent + T&Cs + privacy)
-  4. Funding instruction (gated on BVN + consent + valid quote)
-  5. Track status (Awaiting Funding → … → Receipt Uploaded)
-  6. Activate Canta account CTA
-- Update `src/lib/partner-store.ts` to record BVN status (`Pending|Submitted|Verified|Failed`) without exposing full BVN, marketer attribution on every entity, and reassignment log.
-- New route `src/routes/partner.marketer-performance.tsx` — per-marketer KPI dashboard (leads, cases, quotes, links, verifications, funding, payouts, GBP volume, conversion, AOV).
-- Add reassignment action on `partner.cases.$caseId.tsx` (admin-only) writing to activity log.
+**`src/routes/partner.cases.$caseId.tsx`**
+- Show BVN status badge only (never the number).
+- Show funding status timeline.
+- Block "Convert FX" button unless status === `Ready for FX Conversion`.
 
-## Phase 4 — Verification Center, Integrations, AI Extraction, Audit Logs
-- Expand `src/routes/verification-center.tsx` with tabbed queues: Pending KYC, Pending KYB, Buyer Verif, Supplier Verif, Solicitor Verif, Partner Client Verif, High Risk, Suspended. Add sanctions/PEP/adverse-media/risk-score columns and BVN/consent status pills.
-- Expand `src/routes/integrations.tsx`: 13 categories with cards showing live/test, status, last sync, last webhook, fail count, error, affected entities, fallback, retry + view-logs buttons.
-- New route `src/routes/ai-document-extraction.tsx` — upload zone, document type picker, extracted-fields preview, actions: create draft Trade File / Payment Case / attach / request missing / WhatsApp follow-up / flag compliance.
-- New route `src/routes/audit-logs.tsx` — table with all listed event types, filters (date/user/org/workspace/module/action/status), CSV + PDF export buttons.
+**`src/routes/partner.solicitors.tsx`**
+- Mask account numbers (last 4 only). "Reveal" gated to Partner Admin / Finance Viewer roles.
+- "Edit bank details" forces status → `Pending Verification` and writes audit entry.
+- Pin toggle independent of verification.
 
-## Phase 5 — Role-based nav
-Update `src/lib/profile.ts` sidebar config per workspace per the spec:
-- Enterprise +Company Cards
-- Importer +Verified Suppliers, My Suppliers, Importer Cards
-- Freight +Freight Cards
-- Supplier +Verified Buyers, Escrow, Settlements (Buyers/Invoices/Documents already)
-- Global Merchant: add Settlement Approvals
-- Partner: add Marketers performance link
-Add top-level "Trade Network" entry for Importer + Supplier workspaces.
+**`src/routes/partner.documents.tsx`**
+- B&C upload picker for the 9 document types.
+- Audit table with all 7 action types.
 
-## Phase 6 — Empty states & button audit
-- Add a small `<EmptyState>` component in `src/components/EmptyState.tsx` with title + body + primary CTA, and slot it into every new module's empty cases plus existing modules with placeholder gaps.
-- Sweep dead buttons in new modules — every action triggers a toast, modal, route, or status mutation.
+## Phase 2 — Commissions (optional)
 
-## Technical notes
-- All datasets mock-only (no Lovable Cloud needed). Each `add*` mutation updates an in-memory store with a subscribe hook so transactions/audit-log entries appear live.
-- Card flows reuse existing `tx-store` pattern for spend events.
-- BVN is stored only as `{ status, lastFour }`; partner views read status pill, never the raw value.
-- Public `/pay/$linkId` continues to work for existing demo links; the new wizard wraps the existing transition logic.
-- New routes auto-register via Tanstack file-based routing; no manual `routeTree.gen.ts` edits.
+- `src/lib/partner-store.ts`: add `Commission` type + status enum, `commissionsEnabled` flag in partner settings.
+- `src/routes/partner.commissions.tsx`: table with filters, status pills, CSV + PDF export. Marketer role sees own attribution only.
+- `src/routes/partner.settings.tsx`: add toggle "Enable commission tracking".
+- `src/lib/profile.ts`: conditional sidebar entry (read from settings flag).
 
-## Out of scope (intentionally not touched)
-- Existing FX, transactions, beneficiary, wallets, bulk pay flows (already working per prior turns).
-- Auth, Cloud, real KYC providers — all simulated.
+## Phase 3 — Guided Collection templates
 
-If anything here should be re-scoped (e.g. ship Phases 1+2 first, defer 4), say which phases and I'll execute in order.
+- New route `src/routes/collections.new.tsx` (or in-place modal on `/collections`) with template picker (Tuition / Medical / Property / Travel / E-commerce / Professional Services / Supplier Invoice).
+- Each template = its own form schema (fields listed in brief) → on submit creates mock invoice + payment link + payer + reconciliation ref + settlement batch entry (reuse `tx-store` patterns).
+- File: `src/lib/collection-templates.ts` holds template definitions.
+
+## Phase 4 — Embedded insurance hooks
+
+- `src/lib/insurance-store.ts`: `InsuranceQuote` type + status enum, `addInsuranceHook()`.
+- `src/components/InsuranceHookCard.tsx`: reusable card with "Request quote" CTA → mock status flow.
+- Inject into: Trade File detail (`trade-desk.$fileId`), Freight shipment view, Travel card creation, Partner case detail.
+
+## Phase 5 — Integrations rebuild
+
+- `src/lib/integrations-catalog.ts`: 14 categories × providers from brief.
+- Rewrite `src/routes/integrations.tsx` with category tabs, provider cards showing all required fields (env, status, last sync, webhook count, failures, fallback, retry/logs/configure/toggle actions). All actions stubbed to toast/modal.
+
+## Phase 6 — Data model reference page
+
+- `src/routes/data-model.tsx`: static reference table of 40+ entities with purpose / key fields / linked modules / relationships / status fields / audit. Searchable.
+
+## Phase 7 — Support tickets
+
+- `src/lib/support-store.ts`: ticket type, status, issue type, messages.
+- `src/routes/support.tsx`: workspace-aware list + detail drawer; new-ticket modal. Seeded mock data.
+- Sidebar entry added to all workspaces (Phase 8).
+
+## Phase 8 — Workspace navigation alignment
+
+- `src/lib/profile.ts`: rewrite each workspace's sidebar to exactly match the brief, preserving existing routes. Add Support everywhere required. Conditional Commissions for Partner. Settlement Approvals for Global Merchant already present.
+
+## Phase 9 — Documentation refresh
+
+- `src/routes/docs.tsx`: add sections for verification gating, B&C consent flow, quote expiry rules, solicitor controls, commissions, templates, insurance hooks, integrations catalog, data model, support.
+
+## Out of scope
+- Real KYC/insurance/payment provider integrations.
+- Actual backend tables — `/data-model` is reference only.
+- Editing existing FX, transactions, beneficiary, wallets, bulk pay, AI Doc Extraction, Audit Logs flows.
+
+## Risk / notes
+- `pay.$linkId.tsx` is a significant rewrite — kept inside one file, with the existing visual language and Stepper reused as a checklist.
+- All new state is in-memory stores following existing `tx-store` / `partner-store` patterns; no Cloud/Supabase changes.
+- New routes auto-register through file-based routing; `routeTree.gen.ts` is regenerated by the dev server.
+
+Estimated 18–22 new/edited files.

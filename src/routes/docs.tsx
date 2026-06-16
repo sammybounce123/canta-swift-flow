@@ -103,6 +103,82 @@ const SECTIONS: { h: string; body: string[] }[] = [
     ],
   },
   {
+    h: "Partner Property — Client payment link gating (/pay/$linkId)",
+    body: [
+      "Funding instructions are LOCKED behind a visible incomplete checklist. The client must complete: BVN (entered by the client only), DOB, full-name confirmation, source of funds, payment purpose, 5 consents (purpose, Canta to process, use of B&C-shared KYC, terms, privacy), the FX quote must still be valid, and required documents confirmed.",
+      "Baron & Cabot users can never enter BVN on behalf of the client and never see the full BVN — only BVN Pending / Submitted / Verified / Failed.",
+      "On funding the client confirms amount, payer name and reference. Mismatches automatically classify the case as Funding Review with sub-status Amount Mismatch, Name Mismatch, or Payment Reference Missing. A clean match transitions to Ready for FX Conversion.",
+    ],
+  },
+  {
+    h: "FX quote & payment-link rules",
+    body: [
+      "Each payment link is tied to exactly one FX quote. Quote expiry voids the link. Expired links show 'Quote expired. Please request a new quote.' Generating a new FX quote recalculates the NGN payable amount.",
+      "Completed links cannot be reused. Post-payout, the link is permanently retired.",
+    ],
+  },
+  {
+    h: "B&C document consent and audit trail (/partner/documents)",
+    body: [
+      "Baron & Cabot can upload documents already collected from the client: international passport, national ID, driver's licence, proof of address, proof of funds, property/solicitor payment instructions, source-of-funds doc, and other supporting docs.",
+      "On the /pay link the client sees 'Documents already provided by Baron & Cabot', can view the list, upload missing files, and consent to Canta using the shared documents.",
+      "The audit trail records every event: uploaded by B&C / uploaded by client / viewed by client / consent completed / missing-document requested / approved / rejected — each entry stamped with document type, actor, role, time, linked case and consent status.",
+    ],
+  },
+  {
+    h: "Solicitor beneficiary controls (/partner/solicitors)",
+    body: [
+      "All solicitor bank details are masked by default. Only Partner Admin and Finance Viewer roles can reveal them.",
+      "Editing bank details forces the solicitor back to Pending Verification and writes an audit entry. Payouts cannot proceed to unverified solicitors.",
+      "Statuses: Draft, Pending Verification, Verified, More Info Required, Rejected, Suspended. Solicitors can be pinned as preferred but still must be verified before payout.",
+    ],
+  },
+  {
+    h: "Commissions module (/partner/commissions)",
+    body: [
+      "Optional — controlled by Settings → 'Enable commission tracking'. Hidden from the sidebar when disabled.",
+      "Tracks partner org, marketer, client case, payout amount, rate, estimated/approved/paid commission, status and payment date. Statuses: Estimated, Pending Approval, Approved, Paid, Withheld, Cancelled.",
+      "Partner Admin sees everything; marketers see only their own attributed commission when their permission flag is enabled. CSV + PDF export supported.",
+    ],
+  },
+  {
+    h: "Guided Global Collections templates (/collections/new)",
+    body: [
+      "Templates: Tuition, Medical, Property, Travel, E-commerce Order, Professional Services, Supplier Invoice — each with its own dedicated field schema.",
+      "On submit a template creates: invoice + payment link + payer record + reconciliation reference + settlement batch entry.",
+    ],
+  },
+  {
+    h: "Embedded insurance hooks",
+    body: [
+      "Optional placeholders ready to wire to AXA Mansard, Leadway, Old Mutual or AIICO. Surfaces on Importer Trade Files (cargo / goods-in-transit), Freight workspace (goods-in-transit / freight liability), Travel cards (travel insurance), and Partner Property cases (property payment protection).",
+      "Each hook stores customer, linked entity, insured amount, risk type, partner, quote status and policy status.",
+    ],
+  },
+  {
+    h: "External API partner configuration (/integrations)",
+    body: [
+      "Categories: Payment Collection, FX/Settlement/Payout, Shipment Tracking Aggregator, Direct Shipping Lines, Card Issuing, KYC/KYB, Sanctions/PEP/AML, WhatsApp/Messaging, OCR/Document Extraction, AI/Automation, Maps/Address Verification, CRM/Support, Accounting/ERP, Webhooks.",
+      "Each provider card shows env (Test/Live), connection status, last sync, last webhook received, failed webhook count, error reason, fallback provider, and Retry / View Logs / Configure / Enable-Disable controls.",
+    ],
+  },
+  {
+    h: "Backend readiness data model (/data-model)",
+    body: [
+      "Internal reference page covering 40+ core entities: organizations, users, roles, permissions, workspaces, feature_flags, wallets, transactions, beneficiaries, approvals, trade_files, shipments, suppliers, buyers, verified_suppliers, verified_buyers, invoices, payment_links, payers, reconciliation_records, settlement_batches, cards, card_transactions, freight_customers, freight_invoices, partner_leads, partner_cases, partner_marketers, partner_fx_quotes, partner_payment_links, partner_payouts, partner_solicitors, partner_commissions, documents, verification_records, audit_logs, integrations, webhook_logs, insurance_quotes, support_tickets.",
+      "Each entry documents purpose, key fields, modules, relationships, status fields and audit requirements.",
+    ],
+  },
+  {
+    h: "Support tickets (/support)",
+    body: [
+      "Workspace-aware ticketing. Statuses: Open, Waiting on Customer, Waiting on Canta, Escalated, Resolved, Closed.",
+      "Issue types: Payment, Funding mismatch, KYC/KYB, Shipment, Card, Partner case, Payout, Technical, General enquiry.",
+      "Tickets link to a case / trade file / payment / shipment and capture priority, assigned user, messages and attachments.",
+    ],
+  },
+
+  {
     h: "Design & UX Conventions",
     body: [
       "Semantic design tokens in src/styles.css — never hardcoded color utilities in components.",
