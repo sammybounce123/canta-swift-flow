@@ -40,7 +40,7 @@ function Transactions() {
       if (!Number.isNaN(ts) && ts < cutoff) return false;
       return true;
     });
-  }, [type, ccy, range, query]);
+  }, [type, ccy, range, query, transactions]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const pageRows = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
