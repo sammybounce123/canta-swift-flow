@@ -598,14 +598,7 @@ function CardDetail({ c, onClose }: { c: RichCard; onClose: () => void }) {
           </TabsContent>
 
           <TabsContent value="ctl">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              <Button variant="outline" onClick={() => toast.success("Card frozen")}><Snowflake className="h-3.5 w-3.5 mr-1.5" /> Freeze card</Button>
-              <Button variant="outline" onClick={() => toast.success("Funding initiated")}><Banknote className="h-3.5 w-3.5 mr-1.5" /> Fund card</Button>
-              <Button variant="outline" onClick={() => toast.success("Limit updated")}><ShieldAlert className="h-3.5 w-3.5 mr-1.5" /> Set limit</Button>
-              <Button variant="outline" onClick={() => toast.success("Cardholder assigned")}><User className="h-3.5 w-3.5 mr-1.5" /> Assign user</Button>
-              <Button variant="outline" onClick={() => toast.success("Statement exported")}><Download className="h-3.5 w-3.5 mr-1.5" /> Export statement</Button>
-              <Button variant="outline" onClick={() => toast.success("Approval requested")}><Clock className="h-3.5 w-3.5 mr-1.5" /> Request approval</Button>
-            </div>
+            <CardControls card={c} />
           </TabsContent>
         </Tabs>
       </DialogContent>
