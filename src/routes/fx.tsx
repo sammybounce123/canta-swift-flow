@@ -483,11 +483,17 @@ function BeneficiaryStep({
         )}
       </Card>
 
-      <div className="flex items-center justify-between">
-        <Button variant="outline" onClick={onBack}>Cancel</Button>
-        <Button onClick={proceed} className="bg-accent text-accent-foreground hover:bg-accent/90">
-          Continue to transfer <ArrowRight className="h-4 w-4 ml-1" />
-        </Button>
+      <div className="sticky bottom-0 -mx-4 sm:-mx-6 mt-4 px-4 sm:px-6 py-3 bg-background/85 backdrop-blur-xl border-t border-border flex items-center justify-between gap-3">
+        <div className="text-xs text-muted-foreground hidden sm:block">
+          Sending <span className="font-semibold text-foreground tabular-nums">{fmtMoney(conversion.out, conversion.to)}</span> to{" "}
+          <span className="font-semibold text-foreground">{mode === "pick" ? selected : (name || "new beneficiary")}</span>
+        </div>
+        <div className="flex items-center gap-2 ml-auto">
+          <Button variant="outline" onClick={onBack}>Cancel</Button>
+          <Button onClick={proceed} className="bg-accent text-accent-foreground hover:bg-accent/90">
+            Continue to transfer <ArrowRight className="h-4 w-4 ml-1" />
+          </Button>
+        </div>
       </div>
     </div>
   );
