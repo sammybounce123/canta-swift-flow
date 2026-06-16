@@ -176,6 +176,20 @@ function CaseDetail() {
         </Card>
       )}
 
+      {tab === "Payout" && (
+        <InsuranceHookCard
+          title="Property payment protection"
+          description="Optional cover protecting the client's funds in transit between Canta and the solicitor."
+          customer={c.clientName}
+          linkedId={c.id}
+          linkedKind="payment-case"
+          insuredAmount={c.amountGBP}
+          ccy="GBP"
+          riskType="Property payment protection"
+        />
+      )}
+
+
       {tab === "Activity" && (
         <Card className="p-6 shadow-card">
           <div className="text-sm font-semibold mb-3 flex items-center gap-2"><ClipboardList className="h-4 w-4 text-primary" /> Activity log</div>
