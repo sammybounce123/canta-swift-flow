@@ -11,8 +11,9 @@ import {
   MessageCircle, Send, Sparkles, FileText, Bell, Calendar, DollarSign,
   Inbox as InboxIcon, FilePlus2, FileCheck2, MessageSquareText, Users,
   AlertTriangle, Phone, Paperclip, CheckCircle2, Clock, Upload, Edit3,
-  TrendingUp, ShieldCheck,
+  TrendingUp, ShieldCheck, LifeBuoy, UserPlus, FileWarning, ShieldAlert, Wand2,
 } from "lucide-react";
+
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
