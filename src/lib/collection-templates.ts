@@ -86,6 +86,7 @@ export const TEMPLATES: CollectionTemplate[] = [
     fields: [
       { key: "client", label: "Client name", type: "text", required: true },
       { key: "service", label: "Service description", type: "textarea" },
+      { key: "invoiceRef", label: "Invoice reference", type: "text", required: true },
       { key: "amount", label: "Amount", type: "number", required: true },
       SETTLEMENT_CCY,
       { key: "deadline", label: "Payment deadline", type: "date" },
@@ -96,7 +97,9 @@ export const TEMPLATES: CollectionTemplate[] = [
     purpose: "Supplier invoice",
     fields: [
       { key: "supplier", label: "Supplier name", type: "text", required: true },
+      { key: "buyerName", label: "Buyer name", type: "text", required: true },
       { key: "invoiceNo", label: "Invoice number", type: "text", required: true },
+      { key: "goods", label: "Goods / service description", type: "textarea" },
       { key: "amount", label: "Amount", type: "number", required: true },
       SETTLEMENT_CCY,
       { key: "deadline", label: "Payment deadline", type: "date" },
@@ -104,5 +107,6 @@ export const TEMPLATES: CollectionTemplate[] = [
     ],
   },
 ];
+
 
 export function getTemplate(id: string) { return TEMPLATES.find((t) => t.id === id); }
