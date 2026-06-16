@@ -317,17 +317,13 @@ export function WorkspaceCardsHub({
               <Card key={t.key} className="p-4">
                 <div className="font-semibold">{t.label}</div>
                 <div className="text-xs text-muted-foreground mt-1">{t.desc}</div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="mt-3"
-                  onClick={() => {
-                    setDraft((d) => ({ ...d, type: t.key }));
-                    setOpen(true);
-                  }}
-                >
-                  <Plus className="h-3 w-3 mr-1" /> Create {t.label.toLowerCase()}
-                </Button>
+                <div className="mt-3">
+                  <CardPurposeWizard
+                    defaultLinkKind={defaultLinkKind}
+                    onCreate={handleCreate}
+                    trigger={<Button size="sm" variant="outline"><Plus className="h-3 w-3 mr-1" /> Create {t.label.toLowerCase()}</Button>}
+                  />
+                </div>
               </Card>
             ))}
           </div>
