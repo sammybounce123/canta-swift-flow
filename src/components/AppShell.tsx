@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   LayoutDashboard, Wallet, ArrowLeftRight, Receipt, Users, Building2,
   Sparkles, Shield, Settings, Bell, Search, ChevronDown, TrendingUp, TrendingDown,
