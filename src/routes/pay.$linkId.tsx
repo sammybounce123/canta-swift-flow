@@ -204,12 +204,13 @@ function VerifyStep({ caseId, clientName, onDone }: any) {
       </div>
       <div className="space-y-2 text-sm">
         <ConsentRow checked={name} onChange={setName} label={`I confirm my full name matches: ${clientName}`} />
-        <ConsentRow checked={purpose} onChange={setPurpose} label="I confirm this payment is for a property purchase or property-related transaction." />
-        <ConsentRow checked={canta} onChange={setCanta} label="I consent to Canta processing this payment on my behalf." />
-        <ConsentRow checked={shared} onChange={setShared} label="I consent to Canta using KYC documents already shared by Baron & Cabot." />
-        <ConsentRow checked={terms} onChange={setTerms} label="I accept Canta's terms of service." />
-        <ConsentRow checked={privacy} onChange={setPrivacy} label="I accept Canta's privacy and data processing policy." />
+        <ConsentRow checked={canta} onChange={setCanta} label="I consent to Canta processing this property payment." />
+        <ConsentRow checked={shared} onChange={setShared} label="I consent to Canta using KYC documents shared by Baron & Cabot for verification." />
+        <ConsentRow checked={purpose} onChange={setPurpose} label="I confirm the payment purpose and source of funds are accurate." />
+        <ConsentRow checked={terms} onChange={setTerms} label="I accept Canta's Terms of Service." />
+        <ConsentRow checked={privacy} onChange={setPrivacy} label="I accept Canta's Privacy and Data Processing Policy." />
       </div>
+
       <div className="flex justify-end"><Button disabled={!valid} onClick={submit}>Submit verification</Button></div>
     </Card>
   );
