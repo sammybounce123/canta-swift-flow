@@ -517,7 +517,7 @@ function SendForm({
         className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
         onClick={() => {
           if (!amt) { toast.error("Enter an amount"); return; }
-          setConfirming(true);
+          setConfirmDetails(false); setConfirmAuth(false); setStage("review");
         }}
       >
         Send Payment
