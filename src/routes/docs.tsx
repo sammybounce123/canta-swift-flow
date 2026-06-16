@@ -44,38 +44,51 @@ const SECTIONS: { h: string; body: string[] }[] = [
     ],
   },
   {
-    h: "Cards (/cards)",
+    h: "Verified directory logic",
     body: [
-      "Staff cards available in the Global Merchant and Global Spend & Cards workspaces.",
-      "Card types: Admissions team, Regional staff, Marketing, Travel, Events, and Operations.",
+      "Importers see Verified Suppliers (/verified-suppliers) — Canta-vetted foreign suppliers in China, UAE, Turkey, India, Europe and other corridors selling to African buyers. From a supplier profile importers can request a quote, save to My Suppliers, request supplier verification before payment, request escrow on a trade file, or start a trade file directly.",
+      "Suppliers / Exporters see Verified Buyers (/verified-buyers) — Canta-vetted African importer/buyer accounts. From a buyer profile suppliers can send a quote, create an invoice, request proof of funds, and offer escrow terms.",
+      "Verified Buyers is mainly supplier-facing. Verified Suppliers is mainly importer-facing. Neither directory is shown as the primary discovery module to the wrong side of the trade.",
+    ],
+  },
+  {
+    h: "Cards (/cards, /treasury/cards, /importer/cards, /freight/cards)",
+    body: [
+      "Card purpose wizard (5 steps): purpose (Business / Travel / Trade / Student / Online Ads / Team / Personal / Shipment-Project) → user (Me / Staff / Student / Family / Team / Department) → linked entity (Project, Trade File, Shipment, Supplier, Property Case, Freight Route, Department, Customer, Wallet) → controls (daily / monthly / total / single-transaction limits, approval threshold, receipt rules, allowed/blocked categories) → review & issue.",
+      "Every card supports: freeze / unfreeze, top up from linked wallet, view transactions, upload receipts, export spend reports, and view spend by user / category / project / linked entity.",
+      "Workspace-aware: Treasury cards default to corporate categories; Importer cards default to Trade/Shipment links; Freight cards default to Route/Customer links; Global Spend covers everything else.",
     ],
   },
   {
     h: "Importer Workspace",
     body: [
-      "/importer overview, /shipments inbound tracking, /my-suppliers approved supplier list, /documents (BoL, invoices, packing lists), /landed-cost calculator, and /trade-desk + /trade-desk/$fileId trade file workspace.",
+      "Lands at /importer. Sidebar: Importer Dashboard, Trade Desk, Shipments, Verified Suppliers, My Suppliers, Documents, Landed Cost, Importer Cards, Payments, WhatsApp Updates, Reports, Support, Settings.",
+      "Importer actions: request quote from verified supplier, request supplier verification before payment, save verified supplier to My Suppliers, start trade file from a supplier profile, request escrow on a trade file, request landed cost estimate, link shipments and documents to a trade file, create importer cards linked to a trade file or shipment, send WhatsApp updates and invite freight forwarders to a trade file.",
     ],
   },
   {
     h: "Freight Workspace",
     body: [
-      "/freight operations board, /freight-invoices port expenses & invoicing, /customers forwarder customer book.",
+      "Lands at /freight. Operations board, /freight-invoices (Draft, Sent, Paid, Unpaid, Partially Paid, Overdue, Cancelled), /customers customer book, /freight/cards, goods-in-transit insurance panel.",
+      "Freight actions: add importer customer, create shipment, update shipment status, assign shipment to staff (assignee, role, due date, note, status), create a customer tracking link, send single or bulk WhatsApp updates from 10+ templates (container loaded, vessel sailed, arrived at port, clearing started, cleared customs, out for delivery, delivered, delay notice, missing document reminder, payment reminder), create freight invoices and mark Paid / Unpaid / Overdue, download invoices, and offer goods-in-transit insurance.",
     ],
   },
   {
     h: "Supplier / Exporter Workspace",
     body: [
       "For foreign and global suppliers/exporters selling to African buyers — especially suppliers in China, UAE, Turkey, India, Europe and other trade corridors. Lands at /suppliers.",
-      "/suppliers: view and edit supplier profile even after creation, KYB status, product categories.",
-      "Invoice creation & sending is live. Escrow module is included (no longer 'coming soon'). Verified buyers directory at /verified-buyers; suppliers manage their African buyers at /buyers.",
+      "Sidebar: Supplier Dashboard, Verified Buyers, Buyers, Invoices, Escrow, Settlements, Documents, Reports, Support, Settings.",
+      "Supplier actions: browse Verified African buyers, view a buyer's Buyer Reliability Score, send a quote to a verified buyer, create and send an invoice, request proof of funds, offer escrow terms, and manage African buyer relationships.",
     ],
   },
   {
-    h: "Global Merchant Workspace",
+    h: "Global Collections / Merchant Workspace",
     body: [
-      "Dashboard, Transactions tab, Payers, Payment Links, Reconciliation, Settlement Approvals, Reports, Cards.",
+      "Lands at /collections (not the generic /dashboard). Dashboard, Transactions tab, Payers, Payment Links, Reconciliation, Settlement Approvals, Reports, and Global Spend Cards.",
+      "Guided collection templates at /collections/new — each template creates an invoice + payment link + payer record + reconciliation reference + settlement batch entry.",
     ],
   },
+
   {
     h: "Partner Property (Baron & Cabot)",
     body: [
