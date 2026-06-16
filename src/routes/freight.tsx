@@ -939,12 +939,18 @@ function FF({ label, children }: { label: string; children: React.ReactNode }) {
 function BroadcastPanel() {
   const [message, setMessage] = useState("");
   const [audience, setAudience] = useState("arriving-week");
-  const quick = [
-    { l: "Send update to all customers arriving this week", a: "arriving-week", m: "Hi {{customer}}, your shipment {{shipment_id}} is arriving in {{port}} this week. We'll send the BL and clearing checklist shortly. — Canta" },
-    { l: "Send missing document reminder", a: "missing-docs", m: "Hi {{customer}}, please send the missing documents for {{shipment_id}}: {{missing_docs}}. Reply on WhatsApp and our agent will upload them for you." },
-    { l: "Send payment reminder", a: "payment-pending", m: "Hi {{customer}}, friendly reminder: freight invoice {{invoice_id}} for {{amount}} is due {{due_date}}. Pay via the Canta link in this chat." },
-    { l: "Send delay notice", a: "delayed", m: "Hi {{customer}}, vessel for {{shipment_id}} has been delayed. New ETA: {{new_eta}}. We're tracking it closely — no action needed from your side." },
-    { l: "Send arrival notice", a: "arrived", m: "Hi {{customer}}, your shipment {{shipment_id}} has arrived at {{port}}. Customs clearing begins now. We'll request duty payment shortly." },
+  const quick: { l: string; a: string; m: string; tpl: import("@/lib/whatsapp").WhatsAppTemplateKey }[] = [
+    { l: "Container loaded", a: "loaded", tpl: "containerLoaded", m: "Hi {{customer}}, your container for {{shipment_id}} has been loaded. Vessel sails {{sailing}}." },
+    { l: "Vessel sailed", a: "sailed", tpl: "vesselSailed", m: "Hi {{customer}}, vessel {{vessel}} has sailed from {{origin}}. ETA {{eta}}." },
+    { l: "Arrived at port", a: "arrived", tpl: "arrivedAtPort", m: "Hi {{customer}}, your shipment {{shipment_id}} has arrived at {{port}}. Clearing starts now." },
+    { l: "Clearing started", a: "clearing", tpl: "clearingStarted", m: "Hi {{customer}}, clearing has started for {{shipment_id}}. Please confirm duty payment." },
+    { l: "Cleared customs", a: "cleared", tpl: "clearedCustoms", m: "Hi {{customer}}, {{shipment_id}} has cleared customs. We're arranging delivery." },
+    { l: "Out for delivery", a: "out-for-delivery", tpl: "outForDelivery", m: "Hi {{customer}}, {{shipment_id}} is out for delivery. ETA at your warehouse {{eta}}." },
+    { l: "Delivered", a: "delivered", tpl: "delivered", m: "Hi {{customer}}, {{shipment_id}} delivered ✓. Thank you for shipping with Canta." },
+    { l: "Delay notice", a: "delayed", tpl: "delayNotice", m: "Hi {{customer}}, vessel for {{shipment_id}} has been delayed. New ETA {{new_eta}}." },
+    { l: "Missing document reminder", a: "missing-docs", tpl: "missingDocumentReminder", m: "Hi {{customer}}, please send the missing documents for {{shipment_id}}: {{missing_docs}}." },
+    { l: "Payment reminder", a: "payment-pending", tpl: "paymentReminder", m: "Hi {{customer}}, invoice {{invoice_id}} for {{amount}} is due {{due_date}}." },
+    { l: "Arriving this week", a: "arriving-week", tpl: "shipmentUpdate", m: "Hi {{customer}}, your shipment {{shipment_id}} is arriving in {{port}} this week." },
   ];
   return (
     <Card className="p-5 shadow-card border-[#25D366]/30 bg-gradient-to-br from-[#25D366]/10 to-transparent">
