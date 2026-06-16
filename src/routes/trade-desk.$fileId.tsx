@@ -12,6 +12,7 @@ import {
   Shield, MessageCircle,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { InsuranceHookCard } from "@/components/InsuranceHookCard";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/trade-desk/$fileId")({
