@@ -266,6 +266,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/invoices", label: "Invoices", iconKey: "receipt", group: "Collect" },
         { to: "/payers", label: "Payers", iconKey: "users", group: "Collect" },
         { to: "/reconciliation", label: "Reconciliation", iconKey: "check", group: "Money" },
+        { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Money" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/cards", label: "Staff Cards", iconKey: "card", group: "Spend" },
         { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
