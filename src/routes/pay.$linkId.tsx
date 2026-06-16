@@ -43,6 +43,8 @@ function ClientPayPage() {
 
   const c = findCaseByLinkId(linkId);
   const [step, setStep] = useState<Step>("review");
+  const [docsConfirmed, setDocsConfirmed] = useState(false);
+
 
   if (!c) {
     return (
