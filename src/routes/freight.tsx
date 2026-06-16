@@ -547,6 +547,8 @@ function CreateShipmentDialog({ onClose }: { onClose: () => void }) {
         <FF label="Container #"><Input placeholder="MSCU7762213" /></FF>
         <FF label="BL #"><Input placeholder="BL-998211" /></FF>
         <FF label="Shipment #"><Input placeholder="Auto-generated" /></FF>
+        <FF label="VIN (vehicles)"><Input placeholder="1HGCM82633A123456" /></FF>
+        <FF label="AWB # (air freight, optional)"><Input placeholder="AWB-176-44210015" /></FF>
         <FF label="ETA"><Input type="date" /></FF>
         <FF label="Goods category"><Input placeholder="Consumer Electronics" /></FF>
       </div>
