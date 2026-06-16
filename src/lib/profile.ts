@@ -263,20 +263,6 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         Team, Settings,
       ];
-    case "supplier_dashboard":
-      return [
-        D,
-        { to: "/suppliers", label: "Supplier Dashboard", iconKey: "factory", group: "My Workspace" },
-        { to: "/verified-buyers", label: "Verified Buyers", iconKey: "shield-check", group: "Trade Network" },
-        { to: "/buyers", label: "Buyers", iconKey: "users", group: "Trade Network" },
-        { to: "/invoices", label: "Invoices", iconKey: "receipt", group: "Money" },
-        { to: "/escrow", label: "Escrow", iconKey: "shield", group: "Money" },
-        { to: "/collections", label: "Settlements", iconKey: "globe", group: "Money" },
-        { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
-        { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
-        { to: "/support", label: "Support", iconKey: "users", group: "Help" },
-        Team, Settings,
-      ];
     case "global_collections":
       return [
         D,
