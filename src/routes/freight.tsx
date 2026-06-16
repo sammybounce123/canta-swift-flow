@@ -12,7 +12,7 @@ import { shipments, importers, freightInvoices, monthlyShipmentVolume, shippingL
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
-import { Truck, Plus, MessageCircle, FileText, DollarSign, Users as UsersIcon, AlertTriangle, Ship, Eye, Upload, CheckCircle2, Clock, TrendingUp, BarChart3, Send } from "lucide-react";
+import { Truck, Plus, MessageCircle, FileText, DollarSign, Users as UsersIcon, AlertTriangle, Ship, Eye, Upload, CheckCircle2, Clock, TrendingUp, BarChart3, Send, Download, UserPlus, Banknote } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -21,7 +21,8 @@ export const Route = createFileRoute("/freight")({
   component: Freight,
 });
 
-const STAGES: Shipment["status"][] = ["Booked", "At Origin", "Loaded", "On Vessel", "Arrived", "Customs", "Released", "Delivered"];
+const STAGES: Shipment["status"][] = ["Booked", "At Origin", "Loaded", "On Vessel", "Arrived", "Customs", "Released", "Delivered", "Delayed"];
+const STAFF = ["Femi A.", "Adaeze O.", "James O.", "Aisha B.", "Ops Team", "Clearing Desk"];
 
 const DOC_TYPES = [
   "Supplier Invoice", "Packing List", "Bill of Lading",
@@ -109,6 +110,7 @@ function Freight() {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="customers">Customers</TabsTrigger>
           <TabsTrigger value="pipeline">Shipment Pipeline</TabsTrigger>
+          <TabsTrigger value="arriving">Arriving Shipments</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="invoices">Invoices</TabsTrigger>
           <TabsTrigger value="whatsapp">WhatsApp Updates</TabsTrigger>
@@ -154,6 +156,10 @@ function Freight() {
 
         <TabsContent value="pipeline" className="mt-6">
           <PipelineBoard />
+        </TabsContent>
+
+        <TabsContent value="arriving" className="mt-6">
+          <ArrivingShipments />
         </TabsContent>
 
         <TabsContent value="documents" className="mt-6">
@@ -297,28 +303,47 @@ function CustomersTable({ onWhatsApp, onCreate }: { onWhatsApp: (c: typeof impor
 }
 
 function PipelineBoard() {
+  const [items, setItems] = useState(() => shipments.map((s) => ({ ...s })));
+  const move = (id: string, status: Shipment["status"]) => {
+    setItems((arr) => arr.map((s) => (s.id === id ? { ...s, status } : s)));
+    toast.success(`Moved to ${status}`);
+  };
+  const assign = (id: string, staff: string) => {
+    setItems((arr) => arr.map((s) => (s.id === id ? { ...s, forwarder: staff } : s)));
+    toast.success(`Assigned to ${staff}`);
+  };
   return (
     <Card className="p-4 shadow-card">
+      <div className="text-xs text-muted-foreground mb-3">Drag, or change the status / assignee from the dropdowns on each card.</div>
       <div className="overflow-x-auto">
         <div className="flex gap-3 min-w-[1100px]">
           {STAGES.map((stage) => {
-            const items = shipments.filter((s) => s.status === stage);
+            const list = items.filter((s) => s.status === stage);
             return (
-              <div key={stage} className="w-[170px] flex-shrink-0 bg-secondary/40 rounded-xl p-2">
+              <div key={stage} className="w-[200px] flex-shrink-0 bg-secondary/40 rounded-xl p-2">
                 <div className="px-2 py-1.5 text-[10px] uppercase tracking-widest text-muted-foreground flex items-center justify-between">
-                  <span>{stage}</span><span className="font-bold text-foreground">{items.length}</span>
+                  <span>{stage}</span><span className="font-bold text-foreground">{list.length}</span>
                 </div>
                 <div className="space-y-2 mt-1 min-h-[100px]">
-                  {items.map((s) => (
-                    <div key={s.id} className="p-2.5 bg-card rounded-lg border border-border text-[11px] cursor-grab hover:shadow-md transition">
+                  {list.map((s) => (
+                    <div key={s.id} className="p-2.5 bg-card rounded-lg border border-border text-[11px] hover:shadow-md transition space-y-1.5">
                       <div className="font-semibold truncate">{s.shipmentNumber}</div>
                       <div className="text-muted-foreground truncate">{s.importer}</div>
-                      <div className="flex items-center justify-between mt-1.5 text-[10px]">
+                      <div className="flex items-center justify-between text-[10px]">
                         <span className="text-muted-foreground">ETA {s.eta}</span>
                         <span className="font-medium tabular-nums">{fmtMoney(s.value, s.ccy)}</span>
                       </div>
+                      <Select value={s.status} onValueChange={(v) => move(s.id, v as Shipment["status"])}>
+                        <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
+                        <SelectContent>{STAGES.map((st) => <SelectItem key={st} value={st} className="text-xs">{st}</SelectItem>)}</SelectContent>
+                      </Select>
+                      <Select value={s.forwarder} onValueChange={(v) => assign(s.id, v)}>
+                        <SelectTrigger className="h-7 text-[10px]"><SelectValue placeholder="Assign staff…" /></SelectTrigger>
+                        <SelectContent>{STAFF.map((st) => <SelectItem key={st} value={st} className="text-xs">{st}</SelectItem>)}</SelectContent>
+                      </Select>
                     </div>
                   ))}
+                  {list.length === 0 && <div className="text-[10px] text-muted-foreground text-center py-4">No shipments</div>}
                 </div>
               </div>
             );
@@ -326,6 +351,44 @@ function PipelineBoard() {
         </div>
       </div>
     </Card>
+  );
+}
+
+function ArrivingShipments() {
+  const now = Date.now();
+  const days = (eta: string) => Math.ceil((new Date(eta).getTime() - now) / 86400000);
+  const buckets = [
+    { title: "Arriving this week", filter: (s: Shipment) => { const d = days(s.eta); return d >= 0 && d <= 7; }, tone: "border-primary/30" },
+    { title: "Arriving in 14 days", filter: (s: Shipment) => { const d = days(s.eta); return d > 7 && d <= 14; }, tone: "border-accent/30" },
+    { title: "Delayed", filter: (s: Shipment) => s.status === "Delayed" || days(s.eta) < 0, tone: "border-destructive/30" },
+    { title: "ETA changes (last 24h)", filter: (s: Shipment) => ["SHP-10427", "SHP-10423"].includes(s.id), tone: "border-amber-500/30" },
+  ];
+  return (
+    <div className="grid lg:grid-cols-2 gap-4">
+      {buckets.map((b) => {
+        const list = shipments.filter(b.filter);
+        return (
+          <Card key={b.title} className={`p-4 shadow-card border ${b.tone}`}>
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-sm font-semibold">{b.title}</div>
+              <Badge variant="outline" className="text-[10px]">{list.length}</Badge>
+            </div>
+            <div className="space-y-2">
+              {list.length === 0 && <div className="text-xs text-muted-foreground py-3">No shipments in this bucket.</div>}
+              {list.map((s) => (
+                <div key={s.id} className="flex items-center justify-between gap-2 text-xs border-t border-border pt-2 first:border-t-0 first:pt-0">
+                  <div className="min-w-0">
+                    <div className="font-medium truncate">{s.shipmentNumber} · {s.importer}</div>
+                    <div className="text-muted-foreground truncate">{s.origin} → {s.destination} · ETA {s.eta}</div>
+                  </div>
+                  <Button size="sm" variant="outline" onClick={() => toast.success(`Update sent for ${s.shipmentNumber}`)}>Next action</Button>
+                </div>
+              ))}
+            </div>
+          </Card>
+        );
+      })}
+    </div>
   );
 }
 
@@ -372,11 +435,22 @@ function DocumentsManager() {
 
 function InvoicesTable() {
   const [open, setOpen] = useState(false);
+  const [rows, setRows] = useState<FreightInvoice[]>(() => freightInvoices.map((i) => ({ ...i })));
   const tones: Record<FreightInvoice["status"], string> = {
     Paid: "bg-success/15 text-success border-success/30",
     Unpaid: "bg-secondary text-secondary-foreground border-border",
     "Partially Paid": "bg-amber-500/15 text-amber-700 border-amber-500/30",
     Overdue: "bg-destructive/15 text-destructive border-destructive/30",
+  };
+  const setStatus = (id: string, status: FreightInvoice["status"]) => {
+    setRows((arr) => arr.map((r) => (r.id === id ? { ...r, status } : r)));
+    toast.success(`Invoice marked as ${status.toLowerCase()}.`);
+  };
+  const download = (i: FreightInvoice) => {
+    const body = `CANTA FREIGHT INVOICE\n\nInvoice: ${i.id}\nCustomer: ${i.customer}\nShipment: ${i.shipment}\nAmount: ${fmtMoney(i.amount, i.ccy)}\nDue: ${i.due}\nIssued: ${i.issued}\nStatus: ${i.status}\n`;
+    const url = URL.createObjectURL(new Blob([body], { type: "text/plain" }));
+    const a = document.createElement("a"); a.href = url; a.download = `${i.id}.txt`; a.click(); URL.revokeObjectURL(url);
+    toast.success(`Downloaded ${i.id}`);
   };
   return (
     <Card className="shadow-card overflow-hidden">
@@ -397,11 +471,11 @@ function InvoicesTable() {
               <th className="px-4 py-3 text-right">Amount</th>
               <th className="px-4 py-3">Due</th>
               <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3 text-right">Action</th>
+              <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {freightInvoices.map((i) => (
+            {rows.map((i) => (
               <tr key={i.id} className="border-t border-border hover:bg-secondary/30">
                 <td className="px-4 py-3 font-mono text-xs">{i.id}</td>
                 <td className="px-4 py-3">{i.customer}</td>
@@ -409,8 +483,16 @@ function InvoicesTable() {
                 <td className="px-4 py-3 text-right tabular-nums font-semibold">{fmtMoney(i.amount, i.ccy)}</td>
                 <td className="px-4 py-3 text-xs tabular-nums">{i.due}</td>
                 <td className="px-4 py-3"><span className={`text-[10px] px-2 py-0.5 rounded-full border ${tones[i.status]}`}>{i.status}</span></td>
-                <td className="px-4 py-3 text-right">
-                  <Button size="sm" variant="ghost" onClick={() => toast.success(`Reminder sent to ${i.customer}`)}><Send className="h-3.5 w-3.5 mr-1" /> Remind</Button>
+                <td className="px-4 py-3 text-right space-x-1 whitespace-nowrap">
+                  {i.status !== "Paid"
+                    ? <Button size="sm" variant="outline" onClick={() => setStatus(i.id, "Paid")}><Banknote className="h-3.5 w-3.5 mr-1" /> Mark paid</Button>
+                    : <Button size="sm" variant="outline" onClick={() => setStatus(i.id, "Unpaid")}>Mark unpaid</Button>}
+                  <Button size="sm" variant="ghost" onClick={() => download(i)}><Download className="h-3.5 w-3.5 mr-1" /> Download</Button>
+                  <Button size="sm" variant="ghost" asChild>
+                    <a href={buildWhatsAppUrl("general", { invoice: i.id, amount: fmtMoney(i.amount, i.ccy), due: i.due })} target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="h-3.5 w-3.5 mr-1" /> WhatsApp
+                    </a>
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -459,8 +541,28 @@ function ReportsPanel() {
   const mostActive = [...importers].sort((a, b) => b.active - a.active).slice(0, 5);
   const outstanding = freightInvoices.filter((i) => i.status !== "Paid");
 
+  const exportReport = (fmt: "csv" | "pdf") => {
+    const lines = ["Section,Label,Value"];
+    byRoute.forEach(([k, v]) => lines.push(`Route,${k},${v}`));
+    revByCustomer.forEach(([k, v]) => lines.push(`Revenue,${k},${v}`));
+    delayed.forEach((s) => lines.push(`Delayed,${s.shipmentNumber},${s.eta}`));
+    outstanding.forEach((i) => lines.push(`Outstanding,${i.id} ${i.customer},${i.amount}`));
+    const ext = fmt === "csv" ? "csv" : "pdf";
+    const mime = fmt === "csv" ? "text/csv" : "application/pdf";
+    const url = URL.createObjectURL(new Blob([lines.join("\n")], { type: mime }));
+    const a = document.createElement("a"); a.href = url; a.download = `freight-reports.${ext}`; a.click(); URL.revokeObjectURL(url);
+    toast.success(`Reports exported as ${ext.toUpperCase()}`);
+  };
   return (
-    <div className="grid lg:grid-cols-2 gap-5">
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-muted-foreground">Snapshot of route volume, customer revenue, delays and outstanding invoices.</div>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={() => exportReport("csv")}><Download className="h-3.5 w-3.5 mr-1" /> Export CSV</Button>
+          <Button size="sm" variant="outline" onClick={() => exportReport("pdf")}><Download className="h-3.5 w-3.5 mr-1" /> Export PDF</Button>
+        </div>
+      </div>
+      <div className="grid lg:grid-cols-2 gap-5">
       <ReportCard title="Shipments by route" icon={<BarChart3 className="h-4 w-4" />}>
         {byRoute.map(([k, v]) => (
           <Row key={k} label={k} value={String(v)} bar={v / byRoute[0][1]} />
@@ -495,6 +597,7 @@ function ReportsPanel() {
           <Row key={i.id} label={`${i.id} · ${i.customer}`} value={fmtMoney(i.amount, i.ccy)} bar={1} tone={i.status === "Overdue" ? "danger" : "warn"} />
         ))}
       </ReportCard>
+      </div>
     </div>
   );
 }
@@ -547,6 +650,8 @@ function CreateShipmentDialog({ onClose }: { onClose: () => void }) {
         <FF label="Container #"><Input placeholder="MSCU7762213" /></FF>
         <FF label="BL #"><Input placeholder="BL-998211" /></FF>
         <FF label="Shipment #"><Input placeholder="Auto-generated" /></FF>
+        <FF label="VIN (vehicles)"><Input placeholder="1HGCM82633A123456" /></FF>
+        <FF label="AWB # (air freight, optional)"><Input placeholder="AWB-176-44210015" /></FF>
         <FF label="ETA"><Input type="date" /></FF>
         <FF label="Goods category"><Input placeholder="Consumer Electronics" /></FF>
       </div>
