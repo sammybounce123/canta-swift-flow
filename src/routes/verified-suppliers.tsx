@@ -10,9 +10,10 @@ import {
 } from "@/components/ui/select";
 import {
   Search, MapPin, ShieldCheck, Star, Clock, FileText, Banknote, Factory,
-  Bookmark, MessageSquare, FilePlus, Lock, BadgeCheck, AlertTriangle,
+  BadgeCheck, AlertTriangle, Lock,
 } from "lucide-react";
 import { toast } from "sonner";
+import { ImporterActions } from "@/components/ImporterActions";
 import {
   SUPPLIERS, COUNTRIES_SUPPLIER, CATEGORIES, VERIFICATION_LEVELS, STATUS_TONE,
   type Supplier,
@@ -180,13 +181,17 @@ function SupplierSheet({ supplier, onClose }: { supplier: Supplier | null; onClo
                 Full contact details, bank info and documents are released only after both parties accept a trade request.
               </section>
 
-              <section className="grid grid-cols-2 gap-2">
-                <Action label="Request Quote" icon={MessageSquare} onClick={() => toast.success("Quote request sent")} primary />
-                <Action label="Start Trade File" icon={FilePlus} onClick={() => toast.success("Trade file created")} primary />
-                <Action label="Request Escrow" icon={ShieldCheck} onClick={() => toast.success("Escrow requested")} />
-                <Action label="Save Supplier" icon={Bookmark} onClick={() => toast.success("Supplier saved")} />
-                <Action label="Ask Canta to verify" icon={BadgeCheck} onClick={() => toast.success("Verification requested")} />
-                <Action label="Send Invoice to Canta" icon={FileText} onClick={() => toast.success("Invoice forwarded to Canta")} />
+              <section>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Actions</div>
+                <ImporterActions
+                  variant="supplier"
+                  ctx={{
+                    supplier: supplier.company,
+                    supplierId: supplier.id,
+                    origin: `${supplier.city}, ${supplier.country}`,
+                    currency: supplier.currencies[0],
+                  }}
+                />
               </section>
             </div>
           </>
@@ -202,13 +207,5 @@ function Stat({ label, value, icon: Icon }: { label: string; value: string; icon
       <div className="text-[11px] uppercase tracking-wider text-muted-foreground flex items-center gap-1"><Icon className="h-3 w-3" /> {label}</div>
       <div className="text-sm font-semibold mt-1">{value}</div>
     </div>
-  );
-}
-
-function Action({ label, icon: Icon, onClick, primary }: { label: string; icon: typeof FileText; onClick: () => void; primary?: boolean }) {
-  return (
-    <Button variant={primary ? "default" : "outline"} size="sm" onClick={onClick} className="justify-start">
-      <Icon className="h-4 w-4 mr-2" /> {label}
-    </Button>
   );
 }
