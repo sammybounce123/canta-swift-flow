@@ -15,6 +15,7 @@ import { Route as WalletsRouteImport } from './routes/wallets'
 import { Route as VerifiedSuppliersRouteImport } from './routes/verified-suppliers'
 import { Route as VerifiedBuyersRouteImport } from './routes/verified-buyers'
 import { Route as VerificationCenterRouteImport } from './routes/verification-center'
+import { Route as UserStoriesRouteImport } from './routes/user-stories'
 import { Route as TreasuryRouteImport } from './routes/treasury'
 import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as TradeNetworkRouteImport } from './routes/trade-network'
@@ -111,6 +112,11 @@ const VerifiedBuyersRoute = VerifiedBuyersRouteImport.update({
 const VerificationCenterRoute = VerificationCenterRouteImport.update({
   id: '/verification-center',
   path: '/verification-center',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UserStoriesRoute = UserStoriesRouteImport.update({
+  id: '/user-stories',
+  path: '/user-stories',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TreasuryRoute = TreasuryRouteImport.update({
@@ -492,6 +498,7 @@ export interface FileRoutesByFullPath {
   '/trade-network': typeof TradeNetworkRoute
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRouteWithChildren
+  '/user-stories': typeof UserStoriesRoute
   '/verification-center': typeof VerificationCenterRoute
   '/verified-buyers': typeof VerifiedBuyersRoute
   '/verified-suppliers': typeof VerifiedSuppliersRoute
@@ -565,6 +572,7 @@ export interface FileRoutesByTo {
   '/trade-network': typeof TradeNetworkRoute
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRouteWithChildren
+  '/user-stories': typeof UserStoriesRoute
   '/verification-center': typeof VerificationCenterRoute
   '/verified-buyers': typeof VerifiedBuyersRoute
   '/verified-suppliers': typeof VerifiedSuppliersRoute
@@ -640,6 +648,7 @@ export interface FileRoutesById {
   '/trade-network': typeof TradeNetworkRoute
   '/transactions': typeof TransactionsRoute
   '/treasury': typeof TreasuryRouteWithChildren
+  '/user-stories': typeof UserStoriesRoute
   '/verification-center': typeof VerificationCenterRoute
   '/verified-buyers': typeof VerifiedBuyersRoute
   '/verified-suppliers': typeof VerifiedSuppliersRoute
@@ -717,6 +726,7 @@ export interface FileRouteTypes {
     | '/trade-network'
     | '/transactions'
     | '/treasury'
+    | '/user-stories'
     | '/verification-center'
     | '/verified-buyers'
     | '/verified-suppliers'
@@ -790,6 +800,7 @@ export interface FileRouteTypes {
     | '/trade-network'
     | '/transactions'
     | '/treasury'
+    | '/user-stories'
     | '/verification-center'
     | '/verified-buyers'
     | '/verified-suppliers'
@@ -864,6 +875,7 @@ export interface FileRouteTypes {
     | '/trade-network'
     | '/transactions'
     | '/treasury'
+    | '/user-stories'
     | '/verification-center'
     | '/verified-buyers'
     | '/verified-suppliers'
@@ -940,6 +952,7 @@ export interface RootRouteChildren {
   TradeNetworkRoute: typeof TradeNetworkRoute
   TransactionsRoute: typeof TransactionsRoute
   TreasuryRoute: typeof TreasuryRouteWithChildren
+  UserStoriesRoute: typeof UserStoriesRoute
   VerificationCenterRoute: typeof VerificationCenterRoute
   VerifiedBuyersRoute: typeof VerifiedBuyersRoute
   VerifiedSuppliersRoute: typeof VerifiedSuppliersRoute
@@ -993,6 +1006,13 @@ declare module '@tanstack/react-router' {
       path: '/verification-center'
       fullPath: '/verification-center'
       preLoaderRoute: typeof VerificationCenterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user-stories': {
+      id: '/user-stories'
+      path: '/user-stories'
+      fullPath: '/user-stories'
+      preLoaderRoute: typeof UserStoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/treasury': {
@@ -1622,6 +1642,7 @@ const rootRouteChildren: RootRouteChildren = {
   TradeNetworkRoute: TradeNetworkRoute,
   TransactionsRoute: TransactionsRoute,
   TreasuryRoute: TreasuryRouteWithChildren,
+  UserStoriesRoute: UserStoriesRoute,
   VerificationCenterRoute: VerificationCenterRoute,
   VerifiedBuyersRoute: VerifiedBuyersRoute,
   VerifiedSuppliersRoute: VerifiedSuppliersRoute,

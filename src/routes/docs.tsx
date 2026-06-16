@@ -1,7 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, BookOpen } from "lucide-react";
+import { Download, BookOpen, Users } from "lucide-react";
+
 
 export const Route = createFileRoute("/docs")({
   head: () => ({ meta: [{ title: "Documentation — Canta" }] }),
@@ -43,38 +44,51 @@ const SECTIONS: { h: string; body: string[] }[] = [
     ],
   },
   {
-    h: "Cards (/cards)",
+    h: "Verified directory logic",
     body: [
-      "Staff cards available in the Global Merchant and Global Spend & Cards workspaces.",
-      "Card types: Admissions team, Regional staff, Marketing, Travel, Events, and Operations.",
+      "Importers see Verified Suppliers (/verified-suppliers) — Canta-vetted foreign suppliers in China, UAE, Turkey, India, Europe and other corridors selling to African buyers. From a supplier profile importers can request a quote, save to My Suppliers, request supplier verification before payment, request escrow on a trade file, or start a trade file directly.",
+      "Suppliers / Exporters see Verified Buyers (/verified-buyers) — Canta-vetted African importer/buyer accounts. From a buyer profile suppliers can send a quote, create an invoice, request proof of funds, and offer escrow terms.",
+      "Verified Buyers is mainly supplier-facing. Verified Suppliers is mainly importer-facing. Neither directory is shown as the primary discovery module to the wrong side of the trade.",
+    ],
+  },
+  {
+    h: "Cards (/cards, /treasury/cards, /importer/cards, /freight/cards)",
+    body: [
+      "Card purpose wizard (5 steps): purpose (Business / Travel / Trade / Student / Online Ads / Team / Personal / Shipment-Project) → user (Me / Staff / Student / Family / Team / Department) → linked entity (Project, Trade File, Shipment, Supplier, Property Case, Freight Route, Department, Customer, Wallet) → controls (daily / monthly / total / single-transaction limits, approval threshold, receipt rules, allowed/blocked categories) → review & issue.",
+      "Every card supports: freeze / unfreeze, top up from linked wallet, view transactions, upload receipts, export spend reports, and view spend by user / category / project / linked entity.",
+      "Workspace-aware: Treasury cards default to corporate categories; Importer cards default to Trade/Shipment links; Freight cards default to Route/Customer links; Global Spend covers everything else.",
     ],
   },
   {
     h: "Importer Workspace",
     body: [
-      "/importer overview, /shipments inbound tracking, /my-suppliers approved supplier list, /documents (BoL, invoices, packing lists), /landed-cost calculator, and /trade-desk + /trade-desk/$fileId trade file workspace.",
+      "Lands at /importer. Sidebar: Importer Dashboard, Trade Desk, Shipments, Verified Suppliers, My Suppliers, Documents, Landed Cost, Importer Cards, Payments, WhatsApp Updates, Reports, Support, Settings.",
+      "Importer actions: request quote from verified supplier, request supplier verification before payment, save verified supplier to My Suppliers, start trade file from a supplier profile, request escrow on a trade file, request landed cost estimate, link shipments and documents to a trade file, create importer cards linked to a trade file or shipment, send WhatsApp updates and invite freight forwarders to a trade file.",
     ],
   },
   {
     h: "Freight Workspace",
     body: [
-      "/freight operations board, /freight-invoices port expenses & invoicing, /customers forwarder customer book.",
+      "Lands at /freight. Operations board, /freight-invoices (Draft, Sent, Paid, Unpaid, Partially Paid, Overdue, Cancelled), /customers customer book, /freight/cards, goods-in-transit insurance panel.",
+      "Freight actions: add importer customer, create shipment, update shipment status, assign shipment to staff (assignee, role, due date, note, status), create a customer tracking link, send single or bulk WhatsApp updates from 10+ templates (container loaded, vessel sailed, arrived at port, clearing started, cleared customs, out for delivery, delivered, delay notice, missing document reminder, payment reminder), create freight invoices and mark Paid / Unpaid / Overdue, download invoices, and offer goods-in-transit insurance.",
     ],
   },
   {
     h: "Supplier / Exporter Workspace",
     body: [
       "For foreign and global suppliers/exporters selling to African buyers — especially suppliers in China, UAE, Turkey, India, Europe and other trade corridors. Lands at /suppliers.",
-      "/suppliers: view and edit supplier profile even after creation, KYB status, product categories.",
-      "Invoice creation & sending is live. Escrow module is included (no longer 'coming soon'). Verified buyers directory at /verified-buyers; suppliers manage their African buyers at /buyers.",
+      "Sidebar: Supplier Dashboard, Verified Buyers, Buyers, Invoices, Escrow, Settlements, Documents, Reports, Support, Settings.",
+      "Supplier actions: browse Verified African buyers, view a buyer's Buyer Reliability Score, send a quote to a verified buyer, create and send an invoice, request proof of funds, offer escrow terms, and manage African buyer relationships.",
     ],
   },
   {
-    h: "Global Merchant Workspace",
+    h: "Global Collections / Merchant Workspace",
     body: [
-      "Dashboard, Transactions tab, Payers, Payment Links, Reconciliation, Settlement Approvals, Reports, Cards.",
+      "Lands at /collections (not the generic /dashboard). Dashboard, Transactions tab, Payers, Payment Links, Reconciliation, Settlement Approvals, Reports, and Global Spend Cards.",
+      "Guided collection templates at /collections/new — each template creates an invoice + payment link + payer record + reconciliation reference + settlement batch entry.",
     ],
   },
+
   {
     h: "Partner Property (Baron & Cabot)",
     body: [
@@ -85,12 +99,21 @@ const SECTIONS: { h: string; body: string[] }[] = [
     ],
   },
   {
-    h: "Verification, AI & Comms",
+    h: "AI assistance (WhatsApp + workspaces)",
     body: [
-      "/verification-center: centralised KYB/KYC/document verification across all workspaces.",
-      "/ai-insights cashflow & FX exposure insights, /ai-growth outbound assistant, /whatsapp customer comms workspace.",
+      "/whatsapp Import Desk: every conversation is summarised by Canta AI — customer name, phone, request type, shipment/BL/container/invoice numbers, linked payment case, linked trade file, missing documents, urgency, suggested next action, suggested reply and assigned Canta staff member.",
+      "From an AI summary, Canta staff can: create a draft Trade File, create a draft Partner Payment Case, create a support ticket, request a missing document, send the suggested reply, escalate to compliance, or assign to a Canta staff member.",
+      "Status labels on AI-managed conversations: New, Needs Reply, Missing Document, Ready for Trade File, Ready for Payment Case, Escalated, Resolved.",
+      "AI is always an assistant to Canta staff — every action requires staff confirmation. Other AI surfaces: /ai-insights cashflow & FX exposure, /ai-growth outbound assistant, /ai-document-extraction OCR.",
     ],
   },
+  {
+    h: "Verification & Compliance",
+    body: [
+      "/verification-center centralised KYB/KYC/document verification across all workspaces.",
+    ],
+  },
+
   {
     h: "Settings & Org",
     body: [
@@ -159,10 +182,24 @@ const SECTIONS: { h: string; body: string[] }[] = [
   {
     h: "External API partner configuration (/integrations)",
     body: [
-      "Categories: Payment Collection, FX/Settlement/Payout, Shipment Tracking Aggregator, Direct Shipping Lines, Card Issuing, KYC/KYB, Sanctions/PEP/AML, WhatsApp/Messaging, OCR/Document Extraction, AI/Automation, Maps/Address Verification, CRM/Support, Accounting/ERP, Webhooks.",
+      "Payment Collection: Paystack, Flutterwave, Monnify, Stripe, Checkout.com.",
+      "FX / Settlement / Payout: Wise Platform, Currencycloud, Airwallex, Nium, dLocal, Thunes.",
+      "Shipment Tracking Aggregator: project44, Shipsgo, Searates, MarineTraffic.",
+      "Direct Shipping Lines: Maersk Spot API, MSC, CMA CGM, Hapag-Lloyd, Cosco Shipping.",
+      "Card Issuing: Marqeta, Stripe Issuing, Lithic, Bridgecard, Sudo Africa.",
+      "KYC / KYB: Smile ID, Onfido, Sumsub, Veriff, Dojah, Trulioo.",
+      "Sanctions / PEP / AML: ComplyAdvantage, Refinitiv World-Check, Dow Jones Risk & Compliance.",
+      "WhatsApp / Messaging: Twilio WhatsApp Business API, 360dialog, Meta Cloud API, Africa's Talking, Termii.",
+      "OCR / Document Extraction: Google Document AI, AWS Textract, Azure Form Recognizer, Mindee, Rossum.",
+      "AI / Automation: Lovable AI Gateway (Gemini, GPT, Claude via gateway), OpenAI, Anthropic.",
+      "Maps / Address Verification: Google Maps Platform, Mapbox, Loqate, what3words.",
+      "CRM / Support: HubSpot, Salesforce, Zendesk, Intercom, Freshdesk.",
+      "Accounting / ERP: QuickBooks Online, Xero, Sage, Oracle NetSuite, Microsoft Dynamics 365.",
+      "Webhooks: outbound signed webhooks for every workspace event.",
       "Each provider card shows env (Test/Live), connection status, last sync, last webhook received, failed webhook count, error reason, fallback provider, and Retry / View Logs / Configure / Enable-Disable controls.",
     ],
   },
+
   {
     h: "Backend readiness data model (/data-model)",
     body: [
@@ -211,9 +248,15 @@ function Docs() {
             Every workspace, module and flow shipping in Canta today.
           </p>
         </div>
-        <Button variant="outline" onClick={downloadMd}>
-          <Download className="h-4 w-4 mr-1.5" /> Download .md
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" asChild>
+            <Link to="/user-stories"><Users className="h-4 w-4 mr-1.5" /> User stories</Link>
+          </Button>
+          <Button variant="outline" onClick={downloadMd}>
+            <Download className="h-4 w-4 mr-1.5" /> Download .md
+          </Button>
+        </div>
+
       </div>
 
       <Card className="p-6 shadow-card space-y-6">
