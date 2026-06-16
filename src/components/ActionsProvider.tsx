@@ -11,7 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Building, Coins, Zap, ArrowDown, Lock, CheckCircle2, Upload, CalendarClock, Trash2, Plus, Paperclip, UserPlus, Loader2 } from "lucide-react";
+import { Building, Coins, Zap, ArrowDown, Lock, CheckCircle2, Upload, CalendarClock, Trash2, Plus, Paperclip, UserPlus, Loader2, ShieldCheck, AlertTriangle, ArrowLeft } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
 
@@ -377,10 +378,12 @@ function SendForm({
   const [reference, setReference] = useState("");
   const [narration, setNarration] = useState("");
   const [doc, setDoc] = useState<File | null>(null);
-  const [confirming, setConfirming] = useState(false);
+  const [stage, setStage] = useState<"form" | "review" | "sending">("form");
+  const [confirmDetails, setConfirmDetails] = useState(false);
+  const [confirmAuth, setConfirmAuth] = useState(false);
   const amt = Number(amount) || 0;
 
-  if (confirming) {
+  if (stage === "sending") {
     return (
       <FundFlow
         steps={[
@@ -392,6 +395,66 @@ function SendForm({
       />
     );
   }
+
+  if (stage === "review") {
+    const rows: [string, string][] = [
+      ["Beneficiary", ben.name],
+      ["Country", ben.country],
+      ["Bank", ben.bank],
+      ["Account", ben.account],
+      ["Currency", ben.ccy],
+      ["Amount", fmtMoney(amt, ben.ccy)],
+      ["Reference", reference || "—"],
+      ["Purpose", narration || "—"],
+      ["Supporting document", doc?.name ?? "None attached"],
+    ];
+    return (
+      <div className="space-y-4">
+        <div className="rounded-lg border border-warning/30 bg-warning/5 p-3 text-xs flex items-start gap-2">
+          <ShieldCheck className="h-4 w-4 text-warning mt-0.5 shrink-0" />
+          <div>
+            <div className="font-semibold text-foreground">Verify before you send</div>
+            Funds sent to the wrong account often cannot be recovered. Please check every detail below.
+          </div>
+        </div>
+        <div className="rounded-xl border divide-y bg-secondary/30">
+          {rows.map(([k, v]) => (
+            <div key={k} className="flex items-start justify-between gap-4 px-3 py-2 text-sm">
+              <span className="text-muted-foreground">{k}</span>
+              <span className="font-medium text-right break-all">{v}</span>
+            </div>
+          ))}
+        </div>
+        {(!reference || !narration || !doc) && (
+          <div className="rounded-lg border border-warning/30 bg-warning/5 p-3 text-xs flex items-start gap-2">
+            <AlertTriangle className="h-4 w-4 text-warning mt-0.5 shrink-0" />
+            <span>Some fields are empty ({[!reference && "reference", !narration && "purpose", !doc && "supporting document"].filter(Boolean).join(", ")}). You can go back and add them, or continue if not required.</span>
+          </div>
+        )}
+        <label className="flex items-start gap-2 cursor-pointer text-sm">
+          <Checkbox checked={confirmDetails} onCheckedChange={(v) => setConfirmDetails(Boolean(v))} className="mt-0.5" />
+          <span>I have verified the beneficiary name, bank, account number, currency and amount are correct.</span>
+        </label>
+        <label className="flex items-start gap-2 cursor-pointer text-sm">
+          <Checkbox checked={confirmAuth} onCheckedChange={(v) => setConfirmAuth(Boolean(v))} className="mt-0.5" />
+          <span>I authorise Canta to debit my wallet and send these funds to the beneficiary.</span>
+        </label>
+        <div className="flex gap-2">
+          <Button variant="outline" className="flex-1" onClick={() => setStage("form")}>
+            <ArrowLeft className="h-4 w-4 mr-1" /> Back to edit
+          </Button>
+          <Button
+            className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90"
+            disabled={!confirmDetails || !confirmAuth}
+            onClick={() => { toast.success("Details verified — sending"); setStage("sending"); }}
+          >
+            Confirm &amp; send
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-3">
       <div>
@@ -454,10 +517,10 @@ function SendForm({
         className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
         onClick={() => {
           if (!amt) { toast.error("Enter an amount"); return; }
-          setConfirming(true);
+          setConfirmDetails(false); setConfirmAuth(false); setStage("review");
         }}
       >
-        Send Payment
+        Review payment details
       </Button>
     </div>
   );
