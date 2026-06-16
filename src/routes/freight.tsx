@@ -435,11 +435,22 @@ function DocumentsManager() {
 
 function InvoicesTable() {
   const [open, setOpen] = useState(false);
+  const [rows, setRows] = useState<FreightInvoice[]>(() => freightInvoices.map((i) => ({ ...i })));
   const tones: Record<FreightInvoice["status"], string> = {
     Paid: "bg-success/15 text-success border-success/30",
     Unpaid: "bg-secondary text-secondary-foreground border-border",
     "Partially Paid": "bg-amber-500/15 text-amber-700 border-amber-500/30",
     Overdue: "bg-destructive/15 text-destructive border-destructive/30",
+  };
+  const setStatus = (id: string, status: FreightInvoice["status"]) => {
+    setRows((arr) => arr.map((r) => (r.id === id ? { ...r, status } : r)));
+    toast.success(`Invoice marked as ${status.toLowerCase()}.`);
+  };
+  const download = (i: FreightInvoice) => {
+    const body = `CANTA FREIGHT INVOICE\n\nInvoice: ${i.id}\nCustomer: ${i.customer}\nShipment: ${i.shipment}\nAmount: ${fmtMoney(i.amount, i.ccy)}\nDue: ${i.due}\nIssued: ${i.issued}\nStatus: ${i.status}\n`;
+    const url = URL.createObjectURL(new Blob([body], { type: "text/plain" }));
+    const a = document.createElement("a"); a.href = url; a.download = `${i.id}.txt`; a.click(); URL.revokeObjectURL(url);
+    toast.success(`Downloaded ${i.id}`);
   };
   return (
     <Card className="shadow-card overflow-hidden">
@@ -460,11 +471,11 @@ function InvoicesTable() {
               <th className="px-4 py-3 text-right">Amount</th>
               <th className="px-4 py-3">Due</th>
               <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3 text-right">Action</th>
+              <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {freightInvoices.map((i) => (
+            {rows.map((i) => (
               <tr key={i.id} className="border-t border-border hover:bg-secondary/30">
                 <td className="px-4 py-3 font-mono text-xs">{i.id}</td>
                 <td className="px-4 py-3">{i.customer}</td>
@@ -472,8 +483,16 @@ function InvoicesTable() {
                 <td className="px-4 py-3 text-right tabular-nums font-semibold">{fmtMoney(i.amount, i.ccy)}</td>
                 <td className="px-4 py-3 text-xs tabular-nums">{i.due}</td>
                 <td className="px-4 py-3"><span className={`text-[10px] px-2 py-0.5 rounded-full border ${tones[i.status]}`}>{i.status}</span></td>
-                <td className="px-4 py-3 text-right">
-                  <Button size="sm" variant="ghost" onClick={() => toast.success(`Reminder sent to ${i.customer}`)}><Send className="h-3.5 w-3.5 mr-1" /> Remind</Button>
+                <td className="px-4 py-3 text-right space-x-1 whitespace-nowrap">
+                  {i.status !== "Paid"
+                    ? <Button size="sm" variant="outline" onClick={() => setStatus(i.id, "Paid")}><Banknote className="h-3.5 w-3.5 mr-1" /> Mark paid</Button>
+                    : <Button size="sm" variant="outline" onClick={() => setStatus(i.id, "Unpaid")}>Mark unpaid</Button>}
+                  <Button size="sm" variant="ghost" onClick={() => download(i)}><Download className="h-3.5 w-3.5 mr-1" /> Download</Button>
+                  <Button size="sm" variant="ghost" asChild>
+                    <a href={buildWhatsAppUrl("paymentReminder", { invoice: i.id, amount: fmtMoney(i.amount, i.ccy), due: i.due })} target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="h-3.5 w-3.5 mr-1" /> WhatsApp
+                    </a>
+                  </Button>
                 </td>
               </tr>
             ))}
