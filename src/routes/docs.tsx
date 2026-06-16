@@ -99,12 +99,21 @@ const SECTIONS: { h: string; body: string[] }[] = [
     ],
   },
   {
-    h: "Verification, AI & Comms",
+    h: "AI assistance (WhatsApp + workspaces)",
     body: [
-      "/verification-center: centralised KYB/KYC/document verification across all workspaces.",
-      "/ai-insights cashflow & FX exposure insights, /ai-growth outbound assistant, /whatsapp customer comms workspace.",
+      "/whatsapp Import Desk: every conversation is summarised by Canta AI — customer name, phone, request type, shipment/BL/container/invoice numbers, linked payment case, linked trade file, missing documents, urgency, suggested next action, suggested reply and assigned Canta staff member.",
+      "From an AI summary, Canta staff can: create a draft Trade File, create a draft Partner Payment Case, create a support ticket, request a missing document, send the suggested reply, escalate to compliance, or assign to a Canta staff member.",
+      "Status labels on AI-managed conversations: New, Needs Reply, Missing Document, Ready for Trade File, Ready for Payment Case, Escalated, Resolved.",
+      "AI is always an assistant to Canta staff — every action requires staff confirmation. Other AI surfaces: /ai-insights cashflow & FX exposure, /ai-growth outbound assistant, /ai-document-extraction OCR.",
     ],
   },
+  {
+    h: "Verification & Compliance",
+    body: [
+      "/verification-center centralised KYB/KYC/document verification across all workspaces.",
+    ],
+  },
+
   {
     h: "Settings & Org",
     body: [
