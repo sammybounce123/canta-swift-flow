@@ -19,6 +19,27 @@ import { useState, useEffect } from "react";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Canta" }] }),
+  beforeLoad: () => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem("canta:profile");
+      if (!raw) return;
+      const p = JSON.parse(raw) as { workspace_type?: string };
+      const map: Record<string, string> = {
+        enterprise_treasury: "/treasury",
+        importer_portal: "/importer",
+        freight_workspace: "/freight",
+        supplier_dashboard: "/suppliers",
+        global_collections: "/collections",
+        global_spend_cards: "/cards",
+        partner_property: "/partner",
+      };
+      const to = p.workspace_type ? map[p.workspace_type] : undefined;
+      if (to && window.location.pathname === "/dashboard") {
+        window.location.replace(to);
+      }
+    } catch {}
+  },
   component: Dashboard,
 });
 

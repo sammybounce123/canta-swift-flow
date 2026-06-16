@@ -13,7 +13,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
     h: "Workspaces",
     body: [
       "Users pick a workspace on first sign-in. The sidebar, dashboard and default landing route are driven by the selected profile.",
-      "Available profiles: Enterprise / Corporate Treasury (/treasury), Importer Portal (/importer), Freight Forwarder (/freight), Global Collections / Merchant (/dashboard), Supplier / Exporter (/suppliers), Global Spend & Cards (/cards), and Partner Property — Baron & Cabot (/partner).",
+      "Available profiles: Enterprise / Corporate Treasury (/treasury), Importer Portal (/importer), Freight Forwarder (/freight), Global Collections / Merchant (/collections), Supplier / Exporter — foreign suppliers in China, UAE, Turkey, India, Europe and other corridors selling to African buyers (/suppliers), Global Spend & Cards (/cards), and Partner Property — Baron & Cabot (/partner). The generic /dashboard route auto-redirects to each workspace's landing page.",
       "Switch workspace any time from the workspace switcher in the top bar.",
     ],
   },
@@ -64,8 +64,9 @@ const SECTIONS: { h: string; body: string[] }[] = [
   {
     h: "Supplier / Exporter Workspace",
     body: [
+      "For foreign and global suppliers/exporters selling to African buyers — especially suppliers in China, UAE, Turkey, India, Europe and other trade corridors. Lands at /suppliers.",
       "/suppliers: view and edit supplier profile even after creation, KYB status, product categories.",
-      "Invoice creation & sending is live. Escrow module is included (no longer 'coming soon'). Verified suppliers directory at /verified-suppliers.",
+      "Invoice creation & sending is live. Escrow module is included (no longer 'coming soon'). Verified buyers directory at /verified-buyers; suppliers manage their African buyers at /buyers.",
     ],
   },
   {

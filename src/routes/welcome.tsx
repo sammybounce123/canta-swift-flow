@@ -31,7 +31,7 @@ const WHO_FOR: Record<WorkspaceType, string> = {
   enterprise_treasury: "Multinationals, corporates, oil & gas, large SMEs",
   importer_portal: "Importers buying from China, UAE, Turkey, India",
   freight_workspace: "Freight forwarders, clearing agents, logistics operators",
-  supplier_dashboard: "Exporters in China, UAE, Turkey, India, Europe",
+  supplier_dashboard: "Foreign suppliers & exporters in China, UAE, Turkey, India, Europe and other corridors selling to African buyers",
   global_collections: "Universities, hospitals, airlines, travel, e-commerce",
   global_spend_cards: "Individuals & small businesses spending globally",
   partner_property: "Property partners like Baron & Cabot referring clients",
