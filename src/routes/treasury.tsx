@@ -38,7 +38,7 @@ function Treasury() {
           <h1 className="text-2xl font-semibold">Treasury & Liquidity</h1>
           <p className="text-sm text-muted-foreground mt-1">FX exposure and corporate cash positions.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" onClick={openBulk}><Layers className="h-4 w-4 mr-1.5" /> Bulk Payments</Button>
           <Button className="bg-primary" onClick={openSchedule}><Calendar className="h-4 w-4 mr-1.5" /> Schedule Conversion</Button>
         </div>

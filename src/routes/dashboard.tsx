@@ -77,7 +77,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {mode === "Importer" && <Button asChild size="sm" variant="outline"><Link to="/importer">Open Importer Portal</Link></Button>}
           {mode === "Freight Forwarder" && <Button asChild size="sm" variant="outline"><Link to="/freight">Open Workspace</Link></Button>}
           {mode === "Supplier" && <Button asChild size="sm" variant="outline"><Link to="/suppliers">Open Suppliers</Link></Button>}
@@ -131,11 +131,11 @@ function Dashboard() {
             <div className="text-xs uppercase tracking-widest text-primary-foreground/60">
               Total balance · NGN equivalent
             </div>
-            <div className="mt-2 flex items-end gap-3">
-              <div className="text-4xl lg:text-5xl font-semibold tabular-nums">
+            <div className="mt-2 flex flex-wrap items-end gap-3">
+              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold tabular-nums break-all">
                 {hidden ? `₦${MASK}` : fmtNGN(totalNGN)}
               </div>
-              <div className="inline-flex items-center gap-1 bg-success/20 text-success px-2 py-1 rounded text-xs mb-2">
+              <div className="inline-flex items-center gap-1 bg-success/20 text-success px-2 py-1 rounded text-xs mb-2 shrink-0">
                 <ArrowUpRight className="h-3 w-3" /> +4.8% this week
               </div>
             </div>

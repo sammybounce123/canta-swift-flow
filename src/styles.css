@@ -141,6 +141,11 @@
     -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, h4 { letter-spacing: -0.02em; }
+  /* Prevent horizontal page overflow on small screens */
+  html, body { overflow-x: hidden; max-width: 100%; }
+  main { min-width: 0; }
+  /* Long unbreakable values (account numbers, references, URLs) shouldn't burst layout */
+  .tabular-nums, code, .font-mono { overflow-wrap: anywhere; word-break: break-word; }
 }
 
 @layer utilities {
