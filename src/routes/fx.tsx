@@ -3,9 +3,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
-import { ArrowDown, Lock, Sparkles, Info } from "lucide-react";
+import { ArrowDown, Lock, Sparkles, Info, Wallet, Send, PartyPopper, CheckCircle2, Plane, Loader2, ArrowRight, Building2 } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
-import { fxHistory } from "@/lib/mock";
+import { fxHistory, beneficiaries, fmtMoney } from "@/lib/mock";
+import { addTransaction } from "@/lib/tx-store";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/fx")({
@@ -20,6 +21,10 @@ function FX() {
   const [amount, setAmount] = useState("50000000");
   const [rate, setRate] = useState(0.00062);
   const [timer, setTimer] = useState(30);
+  const [beneficiaryName, setBeneficiaryName] = useState(beneficiaries[0].name);
+  const [tracking, setTracking] = useState<null | {
+    sendAmt: number; from: string; to: string; out: number; rate: number; beneficiary: typeof beneficiaries[number];
+  }>(null);
 
   useEffect(() => {
     const i = setInterval(() => setTimer((t) => (t > 0 ? t - 1 : 30)), 1000);
@@ -31,6 +36,33 @@ function FX() {
 
   const num = Number(amount) || 0;
   const out = num * rate;
+
+  const confirm = () => {
+    const ben = beneficiaries.find((b) => b.name === beneficiaryName) ?? beneficiaries[0];
+    setTracking({ sendAmt: num, from, to, out, rate, beneficiary: ben });
+  };
+
+  if (tracking) {
+    return (
+      <ConversionTracker
+        {...tracking}
+        onDone={() => {
+          addTransaction({
+            type: "FX Conversion",
+            desc: `${tracking.from} → ${tracking.to} · ${tracking.beneficiary.name}`,
+            amount: tracking.sendAmt,
+            ccy: tracking.from,
+            status: "Completed",
+          });
+          toast.success("Beneficiary credited", {
+            description: `${fmtMoney(tracking.out, tracking.to)} delivered to ${tracking.beneficiary.name}.`,
+          });
+          navigate({ to: "/transactions" });
+        }}
+        onBack={() => setTracking(null)}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -79,6 +111,17 @@ function FX() {
                 <option>USD</option><option>NGN</option><option>EUR</option><option>GBP</option>
               </select>
             </div>
+
+            <label className="text-xs text-muted-foreground pt-1">Beneficiary</label>
+            <select
+              value={beneficiaryName}
+              onChange={(e) => setBeneficiaryName(e.target.value)}
+              className="w-full p-2.5 rounded-lg border border-border bg-card text-sm"
+            >
+              {beneficiaries.map((b) => (
+                <option key={b.name}>{b.name}</option>
+              ))}
+            </select>
           </div>
 
           <div className="mt-5 p-3 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-between text-sm">
@@ -97,10 +140,7 @@ function FX() {
           </div>
 
           <Button
-            onClick={() => {
-              toast.success("Conversion confirmed", { description: `Converted ${Number(amount).toLocaleString()} ${from} → ${to}.` });
-              navigate({ to: "/transactions" });
-            }}
+            onClick={confirm}
             className="w-full mt-5 bg-accent text-accent-foreground hover:bg-accent/90 h-11 font-semibold"
           >
             Confirm Conversion
@@ -148,6 +188,158 @@ function Row({ label, value, highlight }: { label: string; value: string; highli
     <div className="flex items-center justify-between">
       <span className="text-muted-foreground inline-flex items-center gap-1">{label} <Info className="h-3 w-3" /></span>
       <span className={highlight ? "font-semibold text-success" : "font-medium"}>{value}</span>
+    </div>
+  );
+}
+
+function ConversionTracker({
+  sendAmt, from, to, out, rate, beneficiary, onDone, onBack,
+}: {
+  sendAmt: number; from: string; to: string; out: number; rate: number;
+  beneficiary: typeof beneficiaries[number];
+  onDone: () => void; onBack: () => void;
+}) {
+  // 0 = funded, 1 = in transit, 2 = received
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    if (step >= 3) return;
+    const t = setTimeout(() => setStep((s) => s + 1), step === 0 ? 1600 : 2400);
+    return () => clearTimeout(t);
+  }, [step]);
+
+  const fundedLabel = from === "NGN" ? "NGN Funded" : `${from} Funded`;
+  const steps = [
+    {
+      key: "funded",
+      title: fundedLabel,
+      sub: `${fmtMoney(sendAmt, from)} debited and converted at 1 ${from} = ${rate} ${to}.`,
+      icon: Wallet,
+      tone: "from-primary/20 to-primary/5",
+      iconBg: "bg-primary text-primary-foreground",
+    },
+    {
+      key: "transit",
+      title: "Your money is on its way",
+      sub: `Routing ${fmtMoney(out, to)} to ${beneficiary.name} via ${beneficiary.bank}.`,
+      icon: Plane,
+      tone: "from-accent/20 to-accent/5",
+      iconBg: "bg-accent text-accent-foreground",
+    },
+    {
+      key: "received",
+      title: "Your beneficiary has received funding",
+      sub: `${fmtMoney(out, to)} settled into ${beneficiary.name} · ${beneficiary.account}.`,
+      icon: PartyPopper,
+      tone: "from-success/25 to-success/5",
+      iconBg: "bg-success text-white",
+    },
+  ];
+
+  const done = step >= 3;
+
+  return (
+    <div className="max-w-3xl mx-auto space-y-6 animate-fade-in">
+      <div className="text-center space-y-1">
+        <Badge className="bg-accent/15 text-accent border-accent/30 hover:bg-accent/15">Live tracking</Badge>
+        <h1 className="text-2xl font-semibold">Conversion in progress</h1>
+        <p className="text-sm text-muted-foreground">
+          {fmtMoney(sendAmt, from)} <ArrowRight className="inline h-3.5 w-3.5 mx-1" /> {fmtMoney(out, to)} · {beneficiary.name}
+        </p>
+      </div>
+
+      {/* Visual rail */}
+      <Card className="p-6 shadow-elevated overflow-hidden relative">
+        <div className="grid grid-cols-3 gap-4 relative">
+          {/* progress line */}
+          <div className="absolute top-7 left-[16%] right-[16%] h-1 rounded-full bg-secondary overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-primary via-accent to-success transition-all duration-700"
+              style={{ width: `${Math.min(step, 3) / 3 * 100}%` }}
+            />
+          </div>
+
+          {steps.map((s, idx) => {
+            const isDone = step > idx;
+            const isActive = step === idx;
+            const Icon = s.icon;
+            return (
+              <div key={s.key} className="flex flex-col items-center text-center relative z-10">
+                <div
+                  className={`h-14 w-14 rounded-full grid place-items-center shadow-elevated transition-all duration-500 ${
+                    isDone ? s.iconBg : isActive ? s.iconBg + " animate-pulse" : "bg-secondary text-muted-foreground"
+                  }`}
+                >
+                  {isDone ? <CheckCircle2 className="h-6 w-6" /> : <Icon className="h-6 w-6" />}
+                </div>
+                <div className="mt-3 text-sm font-semibold">{s.title}</div>
+                <div className="text-[11px] text-muted-foreground mt-1 max-w-[180px]">{s.sub}</div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      {/* Active step card with rich assets */}
+      <Card className={`p-6 shadow-card bg-gradient-to-br ${steps[Math.min(step, 2)].tone} border-2 ${done ? "border-success/40" : "border-accent/30"} animate-scale-in`}>
+        <div className="flex items-start gap-4">
+          <div className={`h-12 w-12 rounded-2xl grid place-items-center shrink-0 ${done ? "bg-success text-white" : steps[Math.min(step, 2)].iconBg}`}>
+            {done ? <PartyPopper className="h-6 w-6" /> : (() => {
+              const I = steps[Math.min(step, 2)].icon;
+              return <I className="h-6 w-6" />;
+            })()}
+          </div>
+          <div className="flex-1">
+            <div className="text-base font-semibold">{done ? "Funds delivered" : steps[Math.min(step, 2)].title}</div>
+            <div className="text-sm text-muted-foreground mt-0.5">{steps[Math.min(step, 2)].sub}</div>
+          </div>
+          {!done && <Loader2 className="h-5 w-5 animate-spin text-accent" />}
+          {done && <CheckCircle2 className="h-6 w-6 text-success" />}
+        </div>
+
+        {/* Money trail */}
+        <div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+          <div className="p-3 rounded-xl bg-card border border-border">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">From</div>
+            <div className="flex items-center gap-2 mt-1">
+              <div className="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center">
+                <Wallet className="h-4 w-4" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold">Your {from} Wallet</div>
+                <div className="text-xs text-muted-foreground tabular-nums">{fmtMoney(sendAmt, from)}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative h-10 w-10 grid place-items-center">
+            <Send className={`h-5 w-5 text-accent ${step === 1 ? "animate-pulse" : ""}`} />
+          </div>
+
+          <div className="p-3 rounded-xl bg-card border border-border">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">To</div>
+            <div className="flex items-center gap-2 mt-1">
+              <div className="h-8 w-8 rounded-lg bg-success/10 text-success grid place-items-center">
+                <Building2 className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <div className="text-sm font-semibold truncate">{beneficiary.name}</div>
+                <div className="text-xs text-muted-foreground truncate">{beneficiary.bank} · {fmtMoney(out, to)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      <div className="flex items-center justify-between gap-3">
+        <Button variant="outline" onClick={onBack} disabled={!done}>New conversion</Button>
+        <Button
+          onClick={onDone}
+          disabled={!done}
+          className="bg-accent text-accent-foreground hover:bg-accent/90"
+        >
+          {done ? "View in Transactions" : "Tracking…"}
+        </Button>
+      </div>
     </div>
   );
 }
