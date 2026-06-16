@@ -696,6 +696,7 @@ function CardsPage() {
             teams, and ad spend — with controls and reporting tailored to each use case.
           </p>
         </div>
+        <CardPurposeWizard />
         <CreateCardDialog />
       </div>
 
