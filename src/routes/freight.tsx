@@ -980,11 +980,7 @@ function BroadcastPanel() {
           <Select value={audience} onValueChange={setAudience}>
             <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="arriving-week">Customers arriving this week</SelectItem>
-              <SelectItem value="missing-docs">Customers with missing documents</SelectItem>
-              <SelectItem value="payment-pending">Customers with outstanding invoices</SelectItem>
-              <SelectItem value="delayed">Customers with delayed shipments</SelectItem>
-              <SelectItem value="arrived">Customers with arrived shipments</SelectItem>
+              {quick.map((q) => <SelectItem key={q.a} value={q.a}>{q.l}</SelectItem>)}
               <SelectItem value="all">All active customers</SelectItem>
             </SelectContent>
           </Select>
