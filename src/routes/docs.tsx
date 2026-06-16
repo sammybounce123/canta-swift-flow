@@ -64,8 +64,9 @@ const SECTIONS: { h: string; body: string[] }[] = [
   {
     h: "Supplier / Exporter Workspace",
     body: [
+      "For foreign and global suppliers/exporters selling to African buyers — especially suppliers in China, UAE, Turkey, India, Europe and other trade corridors. Lands at /suppliers.",
       "/suppliers: view and edit supplier profile even after creation, KYB status, product categories.",
-      "Invoice creation & sending is live. Escrow module is included (no longer 'coming soon'). Verified suppliers directory at /verified-suppliers.",
+      "Invoice creation & sending is live. Escrow module is included (no longer 'coming soon'). Verified buyers directory at /verified-buyers; suppliers manage their African buyers at /buyers.",
     ],
   },
   {
