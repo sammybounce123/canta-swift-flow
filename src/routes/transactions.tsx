@@ -2,9 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, Filter, X } from "lucide-react";
-import { transactions, fmtMoney } from "@/lib/mock";
+import { fmtMoney } from "@/lib/mock";
+import { getLiveTransactions, subscribeTx } from "@/lib/tx-store";
 import { StatusPill } from "@/components/StatusPill";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
@@ -19,6 +20,7 @@ const TYPES = ["All", "FX Conversion", "Outgoing", "Funding"] as const;
 const PAGE_SIZE = 6;
 
 function Transactions() {
+  const transactions = useSyncExternalStore(subscribeTx, getLiveTransactions, getLiveTransactions);
   const [type, setType] = useState<(typeof TYPES)[number]>("All");
   const [ccy, setCcy] = useState("All");
   const [range, setRange] = useState("30");
@@ -38,7 +40,7 @@ function Transactions() {
       if (!Number.isNaN(ts) && ts < cutoff) return false;
       return true;
     });
-  }, [type, ccy, range, query]);
+  }, [type, ccy, range, query, transactions]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const pageRows = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
