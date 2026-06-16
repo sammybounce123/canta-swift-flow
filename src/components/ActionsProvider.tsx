@@ -107,10 +107,17 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
           <ConvertForm
             from={conv.from}
             to={conv.to}
-            onConfirm={(amt, from, to) => {
+            onConfirm={(amt, from, to, received) => {
               setConv((s) => ({ ...s, open: false }));
-              toast.success("Conversion confirmed", {
-                description: `Converted ${amt} ${from} → ${to}. Settled instantly.`,
+              addTransaction({
+                type: "FX Conversion",
+                desc: `${from} → ${to} · Received ${fmtMoney(received, to)}`,
+                amount: amt,
+                ccy: from,
+                status: "Completed",
+              });
+              toast.success("Conversion settled", {
+                description: `${fmtMoney(amt, from)} → ${fmtMoney(received, to)} · Funds in your ${to} wallet.`,
                 icon: <CheckCircle2 className="h-4 w-4" />,
               });
               navigate({ to: "/transactions" });
@@ -128,8 +135,16 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
           </DialogHeader>
           <SendForm
             initialBeneficiary={send.beneficiary}
-            onConfirm={(amt, ccy, name) => {
+            onAddBeneficiary={() => { setSend((s) => ({ ...s, open: false })); setAddBen(true); }}
+            onConfirm={(amt, ccy, name, ref) => {
               setSend((s) => ({ ...s, open: false }));
+              addTransaction({
+                type: "Outgoing",
+                desc: `${name}${ref ? ` · ${ref}` : ""}`,
+                amount: amt,
+                ccy,
+                status: "Completed",
+              });
               toast.success("Payment sent", {
                 description: `${fmtMoney(amt, ccy)} to ${name}. Best corridor selected.`,
                 icon: <CheckCircle2 className="h-4 w-4" />,
