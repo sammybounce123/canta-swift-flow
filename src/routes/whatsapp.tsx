@@ -530,3 +530,133 @@ function WhatsAppDesk() {
 
 // re-export to keep mock data import (unused after refactor)
 void whatsappThreads;
+
+// ---------- AI insight panel ----------
+const urgencyTone: Record<Urgency, string> = {
+  Low: "bg-success/15 text-success border-success/30",
+  Medium: "bg-warning/15 text-warning-foreground border-warning/30",
+  High: "bg-destructive/10 text-destructive border-destructive/30",
+};
+
+function AiInsightPanel({ thread, insight }: { thread: Thread; insight?: AiInsight }) {
+  const [assignee, setAssignee] = useState(insight?.assignedTo ?? thread.agent);
+  if (!insight) {
+    return (
+      <Card className="p-5 shadow-card text-xs text-muted-foreground">
+        AI is still summarising this conversation. Refresh in a moment.
+      </Card>
+    );
+  }
+
+  const rows: Array<[string, string | undefined]> = [
+    ["Customer", insight.customerName],
+    ["Phone", insight.phone],
+    ["Request type", insight.requestType],
+    ["Shipment #", insight.shipmentNumber],
+    ["BL #", insight.blNumber],
+    ["Container #", insight.containerNumber],
+    ["Invoice #", insight.invoiceNumber],
+    ["Linked payment case", insight.paymentCase],
+    ["Linked trade file", insight.tradeFile],
+  ];
+
+  return (
+    <Card className="p-4 shadow-card space-y-4">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <span className="h-8 w-8 grid place-items-center rounded-lg bg-accent/15 text-accent-foreground">
+            <Sparkles className="h-4 w-4" />
+          </span>
+          <div>
+            <div className="text-sm font-semibold">AI conversation summary</div>
+            <div className="text-[10px] text-muted-foreground">Assistant — Canta staff must confirm any action.</div>
+          </div>
+        </div>
+        <Badge variant="outline" className={`text-[10px] ${urgencyTone[insight.urgency]}`}>{insight.urgency} urgency</Badge>
+      </div>
+
+      <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-xs">
+        {rows.map(([k, v]) => (
+          <div key={k} className="min-w-0">
+            <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">{k}</dt>
+            <dd className="font-medium truncate">{v ?? <span className="text-muted-foreground">—</span>}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div>
+        <div className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1">Missing documents</div>
+        {insight.missingDocs.length === 0 ? (
+          <div className="text-xs text-success flex items-center gap-1"><CheckCircle2 className="h-3.5 w-3.5" /> None detected</div>
+        ) : (
+          <div className="flex flex-wrap gap-1">
+            {insight.missingDocs.map((d) => (
+              <Badge key={d} variant="outline" className="text-[10px] bg-warning/10 text-warning-foreground border-warning/30">
+                <FileWarning className="h-3 w-3 mr-1" /> {d}
+              </Badge>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-lg border border-accent/30 bg-accent/5 p-3 space-y-1">
+        <div className="text-[10px] uppercase tracking-wide text-accent-foreground flex items-center gap-1">
+          <Wand2 className="h-3 w-3" /> Suggested next action
+        </div>
+        <div className="text-xs">{insight.nextAction}</div>
+      </div>
+
+      <div className="rounded-lg border border-border bg-secondary/40 p-3 space-y-1">
+        <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Suggested reply</div>
+        <div className="text-xs whitespace-pre-wrap">{insight.suggestedReply}</div>
+      </div>
+
+      <div>
+        <div className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1">Assign to Canta staff</div>
+        <div className="flex flex-wrap gap-1">
+          {STAFF.map((s) => (
+            <button
+              key={s}
+              onClick={() => { setAssignee(s); toast.success(`Assigned to ${s}`); }}
+              className={`text-[11px] px-2 py-1 rounded-full border ${assignee === s ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-primary"}`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 pt-1">
+        <Button size="sm" variant="outline" className="justify-start" onClick={() => toast.success(`Draft Trade File created for ${insight.customerName}`)}>
+          <FilePlus2 className="h-3.5 w-3.5 mr-1.5" /> Draft Trade File
+        </Button>
+        <Button size="sm" variant="outline" className="justify-start" onClick={() => toast.success(`Draft Partner Payment Case created${insight.invoiceNumber ? ` for ${insight.invoiceNumber}` : ""}`)}>
+          <DollarSign className="h-3.5 w-3.5 mr-1.5" /> Draft Payment Case
+        </Button>
+        <Button size="sm" variant="outline" className="justify-start" onClick={() => toast.success("Support ticket created and linked to this conversation")}>
+          <LifeBuoy className="h-3.5 w-3.5 mr-1.5" /> Create support ticket
+        </Button>
+        <Button size="sm" variant="outline" className="justify-start" onClick={() => {
+          if (insight.missingDocs.length === 0) { toast.message("No missing documents detected"); return; }
+          toast.success(`Requested: ${insight.missingDocs.join(", ")}`);
+        }}>
+          <FileWarning className="h-3.5 w-3.5 mr-1.5" /> Request missing doc
+        </Button>
+        <Button size="sm" className="justify-start bg-success text-white hover:bg-success/90" onClick={() => toast.success("Suggested reply queued — confirm in composer to send")}>
+          <Send className="h-3.5 w-3.5 mr-1.5" /> Send suggested reply
+        </Button>
+        <Button size="sm" variant="outline" className="justify-start" onClick={() => toast.warning("Escalated to Compliance Desk")}>
+          <ShieldAlert className="h-3.5 w-3.5 mr-1.5" /> Escalate to compliance
+        </Button>
+        <Button size="sm" variant="outline" className="justify-start col-span-2" onClick={() => toast.success(`Assigned to ${assignee}`)}>
+          <UserPlus className="h-3.5 w-3.5 mr-1.5" /> Assign to {assignee}
+        </Button>
+      </div>
+
+      <div className="text-[10px] text-muted-foreground border-t pt-2 italic">
+        Canta AI summarises every WhatsApp conversation and proposes next steps. A Canta staff member must confirm every reply, draft, payment case, escalation and assignment before it takes effect.
+      </div>
+    </Card>
+  );
+}
+
