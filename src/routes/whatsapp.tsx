@@ -256,7 +256,7 @@ function WhatsAppDesk() {
 
         {/* ------------- INBOX ------------- */}
         <TabsContent value="inbox" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {/* List */}
             <Card className="lg:col-span-1 p-2 shadow-card max-h-[680px] overflow-y-auto">
               <div className="p-2">
