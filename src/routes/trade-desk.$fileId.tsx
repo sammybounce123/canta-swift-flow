@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { ImporterActions } from "@/components/ImporterActions";
 
 export const Route = createFileRoute("/trade-desk/$fileId")({
   head: ({ params }) => ({ meta: [{ title: `${params.fileId} · Trade Desk — Canta` }] }),
