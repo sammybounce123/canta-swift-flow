@@ -597,6 +597,7 @@ function ReportsPanel() {
           <Row key={i.id} label={`${i.id} · ${i.customer}`} value={fmtMoney(i.amount, i.ccy)} bar={1} tone={i.status === "Overdue" ? "danger" : "warn"} />
         ))}
       </ReportCard>
+      </div>
     </div>
   );
 }
