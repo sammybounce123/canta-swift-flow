@@ -201,8 +201,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const partnerInitials = partner.user ? partner.user.name.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase() : "BC";
 
   return (
-    <div className="min-h-screen flex bg-background">
-      <aside className="hidden lg:flex w-64 flex-col sticky top-0 h-screen">
+    <div className="h-screen flex bg-background overflow-hidden">
+      <aside className="hidden lg:flex w-64 flex-col h-screen shrink-0 border-r border-sidebar-border">
         <SidebarContent pathname={pathname} />
       </aside>
 
@@ -213,8 +213,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </SheetContent>
       </Sheet>
 
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
         <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-border">
+
           <div className="h-16 px-3 sm:px-4 lg:px-8 flex items-center gap-2 sm:gap-4">
             <button onClick={() => setMobileOpen(true)} className="lg:hidden h-9 w-9 grid place-items-center rounded-lg hover:bg-secondary -ml-1 flex-shrink-0" aria-label="Open menu">
               <Menu className="h-5 w-5" />
