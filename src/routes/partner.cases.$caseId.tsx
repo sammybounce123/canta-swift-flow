@@ -21,6 +21,7 @@ import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { usePartnerCase } from "@/hooks/usePartnerCases";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { InsuranceHookCard } from "@/components/InsuranceHookCard";
 
 export const Route = createFileRoute("/partner/cases/$caseId")({
   head: () => ({ meta: [{ title: "Client Case — Baron & Cabot" }] }),
