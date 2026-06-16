@@ -90,9 +90,11 @@ function VerifiedBuyersPage() {
                 <div><div className="text-muted-foreground">Done</div><div className="font-semibold">{b.completedTx}</div></div>
                 <div><div className="text-muted-foreground">Escrow</div><div className="font-semibold">{b.escrowHistory}</div></div>
               </div>
-              <div className="mt-3 text-[11px] text-muted-foreground flex items-center gap-2">
-                <Wallet className="h-3 w-3" /> ${b.avgOrderUsd[0].toLocaleString()}–${b.avgOrderUsd[1].toLocaleString()}
+              <div className="mt-3 text-[11px] text-muted-foreground flex items-center justify-between gap-2">
+                <span className="inline-flex items-center gap-1"><Wallet className="h-3 w-3" /> ${b.avgOrderUsd[0].toLocaleString()}–${b.avgOrderUsd[1].toLocaleString()}</span>
+                <span>Active {b.lastActive}</span>
               </div>
+
             </Card>
           </button>
         ))}
