@@ -101,8 +101,9 @@ function ClientPayPage() {
             <Stepper step={step} />
             {step === "review" && <ReviewStep c={c} quote={quote} sol={sol?.firm ?? "—"} onNext={() => setStep("verify")} />}
             {step === "verify" && <VerifyStep caseId={c.id} clientName={c.clientName} onDone={() => setStep("documents")} />}
-            {step === "documents" && <DocStep c={c} onNext={() => setStep("fund")} />}
-            {step === "fund" && <FundGate c={c} quote={quote} onPaid={() => setStep("done")} />}
+            {step === "documents" && <DocStep c={c} confirmed={docsConfirmed} setConfirmed={setDocsConfirmed} onNext={() => setStep("fund")} />}
+            {step === "fund" && <FundGate c={c} quote={quote} docsConfirmed={docsConfirmed} onPaid={() => setStep("done")} />}
+
             {step === "done" && <DoneStep caseId={c.id} sol={sol?.firm ?? "your solicitor"} amount={c.amountGBP} />}
           </>
         )}
