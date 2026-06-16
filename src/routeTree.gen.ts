@@ -17,6 +17,7 @@ import { Route as VerifiedBuyersRouteImport } from './routes/verified-buyers'
 import { Route as VerificationCenterRouteImport } from './routes/verification-center'
 import { Route as TreasuryRouteImport } from './routes/treasury'
 import { Route as TransactionsRouteImport } from './routes/transactions'
+import { Route as TradeNetworkRouteImport } from './routes/trade-network'
 import { Route as TradeDeskRouteImport } from './routes/trade-desk'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as SuppliersRouteImport } from './routes/suppliers'
@@ -48,13 +49,16 @@ import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as CardsRouteImport } from './routes/cards'
 import { Route as BuyersRouteImport } from './routes/buyers'
 import { Route as BeneficiariesRouteImport } from './routes/beneficiaries'
+import { Route as AuditLogsRouteImport } from './routes/audit-logs'
 import { Route as ApprovalsRouteImport } from './routes/approvals'
 import { Route as AiInsightsRouteImport } from './routes/ai-insights'
 import { Route as AiGrowthRouteImport } from './routes/ai-growth'
+import { Route as AiDocumentExtractionRouteImport } from './routes/ai-document-extraction'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TradeDeskIndexRouteImport } from './routes/trade-desk.index'
 import { Route as TrackIndexRouteImport } from './routes/track.index'
 import { Route as PartnerIndexRouteImport } from './routes/partner.index'
+import { Route as TreasuryCardsRouteImport } from './routes/treasury.cards'
 import { Route as TradeDeskFileIdRouteImport } from './routes/trade-desk.$fileId'
 import { Route as TrackIdRouteImport } from './routes/track.$id'
 import { Route as PayLinkIdRouteImport } from './routes/pay.$linkId'
@@ -70,6 +74,8 @@ import { Route as PartnerLeadsRouteImport } from './routes/partner.leads'
 import { Route as PartnerFxQuotesRouteImport } from './routes/partner.fx-quotes'
 import { Route as PartnerDocumentsRouteImport } from './routes/partner.documents'
 import { Route as PartnerCasesRouteImport } from './routes/partner.cases'
+import { Route as ImporterCardsRouteImport } from './routes/importer.cards'
+import { Route as FreightCardsRouteImport } from './routes/freight.cards'
 import { Route as PartnerCasesIndexRouteImport } from './routes/partner.cases.index'
 import { Route as PartnerCasesCaseIdRouteImport } from './routes/partner.cases.$caseId'
 
@@ -111,6 +117,11 @@ const TreasuryRoute = TreasuryRouteImport.update({
 const TransactionsRoute = TransactionsRouteImport.update({
   id: '/transactions',
   path: '/transactions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TradeNetworkRoute = TradeNetworkRouteImport.update({
+  id: '/trade-network',
+  path: '/trade-network',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TradeDeskRoute = TradeDeskRouteImport.update({
@@ -268,6 +279,11 @@ const BeneficiariesRoute = BeneficiariesRouteImport.update({
   path: '/beneficiaries',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuditLogsRoute = AuditLogsRouteImport.update({
+  id: '/audit-logs',
+  path: '/audit-logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApprovalsRoute = ApprovalsRouteImport.update({
   id: '/approvals',
   path: '/approvals',
@@ -281,6 +297,11 @@ const AiInsightsRoute = AiInsightsRouteImport.update({
 const AiGrowthRoute = AiGrowthRouteImport.update({
   id: '/ai-growth',
   path: '/ai-growth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiDocumentExtractionRoute = AiDocumentExtractionRouteImport.update({
+  id: '/ai-document-extraction',
+  path: '/ai-document-extraction',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -302,6 +323,11 @@ const PartnerIndexRoute = PartnerIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PartnerRoute,
+} as any)
+const TreasuryCardsRoute = TreasuryCardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => TreasuryRoute,
 } as any)
 const TradeDeskFileIdRoute = TradeDeskFileIdRouteImport.update({
   id: '/$fileId',
@@ -378,6 +404,16 @@ const PartnerCasesRoute = PartnerCasesRouteImport.update({
   path: '/cases',
   getParentRoute: () => PartnerRoute,
 } as any)
+const ImporterCardsRoute = ImporterCardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => ImporterRoute,
+} as any)
+const FreightCardsRoute = FreightCardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => FreightRoute,
+} as any)
 const PartnerCasesIndexRoute = PartnerCasesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -391,9 +427,11 @@ const PartnerCasesCaseIdRoute = PartnerCasesCaseIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ai-document-extraction': typeof AiDocumentExtractionRoute
   '/ai-growth': typeof AiGrowthRoute
   '/ai-insights': typeof AiInsightsRoute
   '/approvals': typeof ApprovalsRoute
+  '/audit-logs': typeof AuditLogsRoute
   '/beneficiaries': typeof BeneficiariesRoute
   '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
@@ -404,10 +442,10 @@ export interface FileRoutesByFullPath {
   '/docs': typeof DocsRoute
   '/documents': typeof DocumentsRoute
   '/escrow': typeof EscrowRoute
-  '/freight': typeof FreightRoute
+  '/freight': typeof FreightRouteWithChildren
   '/freight-invoices': typeof FreightInvoicesRoute
   '/fx': typeof FxRoute
-  '/importer': typeof ImporterRoute
+  '/importer': typeof ImporterRouteWithChildren
   '/integrations': typeof IntegrationsRoute
   '/invoices': typeof InvoicesRoute
   '/landed-cost': typeof LandedCostRoute
@@ -425,14 +463,17 @@ export interface FileRoutesByFullPath {
   '/suppliers': typeof SuppliersRoute
   '/team': typeof TeamRoute
   '/trade-desk': typeof TradeDeskRouteWithChildren
+  '/trade-network': typeof TradeNetworkRoute
   '/transactions': typeof TransactionsRoute
-  '/treasury': typeof TreasuryRoute
+  '/treasury': typeof TreasuryRouteWithChildren
   '/verification-center': typeof VerificationCenterRoute
   '/verified-buyers': typeof VerifiedBuyersRoute
   '/verified-suppliers': typeof VerifiedSuppliersRoute
   '/wallets': typeof WalletsRoute
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
+  '/freight/cards': typeof FreightCardsRoute
+  '/importer/cards': typeof ImporterCardsRoute
   '/partner/cases': typeof PartnerCasesRouteWithChildren
   '/partner/documents': typeof PartnerDocumentsRoute
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
@@ -448,6 +489,7 @@ export interface FileRoutesByFullPath {
   '/pay/$linkId': typeof PayLinkIdRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/treasury/cards': typeof TreasuryCardsRoute
   '/partner/': typeof PartnerIndexRoute
   '/track/': typeof TrackIndexRoute
   '/trade-desk/': typeof TradeDeskIndexRoute
@@ -456,9 +498,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ai-document-extraction': typeof AiDocumentExtractionRoute
   '/ai-growth': typeof AiGrowthRoute
   '/ai-insights': typeof AiInsightsRoute
   '/approvals': typeof ApprovalsRoute
+  '/audit-logs': typeof AuditLogsRoute
   '/beneficiaries': typeof BeneficiariesRoute
   '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
@@ -469,10 +513,10 @@ export interface FileRoutesByTo {
   '/docs': typeof DocsRoute
   '/documents': typeof DocumentsRoute
   '/escrow': typeof EscrowRoute
-  '/freight': typeof FreightRoute
+  '/freight': typeof FreightRouteWithChildren
   '/freight-invoices': typeof FreightInvoicesRoute
   '/fx': typeof FxRoute
-  '/importer': typeof ImporterRoute
+  '/importer': typeof ImporterRouteWithChildren
   '/integrations': typeof IntegrationsRoute
   '/invoices': typeof InvoicesRoute
   '/landed-cost': typeof LandedCostRoute
@@ -488,14 +532,17 @@ export interface FileRoutesByTo {
   '/shipments': typeof ShipmentsRoute
   '/suppliers': typeof SuppliersRoute
   '/team': typeof TeamRoute
+  '/trade-network': typeof TradeNetworkRoute
   '/transactions': typeof TransactionsRoute
-  '/treasury': typeof TreasuryRoute
+  '/treasury': typeof TreasuryRouteWithChildren
   '/verification-center': typeof VerificationCenterRoute
   '/verified-buyers': typeof VerifiedBuyersRoute
   '/verified-suppliers': typeof VerifiedSuppliersRoute
   '/wallets': typeof WalletsRoute
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
+  '/freight/cards': typeof FreightCardsRoute
+  '/importer/cards': typeof ImporterCardsRoute
   '/partner/documents': typeof PartnerDocumentsRoute
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
   '/partner/leads': typeof PartnerLeadsRoute
@@ -510,6 +557,7 @@ export interface FileRoutesByTo {
   '/pay/$linkId': typeof PayLinkIdRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/treasury/cards': typeof TreasuryCardsRoute
   '/partner': typeof PartnerIndexRoute
   '/track': typeof TrackIndexRoute
   '/trade-desk': typeof TradeDeskIndexRoute
@@ -519,9 +567,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ai-document-extraction': typeof AiDocumentExtractionRoute
   '/ai-growth': typeof AiGrowthRoute
   '/ai-insights': typeof AiInsightsRoute
   '/approvals': typeof ApprovalsRoute
+  '/audit-logs': typeof AuditLogsRoute
   '/beneficiaries': typeof BeneficiariesRoute
   '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
@@ -532,10 +582,10 @@ export interface FileRoutesById {
   '/docs': typeof DocsRoute
   '/documents': typeof DocumentsRoute
   '/escrow': typeof EscrowRoute
-  '/freight': typeof FreightRoute
+  '/freight': typeof FreightRouteWithChildren
   '/freight-invoices': typeof FreightInvoicesRoute
   '/fx': typeof FxRoute
-  '/importer': typeof ImporterRoute
+  '/importer': typeof ImporterRouteWithChildren
   '/integrations': typeof IntegrationsRoute
   '/invoices': typeof InvoicesRoute
   '/landed-cost': typeof LandedCostRoute
@@ -553,14 +603,17 @@ export interface FileRoutesById {
   '/suppliers': typeof SuppliersRoute
   '/team': typeof TeamRoute
   '/trade-desk': typeof TradeDeskRouteWithChildren
+  '/trade-network': typeof TradeNetworkRoute
   '/transactions': typeof TransactionsRoute
-  '/treasury': typeof TreasuryRoute
+  '/treasury': typeof TreasuryRouteWithChildren
   '/verification-center': typeof VerificationCenterRoute
   '/verified-buyers': typeof VerifiedBuyersRoute
   '/verified-suppliers': typeof VerifiedSuppliersRoute
   '/wallets': typeof WalletsRoute
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
+  '/freight/cards': typeof FreightCardsRoute
+  '/importer/cards': typeof ImporterCardsRoute
   '/partner/cases': typeof PartnerCasesRouteWithChildren
   '/partner/documents': typeof PartnerDocumentsRoute
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
@@ -576,6 +629,7 @@ export interface FileRoutesById {
   '/pay/$linkId': typeof PayLinkIdRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
+  '/treasury/cards': typeof TreasuryCardsRoute
   '/partner/': typeof PartnerIndexRoute
   '/track/': typeof TrackIndexRoute
   '/trade-desk/': typeof TradeDeskIndexRoute
@@ -586,9 +640,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/ai-document-extraction'
     | '/ai-growth'
     | '/ai-insights'
     | '/approvals'
+    | '/audit-logs'
     | '/beneficiaries'
     | '/buyers'
     | '/cards'
@@ -620,6 +676,7 @@ export interface FileRouteTypes {
     | '/suppliers'
     | '/team'
     | '/trade-desk'
+    | '/trade-network'
     | '/transactions'
     | '/treasury'
     | '/verification-center'
@@ -628,6 +685,8 @@ export interface FileRouteTypes {
     | '/wallets'
     | '/welcome'
     | '/whatsapp'
+    | '/freight/cards'
+    | '/importer/cards'
     | '/partner/cases'
     | '/partner/documents'
     | '/partner/fx-quotes'
@@ -643,6 +702,7 @@ export interface FileRouteTypes {
     | '/pay/$linkId'
     | '/track/$id'
     | '/trade-desk/$fileId'
+    | '/treasury/cards'
     | '/partner/'
     | '/track/'
     | '/trade-desk/'
@@ -651,9 +711,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ai-document-extraction'
     | '/ai-growth'
     | '/ai-insights'
     | '/approvals'
+    | '/audit-logs'
     | '/beneficiaries'
     | '/buyers'
     | '/cards'
@@ -683,6 +745,7 @@ export interface FileRouteTypes {
     | '/shipments'
     | '/suppliers'
     | '/team'
+    | '/trade-network'
     | '/transactions'
     | '/treasury'
     | '/verification-center'
@@ -691,6 +754,8 @@ export interface FileRouteTypes {
     | '/wallets'
     | '/welcome'
     | '/whatsapp'
+    | '/freight/cards'
+    | '/importer/cards'
     | '/partner/documents'
     | '/partner/fx-quotes'
     | '/partner/leads'
@@ -705,6 +770,7 @@ export interface FileRouteTypes {
     | '/pay/$linkId'
     | '/track/$id'
     | '/trade-desk/$fileId'
+    | '/treasury/cards'
     | '/partner'
     | '/track'
     | '/trade-desk'
@@ -713,9 +779,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/ai-document-extraction'
     | '/ai-growth'
     | '/ai-insights'
     | '/approvals'
+    | '/audit-logs'
     | '/beneficiaries'
     | '/buyers'
     | '/cards'
@@ -747,6 +815,7 @@ export interface FileRouteTypes {
     | '/suppliers'
     | '/team'
     | '/trade-desk'
+    | '/trade-network'
     | '/transactions'
     | '/treasury'
     | '/verification-center'
@@ -755,6 +824,8 @@ export interface FileRouteTypes {
     | '/wallets'
     | '/welcome'
     | '/whatsapp'
+    | '/freight/cards'
+    | '/importer/cards'
     | '/partner/cases'
     | '/partner/documents'
     | '/partner/fx-quotes'
@@ -770,6 +841,7 @@ export interface FileRouteTypes {
     | '/pay/$linkId'
     | '/track/$id'
     | '/trade-desk/$fileId'
+    | '/treasury/cards'
     | '/partner/'
     | '/track/'
     | '/trade-desk/'
@@ -779,9 +851,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AiDocumentExtractionRoute: typeof AiDocumentExtractionRoute
   AiGrowthRoute: typeof AiGrowthRoute
   AiInsightsRoute: typeof AiInsightsRoute
   ApprovalsRoute: typeof ApprovalsRoute
+  AuditLogsRoute: typeof AuditLogsRoute
   BeneficiariesRoute: typeof BeneficiariesRoute
   BuyersRoute: typeof BuyersRoute
   CardsRoute: typeof CardsRoute
@@ -792,10 +866,10 @@ export interface RootRouteChildren {
   DocsRoute: typeof DocsRoute
   DocumentsRoute: typeof DocumentsRoute
   EscrowRoute: typeof EscrowRoute
-  FreightRoute: typeof FreightRoute
+  FreightRoute: typeof FreightRouteWithChildren
   FreightInvoicesRoute: typeof FreightInvoicesRoute
   FxRoute: typeof FxRoute
-  ImporterRoute: typeof ImporterRoute
+  ImporterRoute: typeof ImporterRouteWithChildren
   IntegrationsRoute: typeof IntegrationsRoute
   InvoicesRoute: typeof InvoicesRoute
   LandedCostRoute: typeof LandedCostRoute
@@ -813,8 +887,9 @@ export interface RootRouteChildren {
   SuppliersRoute: typeof SuppliersRoute
   TeamRoute: typeof TeamRoute
   TradeDeskRoute: typeof TradeDeskRouteWithChildren
+  TradeNetworkRoute: typeof TradeNetworkRoute
   TransactionsRoute: typeof TransactionsRoute
-  TreasuryRoute: typeof TreasuryRoute
+  TreasuryRoute: typeof TreasuryRouteWithChildren
   VerificationCenterRoute: typeof VerificationCenterRoute
   VerifiedBuyersRoute: typeof VerifiedBuyersRoute
   VerifiedSuppliersRoute: typeof VerifiedSuppliersRoute
@@ -882,6 +957,13 @@ declare module '@tanstack/react-router' {
       path: '/transactions'
       fullPath: '/transactions'
       preLoaderRoute: typeof TransactionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trade-network': {
+      id: '/trade-network'
+      path: '/trade-network'
+      fullPath: '/trade-network'
+      preLoaderRoute: typeof TradeNetworkRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/trade-desk': {
@@ -1101,6 +1183,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BeneficiariesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/audit-logs': {
+      id: '/audit-logs'
+      path: '/audit-logs'
+      fullPath: '/audit-logs'
+      preLoaderRoute: typeof AuditLogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/approvals': {
       id: '/approvals'
       path: '/approvals'
@@ -1120,6 +1209,13 @@ declare module '@tanstack/react-router' {
       path: '/ai-growth'
       fullPath: '/ai-growth'
       preLoaderRoute: typeof AiGrowthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-document-extraction': {
+      id: '/ai-document-extraction'
+      path: '/ai-document-extraction'
+      fullPath: '/ai-document-extraction'
+      preLoaderRoute: typeof AiDocumentExtractionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -1149,6 +1245,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/partner/'
       preLoaderRoute: typeof PartnerIndexRouteImport
       parentRoute: typeof PartnerRoute
+    }
+    '/treasury/cards': {
+      id: '/treasury/cards'
+      path: '/cards'
+      fullPath: '/treasury/cards'
+      preLoaderRoute: typeof TreasuryCardsRouteImport
+      parentRoute: typeof TreasuryRoute
     }
     '/trade-desk/$fileId': {
       id: '/trade-desk/$fileId'
@@ -1255,6 +1358,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PartnerCasesRouteImport
       parentRoute: typeof PartnerRoute
     }
+    '/importer/cards': {
+      id: '/importer/cards'
+      path: '/cards'
+      fullPath: '/importer/cards'
+      preLoaderRoute: typeof ImporterCardsRouteImport
+      parentRoute: typeof ImporterRoute
+    }
+    '/freight/cards': {
+      id: '/freight/cards'
+      path: '/cards'
+      fullPath: '/freight/cards'
+      preLoaderRoute: typeof FreightCardsRouteImport
+      parentRoute: typeof FreightRoute
+    }
     '/partner/cases/': {
       id: '/partner/cases/'
       path: '/'
@@ -1271,6 +1388,29 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface FreightRouteChildren {
+  FreightCardsRoute: typeof FreightCardsRoute
+}
+
+const FreightRouteChildren: FreightRouteChildren = {
+  FreightCardsRoute: FreightCardsRoute,
+}
+
+const FreightRouteWithChildren =
+  FreightRoute._addFileChildren(FreightRouteChildren)
+
+interface ImporterRouteChildren {
+  ImporterCardsRoute: typeof ImporterCardsRoute
+}
+
+const ImporterRouteChildren: ImporterRouteChildren = {
+  ImporterCardsRoute: ImporterCardsRoute,
+}
+
+const ImporterRouteWithChildren = ImporterRoute._addFileChildren(
+  ImporterRouteChildren,
+)
 
 interface PartnerCasesRouteChildren {
   PartnerCasesCaseIdRoute: typeof PartnerCasesCaseIdRoute
@@ -1335,11 +1475,25 @@ const TradeDeskRouteWithChildren = TradeDeskRoute._addFileChildren(
   TradeDeskRouteChildren,
 )
 
+interface TreasuryRouteChildren {
+  TreasuryCardsRoute: typeof TreasuryCardsRoute
+}
+
+const TreasuryRouteChildren: TreasuryRouteChildren = {
+  TreasuryCardsRoute: TreasuryCardsRoute,
+}
+
+const TreasuryRouteWithChildren = TreasuryRoute._addFileChildren(
+  TreasuryRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AiDocumentExtractionRoute: AiDocumentExtractionRoute,
   AiGrowthRoute: AiGrowthRoute,
   AiInsightsRoute: AiInsightsRoute,
   ApprovalsRoute: ApprovalsRoute,
+  AuditLogsRoute: AuditLogsRoute,
   BeneficiariesRoute: BeneficiariesRoute,
   BuyersRoute: BuyersRoute,
   CardsRoute: CardsRoute,
@@ -1350,10 +1504,10 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRoute: DocsRoute,
   DocumentsRoute: DocumentsRoute,
   EscrowRoute: EscrowRoute,
-  FreightRoute: FreightRoute,
+  FreightRoute: FreightRouteWithChildren,
   FreightInvoicesRoute: FreightInvoicesRoute,
   FxRoute: FxRoute,
-  ImporterRoute: ImporterRoute,
+  ImporterRoute: ImporterRouteWithChildren,
   IntegrationsRoute: IntegrationsRoute,
   InvoicesRoute: InvoicesRoute,
   LandedCostRoute: LandedCostRoute,
@@ -1371,8 +1525,9 @@ const rootRouteChildren: RootRouteChildren = {
   SuppliersRoute: SuppliersRoute,
   TeamRoute: TeamRoute,
   TradeDeskRoute: TradeDeskRouteWithChildren,
+  TradeNetworkRoute: TradeNetworkRoute,
   TransactionsRoute: TransactionsRoute,
-  TreasuryRoute: TreasuryRoute,
+  TreasuryRoute: TreasuryRouteWithChildren,
   VerificationCenterRoute: VerificationCenterRoute,
   VerifiedBuyersRoute: VerifiedBuyersRoute,
   VerifiedSuppliersRoute: VerifiedSuppliersRoute,

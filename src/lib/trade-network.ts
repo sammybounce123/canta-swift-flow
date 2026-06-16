@@ -63,7 +63,9 @@ export type Buyer = {
   escrowHistory: number;
   disputes: number;
   discoverable: boolean;
+  lastActive: string;
 };
+
 
 export type VerificationRequest = {
   id: string;
