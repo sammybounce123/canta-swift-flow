@@ -181,13 +181,17 @@ function SupplierSheet({ supplier, onClose }: { supplier: Supplier | null; onClo
                 Full contact details, bank info and documents are released only after both parties accept a trade request.
               </section>
 
-              <section className="grid grid-cols-2 gap-2">
-                <Action label="Request Quote" icon={MessageSquare} onClick={() => toast.success("Quote request sent")} primary />
-                <Action label="Start Trade File" icon={FilePlus} onClick={() => toast.success("Trade file created")} primary />
-                <Action label="Request Escrow" icon={ShieldCheck} onClick={() => toast.success("Escrow requested")} />
-                <Action label="Save Supplier" icon={Bookmark} onClick={() => toast.success("Supplier saved")} />
-                <Action label="Ask Canta to verify" icon={BadgeCheck} onClick={() => toast.success("Verification requested")} />
-                <Action label="Send Invoice to Canta" icon={FileText} onClick={() => toast.success("Invoice forwarded to Canta")} />
+              <section>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Actions</div>
+                <ImporterActions
+                  variant="supplier"
+                  ctx={{
+                    supplier: supplier.company,
+                    supplierId: supplier.id,
+                    origin: `${supplier.city}, ${supplier.country}`,
+                    currency: supplier.currencies[0],
+                  }}
+                />
               </section>
             </div>
           </>
@@ -196,6 +200,8 @@ function SupplierSheet({ supplier, onClose }: { supplier: Supplier | null; onClo
     </Sheet>
   );
 }
+
+function Stat({ label, value, icon: Icon }: { label: string; value: string; icon: typeof FileText }) {
 
 function Stat({ label, value, icon: Icon }: { label: string; value: string; icon: typeof FileText }) {
   return (
