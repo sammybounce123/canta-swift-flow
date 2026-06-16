@@ -151,7 +151,16 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
 
 function ModeSwitcher() {
   const { mode, setMode } = useMode();
+  const navigate = useNavigate();
   const current = ALL_MODES.find((m) => m.id === mode)!;
+  const MODE_HOME: Record<Mode, string> = {
+    "Enterprise Treasury": "/treasury",
+    "Importer": "/importer",
+    "Freight Forwarder": "/freight",
+    "Supplier": "/suppliers",
+    "Global Merchant": "/collections",
+    "Partner Property": "/partner",
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
