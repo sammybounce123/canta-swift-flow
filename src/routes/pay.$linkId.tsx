@@ -90,9 +90,10 @@ function ClientPayPage() {
         ) : quoteExpired ? (
           <Card className="p-8 shadow-card text-center">
             <AlertTriangle className="h-8 w-8 text-destructive mx-auto" />
-            <h2 className="mt-3 font-semibold">Quote expired. Please request a new quote.</h2>
-            <p className="text-sm text-muted-foreground mt-1">Your FX rate is locked for a short window. Please contact Baron &amp; Cabot to issue a fresh quote — your NGN payable amount will be recalculated.</p>
+            <h2 className="mt-3 font-semibold">Quote expired — request a new quote.</h2>
+            <p className="text-sm text-muted-foreground mt-1">Payment cannot be made against an expired quote. Please contact Baron &amp; Cabot to issue a fresh FX quote — your NGN payable amount will be recalculated.</p>
           </Card>
+
         ) : (
           <>
             <Stepper step={step} />
