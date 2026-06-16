@@ -21,7 +21,8 @@ export const Route = createFileRoute("/freight")({
   component: Freight,
 });
 
-const STAGES: Shipment["status"][] = ["Booked", "At Origin", "Loaded", "On Vessel", "Arrived", "Customs", "Released", "Delivered"];
+const STAGES: Shipment["status"][] = ["Booked", "At Origin", "Loaded", "On Vessel", "Arrived", "Customs", "Released", "Delivered", "Delayed"];
+const STAFF = ["Femi A.", "Adaeze O.", "James O.", "Aisha B.", "Ops Team", "Clearing Desk"];
 
 const DOC_TYPES = [
   "Supplier Invoice", "Packing List", "Bill of Lading",
