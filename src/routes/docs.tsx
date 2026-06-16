@@ -13,7 +13,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
     h: "Workspaces",
     body: [
       "Users pick a workspace on first sign-in. The sidebar, dashboard and default landing route are driven by the selected profile.",
-      "Available profiles: Enterprise / Corporate Treasury (/treasury), Importer Portal (/importer), Freight Forwarder (/freight), Global Collections / Merchant (/dashboard), Supplier / Exporter (/suppliers), Global Spend & Cards (/cards), and Partner Property — Baron & Cabot (/partner).",
+      "Available profiles: Enterprise / Corporate Treasury (/treasury), Importer Portal (/importer), Freight Forwarder (/freight), Global Collections / Merchant (/collections), Supplier / Exporter — foreign suppliers in China, UAE, Turkey, India, Europe and other corridors selling to African buyers (/suppliers), Global Spend & Cards (/cards), and Partner Property — Baron & Cabot (/partner). The generic /dashboard route auto-redirects to each workspace's landing page.",
       "Switch workspace any time from the workspace switcher in the top bar.",
     ],
   },
