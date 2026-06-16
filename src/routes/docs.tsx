@@ -248,9 +248,15 @@ function Docs() {
             Every workspace, module and flow shipping in Canta today.
           </p>
         </div>
-        <Button variant="outline" onClick={downloadMd}>
-          <Download className="h-4 w-4 mr-1.5" /> Download .md
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" asChild>
+            <Link to="/user-stories"><Users className="h-4 w-4 mr-1.5" /> User stories</Link>
+          </Button>
+          <Button variant="outline" onClick={downloadMd}>
+            <Download className="h-4 w-4 mr-1.5" /> Download .md
+          </Button>
+        </div>
+
       </div>
 
       <Card className="p-6 shadow-card space-y-6">
