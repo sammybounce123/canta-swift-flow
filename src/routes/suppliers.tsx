@@ -201,6 +201,22 @@ function SupplierDashboard() {
         ))}
       </div>
 
+      {/* Verified Buyers — main discovery module */}
+      <Card className="p-5 shadow-card border-success/30 bg-gradient-to-br from-success/10 to-transparent">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <div className="text-xs uppercase tracking-widest text-success font-semibold">Discovery</div>
+            <div className="text-lg font-semibold mt-1">Verified Buyers</div>
+            <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+              Canta-verified African importers ready to transact. Filter by corridor and category, then send a quote or open an escrowed trade file.
+            </p>
+          </div>
+          <Button asChild>
+            <Link to="/verified-buyers">Browse Verified Buyers</Link>
+          </Button>
+        </div>
+      </Card>
+
       <Tabs defaultValue="buyers">
         <TabsList className="flex-wrap h-auto">
           <TabsTrigger value="buyers">Buyers</TabsTrigger>
