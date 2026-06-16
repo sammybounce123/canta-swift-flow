@@ -1019,3 +1019,93 @@ function BroadcastPanel() {
     </Card>
   );
 }
+
+function InsurancePanel() {
+  type Policy = {
+    id: string; shipment: string; customer: string; cargoValue: number; ccy: string;
+    coverage: number; premium: number; status: "Quoted" | "Offered" | "Bound" | "Declined";
+  };
+  const RATE = 0.0085; // 0.85% of cargo value
+  const [policies, setPolicies] = useState<Policy[]>(() =>
+    shipments.slice(0, 4).map((s, i) => ({
+      id: `INS-${5100 + i}`,
+      shipment: s.shipmentNumber,
+      customer: s.importer,
+      cargoValue: s.value,
+      ccy: s.ccy,
+      coverage: Math.round(s.value * 1.1),
+      premium: Math.round(s.value * RATE),
+      status: (["Quoted","Offered","Bound","Quoted"] as const)[i],
+    })),
+  );
+  const tones: Record<Policy["status"], string> = {
+    Quoted: "bg-secondary text-secondary-foreground border-border",
+    Offered: "bg-primary/15 text-primary border-primary/30",
+    Bound: "bg-success/15 text-success border-success/30",
+    Declined: "bg-destructive/15 text-destructive border-destructive/30",
+  };
+  const setStatus = (id: string, status: Policy["status"]) => {
+    setPolicies((arr) => arr.map((p) => (p.id === id ? { ...p, status } : p)));
+    toast.success(`Insurance ${id} → ${status}`);
+  };
+  const totalBound = policies.filter((p) => p.status === "Bound").reduce((a, b) => a + b.coverage, 0);
+  const totalPremium = policies.filter((p) => p.status !== "Declined").reduce((a, b) => a + b.premium, 0);
+  return (
+    <Card className="shadow-card overflow-hidden">
+      <div className="p-4 border-b border-border flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <div className="text-sm font-semibold">Goods-in-transit insurance</div>
+          <div className="text-xs text-muted-foreground mt-0.5">
+            Bound cover: <span className="font-semibold text-success">{fmtMoney(totalBound, "USD")}</span> ·
+            Premiums in pipeline: <span className="font-semibold">{fmtMoney(totalPremium, "USD")}</span> · Rate {(RATE * 100).toFixed(2)}%
+          </div>
+        </div>
+        <Button size="sm" className="bg-primary" onClick={() => {
+          const s = shipments[Math.floor(Math.random() * shipments.length)];
+          const id = `INS-${5200 + policies.length}`;
+          setPolicies((arr) => [{
+            id, shipment: s.shipmentNumber, customer: s.importer, cargoValue: s.value, ccy: s.ccy,
+            coverage: Math.round(s.value * 1.1), premium: Math.round(s.value * RATE), status: "Quoted",
+          }, ...arr]);
+          toast.success(`Quote ${id} offered to ${s.importer}`);
+        }}>
+          <Plus className="h-3.5 w-3.5 mr-1" /> Offer insurance
+        </Button>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-xs text-muted-foreground bg-secondary/40">
+              <th className="px-4 py-3">Policy #</th>
+              <th className="px-4 py-3">Shipment</th>
+              <th className="px-4 py-3">Customer</th>
+              <th className="px-4 py-3 text-right">Cargo value</th>
+              <th className="px-4 py-3 text-right">Coverage</th>
+              <th className="px-4 py-3 text-right">Premium</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {policies.map((p) => (
+              <tr key={p.id} className="border-t border-border hover:bg-secondary/30">
+                <td className="px-4 py-3 font-mono text-xs">{p.id}</td>
+                <td className="px-4 py-3 font-mono text-xs">{p.shipment}</td>
+                <td className="px-4 py-3">{p.customer}</td>
+                <td className="px-4 py-3 text-right tabular-nums">{fmtMoney(p.cargoValue, p.ccy)}</td>
+                <td className="px-4 py-3 text-right tabular-nums">{fmtMoney(p.coverage, p.ccy)}</td>
+                <td className="px-4 py-3 text-right tabular-nums font-semibold">{fmtMoney(p.premium, p.ccy)}</td>
+                <td className="px-4 py-3"><span className={`text-[10px] px-2 py-0.5 rounded-full border ${tones[p.status]}`}>{p.status}</span></td>
+                <td className="px-4 py-3 text-right space-x-1 whitespace-nowrap">
+                  {p.status !== "Bound" && <Button size="sm" variant="outline" onClick={() => setStatus(p.id, "Bound")}>Bind</Button>}
+                  {p.status !== "Offered" && p.status !== "Bound" && <Button size="sm" variant="ghost" onClick={() => setStatus(p.id, "Offered")}>Offer</Button>}
+                  {p.status !== "Declined" && <Button size="sm" variant="ghost" onClick={() => setStatus(p.id, "Declined")}>Decline</Button>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  );
+}
