@@ -101,7 +101,8 @@ function FX() {
               <input
                 value={amount}
                 onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
-                className="flex-1 min-w-0 bg-transparent text-2xl font-semibold tabular-nums outline-none [overflow-wrap:normal] [word-break:normal]"
+                style={{ wordBreak: "normal", overflowWrap: "normal" }}
+                className="w-0 flex-1 min-w-0 bg-transparent text-2xl font-semibold tabular-nums outline-none truncate"
               />
               <select value={from} onChange={(e) => setFrom(e.target.value)} className="shrink-0 bg-card border border-border rounded-lg px-2 py-1.5 text-sm font-medium">
                 <option>NGN</option><option>USD</option><option>EUR</option><option>GBP</option>
@@ -119,7 +120,7 @@ function FX() {
 
             <label className="text-xs text-muted-foreground">Recipient gets</label>
             <div className="flex items-center gap-2 p-3 rounded-xl bg-secondary/50 border border-border">
-              <div className="flex-1 min-w-0 text-2xl font-semibold tabular-nums truncate [overflow-wrap:normal] [word-break:normal]">
+              <div style={{ wordBreak: "normal", overflowWrap: "normal" }} className="w-0 flex-1 min-w-0 text-2xl font-semibold tabular-nums truncate">
                 {out.toLocaleString(undefined, { maximumFractionDigits: 2 })}
               </div>
               <select value={to} onChange={(e) => setTo(e.target.value)} className="shrink-0 bg-card border border-border rounded-lg px-2 py-1.5 text-sm font-medium">
