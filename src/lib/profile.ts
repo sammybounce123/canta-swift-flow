@@ -220,20 +220,18 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
     case "importer_portal":
       return [
         D,
-        { to: "/importer", label: "Importer Portal", iconKey: "importer", group: "My Workspace" },
+        { to: "/importer", label: "Importer Dashboard", iconKey: "importer", group: "My Workspace" },
         { to: "/trade-desk", label: "Trade Desk", iconKey: "trade", group: "Move Goods" },
         { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Move Goods" },
-        { to: "/trade-network", label: "Trade Network", iconKey: "globe", group: "Trade Network" },
         { to: "/verified-suppliers", label: "Verified Suppliers", iconKey: "shield-check", group: "Trade Network" },
         { to: "/my-suppliers", label: "My Suppliers", iconKey: "factory", group: "Trade Network" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Trade Ops" },
         { to: "/landed-cost", label: "Landed Cost", iconKey: "calculator", group: "Trade Ops" },
-        { to: "/ai-document-extraction", label: "AI Doc Extraction", iconKey: "brain", group: "Trade Ops" },
-        { to: "/payments", label: "Payments", iconKey: "receipt", group: "Money" },
         { to: "/importer/cards", label: "Importer Cards", iconKey: "card", group: "Money" },
+        { to: "/payments", label: "Payments", iconKey: "receipt", group: "Money" },
         { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
+        { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
-        { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
         Team, Settings,
       ];
     case "freight_workspace":
@@ -255,17 +253,14 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       return [
         D,
         { to: "/suppliers", label: "Supplier Dashboard", iconKey: "factory", group: "My Workspace" },
-        { to: "/trade-network", label: "Trade Network", iconKey: "globe", group: "Trade Network" },
         { to: "/verified-buyers", label: "Verified Buyers", iconKey: "shield-check", group: "Trade Network" },
         { to: "/buyers", label: "Buyers", iconKey: "users", group: "Trade Network" },
         { to: "/invoices", label: "Invoices", iconKey: "receipt", group: "Money" },
         { to: "/escrow", label: "Escrow", iconKey: "shield", group: "Money" },
         { to: "/collections", label: "Settlements", iconKey: "globe", group: "Money" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
-        { to: "/ai-document-extraction", label: "AI Doc Extraction", iconKey: "brain", group: "Operations" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
-        { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
         Team, Settings,
       ];
     case "global_collections":
