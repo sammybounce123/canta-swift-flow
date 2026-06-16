@@ -100,6 +100,8 @@ function ImporterPortal() {
 
       {/* WhatsApp-first action bar */}
       <WhatsAppActions />
+      <EscrowSection />
+
 
       <Tabs defaultValue="shipments">
         <TabsList className="flex-wrap h-auto">
