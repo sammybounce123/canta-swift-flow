@@ -113,6 +113,7 @@ function Freight() {
           <TabsTrigger value="arriving">Arriving Shipments</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="invoices">Invoices</TabsTrigger>
+          <TabsTrigger value="insurance">Insurance</TabsTrigger>
           <TabsTrigger value="whatsapp">WhatsApp Updates</TabsTrigger>
           <TabsTrigger value="reports">Reports</TabsTrigger>
         </TabsList>
@@ -168,6 +169,10 @@ function Freight() {
 
         <TabsContent value="invoices" className="mt-6">
           <InvoicesTable />
+        </TabsContent>
+
+        <TabsContent value="insurance" className="mt-6">
+          <InsurancePanel />
         </TabsContent>
 
         <TabsContent value="whatsapp" className="mt-6 space-y-5">
@@ -262,8 +267,43 @@ function SparkBars({ data, tone }: { data: { label: string; value: number }[]; t
 }
 
 function CustomersTable({ onWhatsApp, onCreate }: { onWhatsApp: (c: typeof importers[number]) => void; onCreate: () => void }) {
+  const [list, setList] = useState(() => importers.map((c) => ({ ...c })));
+  const [addOpen, setAddOpen] = useState(false);
+  const [form, setForm] = useState({ name: "", country: "Nigeria", phone: "", email: "" });
+  const [shareCustomer, setShareCustomer] = useState<(typeof importers)[number] | null>(null);
+
+  const submitAdd = () => {
+    if (!form.name || !form.phone) return toast.error("Name and WhatsApp number are required");
+    setList((arr) => [{
+      name: form.name, country: form.country, phone: form.phone,
+      shipments: 0, active: 0, outstanding: 0, status: "Pending KYB", lastShipment: "—",
+    }, ...arr]);
+    toast.success(`${form.name} added to customers`);
+    setAddOpen(false);
+    setForm({ name: "", country: "Nigeria", phone: "", email: "" });
+  };
+
   return (
     <Card className="shadow-card overflow-hidden">
+      <div className="p-4 flex items-center justify-between border-b border-border">
+        <div className="text-sm font-semibold">Importer customers</div>
+        <Dialog open={addOpen} onOpenChange={setAddOpen}>
+          <DialogTrigger asChild><Button size="sm" className="bg-primary"><UserPlus className="h-3.5 w-3.5 mr-1" /> Add Customer</Button></DialogTrigger>
+          <DialogContent className="max-w-md">
+            <DialogHeader><DialogTitle>Add importer customer</DialogTitle></DialogHeader>
+            <div className="grid gap-3">
+              <FF label="Business name"><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="ABC Electronics" /></FF>
+              <FF label="Country"><Input value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} /></FF>
+              <FF label="WhatsApp number"><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+234 801 234 5566" /></FF>
+              <FF label="Email (optional)"><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="ops@abc.com" /></FF>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setAddOpen(false)}>Cancel</Button>
+              <Button className="bg-primary" onClick={submitAdd}>Add customer</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -279,7 +319,7 @@ function CustomersTable({ onWhatsApp, onCreate }: { onWhatsApp: (c: typeof impor
             </tr>
           </thead>
           <tbody>
-            {importers.map((c) => (
+            {list.map((c) => (
               <tr key={c.name} className="border-t border-border hover:bg-secondary/30">
                 <td className="px-4 py-3"><div className="font-medium">{c.name}</div><div className="text-xs text-muted-foreground">{c.country}</div></td>
                 <td className="px-4 py-3 text-xs font-mono">{c.phone}</td>
@@ -291,6 +331,7 @@ function CustomersTable({ onWhatsApp, onCreate }: { onWhatsApp: (c: typeof impor
                 <td className="px-4 py-3 text-right space-x-1 whitespace-nowrap">
                   <Button size="sm" variant="ghost" onClick={() => toast.info(`Opening ${c.name}`)}><Eye className="h-3.5 w-3.5 mr-1" /> View</Button>
                   <Button size="sm" variant="ghost" onClick={() => onWhatsApp(c)}><MessageCircle className="h-3.5 w-3.5 mr-1" /> WhatsApp</Button>
+                  <Button size="sm" variant="ghost" onClick={() => setShareCustomer(c)}>Tracking link</Button>
                   <Button size="sm" variant="ghost" onClick={onCreate}><Plus className="h-3.5 w-3.5 mr-1" /> Shipment</Button>
                 </td>
               </tr>
@@ -298,51 +339,90 @@ function CustomersTable({ onWhatsApp, onCreate }: { onWhatsApp: (c: typeof impor
           </tbody>
         </table>
       </div>
+
+      <Dialog open={!!shareCustomer} onOpenChange={(o) => !o && setShareCustomer(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader><DialogTitle>Customer tracking link</DialogTitle></DialogHeader>
+          {shareCustomer && (() => {
+            const slug = shareCustomer.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+            const url = typeof window !== "undefined" ? `${window.location.origin}/track/customer/${slug}` : `/track/customer/${slug}`;
+            return (
+              <>
+                <p className="text-xs text-muted-foreground">Shareable link showing all active shipments for {shareCustomer.name}. No login needed.</p>
+                <div className="flex gap-2">
+                  <Input value={url} readOnly className="font-mono text-xs" />
+                  <Button onClick={() => { navigator.clipboard?.writeText(url); toast.success("Link copied"); }}>Copy</Button>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" asChild>
+                    <a href={`https://wa.me/${shareCustomer.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi ${shareCustomer.name}, track your shipments live: ${url}`)}`} target="_blank" rel="noopener noreferrer">
+                      Send via WhatsApp
+                    </a>
+                  </Button>
+                  <Button onClick={() => setShareCustomer(null)}>Done</Button>
+                </DialogFooter>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
 
+type Assignment = { staff: string; role: string; due: string; note: string; status: "Open" | "In Progress" | "Done" };
+
 function PipelineBoard() {
   const [items, setItems] = useState(() => shipments.map((s) => ({ ...s })));
+  const [assignments, setAssignments] = useState<Record<string, Assignment>>({});
+  const [assignOpen, setAssignOpen] = useState<string | null>(null);
   const move = (id: string, status: Shipment["status"]) => {
     setItems((arr) => arr.map((s) => (s.id === id ? { ...s, status } : s)));
     toast.success(`Moved to ${status}`);
   };
-  const assign = (id: string, staff: string) => {
-    setItems((arr) => arr.map((s) => (s.id === id ? { ...s, forwarder: staff } : s)));
-    toast.success(`Assigned to ${staff}`);
-  };
   return (
     <Card className="p-4 shadow-card">
-      <div className="text-xs text-muted-foreground mb-3">Drag, or change the status / assignee from the dropdowns on each card.</div>
+      <div className="text-xs text-muted-foreground mb-3">Change status from each card's dropdown, or click <strong>Assign</strong> for full details (staff, role, due date, note, status).</div>
       <div className="overflow-x-auto">
         <div className="flex gap-3 min-w-[1100px]">
           {STAGES.map((stage) => {
             const list = items.filter((s) => s.status === stage);
             return (
-              <div key={stage} className="w-[200px] flex-shrink-0 bg-secondary/40 rounded-xl p-2">
+              <div key={stage} className="w-[210px] flex-shrink-0 bg-secondary/40 rounded-xl p-2">
                 <div className="px-2 py-1.5 text-[10px] uppercase tracking-widest text-muted-foreground flex items-center justify-between">
                   <span>{stage}</span><span className="font-bold text-foreground">{list.length}</span>
                 </div>
                 <div className="space-y-2 mt-1 min-h-[100px]">
-                  {list.map((s) => (
-                    <div key={s.id} className="p-2.5 bg-card rounded-lg border border-border text-[11px] hover:shadow-md transition space-y-1.5">
-                      <div className="font-semibold truncate">{s.shipmentNumber}</div>
-                      <div className="text-muted-foreground truncate">{s.importer}</div>
-                      <div className="flex items-center justify-between text-[10px]">
-                        <span className="text-muted-foreground">ETA {s.eta}</span>
-                        <span className="font-medium tabular-nums">{fmtMoney(s.value, s.ccy)}</span>
+                  {list.map((s) => {
+                    const a = assignments[s.id];
+                    return (
+                      <div key={s.id} className="p-2.5 bg-card rounded-lg border border-border text-[11px] hover:shadow-md transition space-y-1.5">
+                        <div className="font-semibold truncate">{s.shipmentNumber}</div>
+                        <div className="text-muted-foreground truncate">{s.importer}</div>
+                        <div className="flex items-center justify-between text-[10px]">
+                          <span className="text-muted-foreground">ETA {s.eta}</span>
+                          <span className="font-medium tabular-nums">{fmtMoney(s.value, s.ccy)}</span>
+                        </div>
+                        <Select value={s.status} onValueChange={(v) => move(s.id, v as Shipment["status"])}>
+                          <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
+                          <SelectContent>{STAGES.map((st) => <SelectItem key={st} value={st} className="text-xs">{st}</SelectItem>)}</SelectContent>
+                        </Select>
+                        {a ? (
+                          <button onClick={() => setAssignOpen(s.id)} className="w-full text-left rounded-md border border-border bg-secondary/50 p-1.5 hover:bg-secondary">
+                            <div className="text-[10px] font-semibold truncate">{a.staff} · {a.role}</div>
+                            <div className="text-[9px] text-muted-foreground flex items-center justify-between">
+                              <span>Due {a.due || "—"}</span>
+                              <Badge variant="outline" className="text-[9px] py-0">{a.status}</Badge>
+                            </div>
+                          </button>
+                        ) : (
+                          <Button size="sm" variant="outline" className="h-7 w-full text-[10px]" onClick={() => setAssignOpen(s.id)}>
+                            <UserPlus className="h-3 w-3 mr-1" /> Assign staff
+                          </Button>
+                        )}
                       </div>
-                      <Select value={s.status} onValueChange={(v) => move(s.id, v as Shipment["status"])}>
-                        <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
-                        <SelectContent>{STAGES.map((st) => <SelectItem key={st} value={st} className="text-xs">{st}</SelectItem>)}</SelectContent>
-                      </Select>
-                      <Select value={s.forwarder} onValueChange={(v) => assign(s.id, v)}>
-                        <SelectTrigger className="h-7 text-[10px]"><SelectValue placeholder="Assign staff…" /></SelectTrigger>
-                        <SelectContent>{STAFF.map((st) => <SelectItem key={st} value={st} className="text-xs">{st}</SelectItem>)}</SelectContent>
-                      </Select>
-                    </div>
-                  ))}
+                    );
+                  })}
                   {list.length === 0 && <div className="text-[10px] text-muted-foreground text-center py-4">No shipments</div>}
                 </div>
               </div>
@@ -350,7 +430,66 @@ function PipelineBoard() {
           })}
         </div>
       </div>
+
+      <AssignmentDialog
+        open={!!assignOpen}
+        shipmentId={assignOpen}
+        current={assignOpen ? assignments[assignOpen] : undefined}
+        onClose={() => setAssignOpen(null)}
+        onSave={(a) => {
+          if (!assignOpen) return;
+          setAssignments((cur) => ({ ...cur, [assignOpen]: a }));
+          setItems((arr) => arr.map((s) => (s.id === assignOpen ? { ...s, forwarder: a.staff } : s)));
+          toast.success(`${assignOpen} assigned to ${a.staff} (${a.role})`);
+          setAssignOpen(null);
+        }}
+      />
     </Card>
+  );
+}
+
+function AssignmentDialog({
+  open, shipmentId, current, onClose, onSave,
+}: {
+  open: boolean; shipmentId: string | null; current?: Assignment;
+  onClose: () => void; onSave: (a: Assignment) => void;
+}) {
+  const [a, setA] = useState<Assignment>(current ?? { staff: STAFF[0], role: "Operations Lead", due: "", note: "", status: "Open" });
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Assign shipment {shipmentId ?? ""}</DialogTitle>
+          <p className="text-xs text-muted-foreground">Staff, role, due date, note and status all sync to the pipeline card.</p>
+        </DialogHeader>
+        <div className="grid gap-3">
+          <FF label="Assigned staff">
+            <Select value={a.staff} onValueChange={(v) => setA({ ...a, staff: v })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>{STAFF.map((st) => <SelectItem key={st} value={st}>{st}</SelectItem>)}</SelectContent>
+            </Select>
+          </FF>
+          <FF label="Role">
+            <Select value={a.role} onValueChange={(v) => setA({ ...a, role: v })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>{["Operations Lead","Clearing Agent","Documentation","Warehouse","Customer Manager","Driver"].map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
+            </Select>
+          </FF>
+          <FF label="Due date"><Input type="date" value={a.due} onChange={(e) => setA({ ...a, due: e.target.value })} /></FF>
+          <FF label="Status">
+            <Select value={a.status} onValueChange={(v) => setA({ ...a, status: v as Assignment["status"] })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>{["Open","In Progress","Done"].map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+            </Select>
+          </FF>
+          <FF label="Note"><Textarea value={a.note} onChange={(e) => setA({ ...a, note: e.target.value })} placeholder="Handover instructions, special handling, contact preferences…" /></FF>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button className="bg-primary" onClick={() => onSave(a)}>Save assignment</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -436,15 +575,20 @@ function DocumentsManager() {
 function InvoicesTable() {
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState<FreightInvoice[]>(() => freightInvoices.map((i) => ({ ...i })));
+  const [filter, setFilter] = useState<"All" | "Outstanding" | FreightInvoice["status"]>("All");
   const tones: Record<FreightInvoice["status"], string> = {
+    Draft: "bg-secondary text-secondary-foreground border-border",
+    Sent: "bg-primary/15 text-primary border-primary/30",
     Paid: "bg-success/15 text-success border-success/30",
-    Unpaid: "bg-secondary text-secondary-foreground border-border",
+    Unpaid: "bg-amber-500/10 text-amber-700 border-amber-500/30",
     "Partially Paid": "bg-amber-500/15 text-amber-700 border-amber-500/30",
     Overdue: "bg-destructive/15 text-destructive border-destructive/30",
+    Cancelled: "bg-muted text-muted-foreground border-border",
   };
+  const STATUSES: FreightInvoice["status"][] = ["Draft", "Sent", "Paid", "Unpaid", "Partially Paid", "Overdue", "Cancelled"];
   const setStatus = (id: string, status: FreightInvoice["status"]) => {
     setRows((arr) => arr.map((r) => (r.id === id ? { ...r, status } : r)));
-    toast.success(`Invoice marked as ${status.toLowerCase()}.`);
+    toast.success(`Invoice ${id} marked as ${status}.`);
   };
   const download = (i: FreightInvoice) => {
     const body = `CANTA FREIGHT INVOICE\n\nInvoice: ${i.id}\nCustomer: ${i.customer}\nShipment: ${i.shipment}\nAmount: ${fmtMoney(i.amount, i.ccy)}\nDue: ${i.due}\nIssued: ${i.issued}\nStatus: ${i.status}\n`;
@@ -452,14 +596,36 @@ function InvoicesTable() {
     const a = document.createElement("a"); a.href = url; a.download = `${i.id}.txt`; a.click(); URL.revokeObjectURL(url);
     toast.success(`Downloaded ${i.id}`);
   };
+  const filtered = rows.filter((r) => {
+    if (filter === "All") return true;
+    if (filter === "Outstanding") return !["Paid", "Cancelled"].includes(r.status);
+    return r.status === filter;
+  });
+  const outstandingTotal = rows.filter((r) => !["Paid", "Cancelled"].includes(r.status)).reduce((a, b) => a + b.amount, 0);
+
   return (
     <Card className="shadow-card overflow-hidden">
-      <div className="p-4 flex items-center justify-between border-b border-border">
-        <div className="text-sm font-semibold">Freight invoices</div>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button size="sm" className="bg-primary"><Plus className="h-3.5 w-3.5 mr-1" /> New invoice</Button></DialogTrigger>
-          <NewInvoiceDialog onClose={() => setOpen(false)} />
-        </Dialog>
+      <div className="p-4 flex items-center justify-between flex-wrap gap-3 border-b border-border">
+        <div>
+          <div className="text-sm font-semibold">Freight invoices</div>
+          <div className="text-xs text-muted-foreground mt-0.5">
+            Outstanding: <span className="font-semibold text-destructive">{fmtMoney(outstandingTotal, "USD")}</span> · {rows.length} total
+          </div>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Select value={filter} onValueChange={(v) => setFilter(v as typeof filter)}>
+            <SelectTrigger className="h-8 w-[170px]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All invoices</SelectItem>
+              <SelectItem value="Outstanding">Outstanding only</SelectItem>
+              {STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild><Button size="sm" className="bg-primary"><Plus className="h-3.5 w-3.5 mr-1" /> New invoice</Button></DialogTrigger>
+            <NewInvoiceDialog onClose={() => setOpen(false)} />
+          </Dialog>
+        </div>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
@@ -475,27 +641,41 @@ function InvoicesTable() {
             </tr>
           </thead>
           <tbody>
-            {rows.map((i) => (
+            {filtered.map((i) => (
               <tr key={i.id} className="border-t border-border hover:bg-secondary/30">
                 <td className="px-4 py-3 font-mono text-xs">{i.id}</td>
                 <td className="px-4 py-3">{i.customer}</td>
                 <td className="px-4 py-3 font-mono text-xs">{i.shipment}</td>
                 <td className="px-4 py-3 text-right tabular-nums font-semibold">{fmtMoney(i.amount, i.ccy)}</td>
                 <td className="px-4 py-3 text-xs tabular-nums">{i.due}</td>
-                <td className="px-4 py-3"><span className={`text-[10px] px-2 py-0.5 rounded-full border ${tones[i.status]}`}>{i.status}</span></td>
+                <td className="px-4 py-3">
+                  <Select value={i.status} onValueChange={(v) => setStatus(i.id, v as FreightInvoice["status"])}>
+                    <SelectTrigger className={`h-7 w-[140px] text-[10px] border ${tones[i.status]}`}><SelectValue /></SelectTrigger>
+                    <SelectContent>{STATUSES.map((s) => <SelectItem key={s} value={s} className="text-xs">{s}</SelectItem>)}</SelectContent>
+                  </Select>
+                </td>
                 <td className="px-4 py-3 text-right space-x-1 whitespace-nowrap">
-                  {i.status !== "Paid"
-                    ? <Button size="sm" variant="outline" onClick={() => setStatus(i.id, "Paid")}><Banknote className="h-3.5 w-3.5 mr-1" /> Mark paid</Button>
-                    : <Button size="sm" variant="outline" onClick={() => setStatus(i.id, "Unpaid")}>Mark unpaid</Button>}
+                  {i.status !== "Paid" && i.status !== "Cancelled" && (
+                    <Button size="sm" variant="outline" onClick={() => setStatus(i.id, "Paid")}><Banknote className="h-3.5 w-3.5 mr-1" /> Mark paid</Button>
+                  )}
+                  {i.status === "Paid" && (
+                    <Button size="sm" variant="outline" onClick={() => setStatus(i.id, "Unpaid")}>Mark unpaid</Button>
+                  )}
+                  {i.status === "Unpaid" && (
+                    <Button size="sm" variant="ghost" onClick={() => setStatus(i.id, "Overdue")}>Mark overdue</Button>
+                  )}
                   <Button size="sm" variant="ghost" onClick={() => download(i)}><Download className="h-3.5 w-3.5 mr-1" /> Download</Button>
                   <Button size="sm" variant="ghost" asChild>
-                    <a href={buildWhatsAppUrl("general", { invoice: i.id, amount: fmtMoney(i.amount, i.ccy), due: i.due })} target="_blank" rel="noopener noreferrer">
-                      <MessageCircle className="h-3.5 w-3.5 mr-1" /> WhatsApp
+                    <a href={buildWhatsAppUrl("paymentReminder", { invoice: i.id, amount: fmtMoney(i.amount, i.ccy), due: i.due })} target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="h-3.5 w-3.5 mr-1" /> Remind
                     </a>
                   </Button>
                 </td>
               </tr>
             ))}
+            {filtered.length === 0 && (
+              <tr><td colSpan={7} className="px-4 py-10 text-center text-sm text-muted-foreground">No invoices match this filter.</td></tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -759,12 +939,18 @@ function FF({ label, children }: { label: string; children: React.ReactNode }) {
 function BroadcastPanel() {
   const [message, setMessage] = useState("");
   const [audience, setAudience] = useState("arriving-week");
-  const quick = [
-    { l: "Send update to all customers arriving this week", a: "arriving-week", m: "Hi {{customer}}, your shipment {{shipment_id}} is arriving in {{port}} this week. We'll send the BL and clearing checklist shortly. — Canta" },
-    { l: "Send missing document reminder", a: "missing-docs", m: "Hi {{customer}}, please send the missing documents for {{shipment_id}}: {{missing_docs}}. Reply on WhatsApp and our agent will upload them for you." },
-    { l: "Send payment reminder", a: "payment-pending", m: "Hi {{customer}}, friendly reminder: freight invoice {{invoice_id}} for {{amount}} is due {{due_date}}. Pay via the Canta link in this chat." },
-    { l: "Send delay notice", a: "delayed", m: "Hi {{customer}}, vessel for {{shipment_id}} has been delayed. New ETA: {{new_eta}}. We're tracking it closely — no action needed from your side." },
-    { l: "Send arrival notice", a: "arrived", m: "Hi {{customer}}, your shipment {{shipment_id}} has arrived at {{port}}. Customs clearing begins now. We'll request duty payment shortly." },
+  const quick: { l: string; a: string; m: string; tpl: import("@/lib/whatsapp").WhatsAppTemplateKey }[] = [
+    { l: "Container loaded", a: "loaded", tpl: "containerLoaded", m: "Hi {{customer}}, your container for {{shipment_id}} has been loaded. Vessel sails {{sailing}}." },
+    { l: "Vessel sailed", a: "sailed", tpl: "vesselSailed", m: "Hi {{customer}}, vessel {{vessel}} has sailed from {{origin}}. ETA {{eta}}." },
+    { l: "Arrived at port", a: "arrived", tpl: "arrivedAtPort", m: "Hi {{customer}}, your shipment {{shipment_id}} has arrived at {{port}}. Clearing starts now." },
+    { l: "Clearing started", a: "clearing", tpl: "clearingStarted", m: "Hi {{customer}}, clearing has started for {{shipment_id}}. Please confirm duty payment." },
+    { l: "Cleared customs", a: "cleared", tpl: "clearedCustoms", m: "Hi {{customer}}, {{shipment_id}} has cleared customs. We're arranging delivery." },
+    { l: "Out for delivery", a: "out-for-delivery", tpl: "outForDelivery", m: "Hi {{customer}}, {{shipment_id}} is out for delivery. ETA at your warehouse {{eta}}." },
+    { l: "Delivered", a: "delivered", tpl: "delivered", m: "Hi {{customer}}, {{shipment_id}} delivered ✓. Thank you for shipping with Canta." },
+    { l: "Delay notice", a: "delayed", tpl: "delayNotice", m: "Hi {{customer}}, vessel for {{shipment_id}} has been delayed. New ETA {{new_eta}}." },
+    { l: "Missing document reminder", a: "missing-docs", tpl: "missingDocumentReminder", m: "Hi {{customer}}, please send the missing documents for {{shipment_id}}: {{missing_docs}}." },
+    { l: "Payment reminder", a: "payment-pending", tpl: "paymentReminder", m: "Hi {{customer}}, invoice {{invoice_id}} for {{amount}} is due {{due_date}}." },
+    { l: "Arriving this week", a: "arriving-week", tpl: "shipmentUpdate", m: "Hi {{customer}}, your shipment {{shipment_id}} is arriving in {{port}} this week." },
   ];
   return (
     <Card className="p-5 shadow-card border-[#25D366]/30 bg-gradient-to-br from-[#25D366]/10 to-transparent">
@@ -794,11 +980,7 @@ function BroadcastPanel() {
           <Select value={audience} onValueChange={setAudience}>
             <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="arriving-week">Customers arriving this week</SelectItem>
-              <SelectItem value="missing-docs">Customers with missing documents</SelectItem>
-              <SelectItem value="payment-pending">Customers with outstanding invoices</SelectItem>
-              <SelectItem value="delayed">Customers with delayed shipments</SelectItem>
-              <SelectItem value="arrived">Customers with arrived shipments</SelectItem>
+              {quick.map((q) => <SelectItem key={q.a} value={q.a}>{q.l}</SelectItem>)}
               <SelectItem value="all">All active customers</SelectItem>
             </SelectContent>
           </Select>
@@ -821,20 +1003,112 @@ function BroadcastPanel() {
               className="bg-[#25D366] hover:bg-[#1FB855] text-white hover:shadow-lg hover:shadow-[#25D366]/30 transition"
               onClick={() => {
                 if (!message) { toast.error("Pick a quick action or type a message"); return; }
-                const tpl = audience === "missing-docs" ? "missingDocument" : "shipmentUpdate";
-                const url = audience === "missing-docs"
-                  ? buildWhatsAppUrl("missingDocument", { document: "Bill of Lading / Packing List", shipment: "(see chat)", eta: "(see chat)" })
-                  : buildWhatsAppUrl("shipmentUpdate", { shipment: "(broadcast)", status: audience, eta: "(see chat)", missingDocs: "—", payment: "—", nextAction: message.slice(0, 80) });
+                const picked = quick.find((q) => q.a === audience);
+                const tpl = picked?.tpl ?? "shipmentUpdate";
+                const url = buildWhatsAppUrl(tpl, {
+                  shipment: "(broadcast)", status: audience, eta: "(see chat)",
+                  document: "Bill of Lading / Packing List", port: "(see chat)",
+                  missingDocs: "—", payment: "—", nextAction: message.slice(0, 80),
+                });
                 window.open(url, "_blank", "noopener,noreferrer");
-                toast.success("WhatsApp opening for broadcast");
+                toast.success(`Broadcast sent (${picked?.l ?? "update"})`);
                 setMessage("");
-                void tpl;
               }}
             >
               <Send className="h-3.5 w-3.5 mr-1.5" /> Send broadcast
             </Button>
           </div>
         </div>
+      </div>
+    </Card>
+  );
+}
+
+function InsurancePanel() {
+  type Policy = {
+    id: string; shipment: string; customer: string; cargoValue: number; ccy: string;
+    coverage: number; premium: number; status: "Quoted" | "Offered" | "Bound" | "Declined";
+  };
+  const RATE = 0.0085; // 0.85% of cargo value
+  const [policies, setPolicies] = useState<Policy[]>(() =>
+    shipments.slice(0, 4).map((s, i) => ({
+      id: `INS-${5100 + i}`,
+      shipment: s.shipmentNumber,
+      customer: s.importer,
+      cargoValue: s.value,
+      ccy: s.ccy,
+      coverage: Math.round(s.value * 1.1),
+      premium: Math.round(s.value * RATE),
+      status: (["Quoted","Offered","Bound","Quoted"] as const)[i],
+    })),
+  );
+  const tones: Record<Policy["status"], string> = {
+    Quoted: "bg-secondary text-secondary-foreground border-border",
+    Offered: "bg-primary/15 text-primary border-primary/30",
+    Bound: "bg-success/15 text-success border-success/30",
+    Declined: "bg-destructive/15 text-destructive border-destructive/30",
+  };
+  const setStatus = (id: string, status: Policy["status"]) => {
+    setPolicies((arr) => arr.map((p) => (p.id === id ? { ...p, status } : p)));
+    toast.success(`Insurance ${id} → ${status}`);
+  };
+  const totalBound = policies.filter((p) => p.status === "Bound").reduce((a, b) => a + b.coverage, 0);
+  const totalPremium = policies.filter((p) => p.status !== "Declined").reduce((a, b) => a + b.premium, 0);
+  return (
+    <Card className="shadow-card overflow-hidden">
+      <div className="p-4 border-b border-border flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <div className="text-sm font-semibold">Goods-in-transit insurance</div>
+          <div className="text-xs text-muted-foreground mt-0.5">
+            Bound cover: <span className="font-semibold text-success">{fmtMoney(totalBound, "USD")}</span> ·
+            Premiums in pipeline: <span className="font-semibold">{fmtMoney(totalPremium, "USD")}</span> · Rate {(RATE * 100).toFixed(2)}%
+          </div>
+        </div>
+        <Button size="sm" className="bg-primary" onClick={() => {
+          const s = shipments[Math.floor(Math.random() * shipments.length)];
+          const id = `INS-${5200 + policies.length}`;
+          setPolicies((arr) => [{
+            id, shipment: s.shipmentNumber, customer: s.importer, cargoValue: s.value, ccy: s.ccy,
+            coverage: Math.round(s.value * 1.1), premium: Math.round(s.value * RATE), status: "Quoted",
+          }, ...arr]);
+          toast.success(`Quote ${id} offered to ${s.importer}`);
+        }}>
+          <Plus className="h-3.5 w-3.5 mr-1" /> Offer insurance
+        </Button>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-xs text-muted-foreground bg-secondary/40">
+              <th className="px-4 py-3">Policy #</th>
+              <th className="px-4 py-3">Shipment</th>
+              <th className="px-4 py-3">Customer</th>
+              <th className="px-4 py-3 text-right">Cargo value</th>
+              <th className="px-4 py-3 text-right">Coverage</th>
+              <th className="px-4 py-3 text-right">Premium</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {policies.map((p) => (
+              <tr key={p.id} className="border-t border-border hover:bg-secondary/30">
+                <td className="px-4 py-3 font-mono text-xs">{p.id}</td>
+                <td className="px-4 py-3 font-mono text-xs">{p.shipment}</td>
+                <td className="px-4 py-3">{p.customer}</td>
+                <td className="px-4 py-3 text-right tabular-nums">{fmtMoney(p.cargoValue, p.ccy)}</td>
+                <td className="px-4 py-3 text-right tabular-nums">{fmtMoney(p.coverage, p.ccy)}</td>
+                <td className="px-4 py-3 text-right tabular-nums font-semibold">{fmtMoney(p.premium, p.ccy)}</td>
+                <td className="px-4 py-3"><span className={`text-[10px] px-2 py-0.5 rounded-full border ${tones[p.status]}`}>{p.status}</span></td>
+                <td className="px-4 py-3 text-right space-x-1 whitespace-nowrap">
+                  {p.status !== "Bound" && <Button size="sm" variant="outline" onClick={() => setStatus(p.id, "Bound")}>Bind</Button>}
+                  {p.status !== "Offered" && p.status !== "Bound" && <Button size="sm" variant="ghost" onClick={() => setStatus(p.id, "Offered")}>Offer</Button>}
+                  {p.status !== "Declined" && <Button size="sm" variant="ghost" onClick={() => setStatus(p.id, "Declined")}>Decline</Button>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </Card>
   );
