@@ -12,7 +12,7 @@ import { shipments, importers, freightInvoices, monthlyShipmentVolume, shippingL
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
-import { Truck, Plus, MessageCircle, FileText, DollarSign, Users as UsersIcon, AlertTriangle, Ship, Eye, Upload, CheckCircle2, Clock, TrendingUp, BarChart3, Send } from "lucide-react";
+import { Truck, Plus, MessageCircle, FileText, DollarSign, Users as UsersIcon, AlertTriangle, Ship, Eye, Upload, CheckCircle2, Clock, TrendingUp, BarChart3, Send, Download, UserPlus, Banknote } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
