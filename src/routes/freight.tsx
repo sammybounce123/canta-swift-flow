@@ -110,6 +110,7 @@ function Freight() {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="customers">Customers</TabsTrigger>
           <TabsTrigger value="pipeline">Shipment Pipeline</TabsTrigger>
+          <TabsTrigger value="arriving">Arriving Shipments</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="invoices">Invoices</TabsTrigger>
           <TabsTrigger value="whatsapp">WhatsApp Updates</TabsTrigger>
