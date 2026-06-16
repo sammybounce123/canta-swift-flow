@@ -147,7 +147,6 @@ export function WorkspaceCardsHub({
     setCards((c) => [newCard, ...c]);
     toast.success(requireApproval ? "Card request created — awaiting approval" : "Card issued and active");
   }
-  }
 
   function toggleFreeze(id: string) {
     setCards((cs) =>
