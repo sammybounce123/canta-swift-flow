@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   LayoutDashboard, Wallet, ArrowLeftRight, Receipt, Users, Building2,
   Sparkles, Shield, Settings, Bell, Search, ChevronDown, TrendingUp, TrendingDown,
@@ -9,7 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import { useRole, ALL_ROLES, type Role } from "@/components/RoleProvider";
 import { loadProfile, getSidebarForWorkspace, defaultFlagsFor, type SidebarItem } from "@/lib/profile";
-import { useMode, ALL_MODES } from "@/components/ModeProvider";
+import { useMode, ALL_MODES, type Mode } from "@/components/ModeProvider";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { PARTNER_ROLES, PARTNER_ORG, MARKETERS, setActivePartnerUser } from "@/lib/partner";
 import {
@@ -151,7 +151,16 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
 
 function ModeSwitcher() {
   const { mode, setMode } = useMode();
+  const navigate = useNavigate();
   const current = ALL_MODES.find((m) => m.id === mode)!;
+  const MODE_HOME: Record<Mode, string> = {
+    "Enterprise Treasury": "/treasury",
+    "Importer": "/importer",
+    "Freight Forwarder": "/freight",
+    "Supplier": "/suppliers",
+    "Global Merchant": "/collections",
+    "Partner Property": "/partner",
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -165,7 +174,7 @@ function ModeSwitcher() {
         <DropdownMenuLabel>Switch workspace mode</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {ALL_MODES.map((m) => (
-          <DropdownMenuItem key={m.id} onClick={() => { setMode(m.id); toast.success(`${m.id} mode`); }} className="flex items-start gap-3 py-2">
+          <DropdownMenuItem key={m.id} onClick={() => { setMode(m.id); const home = MODE_HOME[m.id]; navigate({ to: home as never }); toast.success(`${m.id} mode`); }} className="flex items-start gap-3 py-2">
             <div className="h-7 w-7 rounded bg-secondary text-foreground grid place-items-center text-[10px] font-bold flex-shrink-0">{m.tag}</div>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-medium flex items-center gap-2">
