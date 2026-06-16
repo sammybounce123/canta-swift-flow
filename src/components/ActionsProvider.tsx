@@ -7,11 +7,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Building, CreditCard, Zap, ArrowDown, Lock, CheckCircle2, Upload, CalendarClock, Trash2, Plus } from "lucide-react";
+import { Building, Coins, Zap, ArrowDown, Lock, CheckCircle2, Upload, CalendarClock, Trash2, Plus, Paperclip, UserPlus, Loader2 } from "lucide-react";
 import { wallets, beneficiaries, fmtMoney } from "@/lib/mock";
+import { addTransaction } from "@/lib/tx-store";
 
 type Ctx = {
   openFund: (ccy?: string) => void;
