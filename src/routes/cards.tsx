@@ -606,6 +606,56 @@ function CardDetail({ c, onClose }: { c: RichCard; onClose: () => void }) {
   );
 }
 
+type CardLog = { at: string; by: string; action: string; reason?: string };
+
+function CardControls({ card }: { card: RichCard }) {
+  const [status, setStatus] = useState<MockCard["status"]>(card.status);
+  const [log, setLog] = useState<CardLog[]>([]);
+  const [reason, setReason] = useState("");
+  const freeze = () => {
+    setStatus("Frozen");
+    setLog((l) => [{ at: new Date().toLocaleString(), by: "You", action: "Frozen", reason: reason || "—" }, ...l]);
+    toast.success("Card frozen");
+    setReason("");
+  };
+  const unfreeze = () => {
+    setStatus("Active");
+    setLog((l) => [{ at: new Date().toLocaleString(), by: "You", action: "Unfrozen" }, ...l]);
+    toast.success("Card unfrozen successfully.");
+  };
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+        {status === "Frozen"
+          ? <Button variant="outline" onClick={unfreeze}><Snowflake className="h-3.5 w-3.5 mr-1.5" /> Unfreeze card</Button>
+          : <Button variant="outline" onClick={freeze}><Snowflake className="h-3.5 w-3.5 mr-1.5" /> Freeze card</Button>}
+        <Button variant="outline" onClick={() => toast.success("Funding initiated")}><Banknote className="h-3.5 w-3.5 mr-1.5" /> Fund card</Button>
+        <Button variant="outline" onClick={() => toast.success("Limit updated")}><ShieldAlert className="h-3.5 w-3.5 mr-1.5" /> Set limit</Button>
+        <Button variant="outline" onClick={() => toast.success("Cardholder assigned")}><User className="h-3.5 w-3.5 mr-1.5" /> Assign user</Button>
+        <Button variant="outline" onClick={() => toast.success("Statement exported")}><Download className="h-3.5 w-3.5 mr-1.5" /> Export statement</Button>
+        <Button variant="outline" onClick={() => toast.success("Approval requested")}><Clock className="h-3.5 w-3.5 mr-1.5" /> Request approval</Button>
+      </div>
+      {status !== "Frozen" && (
+        <div className="flex items-end gap-2">
+          <div className="flex-1"><Label className="text-[10px] uppercase">Reason for freezing (optional)</Label><Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Suspected fraud, lost card…" /></div>
+        </div>
+      )}
+      <div>
+        <div className="text-xs font-semibold mb-2">Activity log</div>
+        <div className="rounded-lg border border-border divide-y divide-border max-h-40 overflow-y-auto">
+          {log.length === 0 && <div className="px-3 py-3 text-xs text-muted-foreground">No card-status changes yet.</div>}
+          {log.map((e, i) => (
+            <div key={i} className="px-3 py-2 text-xs flex items-center justify-between">
+              <div><span className="font-medium">{e.action}</span> by {e.by}{e.reason ? ` · ${e.reason}` : ""}</div>
+              <div className="text-muted-foreground">{e.at}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ---------- Page ----------
 function CardsPage() {
   const [purposeFilter, setPurposeFilter] = useState<"All" | Purpose>("All");
