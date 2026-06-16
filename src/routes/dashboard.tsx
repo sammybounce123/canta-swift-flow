@@ -77,7 +77,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {mode === "Importer" && <Button asChild size="sm" variant="outline"><Link to="/importer">Open Importer Portal</Link></Button>}
           {mode === "Freight Forwarder" && <Button asChild size="sm" variant="outline"><Link to="/freight">Open Workspace</Link></Button>}
           {mode === "Supplier" && <Button asChild size="sm" variant="outline"><Link to="/suppliers">Open Suppliers</Link></Button>}
