@@ -20,6 +20,7 @@ import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as TradeNetworkRouteImport } from './routes/trade-network'
 import { Route as TradeDeskRouteImport } from './routes/trade-desk'
 import { Route as TeamRouteImport } from './routes/team'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as SuppliersRouteImport } from './routes/suppliers'
 import { Route as ShipmentsRouteImport } from './routes/shipments'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -42,6 +43,7 @@ import { Route as FreightRouteImport } from './routes/freight'
 import { Route as EscrowRouteImport } from './routes/escrow'
 import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DocsRouteImport } from './routes/docs'
+import { Route as DataModelRouteImport } from './routes/data-model'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as ComplianceRouteImport } from './routes/compliance'
@@ -73,9 +75,11 @@ import { Route as PartnerMarketersRouteImport } from './routes/partner.marketers
 import { Route as PartnerLeadsRouteImport } from './routes/partner.leads'
 import { Route as PartnerFxQuotesRouteImport } from './routes/partner.fx-quotes'
 import { Route as PartnerDocumentsRouteImport } from './routes/partner.documents'
+import { Route as PartnerCommissionsRouteImport } from './routes/partner.commissions'
 import { Route as PartnerCasesRouteImport } from './routes/partner.cases'
 import { Route as ImporterCardsRouteImport } from './routes/importer.cards'
 import { Route as FreightCardsRouteImport } from './routes/freight.cards'
+import { Route as CollectionsNewRouteImport } from './routes/collections.new'
 import { Route as PartnerCasesIndexRouteImport } from './routes/partner.cases.index'
 import { Route as PartnerCasesCaseIdRouteImport } from './routes/partner.cases.$caseId'
 
@@ -132,6 +136,11 @@ const TradeDeskRoute = TradeDeskRouteImport.update({
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
   path: '/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SuppliersRoute = SuppliersRouteImport.update({
@@ -242,6 +251,11 @@ const DocumentsRoute = DocumentsRouteImport.update({
 const DocsRoute = DocsRouteImport.update({
   id: '/docs',
   path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DataModelRoute = DataModelRouteImport.update({
+  id: '/data-model',
+  path: '/data-model',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -399,6 +413,11 @@ const PartnerDocumentsRoute = PartnerDocumentsRouteImport.update({
   path: '/documents',
   getParentRoute: () => PartnerRoute,
 } as any)
+const PartnerCommissionsRoute = PartnerCommissionsRouteImport.update({
+  id: '/commissions',
+  path: '/commissions',
+  getParentRoute: () => PartnerRoute,
+} as any)
 const PartnerCasesRoute = PartnerCasesRouteImport.update({
   id: '/cases',
   path: '/cases',
@@ -413,6 +432,11 @@ const FreightCardsRoute = FreightCardsRouteImport.update({
   id: '/cards',
   path: '/cards',
   getParentRoute: () => FreightRoute,
+} as any)
+const CollectionsNewRoute = CollectionsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => CollectionsRoute,
 } as any)
 const PartnerCasesIndexRoute = PartnerCasesIndexRouteImport.update({
   id: '/',
@@ -435,10 +459,11 @@ export interface FileRoutesByFullPath {
   '/beneficiaries': typeof BeneficiariesRoute
   '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
-  '/collections': typeof CollectionsRoute
+  '/collections': typeof CollectionsRouteWithChildren
   '/compliance': typeof ComplianceRoute
   '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
+  '/data-model': typeof DataModelRoute
   '/docs': typeof DocsRoute
   '/documents': typeof DocumentsRoute
   '/escrow': typeof EscrowRoute
@@ -461,6 +486,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
   '/suppliers': typeof SuppliersRoute
+  '/support': typeof SupportRoute
   '/team': typeof TeamRoute
   '/trade-desk': typeof TradeDeskRouteWithChildren
   '/trade-network': typeof TradeNetworkRoute
@@ -472,9 +498,11 @@ export interface FileRoutesByFullPath {
   '/wallets': typeof WalletsRoute
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
+  '/collections/new': typeof CollectionsNewRoute
   '/freight/cards': typeof FreightCardsRoute
   '/importer/cards': typeof ImporterCardsRoute
   '/partner/cases': typeof PartnerCasesRouteWithChildren
+  '/partner/commissions': typeof PartnerCommissionsRoute
   '/partner/documents': typeof PartnerDocumentsRoute
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
   '/partner/leads': typeof PartnerLeadsRoute
@@ -506,10 +534,11 @@ export interface FileRoutesByTo {
   '/beneficiaries': typeof BeneficiariesRoute
   '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
-  '/collections': typeof CollectionsRoute
+  '/collections': typeof CollectionsRouteWithChildren
   '/compliance': typeof ComplianceRoute
   '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
+  '/data-model': typeof DataModelRoute
   '/docs': typeof DocsRoute
   '/documents': typeof DocumentsRoute
   '/escrow': typeof EscrowRoute
@@ -531,6 +560,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
   '/suppliers': typeof SuppliersRoute
+  '/support': typeof SupportRoute
   '/team': typeof TeamRoute
   '/trade-network': typeof TradeNetworkRoute
   '/transactions': typeof TransactionsRoute
@@ -541,8 +571,10 @@ export interface FileRoutesByTo {
   '/wallets': typeof WalletsRoute
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
+  '/collections/new': typeof CollectionsNewRoute
   '/freight/cards': typeof FreightCardsRoute
   '/importer/cards': typeof ImporterCardsRoute
+  '/partner/commissions': typeof PartnerCommissionsRoute
   '/partner/documents': typeof PartnerDocumentsRoute
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
   '/partner/leads': typeof PartnerLeadsRoute
@@ -575,10 +607,11 @@ export interface FileRoutesById {
   '/beneficiaries': typeof BeneficiariesRoute
   '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
-  '/collections': typeof CollectionsRoute
+  '/collections': typeof CollectionsRouteWithChildren
   '/compliance': typeof ComplianceRoute
   '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
+  '/data-model': typeof DataModelRoute
   '/docs': typeof DocsRoute
   '/documents': typeof DocumentsRoute
   '/escrow': typeof EscrowRoute
@@ -601,6 +634,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
   '/suppliers': typeof SuppliersRoute
+  '/support': typeof SupportRoute
   '/team': typeof TeamRoute
   '/trade-desk': typeof TradeDeskRouteWithChildren
   '/trade-network': typeof TradeNetworkRoute
@@ -612,9 +646,11 @@ export interface FileRoutesById {
   '/wallets': typeof WalletsRoute
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
+  '/collections/new': typeof CollectionsNewRoute
   '/freight/cards': typeof FreightCardsRoute
   '/importer/cards': typeof ImporterCardsRoute
   '/partner/cases': typeof PartnerCasesRouteWithChildren
+  '/partner/commissions': typeof PartnerCommissionsRoute
   '/partner/documents': typeof PartnerDocumentsRoute
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
   '/partner/leads': typeof PartnerLeadsRoute
@@ -652,6 +688,7 @@ export interface FileRouteTypes {
     | '/compliance'
     | '/customers'
     | '/dashboard'
+    | '/data-model'
     | '/docs'
     | '/documents'
     | '/escrow'
@@ -674,6 +711,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/shipments'
     | '/suppliers'
+    | '/support'
     | '/team'
     | '/trade-desk'
     | '/trade-network'
@@ -685,9 +723,11 @@ export interface FileRouteTypes {
     | '/wallets'
     | '/welcome'
     | '/whatsapp'
+    | '/collections/new'
     | '/freight/cards'
     | '/importer/cards'
     | '/partner/cases'
+    | '/partner/commissions'
     | '/partner/documents'
     | '/partner/fx-quotes'
     | '/partner/leads'
@@ -723,6 +763,7 @@ export interface FileRouteTypes {
     | '/compliance'
     | '/customers'
     | '/dashboard'
+    | '/data-model'
     | '/docs'
     | '/documents'
     | '/escrow'
@@ -744,6 +785,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/shipments'
     | '/suppliers'
+    | '/support'
     | '/team'
     | '/trade-network'
     | '/transactions'
@@ -754,8 +796,10 @@ export interface FileRouteTypes {
     | '/wallets'
     | '/welcome'
     | '/whatsapp'
+    | '/collections/new'
     | '/freight/cards'
     | '/importer/cards'
+    | '/partner/commissions'
     | '/partner/documents'
     | '/partner/fx-quotes'
     | '/partner/leads'
@@ -791,6 +835,7 @@ export interface FileRouteTypes {
     | '/compliance'
     | '/customers'
     | '/dashboard'
+    | '/data-model'
     | '/docs'
     | '/documents'
     | '/escrow'
@@ -813,6 +858,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/shipments'
     | '/suppliers'
+    | '/support'
     | '/team'
     | '/trade-desk'
     | '/trade-network'
@@ -824,9 +870,11 @@ export interface FileRouteTypes {
     | '/wallets'
     | '/welcome'
     | '/whatsapp'
+    | '/collections/new'
     | '/freight/cards'
     | '/importer/cards'
     | '/partner/cases'
+    | '/partner/commissions'
     | '/partner/documents'
     | '/partner/fx-quotes'
     | '/partner/leads'
@@ -859,10 +907,11 @@ export interface RootRouteChildren {
   BeneficiariesRoute: typeof BeneficiariesRoute
   BuyersRoute: typeof BuyersRoute
   CardsRoute: typeof CardsRoute
-  CollectionsRoute: typeof CollectionsRoute
+  CollectionsRoute: typeof CollectionsRouteWithChildren
   ComplianceRoute: typeof ComplianceRoute
   CustomersRoute: typeof CustomersRoute
   DashboardRoute: typeof DashboardRoute
+  DataModelRoute: typeof DataModelRoute
   DocsRoute: typeof DocsRoute
   DocumentsRoute: typeof DocumentsRoute
   EscrowRoute: typeof EscrowRoute
@@ -885,6 +934,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   ShipmentsRoute: typeof ShipmentsRoute
   SuppliersRoute: typeof SuppliersRoute
+  SupportRoute: typeof SupportRoute
   TeamRoute: typeof TeamRoute
   TradeDeskRoute: typeof TradeDeskRouteWithChildren
   TradeNetworkRoute: typeof TradeNetworkRoute
@@ -978,6 +1028,13 @@ declare module '@tanstack/react-router' {
       path: '/team'
       fullPath: '/team'
       preLoaderRoute: typeof TeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/suppliers': {
@@ -1132,6 +1189,13 @@ declare module '@tanstack/react-router' {
       path: '/docs'
       fullPath: '/docs'
       preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/data-model': {
+      id: '/data-model'
+      path: '/data-model'
+      fullPath: '/data-model'
+      preLoaderRoute: typeof DataModelRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -1351,6 +1415,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PartnerDocumentsRouteImport
       parentRoute: typeof PartnerRoute
     }
+    '/partner/commissions': {
+      id: '/partner/commissions'
+      path: '/commissions'
+      fullPath: '/partner/commissions'
+      preLoaderRoute: typeof PartnerCommissionsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
     '/partner/cases': {
       id: '/partner/cases'
       path: '/cases'
@@ -1372,6 +1443,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FreightCardsRouteImport
       parentRoute: typeof FreightRoute
     }
+    '/collections/new': {
+      id: '/collections/new'
+      path: '/new'
+      fullPath: '/collections/new'
+      preLoaderRoute: typeof CollectionsNewRouteImport
+      parentRoute: typeof CollectionsRoute
+    }
     '/partner/cases/': {
       id: '/partner/cases/'
       path: '/'
@@ -1388,6 +1466,18 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface CollectionsRouteChildren {
+  CollectionsNewRoute: typeof CollectionsNewRoute
+}
+
+const CollectionsRouteChildren: CollectionsRouteChildren = {
+  CollectionsNewRoute: CollectionsNewRoute,
+}
+
+const CollectionsRouteWithChildren = CollectionsRoute._addFileChildren(
+  CollectionsRouteChildren,
+)
 
 interface FreightRouteChildren {
   FreightCardsRoute: typeof FreightCardsRoute
@@ -1428,6 +1518,7 @@ const PartnerCasesRouteWithChildren = PartnerCasesRoute._addFileChildren(
 
 interface PartnerRouteChildren {
   PartnerCasesRoute: typeof PartnerCasesRouteWithChildren
+  PartnerCommissionsRoute: typeof PartnerCommissionsRoute
   PartnerDocumentsRoute: typeof PartnerDocumentsRoute
   PartnerFxQuotesRoute: typeof PartnerFxQuotesRoute
   PartnerLeadsRoute: typeof PartnerLeadsRoute
@@ -1444,6 +1535,7 @@ interface PartnerRouteChildren {
 
 const PartnerRouteChildren: PartnerRouteChildren = {
   PartnerCasesRoute: PartnerCasesRouteWithChildren,
+  PartnerCommissionsRoute: PartnerCommissionsRoute,
   PartnerDocumentsRoute: PartnerDocumentsRoute,
   PartnerFxQuotesRoute: PartnerFxQuotesRoute,
   PartnerLeadsRoute: PartnerLeadsRoute,
@@ -1497,10 +1589,11 @@ const rootRouteChildren: RootRouteChildren = {
   BeneficiariesRoute: BeneficiariesRoute,
   BuyersRoute: BuyersRoute,
   CardsRoute: CardsRoute,
-  CollectionsRoute: CollectionsRoute,
+  CollectionsRoute: CollectionsRouteWithChildren,
   ComplianceRoute: ComplianceRoute,
   CustomersRoute: CustomersRoute,
   DashboardRoute: DashboardRoute,
+  DataModelRoute: DataModelRoute,
   DocsRoute: DocsRoute,
   DocumentsRoute: DocumentsRoute,
   EscrowRoute: EscrowRoute,
@@ -1523,6 +1616,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   ShipmentsRoute: ShipmentsRoute,
   SuppliersRoute: SuppliersRoute,
+  SupportRoute: SupportRoute,
   TeamRoute: TeamRoute,
   TradeDeskRoute: TradeDeskRouteWithChildren,
   TradeNetworkRoute: TradeNetworkRoute,
