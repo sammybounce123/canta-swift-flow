@@ -54,16 +54,55 @@ function NewCollectionPage() {
   );
 }
 
+function pushLS(key: string, value: any) {
+  try {
+    const raw = localStorage.getItem(key);
+    const arr = raw ? JSON.parse(raw) : [];
+    arr.unshift(value);
+    localStorage.setItem(key, JSON.stringify(arr.slice(0, 200)));
+  } catch {}
+}
+
 function TemplateForm({ tpl, onBack }: { tpl: CollectionTemplate; onBack: () => void }) {
   const [values, setValues] = useState<Record<string, string>>({});
   const nav = useNavigate();
   const set = (k: string, v: string) => setValues((s) => ({ ...s, [k]: v }));
+
   const submit = () => {
     const missing = tpl.fields.filter((f) => f.required && !values[f.key]);
     if (missing.length) { toast.error(`Required: ${missing.map((m) => m.label).join(", ")}`); return; }
-    toast.success(`${tpl.label} created — invoice, payment link, payer & settlement batch generated`);
-    setTimeout(() => nav({ to: "/collections" }), 600);
+
+    const id = `${tpl.id.toUpperCase()}-${Date.now().toString(36).toUpperCase()}`;
+    const ccy = values.settlementCcy || "USD";
+    const amount = Number(values.amount || 0);
+    const payerName =
+      values.payerName || values.customer || values.client || values.buyerName ||
+      values.traveller || values.patientName || values.studentName || "Payer";
+    const reconRef = values.reconRef || values.invoiceRef || values.paymentRef || values.orderId || values.invoiceNo || id;
+    const subject =
+      values.studentName || values.patientName || values.buyerName || values.traveller ||
+      values.customer || values.client || values.supplier || tpl.label;
+
+    const createdAt = new Date().toISOString();
+    const invoice = { id, type: tpl.id, purpose: tpl.purpose, subject, amount, ccy, deadline: values.deadline || null, status: "Sent", createdAt, fields: values };
+    const paymentLink = { id: `PL-${id}`, invoiceId: id, url: `https://pay.canta.app/${id.toLowerCase()}`, amount, ccy, status: "Active", createdAt };
+    const payer = { id: `PYR-${id}`, name: payerName, country: values.payerCountry || null, type: tpl.purpose, lastInvoiceId: id, createdAt };
+    const recon = { id: `REC-${id}`, ref: reconRef, invoiceId: id, amount, ccy, status: "Pending", createdAt };
+    const batch = { id: `BATCH-${id}`, invoiceId: id, ccy, amount, status: "Queued", createdAt };
+
+    pushLS("canta:collections:invoices", invoice);
+    pushLS("canta:collections:paymentLinks", paymentLink);
+    pushLS("canta:collections:payers", payer);
+    pushLS("canta:collections:reconciliation", recon);
+    pushLS("canta:collections:settlementBatches", batch);
+
+    toast.success(`${tpl.label} created`, {
+      description: `Invoice ${id}, payment link, payer, reconciliation ref ${reconRef} & settlement batch generated.`,
+      action: { label: "View invoice", onClick: () => nav({ to: "/invoices", search: { new: id } as any }) },
+    });
+    setTimeout(() => nav({ to: "/payment-links", search: { new: paymentLink.id } as any }), 700);
   };
+
   return (
     <Card className="p-6 shadow-card space-y-4">
       <div className="flex items-center gap-2">
@@ -81,6 +120,7 @@ function TemplateForm({ tpl, onBack }: { tpl: CollectionTemplate; onBack: () => 
     </Card>
   );
 }
+
 
 function FormField({ f, value, onChange }: { f: TemplateField; value: string; onChange: (v: string) => void }) {
   return (
