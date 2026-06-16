@@ -104,55 +104,49 @@ export function WorkspaceCardsHub({
   }, []);
 
   const [cards, setCards] = useState<IssuedCard[]>(seed);
-  const [open, setOpen] = useState(false);
-
-  // New card draft
-  const [draft, setDraft] = useState({
-    type: cardTypes[0].key,
-    holder: "",
-    linkKind: linkEntities[0],
-    linkTo: "",
-    daily: 1000,
-    monthly: 20000,
-    tx: 500,
-    requireApproval: true,
-    requireReceipts: true,
-  });
 
   const totalSpend = cards.reduce((s, c) => s + c.monthlySpend, 0);
   const active = cards.filter((c) => c.status === "Active").length;
   const pending = cards.filter((c) => c.status === "Pending Approval").length;
   const receiptsMissing = cards.reduce((s, c) => s + c.receiptsMissing, 0);
 
-  function create() {
-    if (!draft.holder.trim()) {
-      toast.error("Add a cardholder name");
-      return;
-    }
-    const ct = cardTypes.find((t) => t.key === draft.type)!;
+  // Map workspace-specific link entity strings to the wizard's canonical CardLinkKind.
+  const defaultLinkKind: CardLinkKind = (() => {
+    const m: Record<string, CardLinkKind> = {
+      "Trade file": "Trade File", "Trade File": "Trade File",
+      "Shipment": "Shipment", "Supplier": "Supplier",
+      "Cost center": "Cost Center", "Cost Center": "Cost Center",
+      "Department": "Department", "Project": "Project",
+      "Freight route": "Freight Route", "Freight Route": "Freight Route",
+      "Freight customer": "Freight Customer", "Freight Customer": "Freight Customer",
+      "Event": "Event", "Property Case": "Property Case",
+    };
+    return m[linkEntities[0]] ?? "Department";
+  })();
+
+  function handleCreate(d: CardDraft) {
+    const requireApproval = d.approvalAbove > 0;
     const newCard: IssuedCard = {
       id: nextId(),
-      type: draft.type,
-      typeLabel: ct.label,
-      holder: draft.holder.trim(),
+      type: d.purpose,
+      typeLabel: d.purpose,
+      holder: d.who === "Me" ? "Me" : (d.holder || d.who),
       last4: String(1000 + Math.floor(Math.random() * 8999)).slice(-4),
-      status: draft.requireApproval ? "Pending Approval" : "Active",
-      dailyLimit: draft.daily,
-      monthlyLimit: draft.monthly,
-      txLimit: draft.tx,
+      status: requireApproval ? "Pending Approval" : "Active",
+      dailyLimit: d.dailyLimit,
+      monthlyLimit: d.monthlyLimit,
+      txLimit: d.singleTxLimit,
       monthlySpend: 0,
-      requireApproval: draft.requireApproval,
-      requireReceipts: draft.requireReceipts,
-      linkedTo: draft.linkTo || draft.linkKind + " · unassigned",
-      linkedKind: draft.linkKind,
+      requireApproval,
+      requireReceipts: d.receiptsRequired,
+      linkedTo: d.linkRef ? `${d.linkKind} · ${d.linkRef}` : `${d.linkKind} · unassigned`,
+      linkedKind: d.linkKind,
       receiptsMissing: 0,
-      spendByDim: Object.fromEntries(spendDimensions.map((d) => [d.key, []])),
+      spendByDim: Object.fromEntries(spendDimensions.map((dim) => [dim.key, []])),
     };
     setCards((c) => [newCard, ...c]);
-    setOpen(false);
-    toast.success(
-      draft.requireApproval ? "Card request created — awaiting approval" : "Card issued and active"
-    );
+    toast.success(requireApproval ? "Card request created — awaiting approval" : "Card issued and active");
+  }
   }
 
   function toggleFreeze(id: string) {
