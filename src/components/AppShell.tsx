@@ -201,8 +201,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const partnerInitials = partner.user ? partner.user.name.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase() : "BC";
 
   return (
-    <div className="min-h-screen flex bg-background">
-      <aside className="hidden lg:flex w-64 flex-col sticky top-0 h-screen">
+    <div className="h-screen flex bg-background overflow-hidden">
+      <aside className="hidden lg:flex w-64 flex-col h-screen shrink-0 border-r border-sidebar-border">
         <SidebarContent pathname={pathname} />
       </aside>
 
