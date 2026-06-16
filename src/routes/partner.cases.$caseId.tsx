@@ -21,6 +21,7 @@ import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { usePartnerCase } from "@/hooks/usePartnerCases";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { InsuranceHookCard } from "@/components/InsuranceHookCard";
 
 export const Route = createFileRoute("/partner/cases/$caseId")({
   head: () => ({ meta: [{ title: "Client Case — Baron & Cabot" }] }),
@@ -174,6 +175,20 @@ function CaseDetail() {
           )}
         </Card>
       )}
+
+      {tab === "Payout" && (
+        <InsuranceHookCard
+          title="Property payment protection"
+          description="Optional cover protecting the client's funds in transit between Canta and the solicitor."
+          customer={c.clientName}
+          linkedId={c.id}
+          linkedKind="payment-case"
+          insuredAmount={c.amountGBP}
+          ccy="GBP"
+          riskType="Property payment protection"
+        />
+      )}
+
 
       {tab === "Activity" && (
         <Card className="p-6 shadow-card">

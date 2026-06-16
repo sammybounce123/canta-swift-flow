@@ -12,6 +12,7 @@ import {
   Shield, MessageCircle,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { InsuranceHookCard } from "@/components/InsuranceHookCard";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/trade-desk/$fileId")({
@@ -116,6 +117,17 @@ function TradeFileDetail() {
               </div>
             </Card>
           </div>
+
+          <InsuranceHookCard
+            title="Cargo insurance for this trade file"
+            description="Protect this shipment against cargo loss, damage, and freight liability. Quote provided by partner underwriters."
+            customer={file.importer}
+            linkedId={file.id}
+            linkedKind="trade-file"
+            insuredAmount={file.invoiceValue}
+            ccy={file.ccy}
+            riskType="Cargo"
+          />
         </TabsContent>
 
         <TabsContent value="timeline">
