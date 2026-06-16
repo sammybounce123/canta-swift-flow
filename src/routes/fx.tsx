@@ -127,17 +127,8 @@ function FX() {
               </select>
             </div>
 
-            <label className="text-xs text-muted-foreground pt-1">Beneficiary</label>
-            <select
-              value={beneficiaryName}
-              onChange={(e) => setBeneficiaryName(e.target.value)}
-              className="w-full p-2.5 rounded-lg border border-border bg-card text-sm"
-            >
-              {beneficiaries.map((b) => (
-                <option key={b.name}>{b.name}</option>
-              ))}
-            </select>
           </div>
+
 
           <div className="mt-5 p-3 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-between text-sm">
             <div className="flex items-center gap-2">
