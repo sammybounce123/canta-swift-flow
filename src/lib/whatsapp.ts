@@ -82,6 +82,96 @@ ETA: ${ctx.eta ?? ""}
 
 Please upload or send it to Canta so your trade file can be updated.`,
 
+  containerLoaded: (ctx = {}) =>
+    `Canta Shipment Update — Container Loaded
+
+Shipment: ${ctx.shipment ?? ""}
+Container: ${ctx.container ?? ""}
+Origin: ${ctx.origin ?? ""}
+Vessel: ${ctx.vessel ?? "Vessel to be confirmed"}
+Estimated sailing: ${ctx.sailing ?? ""}
+
+We will notify you again when the vessel sails.`,
+
+  vesselSailed: (ctx = {}) =>
+    `Canta Shipment Update — Vessel Sailed
+
+Shipment: ${ctx.shipment ?? ""}
+Vessel: ${ctx.vessel ?? ""}
+Departed: ${ctx.departed ?? ""}
+ETA destination: ${ctx.eta ?? ""}
+
+You will receive the next update when your goods arrive.`,
+
+  arrivedAtPort: (ctx = {}) =>
+    `Canta Shipment Update — Arrived at Port
+
+Shipment: ${ctx.shipment ?? ""}
+Port: ${ctx.port ?? ""}
+Arrived: ${ctx.arrived ?? "today"}
+
+Customs clearance will begin shortly.`,
+
+  clearingStarted: (ctx = {}) =>
+    `Canta Shipment Update — Clearing Started
+
+Shipment: ${ctx.shipment ?? ""}
+Port: ${ctx.port ?? ""}
+
+Our clearing desk has filed documents. Please confirm duty payment so we can release your goods.`,
+
+  clearedCustoms: (ctx = {}) =>
+    `Canta Shipment Update — Cleared Customs
+
+Shipment: ${ctx.shipment ?? ""}
+Cleared: ${ctx.cleared ?? "today"}
+
+We are now arranging delivery to your warehouse.`,
+
+  outForDelivery: (ctx = {}) =>
+    `Canta Shipment Update — Out for Delivery
+
+Shipment: ${ctx.shipment ?? ""}
+Driver: ${ctx.driver ?? ""}
+Vehicle: ${ctx.vehicle ?? ""}
+ETA at your warehouse: ${ctx.eta ?? ""}`,
+
+  delivered: (ctx = {}) =>
+    `Canta Shipment Update — Delivered ✓
+
+Shipment: ${ctx.shipment ?? ""}
+Delivered: ${ctx.delivered ?? "today"}
+Received by: ${ctx.receiver ?? ""}
+
+Thank you for shipping with Canta. Please rate your experience in the app.`,
+
+  delayNotice: (ctx = {}) =>
+    `Canta Shipment Update — Delay Notice
+
+Shipment: ${ctx.shipment ?? ""}
+Reason: ${ctx.reason ?? "Vessel/port delay"}
+New ETA: ${ctx.newEta ?? "Being confirmed"}
+
+No action needed from your side. We are monitoring closely.`,
+
+  missingDocumentReminder: (ctx = {}) =>
+    `Reminder — Missing Document
+
+Shipment: ${ctx.shipment ?? ""}
+Missing: ${ctx.document ?? ""}
+Deadline: ${ctx.deadline ?? ""}
+
+Please send the document on this chat so we can avoid clearing delays.`,
+
+  paymentReminder: (ctx = {}) =>
+    `Payment Reminder
+
+Invoice: ${ctx.invoice ?? ""}
+Amount due: ${ctx.amount ?? ""}
+Due date: ${ctx.due ?? ""}
+
+Pay via the Canta link in this chat. Reply if you'd like to discuss terms.`,
+
   general: () => `Hello Canta, I would like to learn more about your platform.`,
 };
 
