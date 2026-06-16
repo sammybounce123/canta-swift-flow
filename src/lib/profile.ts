@@ -232,6 +232,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/payments", label: "Payments", iconKey: "receipt", group: "Money" },
         { to: "/importer/cards", label: "Importer Cards", iconKey: "card", group: "Money" },
         { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
+        { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
         Team, Settings,
       ];
@@ -246,6 +247,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/freight/cards", label: "Freight Cards", iconKey: "card", group: "Money" },
         { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
         Team, Settings,
       ];
@@ -262,6 +264,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
         { to: "/ai-document-extraction", label: "AI Doc Extraction", iconKey: "brain", group: "Operations" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
         Team, Settings,
       ];
@@ -269,6 +272,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       return [
         D,
         { to: "/collections", label: "Global Collections", iconKey: "globe", group: "My Workspace" },
+        { to: "/collections/new", label: "New Collection", iconKey: "sparkles", group: "Collect" },
         { to: "/payment-links", label: "Payment Links", iconKey: "link", group: "Collect" },
         { to: "/invoices", label: "Invoices", iconKey: "receipt", group: "Collect" },
         { to: "/payers", label: "Payers", iconKey: "users", group: "Collect" },
@@ -277,6 +281,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/approvals", label: "Settlement Approvals", iconKey: "check", group: "Money" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/cards", label: "Staff Cards", iconKey: "card", group: "Spend" },
+        { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
         { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
         Team, Settings,
@@ -294,6 +299,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
         { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         Team, Settings,
       ];
     case "global_spend_cards":
@@ -301,10 +307,16 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         D,
         { to: "/cards", label: "Global Spend Cards", iconKey: "card", group: "My Workspace" },
         { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Activity" },
+        { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         Settings,
       ];
-    case "partner_property":
-      return [
+    case "partner_property": {
+      // Lazy import to avoid SSR cycles; settings stored in localStorage.
+      let commissionsEnabled = true;
+      if (typeof window !== "undefined") {
+        try { const raw = window.localStorage.getItem("canta:partner:settings:v1"); if (raw) commissionsEnabled = JSON.parse(raw).commissionsEnabled !== false; } catch { /* keep default */ }
+      }
+      const items: SidebarItem[] = [
         { to: "/partner", label: "Dashboard", iconKey: "dashboard", group: "Overview", exact: true },
         { to: "/partner/leads", label: "Referral Leads", iconKey: "sparkles", group: "Referrals" },
         { to: "/partner/cases", label: "Client Payment Cases", iconKey: "file", group: "Referrals" },
@@ -315,13 +327,17 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/partner/solicitors", label: "Solicitors", iconKey: "shield-check", group: "Beneficiaries" },
         { to: "/partner/documents", label: "Documents", iconKey: "file", group: "Operations" },
         { to: "/partner/marketers", label: "Marketer Performance", iconKey: "users", group: "Insights" },
+        ...(commissionsEnabled ? [{ to: "/partner/commissions", label: "Commissions", iconKey: "receipt", group: "Insights" } as SidebarItem] : []),
         { to: "/partner/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
         { to: "/partner/team", label: "Team", iconKey: "team", group: "Workspace" },
         { to: "/partner/settings", label: "Settings", iconKey: "settings", group: "Workspace" },
       ];
+      return items;
+    }
   }
 }
+
 
 
 export function getAllowedRoutes(workspace: WorkspaceType, flags: FeatureFlags): Set<string> {
