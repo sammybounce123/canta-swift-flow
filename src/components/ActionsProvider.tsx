@@ -76,38 +76,24 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
             <DialogTitle>Fund {fund.ccy} Wallet</DialogTitle>
             <DialogDescription>Choose a funding method to top up instantly.</DialogDescription>
           </DialogHeader>
-          <div className="space-y-3">
-            <div>
-              <Label className="text-xs">Amount ({fund.ccy})</Label>
-              <Input defaultValue="1,000,000" className="mt-1" />
-            </div>
-            <div className="space-y-2">
-              {[
-                { icon: Building, label: "Bank Transfer", desc: "Free · Settles in seconds", rec: true },
-                { icon: Coins, label: "USDT (TRC20 / ERC20)", desc: "Stablecoin · Auto-converted at mid-market", rec: false },
-                { icon: Zap, label: "Pay Without Funding", desc: "Inline · No pre-fund needed" },
-              ].map((o) => (
-                <button
-                  key={o.label}
-                  className="w-full text-left flex items-center gap-3 p-3 rounded-xl border border-border hover:border-accent hover:bg-secondary/40"
-                  onClick={() => {
-                    setFund((s) => ({ ...s, open: false }));
-                    toast.success(`${o.label} initiated`, { description: `Funding your ${fund.ccy} wallet.` });
-                    navigate({ to: "/transactions" });
-                  }}
-                >
-                  <div className="h-9 w-9 rounded-lg bg-primary/10 grid place-items-center">
-                    <o.icon className="h-4 w-4 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-semibold">{o.label}</div>
-                    <div className="text-xs text-muted-foreground">{o.desc}</div>
-                  </div>
-                  {o.rec && <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/20 text-accent-foreground">Recommended</span>}
-                </button>
-              ))}
-            </div>
-          </div>
+          <FundForm
+            ccy={fund.ccy}
+            onConfirm={(amount, method) => {
+              setFund((s) => ({ ...s, open: false }));
+              addTransaction({
+                type: "Funding",
+                desc: `${method} inflow · ${fund.ccy} wallet`,
+                amount,
+                ccy: fund.ccy,
+                status: "Completed",
+              });
+              toast.success(`${method} confirmed`, {
+                description: `${fmtMoney(amount, fund.ccy)} credited to your ${fund.ccy} wallet.`,
+                icon: <CheckCircle2 className="h-4 w-4" />,
+              });
+              navigate({ to: "/transactions" });
+            }}
+          />
         </DialogContent>
       </Dialog>
 
