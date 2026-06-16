@@ -365,47 +365,59 @@ function CustomersTable({ onWhatsApp, onCreate }: { onWhatsApp: (c: typeof impor
   );
 }
 
+type Assignment = { staff: string; role: string; due: string; note: string; status: "Open" | "In Progress" | "Done" };
+
 function PipelineBoard() {
   const [items, setItems] = useState(() => shipments.map((s) => ({ ...s })));
+  const [assignments, setAssignments] = useState<Record<string, Assignment>>({});
+  const [assignOpen, setAssignOpen] = useState<string | null>(null);
   const move = (id: string, status: Shipment["status"]) => {
     setItems((arr) => arr.map((s) => (s.id === id ? { ...s, status } : s)));
     toast.success(`Moved to ${status}`);
   };
-  const assign = (id: string, staff: string) => {
-    setItems((arr) => arr.map((s) => (s.id === id ? { ...s, forwarder: staff } : s)));
-    toast.success(`Assigned to ${staff}`);
-  };
   return (
     <Card className="p-4 shadow-card">
-      <div className="text-xs text-muted-foreground mb-3">Drag, or change the status / assignee from the dropdowns on each card.</div>
+      <div className="text-xs text-muted-foreground mb-3">Change status from each card's dropdown, or click <strong>Assign</strong> for full details (staff, role, due date, note, status).</div>
       <div className="overflow-x-auto">
         <div className="flex gap-3 min-w-[1100px]">
           {STAGES.map((stage) => {
             const list = items.filter((s) => s.status === stage);
             return (
-              <div key={stage} className="w-[200px] flex-shrink-0 bg-secondary/40 rounded-xl p-2">
+              <div key={stage} className="w-[210px] flex-shrink-0 bg-secondary/40 rounded-xl p-2">
                 <div className="px-2 py-1.5 text-[10px] uppercase tracking-widest text-muted-foreground flex items-center justify-between">
                   <span>{stage}</span><span className="font-bold text-foreground">{list.length}</span>
                 </div>
                 <div className="space-y-2 mt-1 min-h-[100px]">
-                  {list.map((s) => (
-                    <div key={s.id} className="p-2.5 bg-card rounded-lg border border-border text-[11px] hover:shadow-md transition space-y-1.5">
-                      <div className="font-semibold truncate">{s.shipmentNumber}</div>
-                      <div className="text-muted-foreground truncate">{s.importer}</div>
-                      <div className="flex items-center justify-between text-[10px]">
-                        <span className="text-muted-foreground">ETA {s.eta}</span>
-                        <span className="font-medium tabular-nums">{fmtMoney(s.value, s.ccy)}</span>
+                  {list.map((s) => {
+                    const a = assignments[s.id];
+                    return (
+                      <div key={s.id} className="p-2.5 bg-card rounded-lg border border-border text-[11px] hover:shadow-md transition space-y-1.5">
+                        <div className="font-semibold truncate">{s.shipmentNumber}</div>
+                        <div className="text-muted-foreground truncate">{s.importer}</div>
+                        <div className="flex items-center justify-between text-[10px]">
+                          <span className="text-muted-foreground">ETA {s.eta}</span>
+                          <span className="font-medium tabular-nums">{fmtMoney(s.value, s.ccy)}</span>
+                        </div>
+                        <Select value={s.status} onValueChange={(v) => move(s.id, v as Shipment["status"])}>
+                          <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
+                          <SelectContent>{STAGES.map((st) => <SelectItem key={st} value={st} className="text-xs">{st}</SelectItem>)}</SelectContent>
+                        </Select>
+                        {a ? (
+                          <button onClick={() => setAssignOpen(s.id)} className="w-full text-left rounded-md border border-border bg-secondary/50 p-1.5 hover:bg-secondary">
+                            <div className="text-[10px] font-semibold truncate">{a.staff} · {a.role}</div>
+                            <div className="text-[9px] text-muted-foreground flex items-center justify-between">
+                              <span>Due {a.due || "—"}</span>
+                              <Badge variant="outline" className="text-[9px] py-0">{a.status}</Badge>
+                            </div>
+                          </button>
+                        ) : (
+                          <Button size="sm" variant="outline" className="h-7 w-full text-[10px]" onClick={() => setAssignOpen(s.id)}>
+                            <UserPlus className="h-3 w-3 mr-1" /> Assign staff
+                          </Button>
+                        )}
                       </div>
-                      <Select value={s.status} onValueChange={(v) => move(s.id, v as Shipment["status"])}>
-                        <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
-                        <SelectContent>{STAGES.map((st) => <SelectItem key={st} value={st} className="text-xs">{st}</SelectItem>)}</SelectContent>
-                      </Select>
-                      <Select value={s.forwarder} onValueChange={(v) => assign(s.id, v)}>
-                        <SelectTrigger className="h-7 text-[10px]"><SelectValue placeholder="Assign staff…" /></SelectTrigger>
-                        <SelectContent>{STAFF.map((st) => <SelectItem key={st} value={st} className="text-xs">{st}</SelectItem>)}</SelectContent>
-                      </Select>
-                    </div>
-                  ))}
+                    );
+                  })}
                   {list.length === 0 && <div className="text-[10px] text-muted-foreground text-center py-4">No shipments</div>}
                 </div>
               </div>
@@ -413,7 +425,66 @@ function PipelineBoard() {
           })}
         </div>
       </div>
+
+      <AssignmentDialog
+        open={!!assignOpen}
+        shipmentId={assignOpen}
+        current={assignOpen ? assignments[assignOpen] : undefined}
+        onClose={() => setAssignOpen(null)}
+        onSave={(a) => {
+          if (!assignOpen) return;
+          setAssignments((cur) => ({ ...cur, [assignOpen]: a }));
+          setItems((arr) => arr.map((s) => (s.id === assignOpen ? { ...s, forwarder: a.staff } : s)));
+          toast.success(`${assignOpen} assigned to ${a.staff} (${a.role})`);
+          setAssignOpen(null);
+        }}
+      />
     </Card>
+  );
+}
+
+function AssignmentDialog({
+  open, shipmentId, current, onClose, onSave,
+}: {
+  open: boolean; shipmentId: string | null; current?: Assignment;
+  onClose: () => void; onSave: (a: Assignment) => void;
+}) {
+  const [a, setA] = useState<Assignment>(current ?? { staff: STAFF[0], role: "Operations Lead", due: "", note: "", status: "Open" });
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Assign shipment {shipmentId ?? ""}</DialogTitle>
+          <p className="text-xs text-muted-foreground">Staff, role, due date, note and status all sync to the pipeline card.</p>
+        </DialogHeader>
+        <div className="grid gap-3">
+          <FF label="Assigned staff">
+            <Select value={a.staff} onValueChange={(v) => setA({ ...a, staff: v })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>{STAFF.map((st) => <SelectItem key={st} value={st}>{st}</SelectItem>)}</SelectContent>
+            </Select>
+          </FF>
+          <FF label="Role">
+            <Select value={a.role} onValueChange={(v) => setA({ ...a, role: v })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>{["Operations Lead","Clearing Agent","Documentation","Warehouse","Customer Manager","Driver"].map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
+            </Select>
+          </FF>
+          <FF label="Due date"><Input type="date" value={a.due} onChange={(e) => setA({ ...a, due: e.target.value })} /></FF>
+          <FF label="Status">
+            <Select value={a.status} onValueChange={(v) => setA({ ...a, status: v as Assignment["status"] })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>{["Open","In Progress","Done"].map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+            </Select>
+          </FF>
+          <FF label="Note"><Textarea value={a.note} onChange={(e) => setA({ ...a, note: e.target.value })} placeholder="Handover instructions, special handling, contact preferences…" /></FF>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button className="bg-primary" onClick={() => onSave(a)}>Save assignment</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
