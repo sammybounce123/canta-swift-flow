@@ -12,7 +12,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Building, Coins, Zap, ArrowDown, Lock, CheckCircle2, Upload, CalendarClock, Trash2, Plus, Paperclip, UserPlus, Loader2 } from "lucide-react";
-import { wallets, beneficiaries, fmtMoney } from "@/lib/mock";
+import { beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
 
 type Ctx = {
