@@ -424,10 +424,9 @@ function VerificationTab({ c }: any) {
         <div className="text-sm text-muted-foreground">Client has not yet completed verification. Once they open the payment link they'll enter their BVN, confirm consent and proceed to funding.</div>
       ) : (
         <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
-          <Row label="BVN status" value={v.bvnStatus} />
-          <Row label="BVN" value={v.bvnMasked ?? "—"} />
-          <Row label="Date of birth" value={v.dob ?? "—"} />
-          <Row label="Source of funds" value={v.sourceOfFunds ?? "—"} />
+          <Row label="BVN status" value={`BVN ${v.bvnStatus}`} />
+          <Row label="Date of birth" value={v.dob ? "On file" : "—"} />
+          <Row label="Source of funds" value={v.sourceOfFunds ? "Declared" : "—"} />
           <Row label="Name confirmed" value={v.fullNameConfirmed ? "Yes" : "No"} />
           <Row label="Submitted at" value={v.submittedAt ? new Date(v.submittedAt).toLocaleString() : "—"} />
           <Row label="Property purpose consent" value={v.consent?.propertyPurpose ? "✓" : "—"} />
@@ -438,8 +437,9 @@ function VerificationTab({ c }: any) {
         </dl>
       )}
       <div className="mt-4 text-[11px] text-muted-foreground italic border-t pt-3">
-        Full BVN is never displayed to Baron &amp; Cabot. Only the masked value and verification status.
+        BVN is collected by Canta directly from the client. Baron &amp; Cabot users cannot enter a BVN on behalf of the client and never see the raw or masked BVN — only the status (BVN Pending / Submitted / Verified / Failed).
       </div>
+
     </Card>
   );
 }

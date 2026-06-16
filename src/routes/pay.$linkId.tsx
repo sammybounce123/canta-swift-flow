@@ -43,6 +43,8 @@ function ClientPayPage() {
 
   const c = findCaseByLinkId(linkId);
   const [step, setStep] = useState<Step>("review");
+  const [docsConfirmed, setDocsConfirmed] = useState(false);
+
 
   if (!c) {
     return (
@@ -90,16 +92,18 @@ function ClientPayPage() {
         ) : quoteExpired ? (
           <Card className="p-8 shadow-card text-center">
             <AlertTriangle className="h-8 w-8 text-destructive mx-auto" />
-            <h2 className="mt-3 font-semibold">Quote expired. Please request a new quote.</h2>
-            <p className="text-sm text-muted-foreground mt-1">Your FX rate is locked for a short window. Please contact Baron &amp; Cabot to issue a fresh quote — your NGN payable amount will be recalculated.</p>
+            <h2 className="mt-3 font-semibold">Quote expired — request a new quote.</h2>
+            <p className="text-sm text-muted-foreground mt-1">Payment cannot be made against an expired quote. Please contact Baron &amp; Cabot to issue a fresh FX quote — your NGN payable amount will be recalculated.</p>
           </Card>
+
         ) : (
           <>
             <Stepper step={step} />
             {step === "review" && <ReviewStep c={c} quote={quote} sol={sol?.firm ?? "—"} onNext={() => setStep("verify")} />}
             {step === "verify" && <VerifyStep caseId={c.id} clientName={c.clientName} onDone={() => setStep("documents")} />}
-            {step === "documents" && <DocStep c={c} onNext={() => setStep("fund")} />}
-            {step === "fund" && <FundGate c={c} quote={quote} onPaid={() => setStep("done")} />}
+            {step === "documents" && <DocStep c={c} confirmed={docsConfirmed} setConfirmed={setDocsConfirmed} onNext={() => setStep("fund")} />}
+            {step === "fund" && <FundGate c={c} quote={quote} docsConfirmed={docsConfirmed} onPaid={() => setStep("done")} />}
+
             {step === "done" && <DoneStep caseId={c.id} sol={sol?.firm ?? "your solicitor"} amount={c.amountGBP} />}
           </>
         )}
@@ -203,12 +207,13 @@ function VerifyStep({ caseId, clientName, onDone }: any) {
       </div>
       <div className="space-y-2 text-sm">
         <ConsentRow checked={name} onChange={setName} label={`I confirm my full name matches: ${clientName}`} />
-        <ConsentRow checked={purpose} onChange={setPurpose} label="I confirm this payment is for a property purchase or property-related transaction." />
-        <ConsentRow checked={canta} onChange={setCanta} label="I consent to Canta processing this payment on my behalf." />
-        <ConsentRow checked={shared} onChange={setShared} label="I consent to Canta using KYC documents already shared by Baron & Cabot." />
-        <ConsentRow checked={terms} onChange={setTerms} label="I accept Canta's terms of service." />
-        <ConsentRow checked={privacy} onChange={setPrivacy} label="I accept Canta's privacy and data processing policy." />
+        <ConsentRow checked={canta} onChange={setCanta} label="I consent to Canta processing this property payment." />
+        <ConsentRow checked={shared} onChange={setShared} label="I consent to Canta using KYC documents shared by Baron & Cabot for verification." />
+        <ConsentRow checked={purpose} onChange={setPurpose} label="I confirm the payment purpose and source of funds are accurate." />
+        <ConsentRow checked={terms} onChange={setTerms} label="I accept Canta's Terms of Service." />
+        <ConsentRow checked={privacy} onChange={setPrivacy} label="I accept Canta's Privacy and Data Processing Policy." />
       </div>
+
       <div className="flex justify-end"><Button disabled={!valid} onClick={submit}>Submit verification</Button></div>
     </Card>
   );
@@ -223,8 +228,8 @@ function ConsentRow({ checked, onChange, label }: { checked: boolean; onChange: 
   );
 }
 
-function DocStep({ c, onNext }: any) {
-  const [confirmed, setConfirmed] = useState(false);
+function DocStep({ c, confirmed, setConfirmed, onNext }: any) {
+
   return (
     <Card className="p-6 shadow-card space-y-4">
       <div className="text-sm font-semibold flex items-center gap-2"><FileText className="h-4 w-4 text-primary" /> Documents</div>
@@ -250,7 +255,7 @@ function DocStep({ c, onNext }: any) {
   );
 }
 
-function FundGate({ c, quote, onPaid }: any) {
+function FundGate({ c, quote, docsConfirmed, onPaid }: any) {
   // Build the required checklist
   const v = c.verification;
   const expiresMs = quote ? new Date(quote.expiresAt).getTime() - Date.now() : 0;
@@ -259,14 +264,15 @@ function FundGate({ c, quote, onPaid }: any) {
     { ok: !!v?.dob, label: "Date of birth on file" },
     { ok: !!v?.fullNameConfirmed, label: "Full name confirmation" },
     { ok: !!v?.sourceOfFunds, label: "Source of funds declared" },
-    { ok: !!v?.consent.propertyPurpose, label: "Payment purpose confirmed" },
-    { ok: !!v?.consent.canta, label: "Consent: Canta to process transaction" },
-    { ok: !!v?.consent.sharedDocs, label: "Consent: use of B&C-shared KYC docs" },
-    { ok: !!v?.consent.terms, label: "Canta terms accepted" },
-    { ok: !!v?.consent.privacy, label: "Canta privacy & data policy accepted" },
+    { ok: !!v?.consent?.propertyPurpose, label: "Payment purpose confirmed" },
+    { ok: !!v?.consent?.canta, label: "Consent: Canta to process this property payment" },
+    { ok: !!v?.consent?.sharedDocs, label: "Consent: use of B&C-shared KYC documents" },
+    { ok: !!v?.consent?.terms, label: "Canta Terms of Service accepted" },
+    { ok: !!v?.consent?.privacy, label: "Canta Privacy & Data Processing Policy accepted" },
+    { ok: !!docsConfirmed, label: "Required documents uploaded or confirmed" },
     { ok: !!quote && quote.status === "Active" && expiresMs > 0, label: "FX quote still valid" },
-    { ok: true, label: "Required documents confirmed" }, // doc step gates itself
   ];
+
   const incomplete = checks.filter((c) => !c.ok);
 
   if (incomplete.length > 0) {
