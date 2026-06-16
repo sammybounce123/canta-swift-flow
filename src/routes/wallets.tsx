@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, CreditCard, Building, Zap } from "lucide-react";
+import { Building, Zap, Coins } from "lucide-react";
 import { wallets, fmtMoney } from "@/lib/mock";
 import { useActions } from "@/components/ActionsProvider";
 
@@ -14,12 +14,9 @@ function Wallets() {
   const { openFund, openSend } = useActions();
   return (
     <div className="space-y-6">
-      <div className="flex items-end justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold">Wallets</h1>
-          <p className="text-sm text-muted-foreground mt-1">Multi-currency balances and funding sources.</p>
-        </div>
-        <Button onClick={() => openFund("NGN")} className="bg-primary"><Plus className="h-4 w-4 mr-1.5" /> New Wallet</Button>
+      <div>
+        <h1 className="text-2xl font-semibold">Wallets</h1>
+        <p className="text-sm text-muted-foreground mt-1">Multi-currency balances and funding sources.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
@@ -42,11 +39,11 @@ function Wallets() {
 
       <Card className="p-6 shadow-card">
         <div className="text-sm font-semibold">Funding Options</div>
-        <div className="text-xs text-muted-foreground">Choose how you'd like to fund your NGN wallet.</div>
+        <div className="text-xs text-muted-foreground">Choose how you'd like to fund your wallet.</div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
           {[
             { icon: Building, label: "Bank Transfer", desc: "Free · Settles in seconds", badge: "Recommended" },
-            { icon: CreditCard, label: "Card Payment", desc: "1.5% fee · Instant" },
+            { icon: Coins, label: "USDT (TRC20 / ERC20)", desc: "Stablecoin deposit · Auto-converted to local currency", badge: "Crypto" },
             { icon: Zap, label: "Pay Without Funding", desc: "Inline payment · No pre-fund needed", badge: "New" },
           ].map((o) => (
             <button key={o.label} onClick={() => openFund("NGN")} className="text-left p-4 rounded-xl border border-border hover:border-accent hover:shadow-card transition">
