@@ -255,7 +255,7 @@ function DocStep({ c, confirmed, setConfirmed, onNext }: any) {
   );
 }
 
-function FundGate({ c, quote, onPaid }: any) {
+function FundGate({ c, quote, docsConfirmed, onPaid }: any) {
   // Build the required checklist
   const v = c.verification;
   const expiresMs = quote ? new Date(quote.expiresAt).getTime() - Date.now() : 0;
@@ -264,14 +264,15 @@ function FundGate({ c, quote, onPaid }: any) {
     { ok: !!v?.dob, label: "Date of birth on file" },
     { ok: !!v?.fullNameConfirmed, label: "Full name confirmation" },
     { ok: !!v?.sourceOfFunds, label: "Source of funds declared" },
-    { ok: !!v?.consent.propertyPurpose, label: "Payment purpose confirmed" },
-    { ok: !!v?.consent.canta, label: "Consent: Canta to process transaction" },
-    { ok: !!v?.consent.sharedDocs, label: "Consent: use of B&C-shared KYC docs" },
-    { ok: !!v?.consent.terms, label: "Canta terms accepted" },
-    { ok: !!v?.consent.privacy, label: "Canta privacy & data policy accepted" },
+    { ok: !!v?.consent?.propertyPurpose, label: "Payment purpose confirmed" },
+    { ok: !!v?.consent?.canta, label: "Consent: Canta to process this property payment" },
+    { ok: !!v?.consent?.sharedDocs, label: "Consent: use of B&C-shared KYC documents" },
+    { ok: !!v?.consent?.terms, label: "Canta Terms of Service accepted" },
+    { ok: !!v?.consent?.privacy, label: "Canta Privacy & Data Processing Policy accepted" },
+    { ok: !!docsConfirmed, label: "Required documents uploaded or confirmed" },
     { ok: !!quote && quote.status === "Active" && expiresMs > 0, label: "FX quote still valid" },
-    { ok: true, label: "Required documents confirmed" }, // doc step gates itself
   ];
+
   const incomplete = checks.filter((c) => !c.ok);
 
   if (incomplete.length > 0) {
