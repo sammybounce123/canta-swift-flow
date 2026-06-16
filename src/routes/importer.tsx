@@ -542,3 +542,105 @@ function Assistant() {
 function Empty({ msg }: { msg: string }) {
   return <Card className="p-12 text-center text-sm text-muted-foreground shadow-card">{msg}</Card>;
 }
+
+type EscrowStatus = "Escrow Not Started" | "Escrow Requested" | "Escrow Under Review" | "Escrow Active" | "Release Requested" | "Released" | "Cancelled" | "Disputed";
+
+function EscrowSection() {
+  const [rows, setRows] = useState<{ id: string; tradeFile: string; supplier: string; amount: number; ccy: string; status: EscrowStatus }[]>([
+    { id: "ESC-2041", tradeFile: "TR-2031 · Guangzhou Q2", supplier: "Guangzhou Tech Factory", amount: 48000, ccy: "USD", status: "Escrow Active" },
+    { id: "ESC-2042", tradeFile: "TR-2042 · Yiwu Fashion", supplier: "Yiwu General Trading",   amount: 19500, ccy: "USD", status: "Escrow Under Review" },
+  ]);
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({ tradeFile: "", supplier: "", invoiceAmount: "", escrowAmount: "", ccy: "USD", purpose: "Goods quality milestone", milestones: "", releaseCondition: "BL + inspection signoff", notes: "" });
+  const tone: Record<EscrowStatus, string> = {
+    "Escrow Not Started": "bg-muted text-muted-foreground",
+    "Escrow Requested": "bg-primary/15 text-primary border-primary/30",
+    "Escrow Under Review": "bg-amber-500/15 text-amber-700 border-amber-500/30",
+    "Escrow Active": "bg-success/15 text-success border-success/30",
+    "Release Requested": "bg-accent/15 text-accent border-accent/30",
+    "Released": "bg-success/15 text-success border-success/30",
+    "Cancelled": "bg-secondary text-muted-foreground",
+    "Disputed": "bg-destructive/15 text-destructive border-destructive/30",
+  };
+  const submit = () => {
+    if (!form.tradeFile || !form.supplier || !form.escrowAmount) { toast.error("Fill trade file, supplier and escrow amount"); return; }
+    const id = `ESC-${Math.floor(2100 + Math.random() * 900)}`;
+    setRows((r) => [{ id, tradeFile: form.tradeFile, supplier: form.supplier, amount: Number(form.escrowAmount), ccy: form.ccy, status: "Escrow Requested" }, ...r]);
+    toast.success("Escrow request submitted for review.");
+    setOpen(false);
+    setForm({ tradeFile: "", supplier: "", invoiceAmount: "", escrowAmount: "", ccy: "USD", purpose: "Goods quality milestone", milestones: "", releaseCondition: "BL + inspection signoff", notes: "" });
+  };
+  const requestRelease = (id: string) => {
+    setRows((r) => r.map((x) => x.id === id ? { ...x, status: "Release Requested" } : x));
+    toast.success("Escrow release requested");
+  };
+  return (
+    <Card className="p-5 shadow-card">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div>
+          <div className="flex items-center gap-2 text-sm font-semibold"><Lock className="h-4 w-4 text-primary" /> My Escrow</div>
+          <p className="text-xs text-muted-foreground mt-1">Hold supplier funds until milestones clear. Request a new escrow or release an active one.</p>
+        </div>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild><Button size="sm" className="bg-primary"><Lock className="h-3.5 w-3.5 mr-1.5" /> Request Escrow</Button></DialogTrigger>
+          <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader><DialogTitle>Request Escrow</DialogTitle></DialogHeader>
+            <div className="grid grid-cols-2 gap-3">
+              <div><Label className="text-xs">Trade file</Label><Input value={form.tradeFile} onChange={(e) => setForm({ ...form, tradeFile: e.target.value })} placeholder="TR-2031 · Guangzhou Q2" /></div>
+              <div><Label className="text-xs">Supplier</Label><Input value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })} placeholder="Guangzhou Tech Factory" /></div>
+              <div><Label className="text-xs">Invoice amount</Label><Input type="number" value={form.invoiceAmount} onChange={(e) => setForm({ ...form, invoiceAmount: e.target.value })} placeholder="60000" /></div>
+              <div><Label className="text-xs">Escrow amount</Label><Input type="number" value={form.escrowAmount} onChange={(e) => setForm({ ...form, escrowAmount: e.target.value })} placeholder="48000" /></div>
+              <div><Label className="text-xs">Currency</Label>
+                <Select value={form.ccy} onValueChange={(v) => setForm({ ...form, ccy: v })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{["USD","EUR","GBP","CNY"].map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div><Label className="text-xs">Purpose</Label>
+                <Select value={form.purpose} onValueChange={(v) => setForm({ ...form, purpose: v })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{["Goods quality milestone","Pre-shipment inspection","Delivery acceptance","Performance bond","Other"].map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="col-span-2"><Label className="text-xs">Milestone terms</Label><Textarea value={form.milestones} onChange={(e) => setForm({ ...form, milestones: e.target.value })} placeholder="50% on BL issued, 50% on final inspection signoff" /></div>
+              <div className="col-span-2"><Label className="text-xs">Expected release condition</Label><Input value={form.releaseCondition} onChange={(e) => setForm({ ...form, releaseCondition: e.target.value })} /></div>
+              <div className="col-span-2"><Label className="text-xs">Supporting documents</Label>
+                <div className="border border-dashed border-border rounded-lg p-3 text-xs text-muted-foreground flex items-center gap-2"><Upload className="h-4 w-4" /> Drop invoice, contract or inspection terms here</div>
+              </div>
+              <div className="col-span-2"><Label className="text-xs">Notes</Label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+              <Button className="bg-primary" onClick={submit}>Submit escrow request</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead><tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground bg-secondary/40">
+            <th className="px-3 py-2">Ref</th><th className="px-3 py-2">Trade file</th><th className="px-3 py-2">Supplier</th>
+            <th className="px-3 py-2 text-right">Amount</th><th className="px-3 py-2">Status</th><th className="px-3 py-2 text-right">Action</th>
+          </tr></thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.id} className="border-t border-border">
+                <td className="px-3 py-2 font-mono text-xs">{r.id}</td>
+                <td className="px-3 py-2">{r.tradeFile}</td>
+                <td className="px-3 py-2">{r.supplier}</td>
+                <td className="px-3 py-2 text-right tabular-nums font-semibold">{fmtMoney(r.amount, r.ccy)}</td>
+                <td className="px-3 py-2"><Badge variant="outline" className={`text-[10px] ${tone[r.status]}`}>{r.status}</Badge></td>
+                <td className="px-3 py-2 text-right">
+                  {r.status === "Escrow Active"
+                    ? <Button size="sm" variant="outline" onClick={() => requestRelease(r.id)}>Request release</Button>
+                    : <Button size="sm" variant="ghost" onClick={() => toast.info(`Escrow ${r.id} details`)}>View</Button>}
+                </td>
+              </tr>
+            ))}
+            {rows.length === 0 && <tr><td colSpan={6} className="text-center text-xs text-muted-foreground py-6">No escrows yet.</td></tr>}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  );
+}
