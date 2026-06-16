@@ -202,12 +202,131 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
   );
 }
 
-function ConvertForm({ from: f0, to: t0, onConfirm }: { from: string; to: string; onConfirm: (a: string, f: string, t: string) => void }) {
+// Shared multi-step "fund flow" visualisation used by Convert + Send + Fund
+// so the user can actually watch money move from debit → corridor → credit
+// before the transaction lands on /transactions.
+function FundFlow({
+  steps,
+  onDone,
+}: {
+  steps: { label: string; sub: string }[];
+  onDone: () => void;
+}) {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (i >= steps.length) {
+      const t = setTimeout(onDone, 600);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => setI((x) => x + 1), 900);
+    return () => clearTimeout(t);
+  }, [i, steps.length, onDone]);
+  return (
+    <div className="space-y-3 py-2">
+      {steps.map((s, idx) => {
+        const done = idx < i;
+        const active = idx === i;
+        return (
+          <div key={s.label} className={`flex items-start gap-3 p-3 rounded-xl border ${done ? "border-success/40 bg-success/5" : active ? "border-accent/40 bg-accent/5" : "border-border bg-secondary/30 opacity-60"}`}>
+            <div className="mt-0.5 h-7 w-7 grid place-items-center rounded-full bg-card border border-border">
+              {done ? <CheckCircle2 className="h-4 w-4 text-success" /> : active ? <Loader2 className="h-4 w-4 animate-spin text-accent" /> : <span className="text-xs">{idx + 1}</span>}
+            </div>
+            <div className="flex-1">
+              <div className="text-sm font-semibold">{s.label}</div>
+              <div className="text-xs text-muted-foreground">{s.sub}</div>
+            </div>
+          </div>
+        );
+      })}
+      <div className="text-xs text-muted-foreground text-center pt-1">
+        {i >= steps.length ? "Funds successfully credited. Redirecting…" : "Do not close this window — settling on the corridor."}
+      </div>
+    </div>
+  );
+}
+
+function FundForm({ ccy, onConfirm }: { ccy: string; onConfirm: (amount: number, method: string) => void }) {
+  const [amount, setAmount] = useState("1000000");
+  const [method, setMethod] = useState<string | null>(null);
+  if (method) {
+    const amt = Number(amount.replace(/,/g, "")) || 0;
+    return (
+      <FundFlow
+        steps={
+          method === "USDT (TRC20 / ERC20)"
+            ? [
+                { label: "USDT deposit detected", sub: "Block confirmation on TRC20" },
+                { label: "Auto-converted to " + ccy, sub: "Mid-market rate, zero spread" },
+                { label: `${fmtMoney(amt, ccy)} credited`, sub: `Available now in your ${ccy} wallet` },
+              ]
+            : method === "Bank Transfer"
+            ? [
+                { label: "Awaiting bank instruction", sub: "Reference shared with your bank" },
+                { label: "Funds received", sub: "Cleared on instant rail" },
+                { label: `${fmtMoney(amt, ccy)} credited`, sub: `Available now in your ${ccy} wallet` },
+              ]
+            : [
+                { label: "Inline payment authorised", sub: "Buyer card / wallet captured" },
+                { label: "Auto-routed to beneficiary", sub: "No pre-funding required" },
+                { label: "Settlement booked", sub: `${fmtMoney(amt, ccy)} fronted by Canta` },
+              ]
+        }
+        onDone={() => onConfirm(amt, method)}
+      />
+    );
+  }
+  return (
+    <div className="space-y-3">
+      <div>
+        <Label className="text-xs">Amount ({ccy})</Label>
+        <Input value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^0-9.,]/g, ""))} className="mt-1" />
+      </div>
+      <div className="space-y-2">
+        {[
+          { icon: Building, label: "Bank Transfer", desc: "Free · Settles in seconds", rec: true },
+          { icon: Coins, label: "USDT (TRC20 / ERC20)", desc: "Stablecoin · Auto-converted at mid-market" },
+          { icon: Zap, label: "Pay Without Funding", desc: "Inline · No pre-fund needed" },
+        ].map((o) => (
+          <button
+            key={o.label}
+            className="w-full text-left flex items-center gap-3 p-3 rounded-xl border border-border hover:border-accent hover:bg-secondary/40"
+            onClick={() => setMethod(o.label)}
+          >
+            <div className="h-9 w-9 rounded-lg bg-primary/10 grid place-items-center">
+              <o.icon className="h-4 w-4 text-primary" />
+            </div>
+            <div className="flex-1">
+              <div className="text-sm font-semibold">{o.label}</div>
+              <div className="text-xs text-muted-foreground">{o.desc}</div>
+            </div>
+            {o.rec && <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/20 text-accent-foreground">Recommended</span>}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ConvertForm({ from: f0, to: t0, onConfirm }: { from: string; to: string; onConfirm: (a: number, f: string, t: string, received: number) => void }) {
   const [from, setFrom] = useState(f0);
   const [to, setTo] = useState(t0);
   const [amount, setAmount] = useState("1000000");
+  const [confirming, setConfirming] = useState(false);
   const rate = from === "NGN" && to === "USD" ? 0.00062 : 1612.45;
-  const out = (Number(amount) || 0) * rate;
+  const sendAmt = Number(amount) || 0;
+  const out = sendAmt * rate;
+  if (confirming) {
+    return (
+      <FundFlow
+        steps={[
+          { label: `Debiting ${fmtMoney(sendAmt, from)}`, sub: `From your ${from} wallet` },
+          { label: "Executing FX at locked rate", sub: `1 ${from} = ${rate} ${to}` },
+          { label: `Crediting ${fmtMoney(out, to)}`, sub: `Into your ${to} wallet` },
+        ]}
+        onDone={() => onConfirm(sendAmt, from, to, out)}
+      />
+    );
+  }
   return (
     <div className="space-y-3">
       <div>
@@ -236,22 +355,57 @@ function ConvertForm({ from: f0, to: t0, onConfirm }: { from: string; to: string
       <div className="p-3 rounded-lg bg-accent/10 border border-accent/30 text-xs flex items-center gap-2">
         <Lock className="h-3.5 w-3.5 text-accent" /> Rate locked · 1 {from} = {rate} {to}
       </div>
-      <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90" onClick={() => onConfirm(amount, from, to)}>
+      <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90" onClick={() => setConfirming(true)}>
         Confirm Conversion
       </Button>
     </div>
   );
 }
 
-function SendForm({ initialBeneficiary, onConfirm }: { initialBeneficiary: string; onConfirm: (a: number, c: string, n: string) => void }) {
+function SendForm({
+  initialBeneficiary,
+  onAddBeneficiary,
+  onConfirm,
+}: {
+  initialBeneficiary: string;
+  onAddBeneficiary: () => void;
+  onConfirm: (a: number, c: string, n: string, ref: string) => void;
+}) {
   const [name, setName] = useState(initialBeneficiary || beneficiaries[0].name);
   const ben = beneficiaries.find((b) => b.name === name) ?? beneficiaries[0];
   const [amount, setAmount] = useState("50000");
+  const [reference, setReference] = useState("");
+  const [narration, setNarration] = useState("");
+  const [doc, setDoc] = useState<File | null>(null);
+  const [confirming, setConfirming] = useState(false);
+  const amt = Number(amount) || 0;
+
+  if (confirming) {
+    return (
+      <FundFlow
+        steps={[
+          { label: `Debiting ${fmtMoney(amt, ben.ccy)}`, sub: `From your ${ben.ccy} wallet` },
+          { label: "Routing on best corridor", sub: `${ben.country} · ${ben.bank}` },
+          { label: `Crediting ${ben.name}`, sub: `${ben.account} · settlement complete` },
+        ]}
+        onDone={() => onConfirm(amt, ben.ccy, ben.name, reference || narration)}
+      />
+    );
+  }
   return (
     <div className="space-y-3">
       <div>
-        <Label className="text-xs">Beneficiary</Label>
-        <select value={name} onChange={(e) => setName(e.target.value)} className="w-full mt-1 p-2.5 rounded-lg border border-border bg-card text-sm">
+        <div className="flex items-center justify-between mb-1">
+          <Label className="text-xs">Beneficiary</Label>
+          <button
+            type="button"
+            onClick={onAddBeneficiary}
+            className="text-xs font-medium text-accent hover:underline flex items-center gap-1"
+          >
+            <UserPlus className="h-3 w-3" /> Add new beneficiary
+          </button>
+        </div>
+        <select value={name} onChange={(e) => setName(e.target.value)} className="w-full p-2.5 rounded-lg border border-border bg-card text-sm">
           {beneficiaries.map((b) => <option key={b.name}>{b.name}</option>)}
         </select>
         <div className="text-xs text-muted-foreground mt-1">{ben.country} · {ben.bank} · {ben.account}</div>
@@ -265,12 +419,44 @@ function SendForm({ initialBeneficiary, onConfirm }: { initialBeneficiary: strin
       </div>
       <div>
         <Label className="text-xs">Reference</Label>
-        <Input className="mt-1" placeholder="Invoice #INV-0421" />
+        <Input value={reference} onChange={(e) => setReference(e.target.value)} className="mt-1" placeholder="Invoice #INV-0421" />
+      </div>
+      <div>
+        <Label className="text-xs">Narration / purpose of payment</Label>
+        <Textarea
+          value={narration}
+          onChange={(e) => setNarration(e.target.value)}
+          className="mt-1"
+          rows={2}
+          placeholder="e.g. Supplier payment for solar inverters, PO #2241"
+        />
+      </div>
+      <div>
+        <Label className="text-xs">Supporting document</Label>
+        <label className="mt-1 flex items-center gap-2 p-3 rounded-xl border border-dashed border-border hover:border-accent cursor-pointer text-xs">
+          <Paperclip className="h-4 w-4 text-muted-foreground" />
+          <span className="flex-1 truncate text-muted-foreground">
+            {doc ? doc.name : "Invoice, contract or proof of trade (PDF, PNG, JPG)"}
+          </span>
+          <input
+            type="file"
+            accept=".pdf,.png,.jpg,.jpeg"
+            className="hidden"
+            onChange={(e) => setDoc(e.target.files?.[0] ?? null)}
+          />
+          <span className="text-accent font-medium">{doc ? "Replace" : "Upload"}</span>
+        </label>
       </div>
       <div className="p-3 rounded-lg bg-success/10 border border-success/30 text-xs">
         Smart routing selected · Estimated arrival <span className="font-semibold">under 30 seconds</span>
       </div>
-      <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90" onClick={() => onConfirm(Number(amount) || 0, ben.ccy, ben.name)}>
+      <Button
+        className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
+        onClick={() => {
+          if (!amt) { toast.error("Enter an amount"); return; }
+          setConfirming(true);
+        }}
+      >
         Send Payment
       </Button>
     </div>
