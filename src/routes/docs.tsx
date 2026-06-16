@@ -182,10 +182,24 @@ const SECTIONS: { h: string; body: string[] }[] = [
   {
     h: "External API partner configuration (/integrations)",
     body: [
-      "Categories: Payment Collection, FX/Settlement/Payout, Shipment Tracking Aggregator, Direct Shipping Lines, Card Issuing, KYC/KYB, Sanctions/PEP/AML, WhatsApp/Messaging, OCR/Document Extraction, AI/Automation, Maps/Address Verification, CRM/Support, Accounting/ERP, Webhooks.",
+      "Payment Collection: Paystack, Flutterwave, Monnify, Stripe, Checkout.com.",
+      "FX / Settlement / Payout: Wise Platform, Currencycloud, Airwallex, Nium, dLocal, Thunes.",
+      "Shipment Tracking Aggregator: project44, Shipsgo, Searates, MarineTraffic.",
+      "Direct Shipping Lines: Maersk Spot API, MSC, CMA CGM, Hapag-Lloyd, Cosco Shipping.",
+      "Card Issuing: Marqeta, Stripe Issuing, Lithic, Bridgecard, Sudo Africa.",
+      "KYC / KYB: Smile ID, Onfido, Sumsub, Veriff, Dojah, Trulioo.",
+      "Sanctions / PEP / AML: ComplyAdvantage, Refinitiv World-Check, Dow Jones Risk & Compliance.",
+      "WhatsApp / Messaging: Twilio WhatsApp Business API, 360dialog, Meta Cloud API, Africa's Talking, Termii.",
+      "OCR / Document Extraction: Google Document AI, AWS Textract, Azure Form Recognizer, Mindee, Rossum.",
+      "AI / Automation: Lovable AI Gateway (Gemini, GPT, Claude via gateway), OpenAI, Anthropic.",
+      "Maps / Address Verification: Google Maps Platform, Mapbox, Loqate, what3words.",
+      "CRM / Support: HubSpot, Salesforce, Zendesk, Intercom, Freshdesk.",
+      "Accounting / ERP: QuickBooks Online, Xero, Sage, Oracle NetSuite, Microsoft Dynamics 365.",
+      "Webhooks: outbound signed webhooks for every workspace event.",
       "Each provider card shows env (Test/Live), connection status, last sync, last webhook received, failed webhook count, error reason, fallback provider, and Retry / View Logs / Configure / Enable-Disable controls.",
     ],
   },
+
   {
     h: "Backend readiness data model (/data-model)",
     body: [
