@@ -101,7 +101,15 @@ function ImporterPortal() {
 
       {/* WhatsApp-first action bar */}
       <WhatsAppActions />
+
+      <Card className="p-5 shadow-card">
+        <div className="text-xs uppercase tracking-widest text-muted-foreground mb-1">Importer quick actions</div>
+        <p className="text-sm text-muted-foreground mb-3">Send RFQs, start trade files, verify suppliers, link shipments and documents, request escrow, and invite forwarders.</p>
+        <ImporterActions variant="toolbar" />
+      </Card>
+
       <EscrowSection />
+
 
 
       <Tabs defaultValue="shipments">
