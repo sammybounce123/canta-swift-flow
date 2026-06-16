@@ -40,6 +40,7 @@ import { Route as FreightInvoicesRouteImport } from './routes/freight-invoices'
 import { Route as FreightRouteImport } from './routes/freight'
 import { Route as EscrowRouteImport } from './routes/escrow'
 import { Route as DocumentsRouteImport } from './routes/documents'
+import { Route as DocsRouteImport } from './routes/docs'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as ComplianceRouteImport } from './routes/compliance'
@@ -227,6 +228,11 @@ const DocumentsRoute = DocumentsRouteImport.update({
   path: '/documents',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -395,6 +401,7 @@ export interface FileRoutesByFullPath {
   '/compliance': typeof ComplianceRoute
   '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
+  '/docs': typeof DocsRoute
   '/documents': typeof DocumentsRoute
   '/escrow': typeof EscrowRoute
   '/freight': typeof FreightRoute
@@ -459,6 +466,7 @@ export interface FileRoutesByTo {
   '/compliance': typeof ComplianceRoute
   '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
+  '/docs': typeof DocsRoute
   '/documents': typeof DocumentsRoute
   '/escrow': typeof EscrowRoute
   '/freight': typeof FreightRoute
@@ -521,6 +529,7 @@ export interface FileRoutesById {
   '/compliance': typeof ComplianceRoute
   '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
+  '/docs': typeof DocsRoute
   '/documents': typeof DocumentsRoute
   '/escrow': typeof EscrowRoute
   '/freight': typeof FreightRoute
@@ -587,6 +596,7 @@ export interface FileRouteTypes {
     | '/compliance'
     | '/customers'
     | '/dashboard'
+    | '/docs'
     | '/documents'
     | '/escrow'
     | '/freight'
@@ -651,6 +661,7 @@ export interface FileRouteTypes {
     | '/compliance'
     | '/customers'
     | '/dashboard'
+    | '/docs'
     | '/documents'
     | '/escrow'
     | '/freight'
@@ -712,6 +723,7 @@ export interface FileRouteTypes {
     | '/compliance'
     | '/customers'
     | '/dashboard'
+    | '/docs'
     | '/documents'
     | '/escrow'
     | '/freight'
@@ -777,6 +789,7 @@ export interface RootRouteChildren {
   ComplianceRoute: typeof ComplianceRoute
   CustomersRoute: typeof CustomersRoute
   DashboardRoute: typeof DashboardRoute
+  DocsRoute: typeof DocsRoute
   DocumentsRoute: typeof DocumentsRoute
   EscrowRoute: typeof EscrowRoute
   FreightRoute: typeof FreightRoute
@@ -1030,6 +1043,13 @@ declare module '@tanstack/react-router' {
       path: '/documents'
       fullPath: '/documents'
       preLoaderRoute: typeof DocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -1327,6 +1347,7 @@ const rootRouteChildren: RootRouteChildren = {
   ComplianceRoute: ComplianceRoute,
   CustomersRoute: CustomersRoute,
   DashboardRoute: DashboardRoute,
+  DocsRoute: DocsRoute,
   DocumentsRoute: DocumentsRoute,
   EscrowRoute: EscrowRoute,
   FreightRoute: FreightRoute,

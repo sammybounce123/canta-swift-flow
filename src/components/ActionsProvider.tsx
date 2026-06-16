@@ -673,7 +673,21 @@ function BulkPaymentsForm({ onClose }: { onClose: () => void }) {
       </div>
       <Button
         className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
-        onClick={() => { onClose(); toast.success(`${rows.length} payments queued`, { description: "Awaiting approver sign-off." }); }}
+        onClick={() => {
+          rows.forEach((r) => {
+            const amt = Number(r.amount) || 0;
+            if (!amt) return;
+            addTransaction({
+              type: "Outgoing",
+              desc: `Bulk batch · ${r.name}`,
+              amount: amt,
+              ccy: r.ccy,
+              status: "Completed",
+            });
+          });
+          onClose();
+          toast.success(`${rows.length} payments settled`, { description: "Batch routed on best corridors." });
+        }}
       >
         Submit Batch
       </Button>
