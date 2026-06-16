@@ -1,7 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, BookOpen } from "lucide-react";
+import { Download, BookOpen, Users } from "lucide-react";
+
 
 export const Route = createFileRoute("/docs")({
   head: () => ({ meta: [{ title: "Documentation — Canta" }] }),
