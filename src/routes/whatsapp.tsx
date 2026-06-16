@@ -320,7 +320,13 @@ function WhatsAppDesk() {
                 <Button size="sm" className="bg-success text-white hover:bg-success/90" onClick={() => toast.success("Sent via WhatsApp")}><Send className="h-4 w-4" /></Button>
               </div>
             </Card>
+
+            {/* AI insight panel */}
+            <div className="lg:col-span-3 xl:col-span-1">
+              <AiInsightPanel thread={thread} insight={aiInsights[thread.id]} />
+            </div>
           </div>
+
         </TabsContent>
 
         {/* ------------- DOCUMENT INTAKE ------------- */}
