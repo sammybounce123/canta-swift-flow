@@ -97,14 +97,14 @@ function FX() {
 
           <div className="mt-5 space-y-2">
             <label className="text-xs text-muted-foreground">You send</label>
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-secondary/50 border border-border focus-within:border-ring">
+            <div className="grid grid-cols-[1fr_auto] items-center gap-2 p-3 rounded-xl bg-secondary/50 border border-border focus-within:border-ring">
               <input
                 value={amount}
                 onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
                 style={{ wordBreak: "normal", overflowWrap: "normal" }}
-                className="w-0 flex-1 min-w-0 bg-transparent text-2xl font-semibold tabular-nums outline-none truncate"
+                className="min-w-0 w-full bg-transparent text-2xl font-semibold tabular-nums outline-none"
               />
-              <select value={from} onChange={(e) => setFrom(e.target.value)} className="shrink-0 bg-card border border-border rounded-lg px-2 py-1.5 text-sm font-medium">
+              <select value={from} onChange={(e) => setFrom(e.target.value)} className="bg-card border border-border rounded-lg px-2 py-1.5 text-sm font-medium">
                 <option>NGN</option><option>USD</option><option>EUR</option><option>GBP</option>
               </select>
             </div>
@@ -119,11 +119,11 @@ function FX() {
             </div>
 
             <label className="text-xs text-muted-foreground">Recipient gets</label>
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-secondary/50 border border-border">
-              <div style={{ wordBreak: "normal", overflowWrap: "normal" }} className="w-0 flex-1 min-w-0 text-2xl font-semibold tabular-nums truncate">
+            <div className="grid grid-cols-[1fr_auto] items-center gap-2 p-3 rounded-xl bg-secondary/50 border border-border">
+              <div style={{ wordBreak: "normal", overflowWrap: "normal" }} className="min-w-0 text-2xl font-semibold tabular-nums truncate">
                 {out.toLocaleString(undefined, { maximumFractionDigits: 2 })}
               </div>
-              <select value={to} onChange={(e) => setTo(e.target.value)} className="shrink-0 bg-card border border-border rounded-lg px-2 py-1.5 text-sm font-medium">
+              <select value={to} onChange={(e) => setTo(e.target.value)} className="bg-card border border-border rounded-lg px-2 py-1.5 text-sm font-medium">
                 <option>USD</option><option>NGN</option><option>EUR</option><option>GBP</option>
               </select>
             </div>
