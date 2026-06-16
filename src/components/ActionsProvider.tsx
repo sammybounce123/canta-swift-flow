@@ -84,7 +84,7 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
             <div className="space-y-2">
               {[
                 { icon: Building, label: "Bank Transfer", desc: "Free · Settles in seconds", rec: true },
-                { icon: CreditCard, label: "Card Payment", desc: "1.5% fee · Instant" },
+                { icon: Coins, label: "USDT (TRC20 / ERC20)", desc: "Stablecoin · Auto-converted at mid-market", rec: false },
                 { icon: Zap, label: "Pay Without Funding", desc: "Inline · No pre-fund needed" },
               ].map((o) => (
                 <button
