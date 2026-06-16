@@ -303,28 +303,47 @@ function CustomersTable({ onWhatsApp, onCreate }: { onWhatsApp: (c: typeof impor
 }
 
 function PipelineBoard() {
+  const [items, setItems] = useState(() => shipments.map((s) => ({ ...s })));
+  const move = (id: string, status: Shipment["status"]) => {
+    setItems((arr) => arr.map((s) => (s.id === id ? { ...s, status } : s)));
+    toast.success(`Moved to ${status}`);
+  };
+  const assign = (id: string, staff: string) => {
+    setItems((arr) => arr.map((s) => (s.id === id ? { ...s, forwarder: staff } : s)));
+    toast.success(`Assigned to ${staff}`);
+  };
   return (
     <Card className="p-4 shadow-card">
+      <div className="text-xs text-muted-foreground mb-3">Drag, or change the status / assignee from the dropdowns on each card.</div>
       <div className="overflow-x-auto">
         <div className="flex gap-3 min-w-[1100px]">
           {STAGES.map((stage) => {
-            const items = shipments.filter((s) => s.status === stage);
+            const list = items.filter((s) => s.status === stage);
             return (
-              <div key={stage} className="w-[170px] flex-shrink-0 bg-secondary/40 rounded-xl p-2">
+              <div key={stage} className="w-[200px] flex-shrink-0 bg-secondary/40 rounded-xl p-2">
                 <div className="px-2 py-1.5 text-[10px] uppercase tracking-widest text-muted-foreground flex items-center justify-between">
-                  <span>{stage}</span><span className="font-bold text-foreground">{items.length}</span>
+                  <span>{stage}</span><span className="font-bold text-foreground">{list.length}</span>
                 </div>
                 <div className="space-y-2 mt-1 min-h-[100px]">
-                  {items.map((s) => (
-                    <div key={s.id} className="p-2.5 bg-card rounded-lg border border-border text-[11px] cursor-grab hover:shadow-md transition">
+                  {list.map((s) => (
+                    <div key={s.id} className="p-2.5 bg-card rounded-lg border border-border text-[11px] hover:shadow-md transition space-y-1.5">
                       <div className="font-semibold truncate">{s.shipmentNumber}</div>
                       <div className="text-muted-foreground truncate">{s.importer}</div>
-                      <div className="flex items-center justify-between mt-1.5 text-[10px]">
+                      <div className="flex items-center justify-between text-[10px]">
                         <span className="text-muted-foreground">ETA {s.eta}</span>
                         <span className="font-medium tabular-nums">{fmtMoney(s.value, s.ccy)}</span>
                       </div>
+                      <Select value={s.status} onValueChange={(v) => move(s.id, v as Shipment["status"])}>
+                        <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
+                        <SelectContent>{STAGES.map((st) => <SelectItem key={st} value={st} className="text-xs">{st}</SelectItem>)}</SelectContent>
+                      </Select>
+                      <Select value={s.forwarder} onValueChange={(v) => assign(s.id, v)}>
+                        <SelectTrigger className="h-7 text-[10px]"><SelectValue placeholder="Assign staff…" /></SelectTrigger>
+                        <SelectContent>{STAFF.map((st) => <SelectItem key={st} value={st} className="text-xs">{st}</SelectItem>)}</SelectContent>
+                      </Select>
                     </div>
                   ))}
+                  {list.length === 0 && <div className="text-[10px] text-muted-foreground text-center py-4">No shipments</div>}
                 </div>
               </div>
             );
@@ -332,6 +351,44 @@ function PipelineBoard() {
         </div>
       </div>
     </Card>
+  );
+}
+
+function ArrivingShipments() {
+  const now = Date.now();
+  const days = (eta: string) => Math.ceil((new Date(eta).getTime() - now) / 86400000);
+  const buckets = [
+    { title: "Arriving this week", filter: (s: Shipment) => { const d = days(s.eta); return d >= 0 && d <= 7; }, tone: "border-primary/30" },
+    { title: "Arriving in 14 days", filter: (s: Shipment) => { const d = days(s.eta); return d > 7 && d <= 14; }, tone: "border-accent/30" },
+    { title: "Delayed", filter: (s: Shipment) => s.status === "Delayed" || days(s.eta) < 0, tone: "border-destructive/30" },
+    { title: "ETA changes (last 24h)", filter: (s: Shipment) => ["SHP-10427", "SHP-10423"].includes(s.id), tone: "border-amber-500/30" },
+  ];
+  return (
+    <div className="grid lg:grid-cols-2 gap-4">
+      {buckets.map((b) => {
+        const list = shipments.filter(b.filter);
+        return (
+          <Card key={b.title} className={`p-4 shadow-card border ${b.tone}`}>
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-sm font-semibold">{b.title}</div>
+              <Badge variant="outline" className="text-[10px]">{list.length}</Badge>
+            </div>
+            <div className="space-y-2">
+              {list.length === 0 && <div className="text-xs text-muted-foreground py-3">No shipments in this bucket.</div>}
+              {list.map((s) => (
+                <div key={s.id} className="flex items-center justify-between gap-2 text-xs border-t border-border pt-2 first:border-t-0 first:pt-0">
+                  <div className="min-w-0">
+                    <div className="font-medium truncate">{s.shipmentNumber} · {s.importer}</div>
+                    <div className="text-muted-foreground truncate">{s.origin} → {s.destination} · ETA {s.eta}</div>
+                  </div>
+                  <Button size="sm" variant="outline" onClick={() => toast.success(`Update sent for ${s.shipmentNumber}`)}>Next action</Button>
+                </div>
+              ))}
+            </div>
+          </Card>
+        );
+      })}
+    </div>
   );
 }
 
