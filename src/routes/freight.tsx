@@ -436,15 +436,20 @@ function DocumentsManager() {
 function InvoicesTable() {
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState<FreightInvoice[]>(() => freightInvoices.map((i) => ({ ...i })));
+  const [filter, setFilter] = useState<"All" | "Outstanding" | FreightInvoice["status"]>("All");
   const tones: Record<FreightInvoice["status"], string> = {
+    Draft: "bg-secondary text-secondary-foreground border-border",
+    Sent: "bg-primary/15 text-primary border-primary/30",
     Paid: "bg-success/15 text-success border-success/30",
-    Unpaid: "bg-secondary text-secondary-foreground border-border",
+    Unpaid: "bg-amber-500/10 text-amber-700 border-amber-500/30",
     "Partially Paid": "bg-amber-500/15 text-amber-700 border-amber-500/30",
     Overdue: "bg-destructive/15 text-destructive border-destructive/30",
+    Cancelled: "bg-muted text-muted-foreground border-border",
   };
+  const STATUSES: FreightInvoice["status"][] = ["Draft", "Sent", "Paid", "Unpaid", "Partially Paid", "Overdue", "Cancelled"];
   const setStatus = (id: string, status: FreightInvoice["status"]) => {
     setRows((arr) => arr.map((r) => (r.id === id ? { ...r, status } : r)));
-    toast.success(`Invoice marked as ${status.toLowerCase()}.`);
+    toast.success(`Invoice ${id} marked as ${status}.`);
   };
   const download = (i: FreightInvoice) => {
     const body = `CANTA FREIGHT INVOICE\n\nInvoice: ${i.id}\nCustomer: ${i.customer}\nShipment: ${i.shipment}\nAmount: ${fmtMoney(i.amount, i.ccy)}\nDue: ${i.due}\nIssued: ${i.issued}\nStatus: ${i.status}\n`;
@@ -452,14 +457,36 @@ function InvoicesTable() {
     const a = document.createElement("a"); a.href = url; a.download = `${i.id}.txt`; a.click(); URL.revokeObjectURL(url);
     toast.success(`Downloaded ${i.id}`);
   };
+  const filtered = rows.filter((r) => {
+    if (filter === "All") return true;
+    if (filter === "Outstanding") return !["Paid", "Cancelled"].includes(r.status);
+    return r.status === filter;
+  });
+  const outstandingTotal = rows.filter((r) => !["Paid", "Cancelled"].includes(r.status)).reduce((a, b) => a + b.amount, 0);
+
   return (
     <Card className="shadow-card overflow-hidden">
-      <div className="p-4 flex items-center justify-between border-b border-border">
-        <div className="text-sm font-semibold">Freight invoices</div>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button size="sm" className="bg-primary"><Plus className="h-3.5 w-3.5 mr-1" /> New invoice</Button></DialogTrigger>
-          <NewInvoiceDialog onClose={() => setOpen(false)} />
-        </Dialog>
+      <div className="p-4 flex items-center justify-between flex-wrap gap-3 border-b border-border">
+        <div>
+          <div className="text-sm font-semibold">Freight invoices</div>
+          <div className="text-xs text-muted-foreground mt-0.5">
+            Outstanding: <span className="font-semibold text-destructive">{fmtMoney(outstandingTotal, "USD")}</span> · {rows.length} total
+          </div>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Select value={filter} onValueChange={(v) => setFilter(v as typeof filter)}>
+            <SelectTrigger className="h-8 w-[170px]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All invoices</SelectItem>
+              <SelectItem value="Outstanding">Outstanding only</SelectItem>
+              {STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild><Button size="sm" className="bg-primary"><Plus className="h-3.5 w-3.5 mr-1" /> New invoice</Button></DialogTrigger>
+            <NewInvoiceDialog onClose={() => setOpen(false)} />
+          </Dialog>
+        </div>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
@@ -475,27 +502,41 @@ function InvoicesTable() {
             </tr>
           </thead>
           <tbody>
-            {rows.map((i) => (
+            {filtered.map((i) => (
               <tr key={i.id} className="border-t border-border hover:bg-secondary/30">
                 <td className="px-4 py-3 font-mono text-xs">{i.id}</td>
                 <td className="px-4 py-3">{i.customer}</td>
                 <td className="px-4 py-3 font-mono text-xs">{i.shipment}</td>
                 <td className="px-4 py-3 text-right tabular-nums font-semibold">{fmtMoney(i.amount, i.ccy)}</td>
                 <td className="px-4 py-3 text-xs tabular-nums">{i.due}</td>
-                <td className="px-4 py-3"><span className={`text-[10px] px-2 py-0.5 rounded-full border ${tones[i.status]}`}>{i.status}</span></td>
+                <td className="px-4 py-3">
+                  <Select value={i.status} onValueChange={(v) => setStatus(i.id, v as FreightInvoice["status"])}>
+                    <SelectTrigger className={`h-7 w-[140px] text-[10px] border ${tones[i.status]}`}><SelectValue /></SelectTrigger>
+                    <SelectContent>{STATUSES.map((s) => <SelectItem key={s} value={s} className="text-xs">{s}</SelectItem>)}</SelectContent>
+                  </Select>
+                </td>
                 <td className="px-4 py-3 text-right space-x-1 whitespace-nowrap">
-                  {i.status !== "Paid"
-                    ? <Button size="sm" variant="outline" onClick={() => setStatus(i.id, "Paid")}><Banknote className="h-3.5 w-3.5 mr-1" /> Mark paid</Button>
-                    : <Button size="sm" variant="outline" onClick={() => setStatus(i.id, "Unpaid")}>Mark unpaid</Button>}
+                  {i.status !== "Paid" && i.status !== "Cancelled" && (
+                    <Button size="sm" variant="outline" onClick={() => setStatus(i.id, "Paid")}><Banknote className="h-3.5 w-3.5 mr-1" /> Mark paid</Button>
+                  )}
+                  {i.status === "Paid" && (
+                    <Button size="sm" variant="outline" onClick={() => setStatus(i.id, "Unpaid")}>Mark unpaid</Button>
+                  )}
+                  {i.status === "Unpaid" && (
+                    <Button size="sm" variant="ghost" onClick={() => setStatus(i.id, "Overdue")}>Mark overdue</Button>
+                  )}
                   <Button size="sm" variant="ghost" onClick={() => download(i)}><Download className="h-3.5 w-3.5 mr-1" /> Download</Button>
                   <Button size="sm" variant="ghost" asChild>
-                    <a href={buildWhatsAppUrl("general", { invoice: i.id, amount: fmtMoney(i.amount, i.ccy), due: i.due })} target="_blank" rel="noopener noreferrer">
-                      <MessageCircle className="h-3.5 w-3.5 mr-1" /> WhatsApp
+                    <a href={buildWhatsAppUrl("paymentReminder", { invoice: i.id, amount: fmtMoney(i.amount, i.ccy), due: i.due })} target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="h-3.5 w-3.5 mr-1" /> Remind
                     </a>
                   </Button>
                 </td>
               </tr>
             ))}
+            {filtered.length === 0 && (
+              <tr><td colSpan={7} className="px-4 py-10 text-center text-sm text-muted-foreground">No invoices match this filter.</td></tr>
+            )}
           </tbody>
         </table>
       </div>
