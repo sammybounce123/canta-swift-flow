@@ -392,108 +392,112 @@ function BeneficiaryStep({
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-5 animate-fade-in">
-      <div className="flex items-center justify-between">
-        <div>
-          <Badge className="bg-accent/15 text-accent border-accent/30 hover:bg-accent/15">Step 2 of 3</Badge>
-          <h1 className="text-2xl font-semibold mt-1">Who is receiving the funds?</h1>
-          <p className="text-sm text-muted-foreground">
-            Converting {fmtMoney(conversion.sendAmt, conversion.from)} <ArrowRight className="inline h-3 w-3 mx-1" />
-            {fmtMoney(conversion.out, conversion.to)} at locked rate {conversion.rate}.
-          </p>
-        </div>
-        <Button variant="ghost" size="sm" onClick={onBack}>
-          <ChevronLeft className="h-4 w-4 mr-1" /> Back
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-2 gap-2">
-        <button
-          onClick={() => setMode("pick")}
-          className={`p-4 rounded-xl border-2 text-left transition ${mode === "pick" ? "border-accent bg-accent/5" : "border-border hover:border-accent/40"}`}
-        >
-          <Users className="h-5 w-5 text-accent mb-2" />
-          <div className="text-sm font-semibold">Saved beneficiary</div>
-          <div className="text-xs text-muted-foreground">Pick from your verified list</div>
-        </button>
-        <button
-          onClick={() => setMode("new")}
-          className={`p-4 rounded-xl border-2 text-left transition ${mode === "new" ? "border-accent bg-accent/5" : "border-border hover:border-accent/40"}`}
-        >
-          <UserPlus className="h-5 w-5 text-accent mb-2" />
-          <div className="text-sm font-semibold">Add new beneficiary</div>
-          <div className="text-xs text-muted-foreground">One-time or save for next time</div>
-        </button>
-      </div>
-
-      <Card className="p-6 shadow-card">
-        {mode === "pick" ? (
-          <div className="space-y-2">
-            {beneficiaries.map((b) => (
-              <button
-                key={b.name}
-                onClick={() => setSelected(b.name)}
-                className={`w-full text-left flex items-center gap-3 p-3 rounded-xl border transition ${selected === b.name ? "border-accent bg-accent/5" : "border-border hover:border-accent/40"}`}
-              >
-                <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary grid place-items-center">
-                  <Building2 className="h-5 w-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold truncate">{b.name}</div>
-                  <div className="text-xs text-muted-foreground truncate">{b.bank} · {b.account} · {b.country}</div>
-                </div>
-                <Badge variant="outline" className="text-[10px]">{b.ccy}</Badge>
-              </button>
-            ))}
+    <div className="animate-fade-in pb-24">
+      <div className="max-w-3xl mx-auto space-y-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <Badge className="bg-accent/15 text-accent border-accent/30 hover:bg-accent/15">Step 2 of 3</Badge>
+            <h1 className="text-2xl font-semibold mt-1">Who is receiving the funds?</h1>
+            <p className="text-sm text-muted-foreground">
+              Converting {fmtMoney(conversion.sendAmt, conversion.from)} <ArrowRight className="inline h-3 w-3 mx-1" />
+              {fmtMoney(conversion.out, conversion.to)} at locked rate {conversion.rate}.
+            </p>
           </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-3">
-            <div className="col-span-2">
-              <Label className="text-xs">Beneficiary name</Label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Acme Trading Ltd" className="mt-1" />
-            </div>
-            <div>
-              <Label className="text-xs">Bank name</Label>
-              <Input value={bank} onChange={(e) => setBank(e.target.value)} placeholder="e.g. HSBC" className="mt-1" />
-            </div>
-            <div>
-              <Label className="text-xs">Account number / IBAN</Label>
-              <Input value={account} onChange={(e) => setAccount(e.target.value)} placeholder="GB00 …" className="mt-1" />
-            </div>
-            <div>
-              <Label className="text-xs">Country</Label>
-              <Input value={country} onChange={(e) => setCountry(e.target.value)} placeholder="United Kingdom" className="mt-1" />
-            </div>
-            <div>
-              <Label className="text-xs">Receive currency</Label>
-              <Input value={conversion.to} disabled className="mt-1" />
-            </div>
-            <div className="col-span-2">
-              <Label className="text-xs">Narration / purpose of payment</Label>
-              <Textarea value={narration} onChange={(e) => setNarration(e.target.value)} placeholder="Invoice payment, supplier settlement…" className="mt-1 min-h-20" />
-            </div>
-            <div className="col-span-2">
-              <Label className="text-xs">Supporting document (optional)</Label>
-              <label className="mt-1 flex items-center gap-2 p-3 rounded-xl border border-dashed border-border hover:border-accent cursor-pointer">
-                <Paperclip className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground flex-1">{doc ? doc.name : "Attach invoice, contract or KYC proof"}</span>
-                <input type="file" className="hidden" onChange={(e) => setDoc(e.target.files?.[0] ?? null)} />
-              </label>
-            </div>
-          </div>
-        )}
-      </Card>
-
-      <div className="sticky bottom-0 -mx-4 sm:-mx-6 mt-4 px-4 sm:px-6 py-3 bg-background/85 backdrop-blur-xl border-t border-border flex items-center justify-between gap-3">
-        <div className="text-xs text-muted-foreground hidden sm:block">
-          Sending <span className="font-semibold text-foreground tabular-nums">{fmtMoney(conversion.out, conversion.to)}</span> to{" "}
-          <span className="font-semibold text-foreground">{mode === "pick" ? selected : (name || "new beneficiary")}</span>
-        </div>
-        <div className="flex items-center gap-2 ml-auto">
-          <Button variant="outline" onClick={onBack}>Cancel</Button>
-          <Button onClick={proceed} className="bg-accent text-accent-foreground hover:bg-accent/90">
-            Continue to transfer <ArrowRight className="h-4 w-4 ml-1" />
+          <Button variant="ghost" size="sm" onClick={onBack}>
+            <ChevronLeft className="h-4 w-4 mr-1" /> Back
           </Button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            onClick={() => setMode("pick")}
+            className={`p-4 rounded-xl border-2 text-left transition ${mode === "pick" ? "border-accent bg-accent/5" : "border-border hover:border-accent/40"}`}
+          >
+            <Users className="h-5 w-5 text-accent mb-2" />
+            <div className="text-sm font-semibold">Saved beneficiary</div>
+            <div className="text-xs text-muted-foreground">Pick from your verified list</div>
+          </button>
+          <button
+            onClick={() => setMode("new")}
+            className={`p-4 rounded-xl border-2 text-left transition ${mode === "new" ? "border-accent bg-accent/5" : "border-border hover:border-accent/40"}`}
+          >
+            <UserPlus className="h-5 w-5 text-accent mb-2" />
+            <div className="text-sm font-semibold">Add new beneficiary</div>
+            <div className="text-xs text-muted-foreground">One-time or save for next time</div>
+          </button>
+        </div>
+
+        <Card className="p-6 shadow-card">
+          {mode === "pick" ? (
+            <div className="space-y-2">
+              {beneficiaries.map((b) => (
+                <button
+                  key={b.name}
+                  onClick={() => setSelected(b.name)}
+                  className={`w-full text-left flex items-center gap-3 p-3 rounded-xl border transition ${selected === b.name ? "border-accent bg-accent/5" : "border-border hover:border-accent/40"}`}
+                >
+                  <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary grid place-items-center">
+                    <Building2 className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold truncate">{b.name}</div>
+                    <div className="text-xs text-muted-foreground truncate">{b.bank} · {b.account} · {b.country}</div>
+                  </div>
+                  <Badge variant="outline" className="text-[10px]">{b.ccy}</Badge>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2">
+                <Label className="text-xs">Beneficiary name</Label>
+                <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Acme Trading Ltd" className="mt-1" />
+              </div>
+              <div>
+                <Label className="text-xs">Bank name</Label>
+                <Input value={bank} onChange={(e) => setBank(e.target.value)} placeholder="e.g. HSBC" className="mt-1" />
+              </div>
+              <div>
+                <Label className="text-xs">Account number / IBAN</Label>
+                <Input value={account} onChange={(e) => setAccount(e.target.value)} placeholder="GB00 …" className="mt-1" />
+              </div>
+              <div>
+                <Label className="text-xs">Country</Label>
+                <Input value={country} onChange={(e) => setCountry(e.target.value)} placeholder="United Kingdom" className="mt-1" />
+              </div>
+              <div>
+                <Label className="text-xs">Receive currency</Label>
+                <Input value={conversion.to} disabled className="mt-1" />
+              </div>
+              <div className="col-span-2">
+                <Label className="text-xs">Narration / purpose of payment</Label>
+                <Textarea value={narration} onChange={(e) => setNarration(e.target.value)} placeholder="Invoice payment, supplier settlement…" className="mt-1 min-h-20" />
+              </div>
+              <div className="col-span-2">
+                <Label className="text-xs">Supporting document (optional)</Label>
+                <label className="mt-1 flex items-center gap-2 p-3 rounded-xl border border-dashed border-border hover:border-accent cursor-pointer">
+                  <Paperclip className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground flex-1">{doc ? doc.name : "Attach invoice, contract or KYC proof"}</span>
+                  <input type="file" className="hidden" onChange={(e) => setDoc(e.target.files?.[0] ?? null)} />
+                </label>
+              </div>
+            </div>
+          )}
+        </Card>
+      </div>
+
+      <div className="fixed bottom-0 left-0 right-0 lg:left-64 z-30 bg-background/90 backdrop-blur-xl border-t border-border">
+        <div className="px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-3">
+          <div className="text-xs text-muted-foreground hidden sm:block min-w-0 truncate">
+            Sending <span className="font-semibold text-foreground tabular-nums">{fmtMoney(conversion.out, conversion.to)}</span> to{" "}
+            <span className="font-semibold text-foreground">{mode === "pick" ? selected : (name || "new beneficiary")}</span>
+          </div>
+          <div className="flex items-center gap-2 ml-auto">
+            <Button variant="outline" onClick={onBack}>Cancel</Button>
+            <Button onClick={proceed} className="bg-accent text-accent-foreground hover:bg-accent/90">
+              Continue to transfer <ArrowRight className="h-4 w-4 ml-1" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
