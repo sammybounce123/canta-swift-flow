@@ -10,6 +10,7 @@ import { shipments, suppliers, freightInvoices, fmtMoney, type Shipment } from "
 import { buildWhatsAppUrl, type WhatsAppTemplateKey } from "@/lib/whatsapp";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
+import { ImporterActions } from "@/components/ImporterActions";
 import {
   MessageCircle, Upload, Sparkles, FileQuestion, Ship, Calendar, Truck, Bell, ShieldCheck,
   CheckCircle2, AlertCircle, ArrowRight, Receipt, Package, Send, Link as LinkIcon, Copy, Lock,
