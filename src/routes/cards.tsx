@@ -23,6 +23,8 @@ import {
   Globe, ChevronRight,
 } from "lucide-react";
 import { toast } from "sonner";
+import { CardPurposeWizard } from "@/components/CardPurposeWizard";
+import { CardActions } from "@/components/CardActions";
 
 export const Route = createFileRoute("/cards")({
   head: () => ({ meta: [{ title: "Global Spend Cards — Canta" }] }),
@@ -549,6 +551,11 @@ function CardDetail({ c, onClose }: { c: RichCard; onClose: () => void }) {
           {c.platform && <div className="text-xs text-muted-foreground">Platform: <span className="text-foreground">{c.platform}</span></div>}
         </Card>
 
+        <CardActions
+          card={{ id: c.id, holder: c.holder, monthlySpend: c.monthlySpend, monthlyLimit: c.limit, linkedTo: c.linked, status: c.status as any }}
+          isFrozen={c.status === "Frozen"}
+        />
+
         <Tabs defaultValue="txn">
           <TabsList>
             <TabsTrigger value="txn">Transactions</TabsTrigger>
@@ -694,7 +701,7 @@ function CardsPage() {
             teams, and ad spend — with controls and reporting tailored to each use case.
           </p>
         </div>
-        <CreateCardDialog />
+        <CardPurposeWizard />
       </div>
 
       {/* KPIs */}

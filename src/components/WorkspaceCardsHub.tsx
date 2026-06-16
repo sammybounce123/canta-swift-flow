@@ -23,6 +23,8 @@ import { fmtMoney } from "@/lib/mock";
 import { toast } from "sonner";
 import type { ReactNode } from "react";
 import { EmptyState } from "@/components/EmptyState";
+import { CardPurposeWizard, type CardDraft, type CardLinkKind } from "@/components/CardPurposeWizard";
+import { CardActions } from "@/components/CardActions";
 
 type CardType = { key: string; label: string; desc: string };
 type SpendDim = { key: string; label: string };
@@ -102,55 +104,48 @@ export function WorkspaceCardsHub({
   }, []);
 
   const [cards, setCards] = useState<IssuedCard[]>(seed);
-  const [open, setOpen] = useState(false);
-
-  // New card draft
-  const [draft, setDraft] = useState({
-    type: cardTypes[0].key,
-    holder: "",
-    linkKind: linkEntities[0],
-    linkTo: "",
-    daily: 1000,
-    monthly: 20000,
-    tx: 500,
-    requireApproval: true,
-    requireReceipts: true,
-  });
 
   const totalSpend = cards.reduce((s, c) => s + c.monthlySpend, 0);
   const active = cards.filter((c) => c.status === "Active").length;
   const pending = cards.filter((c) => c.status === "Pending Approval").length;
   const receiptsMissing = cards.reduce((s, c) => s + c.receiptsMissing, 0);
 
-  function create() {
-    if (!draft.holder.trim()) {
-      toast.error("Add a cardholder name");
-      return;
-    }
-    const ct = cardTypes.find((t) => t.key === draft.type)!;
+  // Map workspace-specific link entity strings to the wizard's canonical CardLinkKind.
+  const defaultLinkKind: CardLinkKind = (() => {
+    const m: Record<string, CardLinkKind> = {
+      "Trade file": "Trade File", "Trade File": "Trade File",
+      "Shipment": "Shipment", "Supplier": "Supplier",
+      "Cost center": "Cost Center", "Cost Center": "Cost Center",
+      "Department": "Department", "Project": "Project",
+      "Freight route": "Freight Route", "Freight Route": "Freight Route",
+      "Freight customer": "Freight Customer", "Freight Customer": "Freight Customer",
+      "Event": "Event", "Property Case": "Property Case",
+    };
+    return m[linkEntities[0]] ?? "Department";
+  })();
+
+  function handleCreate(d: CardDraft) {
+    const requireApproval = d.approvalAbove > 0;
     const newCard: IssuedCard = {
       id: nextId(),
-      type: draft.type,
-      typeLabel: ct.label,
-      holder: draft.holder.trim(),
+      type: d.purpose,
+      typeLabel: d.purpose,
+      holder: d.who === "Me" ? "Me" : (d.holder || d.who),
       last4: String(1000 + Math.floor(Math.random() * 8999)).slice(-4),
-      status: draft.requireApproval ? "Pending Approval" : "Active",
-      dailyLimit: draft.daily,
-      monthlyLimit: draft.monthly,
-      txLimit: draft.tx,
+      status: requireApproval ? "Pending Approval" : "Active",
+      dailyLimit: d.dailyLimit,
+      monthlyLimit: d.monthlyLimit,
+      txLimit: d.singleTxLimit,
       monthlySpend: 0,
-      requireApproval: draft.requireApproval,
-      requireReceipts: draft.requireReceipts,
-      linkedTo: draft.linkTo || draft.linkKind + " · unassigned",
-      linkedKind: draft.linkKind,
+      requireApproval,
+      requireReceipts: d.receiptsRequired,
+      linkedTo: d.linkRef ? `${d.linkKind} · ${d.linkRef}` : `${d.linkKind} · unassigned`,
+      linkedKind: d.linkKind,
       receiptsMissing: 0,
-      spendByDim: Object.fromEntries(spendDimensions.map((d) => [d.key, []])),
+      spendByDim: Object.fromEntries(spendDimensions.map((dim) => [dim.key, []])),
     };
     setCards((c) => [newCard, ...c]);
-    setOpen(false);
-    toast.success(
-      draft.requireApproval ? "Card request created — awaiting approval" : "Card issued and active"
-    );
+    toast.success(requireApproval ? "Card request created — awaiting approval" : "Card issued and active");
   }
 
   function toggleFreeze(id: string) {
@@ -203,77 +198,7 @@ export function WorkspaceCardsHub({
               <Download className="h-4 w-4 mr-2" /> Export report
             </Button>
           )}
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm"><Plus className="h-4 w-4 mr-2" /> Create card</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-lg">
-              <DialogHeader>
-                <DialogTitle>Create {title.split(" ")[0]} card</DialogTitle>
-                <DialogDescription>Limits, approvals and receipts are enforced per transaction.</DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-xs">Card type</Label>
-                  <Select value={draft.type} onValueChange={(v) => setDraft({ ...draft, type: v })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {cardTypes.map((t) => (
-                        <SelectItem key={t.key} value={t.key}>{t.label} — {t.desc}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-xs">Cardholder</Label>
-                  <Input value={draft.holder} onChange={(e) => setDraft({ ...draft, holder: e.target.value })} placeholder="Staff name or team" />
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-xs">Link to</Label>
-                    <Select value={draft.linkKind} onValueChange={(v) => setDraft({ ...draft, linkKind: v })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {linkEntities.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label className="text-xs">Reference</Label>
-                    <Input value={draft.linkTo} onChange={(e) => setDraft({ ...draft, linkTo: e.target.value })} placeholder={`${draft.linkKind} #...`} />
-                  </div>
-                </div>
-                <div className="grid grid-cols-3 gap-3">
-                  <div>
-                    <Label className="text-xs">Daily limit ($)</Label>
-                    <Input type="number" value={draft.daily} onChange={(e) => setDraft({ ...draft, daily: Number(e.target.value) })} />
-                  </div>
-                  <div>
-                    <Label className="text-xs">Monthly limit ($)</Label>
-                    <Input type="number" value={draft.monthly} onChange={(e) => setDraft({ ...draft, monthly: Number(e.target.value) })} />
-                  </div>
-                  <div>
-                    <Label className="text-xs">Per-tx limit ($)</Label>
-                    <Input type="number" value={draft.tx} onChange={(e) => setDraft({ ...draft, tx: Number(e.target.value) })} />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm">
-                    <Checkbox checked={draft.requireApproval} onCheckedChange={(v) => setDraft({ ...draft, requireApproval: Boolean(v) })} />
-                    Require approval before each spend over per-tx limit
-                  </label>
-                  <label className="flex items-center gap-2 text-sm">
-                    <Checkbox checked={draft.requireReceipts} onCheckedChange={(v) => setDraft({ ...draft, requireReceipts: Boolean(v) })} />
-                    Require receipts for every transaction
-                  </label>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-                <Button onClick={create}>Create card</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <CardPurposeWizard defaultLinkKind={defaultLinkKind} onCreate={handleCreate} />
         </div>
       </header>
 
@@ -298,7 +223,7 @@ export function WorkspaceCardsHub({
               icon={<CreditCard className="h-5 w-5" />}
               title={`No ${workspaceKey} cards yet`}
               description={`Create a ${cardTypes[0].label.toLowerCase()} to start tracking spend.`}
-              action={{ label: "Create card", onClick: () => setOpen(true) }}
+              action={{ label: "Create card", onClick: () => toast.info("Click 'Create card' in the header to start the wizard.") }}
             />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -333,19 +258,16 @@ export function WorkspaceCardsHub({
                         </Badge>
                       )}
                     </div>
-                    <div className="mt-3 flex gap-1.5">
+                    <div className="mt-3">
                       {c.status === "Pending Approval" ? (
-                        <Button size="sm" className="h-7" onClick={() => approve(c.id)}>
-                          Approve
-                        </Button>
+                        <Button size="sm" className="h-7" onClick={() => approve(c.id)}>Approve</Button>
                       ) : (
-                        <Button size="sm" variant="outline" className="h-7" onClick={() => toggleFreeze(c.id)}>
-                          {c.status === "Frozen" ? <><Flame className="h-3 w-3 mr-1" /> Unfreeze</> : <><Snowflake className="h-3 w-3 mr-1" /> Freeze</>}
-                        </Button>
+                        <CardActions
+                          card={{ id: c.id, holder: c.holder, monthlySpend: c.monthlySpend, monthlyLimit: c.monthlyLimit, linkedTo: c.linkedTo, status: c.status }}
+                          isFrozen={c.status === "Frozen"}
+                          onFreezeToggle={() => toggleFreeze(c.id)}
+                        />
                       )}
-                      <Button size="sm" variant="ghost" className="h-7" onClick={() => toast.success("Receipts requested")}>
-                        <Receipt className="h-3 w-3 mr-1" /> Receipts
-                      </Button>
                     </div>
                   </Card>
                 );
@@ -395,17 +317,13 @@ export function WorkspaceCardsHub({
               <Card key={t.key} className="p-4">
                 <div className="font-semibold">{t.label}</div>
                 <div className="text-xs text-muted-foreground mt-1">{t.desc}</div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="mt-3"
-                  onClick={() => {
-                    setDraft((d) => ({ ...d, type: t.key }));
-                    setOpen(true);
-                  }}
-                >
-                  <Plus className="h-3 w-3 mr-1" /> Create {t.label.toLowerCase()}
-                </Button>
+                <div className="mt-3">
+                  <CardPurposeWizard
+                    defaultLinkKind={defaultLinkKind}
+                    onCreate={handleCreate}
+                    trigger={<Button size="sm" variant="outline"><Plus className="h-3 w-3 mr-1" /> Create {t.label.toLowerCase()}</Button>}
+                  />
+                </div>
               </Card>
             ))}
           </div>
