@@ -162,10 +162,14 @@ const initialTemplates = [
 // ---------- helpers ----------
 const statusTone: Record<ThreadStatus, string> = {
   "New": "bg-primary/10 text-primary border-primary/30",
-  "In Progress": "bg-accent/15 text-accent-foreground border-accent/30",
-  "Waiting for Importer": "bg-warning/15 text-warning-foreground border-warning/30",
-  "Completed": "bg-success/15 text-success border-success/30",
+  "Needs Reply": "bg-warning/15 text-warning-foreground border-warning/30",
+  "Missing Document": "bg-warning/15 text-warning-foreground border-warning/30",
+  "Ready for Trade File": "bg-accent/15 text-accent-foreground border-accent/30",
+  "Ready for Payment Case": "bg-accent/15 text-accent-foreground border-accent/30",
+  "Escalated": "bg-destructive/10 text-destructive border-destructive/30",
+  "Resolved": "bg-success/15 text-success border-success/30",
 };
+
 
 function Kpi({ icon: Icon, label, value, hint, tone = "primary" }: { icon: any; label: string; value: string; hint?: string; tone?: "primary" | "success" | "warning" | "danger" | "accent" }) {
   const toneMap: Record<string, string> = {
