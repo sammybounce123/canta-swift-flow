@@ -202,20 +202,10 @@ function SupplierSheet({ supplier, onClose }: { supplier: Supplier | null; onClo
 }
 
 function Stat({ label, value, icon: Icon }: { label: string; value: string; icon: typeof FileText }) {
-
-function Stat({ label, value, icon: Icon }: { label: string; value: string; icon: typeof FileText }) {
   return (
     <div className="rounded-lg border border-border p-3">
       <div className="text-[11px] uppercase tracking-wider text-muted-foreground flex items-center gap-1"><Icon className="h-3 w-3" /> {label}</div>
       <div className="text-sm font-semibold mt-1">{value}</div>
     </div>
-  );
-}
-
-function Action({ label, icon: Icon, onClick, primary }: { label: string; icon: typeof FileText; onClick: () => void; primary?: boolean }) {
-  return (
-    <Button variant={primary ? "default" : "outline"} size="sm" onClick={onClick} className="justify-start">
-      <Icon className="h-4 w-4 mr-2" /> {label}
-    </Button>
   );
 }
