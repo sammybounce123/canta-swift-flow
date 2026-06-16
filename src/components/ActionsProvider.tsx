@@ -248,66 +248,323 @@ function FundFlow({
 }
 
 function FundForm({ ccy, onConfirm }: { ccy: string; onConfirm: (amount: number, method: string) => void }) {
+  const { profile } = useRole();
   const [amount, setAmount] = useState("1000000");
   const [method, setMethod] = useState<string | null>(null);
-  if (method) {
-    const amt = Number(amount.replace(/,/g, "")) || 0;
+  const [stage, setStage] = useState<"form" | "vaccount" | "tracker">("form");
+  const amt = Number(amount.replace(/,/g, "")) || 0;
+
+  if (stage === "tracker" && method) {
     return (
-      <FundFlow
-        steps={
-          method === "USDT (TRC20 / ERC20)"
-            ? [
-                { label: "USDT deposit detected", sub: "Block confirmation on TRC20" },
-                { label: "Auto-converted to " + ccy, sub: "Mid-market rate, zero spread" },
-                { label: `${fmtMoney(amt, ccy)} credited`, sub: `Available now in your ${ccy} wallet` },
-              ]
-            : method === "Bank Transfer"
-            ? [
-                { label: "Awaiting bank instruction", sub: "Reference shared with your bank" },
-                { label: "Funds received", sub: "Cleared on instant rail" },
-                { label: `${fmtMoney(amt, ccy)} credited`, sub: `Available now in your ${ccy} wallet` },
-              ]
-            : [
-                { label: "Inline payment authorised", sub: "Buyer card / wallet captured" },
-                { label: "Auto-routed to beneficiary", sub: "No pre-funding required" },
-                { label: "Settlement booked", sub: `${fmtMoney(amt, ccy)} fronted by Canta` },
-              ]
-        }
+      <FundTracker
+        ccy={ccy}
+        amount={amt}
+        method={method}
+        accountName={profile.name}
         onDone={() => onConfirm(amt, method)}
       />
     );
   }
+
+  if (stage === "vaccount" && method === "Bank Transfer") {
+    return (
+      <VirtualAccountPanel
+        ccy={ccy}
+        amount={amt}
+        accountName={profile.name}
+        onBack={() => { setStage("form"); setMethod(null); }}
+        onPaid={() => setStage("tracker")}
+      />
+    );
+  }
+
   return (
     <div className="space-y-3">
       <div>
         <Label className="text-xs">Amount ({ccy})</Label>
-        <Input value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^0-9.,]/g, ""))} className="mt-1" />
+        <Input
+          inputMode="decimal"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value.replace(/[^0-9.,]/g, ""))}
+          className="mt-1 text-lg font-semibold tabular-nums"
+        />
+        <div className="mt-1 text-[11px] text-muted-foreground">
+          Funding as <span className="font-medium text-foreground">{profile.name}</span>
+        </div>
       </div>
       <div className="space-y-2">
         {[
-          { icon: Building, label: "Bank Transfer", desc: "Free · Settles in seconds", rec: true },
+          { icon: Building, label: "Bank Transfer", desc: "Free · Virtual account in your name", rec: true },
           { icon: Coins, label: "USDT (TRC20 / ERC20)", desc: "Stablecoin · Auto-converted at mid-market" },
           { icon: Zap, label: "Pay Without Funding", desc: "Inline · No pre-fund needed" },
         ].map((o) => (
           <button
             key={o.label}
-            className="w-full text-left flex items-center gap-3 p-3 rounded-xl border border-border hover:border-accent hover:bg-secondary/40"
-            onClick={() => setMethod(o.label)}
+            disabled={amt <= 0}
+            className="w-full text-left flex items-center gap-3 p-3 rounded-xl border border-border hover:border-accent hover:bg-secondary/40 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => {
+              setMethod(o.label);
+              setStage(o.label === "Bank Transfer" ? "vaccount" : "tracker");
+            }}
           >
-            <div className="h-9 w-9 rounded-lg bg-primary/10 grid place-items-center">
+            <div className="h-9 w-9 rounded-lg bg-primary/10 grid place-items-center shrink-0">
               <o.icon className="h-4 w-4 text-primary" />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <div className="text-sm font-semibold">{o.label}</div>
               <div className="text-xs text-muted-foreground">{o.desc}</div>
             </div>
-            {o.rec && <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/20 text-accent-foreground">Recommended</span>}
+            {o.rec && <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/20 text-accent-foreground shrink-0">Recommended</span>}
           </button>
         ))}
       </div>
     </div>
   );
 }
+
+function VirtualAccountPanel({
+  ccy, amount, accountName, onBack, onPaid,
+}: {
+  ccy: string; amount: number; accountName: string; onBack: () => void; onPaid: () => void;
+}) {
+  // Deterministic-ish mock account number per session
+  const acct = useMemo(() => {
+    const seed = `${accountName}-${ccy}`.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+    const base = (9000000000 + (seed * 314159) % 999999999).toString().slice(0, 10);
+    return base;
+  }, [accountName, ccy]);
+  const reference = useMemo(
+    () => `CNT-${ccy}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`,
+    [ccy],
+  );
+  const bank =
+    ccy === "NGN" ? "Canta MFB · Wema Bank (sponsor)"
+    : ccy === "USD" ? "Canta Trust · Bank of America"
+    : ccy === "EUR" ? "Canta EU · Modulr (SEPA)"
+    : ccy === "GBP" ? "Canta UK · ClearBank (Faster Payments)"
+    : "Canta Global Settlement";
+  const expires = useMemo(() => {
+    const d = new Date(Date.now() + 30 * 60 * 1000);
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }, []);
+
+  const copyAll = () => {
+    const txt = `Account name: ${accountName}\nBank: ${bank}\nAccount number: ${acct}\nReference: ${reference}\nAmount: ${fmtMoney(amount, ccy)}`;
+    navigator.clipboard?.writeText(txt);
+    toast.success("Account details copied");
+  };
+
+  return (
+    <div className="space-y-4">
+      <button onClick={onBack} className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+        <ArrowLeft className="h-3 w-3" /> Back
+      </button>
+
+      <div className="rounded-2xl border border-accent/30 bg-gradient-to-br from-accent/10 via-card to-card p-5 shadow-card relative overflow-hidden">
+        <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-accent/20 blur-3xl" />
+        <div className="relative space-y-4">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Send exactly</div>
+              <div className="text-2xl font-semibold tabular-nums mt-0.5">{fmtMoney(amount, ccy)}</div>
+            </div>
+            <div className="h-10 w-10 rounded-xl bg-accent/20 grid place-items-center shrink-0">
+              <Landmark className="h-5 w-5 text-accent" />
+            </div>
+          </div>
+
+          <div className="space-y-2.5">
+            <AcctRow label="Account name" value={accountName} />
+            <AcctRow label="Bank" value={bank} />
+            <AcctRow label="Account number" value={acct} mono copy />
+            <AcctRow label="Reference (required)" value={reference} mono copy highlight />
+          </div>
+
+          <div className="flex items-center justify-between text-[11px] text-muted-foreground border-t border-border pt-3">
+            <span className="inline-flex items-center gap-1"><Lock className="h-3 w-3" /> Dedicated to your account</span>
+            <span>Expires {expires}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-border bg-secondary/40 p-3 text-xs text-muted-foreground">
+        Transfer from any bank app. We'll detect the inflow automatically using your reference and credit your {ccy} wallet.
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <Button variant="outline" onClick={copyAll} className="flex-1">
+          <Copy className="h-4 w-4 mr-1.5" /> Copy details
+        </Button>
+        <Button onClick={onPaid} className="flex-1 bg-primary">
+          I've sent the funds <ArrowRight className="h-4 w-4 ml-1.5" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function AcctRow({ label, value, mono, copy, highlight }: { label: string; value: string; mono?: boolean; copy?: boolean; highlight?: boolean }) {
+  return (
+    <div className={`flex items-center justify-between gap-3 rounded-lg px-3 py-2 ${highlight ? "bg-accent/10 border border-accent/30" : "bg-card/60 border border-border"}`}>
+      <div className="min-w-0">
+        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
+        <div className={`text-sm font-semibold truncate ${mono ? "tabular-nums" : ""}`}>{value}</div>
+      </div>
+      {copy && (
+        <button
+          onClick={() => { navigator.clipboard?.writeText(value); toast.success(`${label} copied`); }}
+          className="shrink-0 h-7 w-7 grid place-items-center rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground"
+          aria-label={`Copy ${label}`}
+        >
+          <Copy className="h-3.5 w-3.5" />
+        </button>
+      )}
+    </div>
+  );
+}
+
+function FundTracker({
+  ccy, amount, method, accountName, onDone,
+}: {
+  ccy: string; amount: number; method: string; accountName: string; onDone: () => void;
+}) {
+  const nodes =
+    method === "USDT (TRC20 / ERC20)"
+      ? [
+          { icon: UserIcon, label: "Your wallet", sub: accountName },
+          { icon: Coins, label: "Blockchain", sub: "TRC20 confirmation" },
+          { icon: Landmark, label: "Canta Vault", sub: "Auto-converted" },
+          { icon: Wallet, label: `${ccy} Wallet`, sub: fmtMoney(amount, ccy) },
+        ]
+      : method === "Bank Transfer"
+      ? [
+          { icon: UserIcon, label: accountName.split(" ")[0], sub: "Sender" },
+          { icon: Building, label: "Your Bank", sub: "Outbound transfer" },
+          { icon: Landmark, label: "Canta Vault", sub: "Funds received" },
+          { icon: Wallet, label: `${ccy} Wallet`, sub: fmtMoney(amount, ccy) },
+        ]
+      : [
+          { icon: UserIcon, label: "Buyer", sub: "Card / wallet" },
+          { icon: Zap, label: "Inline auth", sub: "No pre-funding" },
+          { icon: Landmark, label: "Canta Vault", sub: "Fronted" },
+          { icon: Wallet, label: `${ccy} Wallet`, sub: fmtMoney(amount, ccy) },
+        ];
+
+  const steps =
+    method === "USDT (TRC20 / ERC20)"
+      ? [
+          { label: "Deposit detected", sub: "TRC20 confirmation received" },
+          { label: `Auto-converted to ${ccy}`, sub: "Mid-market rate, zero spread" },
+          { label: `${fmtMoney(amount, ccy)} credited`, sub: `Available in your ${ccy} wallet` },
+        ]
+      : method === "Bank Transfer"
+      ? [
+          { label: "Awaiting bank inflow", sub: "Matching reference automatically" },
+          { label: "Funds received by Canta", sub: "Cleared on instant rail" },
+          { label: `${fmtMoney(amount, ccy)} credited`, sub: `Available in your ${ccy} wallet` },
+        ]
+      : [
+          { label: "Inline payment authorised", sub: "Buyer card / wallet captured" },
+          { label: "Auto-routed to beneficiary", sub: "No pre-funding required" },
+          { label: "Settlement booked", sub: `${fmtMoney(amount, ccy)} fronted by Canta` },
+        ];
+
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (i >= steps.length) {
+      const t = setTimeout(onDone, 900);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => setI((x) => x + 1), 1200);
+    return () => clearTimeout(t);
+  }, [i, steps.length, onDone]);
+
+  // progress = how far the moving dot has advanced across the node row
+  const totalSegments = nodes.length - 1;
+  const progress = Math.min(i / steps.length, 1) * totalSegments; // in segments
+
+  return (
+    <div className="space-y-5 py-1">
+      {/* Horizontal node tracker */}
+      <div className="relative px-1">
+        <div className="grid" style={{ gridTemplateColumns: `repeat(${nodes.length}, minmax(0, 1fr))` }}>
+          {nodes.map((n, idx) => {
+            const reached = idx <= Math.ceil(progress);
+            const active = idx === Math.ceil(progress) && i < steps.length;
+            return (
+              <div key={n.label} className="flex flex-col items-center text-center gap-1.5">
+                <div
+                  className={`h-12 w-12 rounded-2xl grid place-items-center border-2 transition-all duration-500 ${
+                    reached
+                      ? active
+                        ? "bg-accent text-accent-foreground border-accent shadow-glow scale-110"
+                        : "bg-success/15 text-success border-success/50"
+                      : "bg-secondary/40 text-muted-foreground border-border"
+                  }`}
+                >
+                  <n.icon className="h-5 w-5" />
+                </div>
+                <div className="text-[11px] font-semibold leading-tight">{n.label}</div>
+                <div className="text-[10px] text-muted-foreground leading-tight truncate max-w-full">{n.sub}</div>
+              </div>
+            );
+          })}
+        </div>
+        {/* connecting track */}
+        <div className="pointer-events-none absolute left-0 right-0 top-6 -z-10 px-[12.5%]">
+          <div className="relative h-1 bg-border rounded-full overflow-hidden">
+            <div
+              className="absolute inset-y-0 left-0 bg-gradient-to-r from-success via-accent to-accent rounded-full transition-all duration-700 ease-out"
+              style={{ width: `${(progress / totalSegments) * 100}%` }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Step list */}
+      <div className="space-y-2">
+        {steps.map((s, idx) => {
+          const done = idx < i;
+          const active = idx === i;
+          return (
+            <div
+              key={s.label}
+              className={`flex items-center gap-3 p-2.5 rounded-xl border transition-colors ${
+                done
+                  ? "border-success/30 bg-success/5"
+                  : active
+                  ? "border-accent/40 bg-accent/5"
+                  : "border-border bg-secondary/20 opacity-60"
+              }`}
+            >
+              <div className="h-7 w-7 grid place-items-center rounded-full bg-card border border-border shrink-0">
+                {done ? (
+                  <CheckCircle2 className="h-4 w-4 text-success" />
+                ) : active ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-accent" />
+                ) : (
+                  <span className="text-[11px] text-muted-foreground">{idx + 1}</span>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-semibold truncate">{s.label}</div>
+                <div className="text-xs text-muted-foreground truncate">{s.sub}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="text-xs text-muted-foreground text-center">
+        {i >= steps.length
+          ? "Funds credited successfully — redirecting…"
+          : "Tracking your transfer in real time. You can safely close this; we'll notify you when it lands."}
+      </div>
+    </div>
+  );
+}
+
+
 
 function ConvertForm({ from: f0, to: t0, onConfirm }: { from: string; to: string; onConfirm: (a: number, f: string, t: string, received: number) => void }) {
   const [from, setFrom] = useState(f0);
