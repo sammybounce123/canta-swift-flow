@@ -223,7 +223,7 @@ export function WorkspaceCardsHub({
               icon={<CreditCard className="h-5 w-5" />}
               title={`No ${workspaceKey} cards yet`}
               description={`Create a ${cardTypes[0].label.toLowerCase()} to start tracking spend.`}
-              action={{ label: "Create card", onClick: () => setOpen(true) }}
+              action={{ label: "Create card", onClick: () => toast.info("Click 'Create card' in the header to start the wizard.") }}
             />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
