@@ -11,8 +11,9 @@ import {
   MessageCircle, Send, Sparkles, FileText, Bell, Calendar, DollarSign,
   Inbox as InboxIcon, FilePlus2, FileCheck2, MessageSquareText, Users,
   AlertTriangle, Phone, Paperclip, CheckCircle2, Clock, Upload, Edit3,
-  TrendingUp, ShieldCheck,
+  TrendingUp, ShieldCheck, LifeBuoy, UserPlus, FileWarning, ShieldAlert, Wand2,
 } from "lucide-react";
+
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -22,20 +23,100 @@ export const Route = createFileRoute("/whatsapp")({
 });
 
 // ---------- mock data ----------
-type ThreadStatus = "New" | "In Progress" | "Waiting for Importer" | "Completed";
+type ThreadStatus =
+  | "New"
+  | "Needs Reply"
+  | "Missing Document"
+  | "Ready for Trade File"
+  | "Ready for Payment Case"
+  | "Escalated"
+  | "Resolved";
 type Thread = {
   id: string; importer: string; phone: string; last: string; time: string;
   unread: number; agent: string; score: number; file?: string; status: ThreadStatus;
 };
 
 const threads: Thread[] = [
-  { id: "WA-01", importer: "ABC Electronics · Tunde", phone: "+234 803 411 2280", last: "Sent BL for SHP-10421", time: "2m ago", unread: 1, agent: "Amaka O.", score: 92, file: "TF-2026-0214", status: "In Progress" },
-  { id: "WA-02", importer: "Balogun Trade · Risikat", phone: "+234 815 220 7741", last: "When will my goods arrive?", time: "11m ago", unread: 2, agent: "Chiamaka E.", score: 74, file: "TF-2026-0211", status: "Waiting for Importer" },
-  { id: "WA-03", importer: "Dav Excel · Bayo", phone: "+234 802 887 1190", last: "Uploaded packing list", time: "1h ago", unread: 0, agent: "Amaka O.", score: 81, file: "TF-2026-0208", status: "In Progress" },
+  { id: "WA-01", importer: "ABC Electronics · Tunde", phone: "+234 803 411 2280", last: "Sent BL for SHP-10421", time: "2m ago", unread: 1, agent: "Amaka O.", score: 92, file: "TF-2026-0214", status: "Ready for Trade File" },
+  { id: "WA-02", importer: "Balogun Trade · Risikat", phone: "+234 815 220 7741", last: "When will my goods arrive?", time: "11m ago", unread: 2, agent: "Chiamaka E.", score: 74, file: "TF-2026-0211", status: "Needs Reply" },
+  { id: "WA-03", importer: "Dav Excel · Bayo", phone: "+234 802 887 1190", last: "Uploaded packing list", time: "1h ago", unread: 0, agent: "Amaka O.", score: 81, file: "TF-2026-0208", status: "Missing Document" },
   { id: "WA-04", importer: "Global Motors · Ngozi", phone: "+234 809 661 4422", last: "Need landed cost estimate", time: "3h ago", unread: 1, agent: "Yusuf A.", score: 88, status: "New" },
-  { id: "WA-05", importer: "Mama Risi Foods", phone: "+234 706 220 1188", last: "Thanks, received the goods", time: "1d ago", unread: 0, agent: "Chiamaka E.", score: 67, file: "TF-2026-0199", status: "Completed" },
-  { id: "WA-06", importer: "Onitsha Plastics · Emeka", phone: "+234 813 552 9081", last: "Sent supplier invoice", time: "5h ago", unread: 3, agent: "Yusuf A.", score: 79, status: "New" },
+  { id: "WA-05", importer: "Mama Risi Foods", phone: "+234 706 220 1188", last: "Thanks, received the goods", time: "1d ago", unread: 0, agent: "Chiamaka E.", score: 67, file: "TF-2026-0199", status: "Resolved" },
+  { id: "WA-06", importer: "Onitsha Plastics · Emeka", phone: "+234 813 552 9081", last: "Sent supplier invoice", time: "5h ago", unread: 3, agent: "Yusuf A.", score: 79, status: "Ready for Payment Case" },
 ];
+
+// AI-extracted insight per conversation. AI is an assistant — every action requires Canta staff to confirm.
+type Urgency = "Low" | "Medium" | "High";
+type AiInsight = {
+  customerName: string;
+  phone: string;
+  requestType: string;
+  shipmentNumber?: string;
+  blNumber?: string;
+  containerNumber?: string;
+  invoiceNumber?: string;
+  paymentCase?: string;
+  tradeFile?: string;
+  missingDocs: string[];
+  urgency: Urgency;
+  nextAction: string;
+  suggestedReply: string;
+  assignedTo: string;
+};
+
+const aiInsights: Record<string, AiInsight> = {
+  "WA-01": {
+    customerName: "Tunde · ABC Electronics", phone: "+234 803 411 2280", requestType: "BL submission for active shipment",
+    shipmentNumber: "SHP-10421", blNumber: "BL-FE-7711", containerNumber: "MSCU7762213", tradeFile: "TF-2026-0214",
+    missingDocs: ["Packing list"], urgency: "Medium",
+    nextAction: "Confirm BL extraction and request packing list before vessel arrival.",
+    suggestedReply: "Thanks Tunde — BL received and attached to TF-2026-0214. Please send the packing list so we can finalise clearing for SHP-10421 (ETA 18 Jun).",
+    assignedTo: "Amaka O.",
+  },
+  "WA-02": {
+    customerName: "Risikat · Balogun Trade", phone: "+234 815 220 7741", requestType: "Shipment ETA enquiry + supplier payment status",
+    shipmentNumber: "SHP-10388", tradeFile: "TF-2026-0211", paymentCase: "PMT-2026-0078",
+    missingDocs: [], urgency: "Low",
+    nextAction: "Share latest ETA and confirm whether supplier payment proof has been issued.",
+    suggestedReply: "Hi Risikat — your goods are on MSC ANTONIA, ETA Lagos 22 Jun. Supplier payment PMT-2026-0078 is currently Pending. Want us to send the proof once funds settle?",
+    assignedTo: "Chiamaka E.",
+  },
+  "WA-03": {
+    customerName: "Bayo · Dav Excel", phone: "+234 802 887 1190", requestType: "Packing list submission",
+    shipmentNumber: "SHP-10402", tradeFile: "TF-2026-0208",
+    missingDocs: ["Container photo", "Form M"], urgency: "Medium",
+    nextAction: "Confirm packing list extraction and request remaining clearing documents.",
+    suggestedReply: "Thanks Bayo — packing list attached to TF-2026-0208. Please also send a container photo and Form M so we can complete the clearing pack.",
+    assignedTo: "Amaka O.",
+  },
+  "WA-04": {
+    customerName: "Ngozi · Global Motors", phone: "+234 809 661 4422", requestType: "Landed cost estimate request",
+    shipmentNumber: "SHP-10502", invoiceNumber: "INV-DAS-3320",
+    missingDocs: ["Supplier invoice", "Freight invoice"], urgency: "High",
+    nextAction: "Draft a trade file from supplier invoice, then run a landed cost estimate.",
+    suggestedReply: "Hi Ngozi — happy to run a landed cost estimate. Please share the supplier invoice and freight invoice so we can model duty, clearing and delivery accurately.",
+    assignedTo: "Yusuf A.",
+  },
+  "WA-05": {
+    customerName: "Mama Risi Foods", phone: "+234 706 220 1188", requestType: "Delivery confirmation",
+    shipmentNumber: "SHP-10210", tradeFile: "TF-2026-0199",
+    missingDocs: [], urgency: "Low",
+    nextAction: "Mark trade file as resolved and request a short customer review.",
+    suggestedReply: "Glad it arrived safely! We've closed TF-2026-0199. Could you share a quick note about your experience for our team?",
+    assignedTo: "Chiamaka E.",
+  },
+  "WA-06": {
+    customerName: "Emeka · Onitsha Plastics", phone: "+234 813 552 9081", requestType: "Supplier invoice submission for payment",
+    invoiceNumber: "INV-YIWU-3320", paymentCase: "PMT-2026-0094",
+    missingDocs: ["Proforma invoice", "Supplier bank details"], urgency: "High",
+    nextAction: "Open a draft Partner Payment Case and request the missing supplier banking details.",
+    suggestedReply: "Thanks Emeka — supplier invoice received. To set up the supplier payment we'll need the proforma invoice and the supplier's bank details (account name, number, SWIFT). Please share when convenient.",
+    assignedTo: "Yusuf A.",
+  },
+};
+
+const STAFF = ["Amaka O.", "Chiamaka E.", "Yusuf A.", "Ibrahim K.", "Compliance Desk"];
+
 
 const intakeDocs = [
   { id: "DOC-7711", thread: "WA-01", kind: "Bill of Lading", file: "BL-FE-7711.pdf", extracted: { Container: "MSCU7762213", Vessel: "MSC ANTONIA", ETA: "18 Jun 2026" }, status: "Awaiting confirm" },
@@ -81,10 +162,14 @@ const initialTemplates = [
 // ---------- helpers ----------
 const statusTone: Record<ThreadStatus, string> = {
   "New": "bg-primary/10 text-primary border-primary/30",
-  "In Progress": "bg-accent/15 text-accent-foreground border-accent/30",
-  "Waiting for Importer": "bg-warning/15 text-warning-foreground border-warning/30",
-  "Completed": "bg-success/15 text-success border-success/30",
+  "Needs Reply": "bg-warning/15 text-warning-foreground border-warning/30",
+  "Missing Document": "bg-warning/15 text-warning-foreground border-warning/30",
+  "Ready for Trade File": "bg-accent/15 text-accent-foreground border-accent/30",
+  "Ready for Payment Case": "bg-accent/15 text-accent-foreground border-accent/30",
+  "Escalated": "bg-destructive/10 text-destructive border-destructive/30",
+  "Resolved": "bg-success/15 text-success border-success/30",
 };
+
 
 function Kpi({ icon: Icon, label, value, hint, tone = "primary" }: { icon: any; label: string; value: string; hint?: string; tone?: "primary" | "success" | "warning" | "danger" | "accent" }) {
   const toneMap: Record<string, string> = {
@@ -171,7 +256,7 @@ function WhatsAppDesk() {
 
         {/* ------------- INBOX ------------- */}
         <TabsContent value="inbox" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {/* List */}
             <Card className="lg:col-span-1 p-2 shadow-card max-h-[680px] overflow-y-auto">
               <div className="p-2">
@@ -235,7 +320,13 @@ function WhatsAppDesk() {
                 <Button size="sm" className="bg-success text-white hover:bg-success/90" onClick={() => toast.success("Sent via WhatsApp")}><Send className="h-4 w-4" /></Button>
               </div>
             </Card>
+
+            {/* AI insight panel */}
+            <div className="lg:col-span-3 xl:col-span-1">
+              <AiInsightPanel thread={thread} insight={aiInsights[thread.id]} />
+            </div>
           </div>
+
         </TabsContent>
 
         {/* ------------- DOCUMENT INTAKE ------------- */}
@@ -439,3 +530,133 @@ function WhatsAppDesk() {
 
 // re-export to keep mock data import (unused after refactor)
 void whatsappThreads;
+
+// ---------- AI insight panel ----------
+const urgencyTone: Record<Urgency, string> = {
+  Low: "bg-success/15 text-success border-success/30",
+  Medium: "bg-warning/15 text-warning-foreground border-warning/30",
+  High: "bg-destructive/10 text-destructive border-destructive/30",
+};
+
+function AiInsightPanel({ thread, insight }: { thread: Thread; insight?: AiInsight }) {
+  const [assignee, setAssignee] = useState(insight?.assignedTo ?? thread.agent);
+  if (!insight) {
+    return (
+      <Card className="p-5 shadow-card text-xs text-muted-foreground">
+        AI is still summarising this conversation. Refresh in a moment.
+      </Card>
+    );
+  }
+
+  const rows: Array<[string, string | undefined]> = [
+    ["Customer", insight.customerName],
+    ["Phone", insight.phone],
+    ["Request type", insight.requestType],
+    ["Shipment #", insight.shipmentNumber],
+    ["BL #", insight.blNumber],
+    ["Container #", insight.containerNumber],
+    ["Invoice #", insight.invoiceNumber],
+    ["Linked payment case", insight.paymentCase],
+    ["Linked trade file", insight.tradeFile],
+  ];
+
+  return (
+    <Card className="p-4 shadow-card space-y-4">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <span className="h-8 w-8 grid place-items-center rounded-lg bg-accent/15 text-accent-foreground">
+            <Sparkles className="h-4 w-4" />
+          </span>
+          <div>
+            <div className="text-sm font-semibold">AI conversation summary</div>
+            <div className="text-[10px] text-muted-foreground">Assistant — Canta staff must confirm any action.</div>
+          </div>
+        </div>
+        <Badge variant="outline" className={`text-[10px] ${urgencyTone[insight.urgency]}`}>{insight.urgency} urgency</Badge>
+      </div>
+
+      <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-xs">
+        {rows.map(([k, v]) => (
+          <div key={k} className="min-w-0">
+            <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">{k}</dt>
+            <dd className="font-medium truncate">{v ?? <span className="text-muted-foreground">—</span>}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div>
+        <div className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1">Missing documents</div>
+        {insight.missingDocs.length === 0 ? (
+          <div className="text-xs text-success flex items-center gap-1"><CheckCircle2 className="h-3.5 w-3.5" /> None detected</div>
+        ) : (
+          <div className="flex flex-wrap gap-1">
+            {insight.missingDocs.map((d) => (
+              <Badge key={d} variant="outline" className="text-[10px] bg-warning/10 text-warning-foreground border-warning/30">
+                <FileWarning className="h-3 w-3 mr-1" /> {d}
+              </Badge>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-lg border border-accent/30 bg-accent/5 p-3 space-y-1">
+        <div className="text-[10px] uppercase tracking-wide text-accent-foreground flex items-center gap-1">
+          <Wand2 className="h-3 w-3" /> Suggested next action
+        </div>
+        <div className="text-xs">{insight.nextAction}</div>
+      </div>
+
+      <div className="rounded-lg border border-border bg-secondary/40 p-3 space-y-1">
+        <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Suggested reply</div>
+        <div className="text-xs whitespace-pre-wrap">{insight.suggestedReply}</div>
+      </div>
+
+      <div>
+        <div className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1">Assign to Canta staff</div>
+        <div className="flex flex-wrap gap-1">
+          {STAFF.map((s) => (
+            <button
+              key={s}
+              onClick={() => { setAssignee(s); toast.success(`Assigned to ${s}`); }}
+              className={`text-[11px] px-2 py-1 rounded-full border ${assignee === s ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-primary"}`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 pt-1">
+        <Button size="sm" variant="outline" className="justify-start" onClick={() => toast.success(`Draft Trade File created for ${insight.customerName}`)}>
+          <FilePlus2 className="h-3.5 w-3.5 mr-1.5" /> Draft Trade File
+        </Button>
+        <Button size="sm" variant="outline" className="justify-start" onClick={() => toast.success(`Draft Partner Payment Case created${insight.invoiceNumber ? ` for ${insight.invoiceNumber}` : ""}`)}>
+          <DollarSign className="h-3.5 w-3.5 mr-1.5" /> Draft Payment Case
+        </Button>
+        <Button size="sm" variant="outline" className="justify-start" onClick={() => toast.success("Support ticket created and linked to this conversation")}>
+          <LifeBuoy className="h-3.5 w-3.5 mr-1.5" /> Create support ticket
+        </Button>
+        <Button size="sm" variant="outline" className="justify-start" onClick={() => {
+          if (insight.missingDocs.length === 0) { toast.message("No missing documents detected"); return; }
+          toast.success(`Requested: ${insight.missingDocs.join(", ")}`);
+        }}>
+          <FileWarning className="h-3.5 w-3.5 mr-1.5" /> Request missing doc
+        </Button>
+        <Button size="sm" className="justify-start bg-success text-white hover:bg-success/90" onClick={() => toast.success("Suggested reply queued — confirm in composer to send")}>
+          <Send className="h-3.5 w-3.5 mr-1.5" /> Send suggested reply
+        </Button>
+        <Button size="sm" variant="outline" className="justify-start" onClick={() => toast.warning("Escalated to Compliance Desk")}>
+          <ShieldAlert className="h-3.5 w-3.5 mr-1.5" /> Escalate to compliance
+        </Button>
+        <Button size="sm" variant="outline" className="justify-start col-span-2" onClick={() => toast.success(`Assigned to ${assignee}`)}>
+          <UserPlus className="h-3.5 w-3.5 mr-1.5" /> Assign to {assignee}
+        </Button>
+      </div>
+
+      <div className="text-[10px] text-muted-foreground border-t pt-2 italic">
+        Canta AI summarises every WhatsApp conversation and proposes next steps. A Canta staff member must confirm every reply, draft, payment case, escalation and assignment before it takes effect.
+      </div>
+    </Card>
+  );
+}
+
