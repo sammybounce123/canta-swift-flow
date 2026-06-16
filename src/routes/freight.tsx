@@ -171,6 +171,10 @@ function Freight() {
           <InvoicesTable />
         </TabsContent>
 
+        <TabsContent value="insurance" className="mt-6">
+          <InsurancePanel />
+        </TabsContent>
+
         <TabsContent value="whatsapp" className="mt-6 space-y-5">
           <BroadcastPanel />
           <WhatsAppPanel onCompose={(s) => setWaShipment(s)} />
