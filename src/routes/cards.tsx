@@ -697,7 +697,6 @@ function CardsPage() {
           </p>
         </div>
         <CardPurposeWizard />
-        <CreateCardDialog />
       </div>
 
       {/* KPIs */}
