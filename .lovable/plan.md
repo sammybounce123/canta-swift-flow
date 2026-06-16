@@ -1,82 +1,62 @@
-# Canta UAT Fix Plan
+# Canta Expansion Plan
 
-This is a large remediation pass touching 6 workspaces plus global polish. To keep changes safe and reviewable, I'll group fixes by workspace and ship them in batches, reusing existing UI patterns (Cards, Dialogs, Tabs, sonner toasts, mock data in `src/lib/`). No backend changes — everything stays client-side mock data, matching the current app's pattern.
+This is a large, multi-module addition. Nothing existing will be removed. I'll layer it in across ~6 phases so each is independently usable, then wire sidebars at the end.
 
-## Approach
+## Phase 1 — Trade Network foundation
+- Extend `src/lib/trade-network.ts`: add `BUYERS` dataset, `COUNTRIES_BUYER`, `Buyer` type with all required fields (payment reliability score, completed tx, avg order range USD, preferred corridors, escrow readiness, dispute history, last active).
+- New route `src/routes/verified-buyers.tsx` — directory + filter + profile sheet with actions: Send Quote, Create Invoice, Invite to Trade File, Request Proof of Funds, Offer Escrow Terms, Message via Canta. (File already partially exists — extend with the missing fields.)
+- New route `src/routes/trade-network.tsx` — landing hub explaining "Canta Trade Network" with cards linking to Verified Suppliers, Verified Buyers, Quote Requests, Supplier Invoices, Escrow Requests, Trade Files, Payment Status, Settlement Status. Role-aware: importer view vs supplier view.
+- Deepen `src/routes/verified-suppliers.tsx`: add trade references + response time SLA + factory/warehouse verification status fields to the sheet (most are present, fill the gaps).
 
-- Reuse existing components (`Card`, `Dialog`, `Tabs`, `Badge`, `Button`, `Input`, `Select`, `Table`, sonner `toast`).
-- Replace `WorkspacePlaceholder` "coming soon" stubs with working pages for the modules listed below.
-- Add small client-side stores (similar to `partner-store.ts`) where state needs to persist across views within a session.
-- Keep spelling/typography consistent with the rest of the app.
+## Phase 2 — Workspace cards
+Reuse `src/components/CardsPanel.tsx` pattern. New routes:
+- `src/routes/importer.cards.tsx` — procurement / inspection / samples / trade-expenses card types, linkable to trade file / shipment / supplier / cost center, with limits, approvals, receipts, freeze, spend-by views.
+- `src/routes/freight.cards.tsx` — port / route / clearing / warehouse / operations / travel cards, spend by route/staff/shipment.
+- `src/routes/treasury.cards.tsx` — staff / department / travel / procurement / project / ad-spend, with department/project spend views + CSV export.
 
-## Batch 1 — Importer Workspace
-**Files:** `src/routes/importer.tsx`, new `src/components/importer/RequestEscrowDialog.tsx`, new `src/components/importer/ImporterCards.tsx`, new `src/components/importer/NewShipmentDialog.tsx`, `src/lib/importer-store.ts`
+Each uses a shared `<WorkspaceCards>` component in `src/components/WorkspaceCards.tsx` (configurable card types, link-to entities, spend dimensions) to avoid triplication.
 
-- **Request Escrow**: replace toast-only button with modal capturing trade file, supplier, invoice amt, escrow amt, currency, purpose, milestones, release condition, document upload. Submit → "Escrow request submitted for review." Add 8 escrow statuses.
-- **Importer Cards** tab: create/freeze/unfreeze, link to trade file/shipment/supplier, limits, approval, receipts, spend per file.
-- **Shipment form**: add VIN, AWB (optional), shipping line, type, ETA, origin, destination alongside container/BL/shipment#.
+## Phase 3 — Partner Property deepening
+- Update `src/routes/pay.$linkId.tsx` to a 6-step wizard:
+  1. Review details (partner badge, GBP/NGN, expiry countdown)
+  2. Verification (BVN, DOB, name confirm, source of funds, purpose) — BVN masked after submission
+  3. Documents & consent (show partner-shared docs, upload missing, consent + T&Cs + privacy)
+  4. Funding instruction (gated on BVN + consent + valid quote)
+  5. Track status (Awaiting Funding → … → Receipt Uploaded)
+  6. Activate Canta account CTA
+- Update `src/lib/partner-store.ts` to record BVN status (`Pending|Submitted|Verified|Failed`) without exposing full BVN, marketer attribution on every entity, and reassignment log.
+- New route `src/routes/partner.marketer-performance.tsx` — per-marketer KPI dashboard (leads, cases, quotes, links, verifications, funding, payouts, GBP volume, conversion, AOV).
+- Add reassignment action on `partner.cases.$caseId.tsx` (admin-only) writing to activity log.
 
-## Batch 2 — Freight Forwarder Workspace
-**Files:** `src/routes/freight.tsx`, `src/routes/customers.tsx` (activate), `src/routes/freight-invoices.tsx` (activate), `src/routes/reports.tsx` (freight section), new `src/lib/freight-store.ts`, new components for Customers, Pipeline, Arriving, Invoices, Bulk WhatsApp, Assign Staff, Reports.
+## Phase 4 — Verification Center, Integrations, AI Extraction, Audit Logs
+- Expand `src/routes/verification-center.tsx` with tabbed queues: Pending KYC, Pending KYB, Buyer Verif, Supplier Verif, Solicitor Verif, Partner Client Verif, High Risk, Suspended. Add sanctions/PEP/adverse-media/risk-score columns and BVN/consent status pills.
+- Expand `src/routes/integrations.tsx`: 13 categories with cards showing live/test, status, last sync, last webhook, fail count, error, affected entities, fallback, retry + view-logs buttons.
+- New route `src/routes/ai-document-extraction.tsx` — upload zone, document type picker, extracted-fields preview, actions: create draft Trade File / Payment Case / attach / request missing / WhatsApp follow-up / flag compliance.
+- New route `src/routes/audit-logs.tsx` — table with all listed event types, filters (date/user/org/workspace/module/action/status), CSV + PDF export buttons.
 
-- **Customers**: full CRUD with all listed fields; "Add Importer Customer" button in Freight + Customers.
-- **Shipment Pipeline**: editable kanban with status dropdown across 10 stages.
-- **Arriving Shipments**: section with this-week / 14-day / delayed / ETA changes.
-- **Freight Invoices**: real module — create, assign, link to shipment, due date, mark paid/unpaid/overdue, download, WhatsApp send.
-- **Mark Paid/Unpaid** button wired with toast + status update.
-- **Bulk WhatsApp Updates**: multi-select with templated messages.
-- **Assign Shipments to Staff**: action on cards/detail.
-- **Freight Reports**: KPIs + CSV/PDF export buttons.
+## Phase 5 — Role-based nav
+Update `src/lib/profile.ts` sidebar config per workspace per the spec:
+- Enterprise +Company Cards
+- Importer +Verified Suppliers, My Suppliers, Importer Cards
+- Freight +Freight Cards
+- Supplier +Verified Buyers, Escrow, Settlements (Buyers/Invoices/Documents already)
+- Global Merchant: add Settlement Approvals
+- Partner: add Marketers performance link
+Add top-level "Trade Network" entry for Importer + Supplier workspaces.
 
-## Batch 3 — Supplier / Exporter Workspace
-**Files:** `src/routes/suppliers.tsx` or `verified-suppliers.tsx`, new `src/routes/supplier.profile.tsx`, `supplier.kyb.tsx`, `supplier.categories.tsx`, `supplier.invoices.tsx`, `supplier.escrow.tsx`
+## Phase 6 — Empty states & button audit
+- Add a small `<EmptyState>` component in `src/components/EmptyState.tsx` with title + body + primary CTA, and slot it into every new module's empty cases plus existing modules with placeholder gaps.
+- Sweep dead buttons in new modules — every action triggers a toast, modal, route, or status mutation.
 
-- **Supplier Profile**: viewable/editable even when exists.
-- **KYB**: status page (6 states) + uploads.
-- **Product Categories**: add/remove/primary, keywords, MOQ.
-- **Invoice Module**: activated end-to-end.
-- **Escrow Milestones**: view, upload evidence, request approval/release, disputes.
+## Technical notes
+- All datasets mock-only (no Lovable Cloud needed). Each `add*` mutation updates an in-memory store with a subscribe hook so transactions/audit-log entries appear live.
+- Card flows reuse existing `tx-store` pattern for spend events.
+- BVN is stored only as `{ status, lastFour }`; partner views read status pill, never the raw value.
+- Public `/pay/$linkId` continues to work for existing demo links; the new wizard wraps the existing transition logic.
+- New routes auto-register via Tanstack file-based routing; no manual `routeTree.gen.ts` edits.
 
-## Batch 4 — Global Merchant Workspace
-**Files:** new `src/routes/merchant.profile.tsx`, `merchant.kyb.tsx`, `merchant.payers.tsx`, `merchant.reconciliation.tsx`, `merchant.settlements.tsx`, `merchant.staff-cards.tsx`
+## Out of scope (intentionally not touched)
+- Existing FX, transactions, beneficiary, wallets, bulk pay flows (already working per prior turns).
+- Auth, Cloud, real KYC providers — all simulated.
 
-- **Merchant Profile + KYB** pages.
-- **Payers** module activated with full fields.
-- **Reconciliation** with KPIs.
-- **Matched/Unmatched** tabs (All/Matched/Unmatched/Exceptions) + manual match, clarification, mark reviewed, export.
-- **Settlement Approvals** tab with approve/reject and 6 statuses.
-- **Merchant Staff Cards** for admissions/regional/marketing/travel/events/operations.
-
-## Batch 5 — Global Spend Cards
-**Files:** `src/routes/cards.tsx`
-
-- Conditional **Freeze / Unfreeze** action based on status.
-- Activity log: frozen by/date/reason + unfrozen by/date.
-- Toast "Card unfrozen successfully."
-
-## Batch 6 — Canta Internal Admin
-**Files:** `src/routes/dashboard.tsx` or admin route(s), new `admin.customers.tsx`, `admin.disputes.tsx`, `admin.audit-logs.tsx`, `admin.settlements.tsx`, `admin.buyer-verifications.tsx`, fix existing flag/export buttons.
-
-- **Customers tab** across all workspace types with risk + KYC/KYB status.
-- **Flag High-Risk Transactions** modal (reason/category/notes/officer) → "Flagged for Review".
-- **Disputes Open** → detail page with messages, evidence, actions.
-- **Audit Logs viewer** (table + filters) — keep export as extra action.
-- **Export Reports** — disconnect from supplier verification; add 7 report types.
-- **Process Settlements** page with 5 statuses + actions.
-- **Buyer Verification Requests** page with approve/reject/info/suspend.
-
-## Batch 7 — Global Polish
-
-- Sweep `rg` for misspellings: Ecrow, Reciept, Cutomer, Reconcillation, Expoter, Drated, Conersations, Availabe → fix in place.
-- Replace remaining `WorkspacePlaceholder` "Coming soon" copy in tested modules with empty-state UI ("No records yet" + CTA).
-- Audit inactive buttons: every button must open form / update status / download / route / toast / WhatsApp/email.
-
-## Out of Scope
-
-- No redesign, no theme changes, no new dependencies.
-- No real backend — all state is mock + localStorage where persistence is needed.
-- The 3 untested items (process settlements, buyer verification requests, merchant staff cards) get functional UIs but are still mock.
-
-## Delivery Order
-
-Batches 1 → 7 in sequence within a single response per batch where size allows, so the preview stays usable between batches. Want me to start with Batch 1 (Importer) and proceed straight through, or do you want to review each batch before I continue?
+If anything here should be re-scoped (e.g. ship Phases 1+2 first, defer 4), say which phases and I'll execute in order.

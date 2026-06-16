@@ -63,7 +63,9 @@ export type Buyer = {
   escrowHistory: number;
   disputes: number;
   discoverable: boolean;
+  lastActive: string;
 };
+
 
 export type VerificationRequest = {
   id: string;
@@ -170,7 +172,7 @@ export const BUYERS: Buyer[] = [
     badges: ["KYB Verified","Payment Reliable","Trade Active","Escrow Ready","High-Volume Buyer","Low Dispute Record"],
     tradeHistory: 142, paymentScore: 96, completedTx: 138,
     avgOrderUsd: [15000, 60000], corridors: ["China→Nigeria","UAE→Nigeria"],
-    escrowHistory: 41, disputes: 1, discoverable: true,
+    escrowHistory: 41, disputes: 1, discoverable: true, lastActive: "2 days ago",
   },
   {
     id: "BUY-2002", name: "Accra MedSupply Co.", country: "Ghana", city: "Accra",
@@ -178,7 +180,7 @@ export const BUYERS: Buyer[] = [
     badges: ["KYB Verified","Payment Reliable","Trade Active","Escrow Ready"],
     tradeHistory: 58, paymentScore: 91, completedTx: 54,
     avgOrderUsd: [8000, 30000], corridors: ["India→Ghana","Turkey→Ghana"],
-    escrowHistory: 19, disputes: 0, discoverable: true,
+    escrowHistory: 19, disputes: 0, discoverable: true, lastActive: "2 days ago",
   },
   {
     id: "BUY-2003", name: "Nairobi Textiles East Africa", country: "Kenya", city: "Nairobi",
@@ -186,7 +188,7 @@ export const BUYERS: Buyer[] = [
     badges: ["KYB Verified","Trade Active"],
     tradeHistory: 27, paymentScore: 83, completedTx: 24,
     avgOrderUsd: [5000, 18000], corridors: ["Turkey→Kenya","China→Kenya"],
-    escrowHistory: 7, disputes: 2, discoverable: true,
+    escrowHistory: 7, disputes: 2, discoverable: true, lastActive: "2 days ago",
   },
   {
     id: "BUY-2004", name: "Abidjan Industrial Group", country: "Côte d'Ivoire", city: "Abidjan",
@@ -194,7 +196,7 @@ export const BUYERS: Buyer[] = [
     badges: ["KYB Verified","Payment Reliable","High-Volume Buyer"],
     tradeHistory: 89, paymentScore: 94, completedTx: 81,
     avgOrderUsd: [25000, 90000], corridors: ["China→CIV","UAE→CIV"],
-    escrowHistory: 28, disputes: 1, discoverable: true,
+    escrowHistory: 28, disputes: 1, discoverable: true, lastActive: "2 days ago",
   },
   {
     id: "BUY-2005", name: "Cairo TradeHub LLC", country: "Egypt", city: "Cairo",
@@ -202,7 +204,7 @@ export const BUYERS: Buyer[] = [
     badges: ["KYB Verified"],
     tradeHistory: 11, paymentScore: 74, completedTx: 9,
     avgOrderUsd: [3000, 12000], corridors: ["India→Egypt","Turkey→Egypt"],
-    escrowHistory: 2, disputes: 0, discoverable: true,
+    escrowHistory: 2, disputes: 0, discoverable: true, lastActive: "2 days ago",
   },
 ];
 
