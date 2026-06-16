@@ -23,6 +23,8 @@ import {
   Globe, ChevronRight,
 } from "lucide-react";
 import { toast } from "sonner";
+import { CardPurposeWizard } from "@/components/CardPurposeWizard";
+import { CardActions } from "@/components/CardActions";
 
 export const Route = createFileRoute("/cards")({
   head: () => ({ meta: [{ title: "Global Spend Cards — Canta" }] }),
