@@ -228,8 +228,8 @@ function ConsentRow({ checked, onChange, label }: { checked: boolean; onChange: 
   );
 }
 
-function DocStep({ c, onNext }: any) {
-  const [confirmed, setConfirmed] = useState(false);
+function DocStep({ c, confirmed, setConfirmed, onNext }: any) {
+
   return (
     <Card className="p-6 shadow-card space-y-4">
       <div className="text-sm font-semibold flex items-center gap-2"><FileText className="h-4 w-4 text-primary" /> Documents</div>
