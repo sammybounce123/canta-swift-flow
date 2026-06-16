@@ -78,9 +78,11 @@ export const importers = [
   { name: "Billion Trend Autos", country: "Nigeria", phone: "+234 807 552 1190", shipments: 7,  active: 1, outstanding: 0,      status: "Active",      lastShipment: "2026-05-30" },
 ];
 
+export type FreightInvoiceStatus =
+  | "Draft" | "Sent" | "Paid" | "Unpaid" | "Partially Paid" | "Overdue" | "Cancelled";
 export type FreightInvoice = {
   id: string; customer: string; shipment: string; amount: number; ccy: string;
-  status: "Paid" | "Unpaid" | "Partially Paid" | "Overdue"; due: string; issued: string;
+  status: FreightInvoiceStatus; due: string; issued: string;
 };
 
 export const freightInvoices: FreightInvoice[] = [
