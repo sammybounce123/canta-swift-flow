@@ -2,8 +2,11 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
-import { ArrowDown, Lock, Sparkles, Info, Wallet, Send, PartyPopper, CheckCircle2, Plane, Loader2, ArrowRight, Building2 } from "lucide-react";
+import { ArrowDown, Lock, Sparkles, Info, Wallet, Send, PartyPopper, CheckCircle2, Plane, Loader2, ArrowRight, Building2, UserPlus, Users, ChevronLeft, Paperclip } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { fxHistory, beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
@@ -14,6 +17,8 @@ export const Route = createFileRoute("/fx")({
   component: FX,
 });
 
+type Beneficiary = typeof beneficiaries[number];
+
 function FX() {
   const navigate = useNavigate();
   const [from, setFrom] = useState("NGN");
@@ -21,10 +26,9 @@ function FX() {
   const [amount, setAmount] = useState("50000000");
   const [rate, setRate] = useState(0.00062);
   const [timer, setTimer] = useState(30);
-  const [beneficiaryName, setBeneficiaryName] = useState(beneficiaries[0].name);
-  const [tracking, setTracking] = useState<null | {
-    sendAmt: number; from: string; to: string; out: number; rate: number; beneficiary: typeof beneficiaries[number];
-  }>(null);
+  const [phase, setPhase] = useState<"convert" | "beneficiary" | "tracking">("convert");
+  const [pendingConversion, setPendingConversion] = useState<{ sendAmt: number; from: string; to: string; out: number; rate: number } | null>(null);
+  const [chosenBeneficiary, setChosenBeneficiary] = useState<Beneficiary | null>(null);
 
   useEffect(() => {
     const i = setInterval(() => setTimer((t) => (t > 0 ? t - 1 : 30)), 1000);
@@ -38,28 +42,39 @@ function FX() {
   const out = num * rate;
 
   const confirm = () => {
-    const ben = beneficiaries.find((b) => b.name === beneficiaryName) ?? beneficiaries[0];
-    setTracking({ sendAmt: num, from, to, out, rate, beneficiary: ben });
+    setPendingConversion({ sendAmt: num, from, to, out, rate });
+    setPhase("beneficiary");
   };
 
-  if (tracking) {
+  if (phase === "beneficiary" && pendingConversion) {
+    return (
+      <BeneficiaryStep
+        conversion={pendingConversion}
+        onBack={() => setPhase("convert")}
+        onContinue={(ben) => { setChosenBeneficiary(ben); setPhase("tracking"); }}
+      />
+    );
+  }
+
+  if (phase === "tracking" && pendingConversion && chosenBeneficiary) {
     return (
       <ConversionTracker
-        {...tracking}
+        {...pendingConversion}
+        beneficiary={chosenBeneficiary}
         onDone={() => {
           addTransaction({
             type: "FX Conversion",
-            desc: `${tracking.from} → ${tracking.to} · ${tracking.beneficiary.name}`,
-            amount: tracking.sendAmt,
-            ccy: tracking.from,
+            desc: `${pendingConversion.from} → ${pendingConversion.to} · ${chosenBeneficiary.name}`,
+            amount: pendingConversion.sendAmt,
+            ccy: pendingConversion.from,
             status: "Completed",
           });
           toast.success("Beneficiary credited", {
-            description: `${fmtMoney(tracking.out, tracking.to)} delivered to ${tracking.beneficiary.name}.`,
+            description: `${fmtMoney(pendingConversion.out, pendingConversion.to)} delivered to ${chosenBeneficiary.name}.`,
           });
           navigate({ to: "/transactions" });
         }}
-        onBack={() => setTracking(null)}
+        onBack={() => setPhase("beneficiary")}
       />
     );
   }
@@ -112,17 +127,8 @@ function FX() {
               </select>
             </div>
 
-            <label className="text-xs text-muted-foreground pt-1">Beneficiary</label>
-            <select
-              value={beneficiaryName}
-              onChange={(e) => setBeneficiaryName(e.target.value)}
-              className="w-full p-2.5 rounded-lg border border-border bg-card text-sm"
-            >
-              {beneficiaries.map((b) => (
-                <option key={b.name}>{b.name}</option>
-              ))}
-            </select>
           </div>
+
 
           <div className="mt-5 p-3 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-between text-sm">
             <div className="flex items-center gap-2">
@@ -343,3 +349,147 @@ function ConversionTracker({
     </div>
   );
 }
+
+function BeneficiaryStep({
+  conversion,
+  onBack,
+  onContinue,
+}: {
+  conversion: { sendAmt: number; from: string; to: string; out: number; rate: number };
+  onBack: () => void;
+  onContinue: (b: Beneficiary) => void;
+}) {
+  const [mode, setMode] = useState<"pick" | "new">("pick");
+  const [selected, setSelected] = useState<string>(beneficiaries[0].name);
+
+  // New beneficiary fields
+  const [name, setName] = useState("");
+  const [bank, setBank] = useState("");
+  const [account, setAccount] = useState("");
+  const [country, setCountry] = useState("");
+  const [narration, setNarration] = useState("");
+  const [doc, setDoc] = useState<File | null>(null);
+
+  const proceed = () => {
+    if (mode === "pick") {
+      const b = beneficiaries.find((x) => x.name === selected) ?? beneficiaries[0];
+      onContinue(b);
+    } else {
+      if (!name || !bank || !account) {
+        toast.error("Please complete the beneficiary details");
+        return;
+      }
+      onContinue({
+        name,
+        bank,
+        account,
+        country: country || "—",
+        ccy: conversion.to,
+      } as Beneficiary);
+      toast.success("Beneficiary saved");
+    }
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto space-y-5 animate-fade-in">
+      <div className="flex items-center justify-between">
+        <div>
+          <Badge className="bg-accent/15 text-accent border-accent/30 hover:bg-accent/15">Step 2 of 3</Badge>
+          <h1 className="text-2xl font-semibold mt-1">Who is receiving the funds?</h1>
+          <p className="text-sm text-muted-foreground">
+            Converting {fmtMoney(conversion.sendAmt, conversion.from)} <ArrowRight className="inline h-3 w-3 mx-1" />
+            {fmtMoney(conversion.out, conversion.to)} at locked rate {conversion.rate}.
+          </p>
+        </div>
+        <Button variant="ghost" size="sm" onClick={onBack}>
+          <ChevronLeft className="h-4 w-4 mr-1" /> Back
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          onClick={() => setMode("pick")}
+          className={`p-4 rounded-xl border-2 text-left transition ${mode === "pick" ? "border-accent bg-accent/5" : "border-border hover:border-accent/40"}`}
+        >
+          <Users className="h-5 w-5 text-accent mb-2" />
+          <div className="text-sm font-semibold">Saved beneficiary</div>
+          <div className="text-xs text-muted-foreground">Pick from your verified list</div>
+        </button>
+        <button
+          onClick={() => setMode("new")}
+          className={`p-4 rounded-xl border-2 text-left transition ${mode === "new" ? "border-accent bg-accent/5" : "border-border hover:border-accent/40"}`}
+        >
+          <UserPlus className="h-5 w-5 text-accent mb-2" />
+          <div className="text-sm font-semibold">Add new beneficiary</div>
+          <div className="text-xs text-muted-foreground">One-time or save for next time</div>
+        </button>
+      </div>
+
+      <Card className="p-6 shadow-card">
+        {mode === "pick" ? (
+          <div className="space-y-2">
+            {beneficiaries.map((b) => (
+              <button
+                key={b.name}
+                onClick={() => setSelected(b.name)}
+                className={`w-full text-left flex items-center gap-3 p-3 rounded-xl border transition ${selected === b.name ? "border-accent bg-accent/5" : "border-border hover:border-accent/40"}`}
+              >
+                <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary grid place-items-center">
+                  <Building2 className="h-5 w-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold truncate">{b.name}</div>
+                  <div className="text-xs text-muted-foreground truncate">{b.bank} · {b.account} · {b.country}</div>
+                </div>
+                <Badge variant="outline" className="text-[10px]">{b.ccy}</Badge>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            <div className="col-span-2">
+              <Label className="text-xs">Beneficiary name</Label>
+              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Acme Trading Ltd" className="mt-1" />
+            </div>
+            <div>
+              <Label className="text-xs">Bank name</Label>
+              <Input value={bank} onChange={(e) => setBank(e.target.value)} placeholder="e.g. HSBC" className="mt-1" />
+            </div>
+            <div>
+              <Label className="text-xs">Account number / IBAN</Label>
+              <Input value={account} onChange={(e) => setAccount(e.target.value)} placeholder="GB00 …" className="mt-1" />
+            </div>
+            <div>
+              <Label className="text-xs">Country</Label>
+              <Input value={country} onChange={(e) => setCountry(e.target.value)} placeholder="United Kingdom" className="mt-1" />
+            </div>
+            <div>
+              <Label className="text-xs">Receive currency</Label>
+              <Input value={conversion.to} disabled className="mt-1" />
+            </div>
+            <div className="col-span-2">
+              <Label className="text-xs">Narration / purpose of payment</Label>
+              <Textarea value={narration} onChange={(e) => setNarration(e.target.value)} placeholder="Invoice payment, supplier settlement…" className="mt-1 min-h-20" />
+            </div>
+            <div className="col-span-2">
+              <Label className="text-xs">Supporting document (optional)</Label>
+              <label className="mt-1 flex items-center gap-2 p-3 rounded-xl border border-dashed border-border hover:border-accent cursor-pointer">
+                <Paperclip className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground flex-1">{doc ? doc.name : "Attach invoice, contract or KYC proof"}</span>
+                <input type="file" className="hidden" onChange={(e) => setDoc(e.target.files?.[0] ?? null)} />
+              </label>
+            </div>
+          </div>
+        )}
+      </Card>
+
+      <div className="flex items-center justify-between">
+        <Button variant="outline" onClick={onBack}>Cancel</Button>
+        <Button onClick={proceed} className="bg-accent text-accent-foreground hover:bg-accent/90">
+          Continue to transfer <ArrowRight className="h-4 w-4 ml-1" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
