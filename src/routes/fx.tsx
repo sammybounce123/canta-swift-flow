@@ -2,8 +2,11 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
-import { ArrowDown, Lock, Sparkles, Info, Wallet, Send, PartyPopper, CheckCircle2, Plane, Loader2, ArrowRight, Building2 } from "lucide-react";
+import { ArrowDown, Lock, Sparkles, Info, Wallet, Send, PartyPopper, CheckCircle2, Plane, Loader2, ArrowRight, Building2, UserPlus, Users, ChevronLeft, Paperclip } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { fxHistory, beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
@@ -14,6 +17,8 @@ export const Route = createFileRoute("/fx")({
   component: FX,
 });
 
+type Beneficiary = typeof beneficiaries[number];
+
 function FX() {
   const navigate = useNavigate();
   const [from, setFrom] = useState("NGN");
@@ -21,10 +26,9 @@ function FX() {
   const [amount, setAmount] = useState("50000000");
   const [rate, setRate] = useState(0.00062);
   const [timer, setTimer] = useState(30);
-  const [beneficiaryName, setBeneficiaryName] = useState(beneficiaries[0].name);
-  const [tracking, setTracking] = useState<null | {
-    sendAmt: number; from: string; to: string; out: number; rate: number; beneficiary: typeof beneficiaries[number];
-  }>(null);
+  const [phase, setPhase] = useState<"convert" | "beneficiary" | "tracking">("convert");
+  const [pendingConversion, setPendingConversion] = useState<{ sendAmt: number; from: string; to: string; out: number; rate: number } | null>(null);
+  const [chosenBeneficiary, setChosenBeneficiary] = useState<Beneficiary | null>(null);
 
   useEffect(() => {
     const i = setInterval(() => setTimer((t) => (t > 0 ? t - 1 : 30)), 1000);
@@ -38,28 +42,39 @@ function FX() {
   const out = num * rate;
 
   const confirm = () => {
-    const ben = beneficiaries.find((b) => b.name === beneficiaryName) ?? beneficiaries[0];
-    setTracking({ sendAmt: num, from, to, out, rate, beneficiary: ben });
+    setPendingConversion({ sendAmt: num, from, to, out, rate });
+    setPhase("beneficiary");
   };
 
-  if (tracking) {
+  if (phase === "beneficiary" && pendingConversion) {
+    return (
+      <BeneficiaryStep
+        conversion={pendingConversion}
+        onBack={() => setPhase("convert")}
+        onContinue={(ben) => { setChosenBeneficiary(ben); setPhase("tracking"); }}
+      />
+    );
+  }
+
+  if (phase === "tracking" && pendingConversion && chosenBeneficiary) {
     return (
       <ConversionTracker
-        {...tracking}
+        {...pendingConversion}
+        beneficiary={chosenBeneficiary}
         onDone={() => {
           addTransaction({
             type: "FX Conversion",
-            desc: `${tracking.from} → ${tracking.to} · ${tracking.beneficiary.name}`,
-            amount: tracking.sendAmt,
-            ccy: tracking.from,
+            desc: `${pendingConversion.from} → ${pendingConversion.to} · ${chosenBeneficiary.name}`,
+            amount: pendingConversion.sendAmt,
+            ccy: pendingConversion.from,
             status: "Completed",
           });
           toast.success("Beneficiary credited", {
-            description: `${fmtMoney(tracking.out, tracking.to)} delivered to ${tracking.beneficiary.name}.`,
+            description: `${fmtMoney(pendingConversion.out, pendingConversion.to)} delivered to ${chosenBeneficiary.name}.`,
           });
           navigate({ to: "/transactions" });
         }}
-        onBack={() => setTracking(null)}
+        onBack={() => setPhase("beneficiary")}
       />
     );
   }
