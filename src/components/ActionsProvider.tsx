@@ -11,10 +11,11 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Building, Coins, Zap, ArrowDown, Lock, CheckCircle2, Upload, CalendarClock, Trash2, Plus, Paperclip, UserPlus, Loader2, ShieldCheck, AlertTriangle, ArrowLeft } from "lucide-react";
+import { Building, Coins, Zap, ArrowDown, Lock, CheckCircle2, Upload, CalendarClock, Trash2, Plus, Paperclip, UserPlus, Loader2, ShieldCheck, AlertTriangle, ArrowLeft, Copy, Landmark, Wallet, ArrowRight, User as UserIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
+import { useRole } from "@/components/RoleProvider";
 
 type Ctx = {
   openFund: (ccy?: string) => void;
