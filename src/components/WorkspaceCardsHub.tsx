@@ -258,19 +258,16 @@ export function WorkspaceCardsHub({
                         </Badge>
                       )}
                     </div>
-                    <div className="mt-3 flex gap-1.5">
+                    <div className="mt-3">
                       {c.status === "Pending Approval" ? (
-                        <Button size="sm" className="h-7" onClick={() => approve(c.id)}>
-                          Approve
-                        </Button>
+                        <Button size="sm" className="h-7" onClick={() => approve(c.id)}>Approve</Button>
                       ) : (
-                        <Button size="sm" variant="outline" className="h-7" onClick={() => toggleFreeze(c.id)}>
-                          {c.status === "Frozen" ? <><Flame className="h-3 w-3 mr-1" /> Unfreeze</> : <><Snowflake className="h-3 w-3 mr-1" /> Freeze</>}
-                        </Button>
+                        <CardActions
+                          card={{ id: c.id, holder: c.holder, monthlySpend: c.monthlySpend, monthlyLimit: c.monthlyLimit, linkedTo: c.linkedTo, status: c.status }}
+                          isFrozen={c.status === "Frozen"}
+                          onFreezeToggle={() => toggleFreeze(c.id)}
+                        />
                       )}
-                      <Button size="sm" variant="ghost" className="h-7" onClick={() => toast.success("Receipts requested")}>
-                        <Receipt className="h-3 w-3 mr-1" /> Receipts
-                      </Button>
                     </div>
                   </Card>
                 );
