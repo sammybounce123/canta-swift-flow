@@ -99,7 +99,7 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
         </div>
       </Link>
 
-      <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
+      <nav className="flex-1 px-3 py-3 space-y-3 overflow-y-auto scrollbar-thin">
         {groups.map((g) => (
           <div key={g}>
             <div className="px-3 mb-1 text-[10px] uppercase tracking-widest text-sidebar-foreground/40">{g}</div>
