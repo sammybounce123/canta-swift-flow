@@ -23,20 +23,100 @@ export const Route = createFileRoute("/whatsapp")({
 });
 
 // ---------- mock data ----------
-type ThreadStatus = "New" | "In Progress" | "Waiting for Importer" | "Completed";
+type ThreadStatus =
+  | "New"
+  | "Needs Reply"
+  | "Missing Document"
+  | "Ready for Trade File"
+  | "Ready for Payment Case"
+  | "Escalated"
+  | "Resolved";
 type Thread = {
   id: string; importer: string; phone: string; last: string; time: string;
   unread: number; agent: string; score: number; file?: string; status: ThreadStatus;
 };
 
 const threads: Thread[] = [
-  { id: "WA-01", importer: "ABC Electronics · Tunde", phone: "+234 803 411 2280", last: "Sent BL for SHP-10421", time: "2m ago", unread: 1, agent: "Amaka O.", score: 92, file: "TF-2026-0214", status: "In Progress" },
-  { id: "WA-02", importer: "Balogun Trade · Risikat", phone: "+234 815 220 7741", last: "When will my goods arrive?", time: "11m ago", unread: 2, agent: "Chiamaka E.", score: 74, file: "TF-2026-0211", status: "Waiting for Importer" },
-  { id: "WA-03", importer: "Dav Excel · Bayo", phone: "+234 802 887 1190", last: "Uploaded packing list", time: "1h ago", unread: 0, agent: "Amaka O.", score: 81, file: "TF-2026-0208", status: "In Progress" },
+  { id: "WA-01", importer: "ABC Electronics · Tunde", phone: "+234 803 411 2280", last: "Sent BL for SHP-10421", time: "2m ago", unread: 1, agent: "Amaka O.", score: 92, file: "TF-2026-0214", status: "Ready for Trade File" },
+  { id: "WA-02", importer: "Balogun Trade · Risikat", phone: "+234 815 220 7741", last: "When will my goods arrive?", time: "11m ago", unread: 2, agent: "Chiamaka E.", score: 74, file: "TF-2026-0211", status: "Needs Reply" },
+  { id: "WA-03", importer: "Dav Excel · Bayo", phone: "+234 802 887 1190", last: "Uploaded packing list", time: "1h ago", unread: 0, agent: "Amaka O.", score: 81, file: "TF-2026-0208", status: "Missing Document" },
   { id: "WA-04", importer: "Global Motors · Ngozi", phone: "+234 809 661 4422", last: "Need landed cost estimate", time: "3h ago", unread: 1, agent: "Yusuf A.", score: 88, status: "New" },
-  { id: "WA-05", importer: "Mama Risi Foods", phone: "+234 706 220 1188", last: "Thanks, received the goods", time: "1d ago", unread: 0, agent: "Chiamaka E.", score: 67, file: "TF-2026-0199", status: "Completed" },
-  { id: "WA-06", importer: "Onitsha Plastics · Emeka", phone: "+234 813 552 9081", last: "Sent supplier invoice", time: "5h ago", unread: 3, agent: "Yusuf A.", score: 79, status: "New" },
+  { id: "WA-05", importer: "Mama Risi Foods", phone: "+234 706 220 1188", last: "Thanks, received the goods", time: "1d ago", unread: 0, agent: "Chiamaka E.", score: 67, file: "TF-2026-0199", status: "Resolved" },
+  { id: "WA-06", importer: "Onitsha Plastics · Emeka", phone: "+234 813 552 9081", last: "Sent supplier invoice", time: "5h ago", unread: 3, agent: "Yusuf A.", score: 79, status: "Ready for Payment Case" },
 ];
+
+// AI-extracted insight per conversation. AI is an assistant — every action requires Canta staff to confirm.
+type Urgency = "Low" | "Medium" | "High";
+type AiInsight = {
+  customerName: string;
+  phone: string;
+  requestType: string;
+  shipmentNumber?: string;
+  blNumber?: string;
+  containerNumber?: string;
+  invoiceNumber?: string;
+  paymentCase?: string;
+  tradeFile?: string;
+  missingDocs: string[];
+  urgency: Urgency;
+  nextAction: string;
+  suggestedReply: string;
+  assignedTo: string;
+};
+
+const aiInsights: Record<string, AiInsight> = {
+  "WA-01": {
+    customerName: "Tunde · ABC Electronics", phone: "+234 803 411 2280", requestType: "BL submission for active shipment",
+    shipmentNumber: "SHP-10421", blNumber: "BL-FE-7711", containerNumber: "MSCU7762213", tradeFile: "TF-2026-0214",
+    missingDocs: ["Packing list"], urgency: "Medium",
+    nextAction: "Confirm BL extraction and request packing list before vessel arrival.",
+    suggestedReply: "Thanks Tunde — BL received and attached to TF-2026-0214. Please send the packing list so we can finalise clearing for SHP-10421 (ETA 18 Jun).",
+    assignedTo: "Amaka O.",
+  },
+  "WA-02": {
+    customerName: "Risikat · Balogun Trade", phone: "+234 815 220 7741", requestType: "Shipment ETA enquiry + supplier payment status",
+    shipmentNumber: "SHP-10388", tradeFile: "TF-2026-0211", paymentCase: "PMT-2026-0078",
+    missingDocs: [], urgency: "Low",
+    nextAction: "Share latest ETA and confirm whether supplier payment proof has been issued.",
+    suggestedReply: "Hi Risikat — your goods are on MSC ANTONIA, ETA Lagos 22 Jun. Supplier payment PMT-2026-0078 is currently Pending. Want us to send the proof once funds settle?",
+    assignedTo: "Chiamaka E.",
+  },
+  "WA-03": {
+    customerName: "Bayo · Dav Excel", phone: "+234 802 887 1190", requestType: "Packing list submission",
+    shipmentNumber: "SHP-10402", tradeFile: "TF-2026-0208",
+    missingDocs: ["Container photo", "Form M"], urgency: "Medium",
+    nextAction: "Confirm packing list extraction and request remaining clearing documents.",
+    suggestedReply: "Thanks Bayo — packing list attached to TF-2026-0208. Please also send a container photo and Form M so we can complete the clearing pack.",
+    assignedTo: "Amaka O.",
+  },
+  "WA-04": {
+    customerName: "Ngozi · Global Motors", phone: "+234 809 661 4422", requestType: "Landed cost estimate request",
+    shipmentNumber: "SHP-10502", invoiceNumber: "INV-DAS-3320",
+    missingDocs: ["Supplier invoice", "Freight invoice"], urgency: "High",
+    nextAction: "Draft a trade file from supplier invoice, then run a landed cost estimate.",
+    suggestedReply: "Hi Ngozi — happy to run a landed cost estimate. Please share the supplier invoice and freight invoice so we can model duty, clearing and delivery accurately.",
+    assignedTo: "Yusuf A.",
+  },
+  "WA-05": {
+    customerName: "Mama Risi Foods", phone: "+234 706 220 1188", requestType: "Delivery confirmation",
+    shipmentNumber: "SHP-10210", tradeFile: "TF-2026-0199",
+    missingDocs: [], urgency: "Low",
+    nextAction: "Mark trade file as resolved and request a short customer review.",
+    suggestedReply: "Glad it arrived safely! We've closed TF-2026-0199. Could you share a quick note about your experience for our team?",
+    assignedTo: "Chiamaka E.",
+  },
+  "WA-06": {
+    customerName: "Emeka · Onitsha Plastics", phone: "+234 813 552 9081", requestType: "Supplier invoice submission for payment",
+    invoiceNumber: "INV-YIWU-3320", paymentCase: "PMT-2026-0094",
+    missingDocs: ["Proforma invoice", "Supplier bank details"], urgency: "High",
+    nextAction: "Open a draft Partner Payment Case and request the missing supplier banking details.",
+    suggestedReply: "Thanks Emeka — supplier invoice received. To set up the supplier payment we'll need the proforma invoice and the supplier's bank details (account name, number, SWIFT). Please share when convenient.",
+    assignedTo: "Yusuf A.",
+  },
+};
+
+const STAFF = ["Amaka O.", "Chiamaka E.", "Yusuf A.", "Ibrahim K.", "Compliance Desk"];
+
 
 const intakeDocs = [
   { id: "DOC-7711", thread: "WA-01", kind: "Bill of Lading", file: "BL-FE-7711.pdf", extracted: { Container: "MSCU7762213", Vessel: "MSC ANTONIA", ETA: "18 Jun 2026" }, status: "Awaiting confirm" },
