@@ -1003,14 +1003,16 @@ function BroadcastPanel() {
               className="bg-[#25D366] hover:bg-[#1FB855] text-white hover:shadow-lg hover:shadow-[#25D366]/30 transition"
               onClick={() => {
                 if (!message) { toast.error("Pick a quick action or type a message"); return; }
-                const tpl = audience === "missing-docs" ? "missingDocument" : "shipmentUpdate";
-                const url = audience === "missing-docs"
-                  ? buildWhatsAppUrl("missingDocument", { document: "Bill of Lading / Packing List", shipment: "(see chat)", eta: "(see chat)" })
-                  : buildWhatsAppUrl("shipmentUpdate", { shipment: "(broadcast)", status: audience, eta: "(see chat)", missingDocs: "—", payment: "—", nextAction: message.slice(0, 80) });
+                const picked = quick.find((q) => q.a === audience);
+                const tpl = picked?.tpl ?? "shipmentUpdate";
+                const url = buildWhatsAppUrl(tpl, {
+                  shipment: "(broadcast)", status: audience, eta: "(see chat)",
+                  document: "Bill of Lading / Packing List", port: "(see chat)",
+                  missingDocs: "—", payment: "—", nextAction: message.slice(0, 80),
+                });
                 window.open(url, "_blank", "noopener,noreferrer");
-                toast.success("WhatsApp opening for broadcast");
+                toast.success(`Broadcast sent (${picked?.l ?? "update"})`);
                 setMessage("");
-                void tpl;
               }}
             >
               <Send className="h-3.5 w-3.5 mr-1.5" /> Send broadcast
