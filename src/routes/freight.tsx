@@ -262,8 +262,43 @@ function SparkBars({ data, tone }: { data: { label: string; value: number }[]; t
 }
 
 function CustomersTable({ onWhatsApp, onCreate }: { onWhatsApp: (c: typeof importers[number]) => void; onCreate: () => void }) {
+  const [list, setList] = useState(() => importers.map((c) => ({ ...c })));
+  const [addOpen, setAddOpen] = useState(false);
+  const [form, setForm] = useState({ name: "", country: "Nigeria", phone: "", email: "" });
+  const [shareCustomer, setShareCustomer] = useState<(typeof importers)[number] | null>(null);
+
+  const submitAdd = () => {
+    if (!form.name || !form.phone) return toast.error("Name and WhatsApp number are required");
+    setList((arr) => [{
+      name: form.name, country: form.country, phone: form.phone,
+      shipments: 0, active: 0, outstanding: 0, status: "Pending KYB", lastShipment: "—",
+    }, ...arr]);
+    toast.success(`${form.name} added to customers`);
+    setAddOpen(false);
+    setForm({ name: "", country: "Nigeria", phone: "", email: "" });
+  };
+
   return (
     <Card className="shadow-card overflow-hidden">
+      <div className="p-4 flex items-center justify-between border-b border-border">
+        <div className="text-sm font-semibold">Importer customers</div>
+        <Dialog open={addOpen} onOpenChange={setAddOpen}>
+          <DialogTrigger asChild><Button size="sm" className="bg-primary"><UserPlus className="h-3.5 w-3.5 mr-1" /> Add Customer</Button></DialogTrigger>
+          <DialogContent className="max-w-md">
+            <DialogHeader><DialogTitle>Add importer customer</DialogTitle></DialogHeader>
+            <div className="grid gap-3">
+              <FF label="Business name"><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="ABC Electronics" /></FF>
+              <FF label="Country"><Input value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} /></FF>
+              <FF label="WhatsApp number"><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+234 801 234 5566" /></FF>
+              <FF label="Email (optional)"><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="ops@abc.com" /></FF>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setAddOpen(false)}>Cancel</Button>
+              <Button className="bg-primary" onClick={submitAdd}>Add customer</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -279,7 +314,7 @@ function CustomersTable({ onWhatsApp, onCreate }: { onWhatsApp: (c: typeof impor
             </tr>
           </thead>
           <tbody>
-            {importers.map((c) => (
+            {list.map((c) => (
               <tr key={c.name} className="border-t border-border hover:bg-secondary/30">
                 <td className="px-4 py-3"><div className="font-medium">{c.name}</div><div className="text-xs text-muted-foreground">{c.country}</div></td>
                 <td className="px-4 py-3 text-xs font-mono">{c.phone}</td>
@@ -291,6 +326,7 @@ function CustomersTable({ onWhatsApp, onCreate }: { onWhatsApp: (c: typeof impor
                 <td className="px-4 py-3 text-right space-x-1 whitespace-nowrap">
                   <Button size="sm" variant="ghost" onClick={() => toast.info(`Opening ${c.name}`)}><Eye className="h-3.5 w-3.5 mr-1" /> View</Button>
                   <Button size="sm" variant="ghost" onClick={() => onWhatsApp(c)}><MessageCircle className="h-3.5 w-3.5 mr-1" /> WhatsApp</Button>
+                  <Button size="sm" variant="ghost" onClick={() => setShareCustomer(c)}>Tracking link</Button>
                   <Button size="sm" variant="ghost" onClick={onCreate}><Plus className="h-3.5 w-3.5 mr-1" /> Shipment</Button>
                 </td>
               </tr>
@@ -298,6 +334,33 @@ function CustomersTable({ onWhatsApp, onCreate }: { onWhatsApp: (c: typeof impor
           </tbody>
         </table>
       </div>
+
+      <Dialog open={!!shareCustomer} onOpenChange={(o) => !o && setShareCustomer(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader><DialogTitle>Customer tracking link</DialogTitle></DialogHeader>
+          {shareCustomer && (() => {
+            const slug = shareCustomer.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+            const url = typeof window !== "undefined" ? `${window.location.origin}/track/customer/${slug}` : `/track/customer/${slug}`;
+            return (
+              <>
+                <p className="text-xs text-muted-foreground">Shareable link showing all active shipments for {shareCustomer.name}. No login needed.</p>
+                <div className="flex gap-2">
+                  <Input value={url} readOnly className="font-mono text-xs" />
+                  <Button onClick={() => { navigator.clipboard?.writeText(url); toast.success("Link copied"); }}>Copy</Button>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" asChild>
+                    <a href={`https://wa.me/${shareCustomer.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi ${shareCustomer.name}, track your shipments live: ${url}`)}`} target="_blank" rel="noopener noreferrer">
+                      Send via WhatsApp
+                    </a>
+                  </Button>
+                  <Button onClick={() => setShareCustomer(null)}>Done</Button>
+                </DialogFooter>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
