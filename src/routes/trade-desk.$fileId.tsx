@@ -63,7 +63,23 @@ function TradeFileDetail() {
             <Badge className="bg-accent/15 text-accent border-accent/30">Escrow: {file.escrow}</Badge>
             <RiskBadge risk={file.risk} />
           </div>
-        </div>
+      </div>
+
+      <Card className="p-4 shadow-card">
+        <div className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Quick actions on this trade file</div>
+        <ImporterActions
+          variant="tradefile"
+          ctx={{
+            tradeFileId: file.id,
+            supplier: file.supplier,
+            origin: file.origin,
+            destination: file.destination,
+            eta: file.eta,
+            invoiceAmount: file.invoiceValue,
+            currency: file.ccy,
+          }}
+        />
+      </Card>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-5">
