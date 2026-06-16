@@ -8,6 +8,16 @@ export type WhatsAppTemplateKey =
   | "verifySupplier"
   | "shipmentUpdate"
   | "missingDocument"
+  | "containerLoaded"
+  | "vesselSailed"
+  | "arrivedAtPort"
+  | "clearingStarted"
+  | "clearedCustoms"
+  | "outForDelivery"
+  | "delivered"
+  | "delayNotice"
+  | "missingDocumentReminder"
+  | "paymentReminder"
   | "general";
 
 type TemplateContext = Record<string, string | number | undefined | null>;
