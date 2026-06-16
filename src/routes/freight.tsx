@@ -489,7 +489,7 @@ function InvoicesTable() {
                     : <Button size="sm" variant="outline" onClick={() => setStatus(i.id, "Unpaid")}>Mark unpaid</Button>}
                   <Button size="sm" variant="ghost" onClick={() => download(i)}><Download className="h-3.5 w-3.5 mr-1" /> Download</Button>
                   <Button size="sm" variant="ghost" asChild>
-                    <a href={buildWhatsAppUrl("paymentReminder", { invoice: i.id, amount: fmtMoney(i.amount, i.ccy), due: i.due })} target="_blank" rel="noopener noreferrer">
+                    <a href={buildWhatsAppUrl("general", { invoice: i.id, amount: fmtMoney(i.amount, i.ccy), due: i.due })} target="_blank" rel="noopener noreferrer">
                       <MessageCircle className="h-3.5 w-3.5 mr-1" /> WhatsApp
                     </a>
                   </Button>
