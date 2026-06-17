@@ -275,7 +275,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Money" },
         { to: "/approvals", label: "Settlement Approvals", iconKey: "check", group: "Money" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
-        { to: "/cards", label: "Staff Cards", iconKey: "card", group: "Spend" },
+        
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
         { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },

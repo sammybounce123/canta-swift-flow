@@ -26,17 +26,28 @@ function NewReferral() {
   const [form, setForm] = useState({
     clientName: "", clientEmail: "", clientPhone: "",
     property: "", location: "", amount: "", currency: "GBP",
-    purpose: "Property completion", solicitor: "", deadline: "", notes: "",
+    purpose: "Property completion",
+    solicitor: SOLICITORS[0]?.id ?? "",
+    deadline: "", notes: "",
     assignedMarketerId: userId,
     file: undefined as File | undefined,
   });
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => setForm((p) => ({ ...p, [k]: v }));
 
-  const submit = () => {
-    if (!form.clientName || !form.clientEmail || !form.amount || !form.solicitor) {
-      toast.error("Please fill the required fields.");
-      return;
+  const validate = () => {
+    const missing: string[] = [];
+    if (!form.clientName.trim()) missing.push("Client name");
+    if (!form.clientEmail.trim()) missing.push("Client email");
+    if (!form.amount || Number(form.amount) <= 0) missing.push("Amount");
+    if (!form.solicitor) missing.push("Solicitor");
+    if (missing.length) {
+      toast.error(`Please complete: ${missing.join(", ")}`);
+      return false;
     }
+    return true;
+  };
+
+  const buildCase = (status?: "draft") => {
     const actor = partnerActorFromUser(userId);
     const created = createCase({
       clientName: form.clientName, clientEmail: form.clientEmail, clientPhone: form.clientPhone,
@@ -46,7 +57,7 @@ function NewReferral() {
       paymentPurpose: form.purpose,
       paymentDeadline: form.deadline || new Date(Date.now() + 14 * 86400_000).toISOString().slice(0, 10),
       assignedMarketerId: form.assignedMarketerId,
-      notes: form.notes,
+      notes: status === "draft" ? `[DRAFT] ${form.notes ?? ""}`.trim() : form.notes,
       createdBy: actor.id,
       createdByName: actor.name,
     });
@@ -59,8 +70,30 @@ function NewReferral() {
         uploadedByRole: actor.role,
       });
     }
+    return created;
+  };
+
+  const submit = () => {
+    if (!validate()) return;
+    const created = buildCase();
     toast.success("Payment case created", { description: `${created.ref} — ${created.clientName}` });
     setTimeout(() => navigate({ to: "/partner/cases/$caseId", params: { caseId: created.id } }), 400);
+  };
+
+  const saveDraft = () => {
+    if (!form.clientName.trim()) { toast.error("Add at least a client name to save a draft"); return; }
+    const created = buildCase("draft");
+    toast.success("Draft saved", { description: `${created.ref} kept as draft — you can finish it from Cases.` });
+    setTimeout(() => navigate({ to: "/partner/cases" }), 500);
+  };
+
+  const sendPaymentLink = () => {
+    if (!validate()) return;
+    const created = buildCase();
+    toast.success("Client payment link sent", {
+      description: `Sent to ${created.clientEmail} for ${created.ref} (£${Number(form.amount).toLocaleString()}).`,
+    });
+    setTimeout(() => navigate({ to: "/partner/cases/$caseId", params: { caseId: created.id } }), 500);
   };
   void MARKETERS; void user;
 
