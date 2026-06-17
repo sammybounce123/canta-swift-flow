@@ -202,14 +202,14 @@ function NewReferral() {
         </Section>
 
         <div className="pt-4 border-t flex flex-wrap items-center justify-between gap-2">
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => toast.success("Draft saved")}>
+          <div className="flex flex-wrap gap-2 min-w-0">
+            <Button variant="outline" onClick={saveDraft}>
               <Save className="h-4 w-4 mr-1.5" /> Save draft
             </Button>
-            <Button variant="outline" onClick={() => toast.success("Client payment link sent")}>
+            <Button variant="outline" onClick={sendPaymentLink}>
               <Link2 className="h-4 w-4 mr-1.5" /> Send client payment link
             </Button>
-            <Button variant="outline" onClick={() => toast.success("Solicitor assigned")}>
+            <Button variant="outline" onClick={() => toast.success("Solicitor assigned", { description: SOLICITORS.find(s => s.id === form.solicitor)?.firm ?? "—" })}>
               <UserPlus className="h-4 w-4 mr-1.5" /> Assign solicitor
             </Button>
           </div>
