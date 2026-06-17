@@ -19,6 +19,7 @@ const STATUS_FILTERS = ["All", "Drafting", "In Transit", "Arrived", "Cleared", "
 function TradeDeskList() {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<(typeof STATUS_FILTERS)[number]>("All");
+  const [draftOpen, setDraftOpen] = useState(false);
 
   const filtered = useMemo(() => {
     return tradeFiles.filter((f) => {
@@ -41,16 +42,19 @@ function TradeDeskList() {
   return (
     <div className="space-y-6">
       <div className="flex items-end justify-between flex-wrap gap-4">
-        <div>
+        <div className="min-w-0">
           <h1 className="text-2xl font-semibold">Trade Desk</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Every shipment, supplier, payment and document in one operating system.
           </p>
         </div>
-        <Button onClick={() => toast.success("New trade file drafted")} className="bg-primary">
+        <Button onClick={() => setDraftOpen(true)} className="bg-primary">
           <Plus className="h-4 w-4 mr-1.5" /> New Trade File
         </Button>
       </div>
+
+      <NewTradeFileDialog open={draftOpen} setOpen={setDraftOpen} />
+
 
       {/* KPI strip */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
