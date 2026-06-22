@@ -325,6 +325,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/partner/payment-links", label: "Payment Links", iconKey: "link", group: "Money" },
         { to: "/partner/payouts", label: "Solicitor Payouts", iconKey: "receipt", group: "Money" },
         { to: "/partner/solicitors", label: "Solicitors", iconKey: "shield-check", group: "Beneficiaries" },
+        { to: "/partner/disputes", label: "Case Disputes", iconKey: "shield", group: "Operations" },
         { to: "/partner/documents", label: "Documents", iconKey: "file", group: "Operations" },
         { to: "/partner/marketers", label: "Marketer Performance", iconKey: "users", group: "Insights" },
         ...(commissionsEnabled ? [{ to: "/partner/commissions", label: "Commissions", iconKey: "receipt", group: "Insights" } as SidebarItem] : []),
