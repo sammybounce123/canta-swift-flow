@@ -212,11 +212,12 @@ function WhatsAppActions() {
         <MessageCircle className="h-4 w-4 text-accent" /> WhatsApp Import Desk
       </div>
       <p className="text-sm text-muted-foreground mt-2">Don't worry about forms — just send us a message and we'll handle the rest.</p>
-      <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-2">
         {actions.map((a) => (
-          <Button asChild key={a.l} variant="outline" className="justify-start h-auto py-3 hover:border-[#25D366] hover:bg-[#25D366]/10 hover:text-foreground transition">
-            <a href={buildWhatsAppUrl(a.tpl)} target="_blank" rel="noopener noreferrer">
-              <a.i className="h-4 w-4 mr-2 shrink-0 text-[#25D366]" /><span className="text-xs text-left">{a.l}</span>
+          <Button asChild key={a.l} variant="outline" className="justify-start h-auto min-h-[3rem] py-2.5 px-3 hover:border-[#25D366] hover:bg-[#25D366]/10 hover:text-foreground transition">
+            <a href={buildWhatsAppUrl(a.tpl)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 min-w-0 w-full">
+              <a.i className="h-4 w-4 shrink-0 text-[#25D366]" />
+              <span className="text-xs text-left leading-snug whitespace-normal break-words min-w-0">{a.l}</span>
             </a>
           </Button>
         ))}
