@@ -36,7 +36,7 @@ export const SEGMENTS: Segment[] = [
     defaultPermissions: ["view dashboard", "view wallet balances", "approve payment", "create FX conversion", "create staff card"],
     route: "/treasury",
     welcome: "Manage FX, wallets, beneficiaries, approvals, cards, and global treasury.",
-    tagline: "Multinationals, corporates, oil & gas, SMEs",
+    tagline: "Multinationals, corporates, traders and large SMEs",
   },
   {
     id: "importer_portal",
