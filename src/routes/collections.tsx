@@ -228,6 +228,9 @@ function NewInvoiceDialog() {
 // ---------- Page ----------
 function Collections() {
   const [q, setQ] = useState("");
+  const isMerchant = typeof window !== "undefined"
+    ? localStorage.getItem("canta:mode") === "Global Merchant"
+    : true;
 
   const totals = useMemo(() => {
     const total = 842_150;
