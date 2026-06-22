@@ -367,6 +367,20 @@ export function saveProfile(segment: Segment): Profile {
   if (typeof window !== "undefined") saveFlags(profile.feature_flags);
   if (typeof window !== "undefined") {
     window.localStorage.setItem(KEY, JSON.stringify(profile));
+    const WORKSPACE_TO_MODE: Record<WorkspaceType, string | undefined> = {
+      enterprise_treasury: "Enterprise Treasury",
+      importer_portal: "Importer",
+      freight_workspace: "Freight Forwarder",
+      supplier_dashboard: "Supplier",
+      global_collections: "Global Merchant",
+      partner_property: "Partner Property",
+      global_spend_cards: undefined,
+    };
+    const mode = WORKSPACE_TO_MODE[segment.id];
+    if (mode) {
+      window.localStorage.setItem("canta:mode", mode);
+      window.dispatchEvent(new CustomEvent("canta:mode-change", { detail: mode }));
+    }
   }
   return profile;
 }
