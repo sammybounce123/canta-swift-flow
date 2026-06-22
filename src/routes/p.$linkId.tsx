@@ -101,7 +101,9 @@ function PublicPayPage() {
         if (inv) setInvoice(inv);
       }
     }
+    setMerchant(readObj<Merchant>(LS_MERCHANT));
   }, [linkId]);
+
 
   const ref = useMemo(() => `CANTA-${linkId.toUpperCase().slice(0, 8)}`, [linkId]);
 
