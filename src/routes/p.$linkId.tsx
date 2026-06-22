@@ -26,6 +26,10 @@ type PaymentLink = {
   url?: string;
   amount: number;
   ccy: string;
+  settleAmount?: number;
+  settleCcy?: string;
+  chargeCcy?: string;
+  rate?: number;
   status: "Active" | "Paid" | "Expired";
   createdAt: string;
 };
@@ -39,9 +43,14 @@ type Invoice = {
   createdAt?: string;
   fields?: Record<string, string>;
 };
+type Merchant = {
+  organizationName?: string;
+  settlementCurrency?: string;
+};
 
 const LS_LINKS = "canta:collections:paymentLinks";
 const LS_INVOICES = "canta:collections:invoices";
+const LS_MERCHANT = "canta:merchant:profile:v1";
 
 const DEMO: Record<string, PaymentLink> = {
   "pl-demo-001": { id: "PL-DEMO-001", label: "Tuition — Spring 2026", amount: 8500, ccy: "USD", status: "Active", createdAt: "2026-06-12" },
@@ -49,12 +58,24 @@ const DEMO: Record<string, PaymentLink> = {
   "pl-demo-003": { id: "PL-DEMO-003", label: "Conference ticket", amount: 350, ccy: "EUR", status: "Active", createdAt: "2026-06-10" },
 };
 
+function readObj<T>(key: string): T | null {
+  try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : null; } catch { return null; }
+}
 function readArr<T>(key: string): T[] {
   try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : []; } catch { return []; }
 }
 function writeArr<T>(key: string, arr: T[]) {
   try { localStorage.setItem(key, JSON.stringify(arr)); } catch {}
 }
+
+// Deterministic 10-digit virtual account number derived from the link id.
+function virtualAccountFor(linkId: string): string {
+  let h = 0;
+  for (let i = 0; i < linkId.length; i++) h = (h * 31 + linkId.charCodeAt(i)) >>> 0;
+  const n = (h % 9000000000) + 1000000000;
+  return String(n);
+}
+
 
 function PublicPayPage() {
   const { linkId } = useParams({ from: "/p/$linkId" });
