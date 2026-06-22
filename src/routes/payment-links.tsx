@@ -11,7 +11,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Link as LinkIcon, Plus, Copy, Trash2, ExternalLink } from "lucide-react";
+import { Link as LinkIcon, Plus, Copy, Trash2, ExternalLink, ArrowRight, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { fmtMoney } from "@/lib/mock";
 
