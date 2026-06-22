@@ -81,8 +81,10 @@ function PublicPayPage() {
   const { linkId } = useParams({ from: "/p/$linkId" });
   const [link, setLink] = useState<PaymentLink | null>(null);
   const [invoice, setInvoice] = useState<Invoice | null>(null);
+  const [merchant, setMerchant] = useState<Merchant | null>(null);
   const [step, setStep] = useState<"review" | "method" | "done">("review");
   const [method, setMethod] = useState<"card" | "bank" | "mobile">("card");
+
 
   useEffect(() => {
     const links = readArr<PaymentLink>(LS_LINKS);
