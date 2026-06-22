@@ -197,7 +197,7 @@ function PublicPayPage() {
                 <MethodPill icon={Smartphone} label="Mobile" active={method === "mobile"} onClick={() => setMethod("mobile")} />
               </div>
               {method === "card" && <CardForm />}
-              {method === "bank" && <BankInstructions ref_={ref} amount={fmtMoney(link.amount, link.ccy)} />}
+              {method === "bank" && <BankInstructions ref_={ref} amount={fmtMoney(link.amount, link.ccy)} merchantName={merchantName} ccy={link.ccy} linkId={link.id} />}
               {method === "mobile" && <MobileForm />}
               <div className="flex justify-between items-center border-t pt-4">
                 <Button variant="ghost" onClick={() => setStep("review")}>Back</Button>
