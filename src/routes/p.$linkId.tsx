@@ -94,6 +94,7 @@ function PublicPayPage() {
   const [method, setMethod] = useState<"card" | "bank" | "mobile">("card");
 
   useEffect(() => {
+    setMerchantName(readMerchantName());
     const links = readArr<PaymentLink>(LS_LINKS);
     const id = linkId.toUpperCase();
     let found = links.find(l => l.id?.toUpperCase() === id || l.id?.toLowerCase() === linkId.toLowerCase());
