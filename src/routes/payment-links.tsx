@@ -154,8 +154,28 @@ function PaymentLinksPage() {
   );
 }
 
+const FX_USD: Record<string, number> = {
+  USD: 1, EUR: 0.92, GBP: 0.79, NGN: 1612, ZAR: 18.4, KES: 129.2,
+  RMB: 7.24, AED: 3.67, INR: 83.1, GHS: 15.2,
+};
+const CCYS = ["USD", "EUR", "GBP", "NGN", "ZAR", "KES", "RMB", "AED", "INR", "GHS"];
+function convert(amount: number, from: string, to: string) {
+  if (!amount || !FX_USD[from] || !FX_USD[to]) return 0;
+  return (amount / FX_USD[from]) * FX_USD[to];
+}
+function fmtRate(from: string, to: string) {
+  const r = convert(1, from, to);
+  return r >= 100 ? r.toFixed(2) : r.toFixed(4);
+}
+
 function NewLinkDialog({ open, setOpen, onAdd }: { open: boolean; setOpen: (o: boolean) => void; onAdd: (p: PaymentLink) => void }) {
-  const [d, setD] = useState({ label: "", amount: "", ccy: "USD" });
+  const [d, setD] = useState({ label: "", amount: "", ccy: "USD", settleCcy: "USD" });
+  const amt = Number(d.amount) || 0;
+  const settled = convert(amt, d.ccy, d.settleCcy);
+  const feePct = 0.9;
+  const fee = (settled * feePct) / 100;
+  const net = settled - fee;
+
   const submit = () => {
     if (!d.label.trim() || !d.amount) { toast.error("Label and amount are required"); return; }
     const id = `PL-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -163,34 +183,68 @@ function NewLinkDialog({ open, setOpen, onAdd }: { open: boolean; setOpen: (o: b
       id,
       label: d.label.trim(),
       url: payUrl(id),
-      amount: Number(d.amount) || 0,
+      amount: amt,
       ccy: d.ccy,
       status: "Active",
       createdAt: new Date().toISOString().slice(0, 10),
     });
-    setD({ label: "", amount: "", ccy: "USD" });
+    setD({ label: "", amount: "", ccy: "USD", settleCcy: "USD" });
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-primary"><Plus className="h-4 w-4 mr-1.5" /> Create payment link</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-lg">
         <DialogHeader><DialogTitle>Create payment link</DialogTitle></DialogHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Field label="Label *" wide>
             <Input value={d.label} onChange={(e) => setD({ ...d, label: e.target.value })} placeholder="Tuition — Spring 2026" />
           </Field>
-          <Field label="Amount *">
+          <Field label="Amount payer sees *">
             <Input type="number" value={d.amount} onChange={(e) => setD({ ...d, amount: e.target.value })} placeholder="1500" />
           </Field>
-          <Field label="Currency">
+          <Field label="Collect in">
             <Select value={d.ccy} onValueChange={(v) => setD({ ...d, ccy: v })}>
               <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>{["USD","EUR","GBP","NGN","ZAR","KES"].map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+              <SelectContent>{CCYS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+            </Select>
+          </Field>
+          <Field label="Settle to" wide>
+            <Select value={d.settleCcy} onValueChange={(v) => setD({ ...d, settleCcy: v })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>{CCYS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
             </Select>
           </Field>
         </div>
+
+        <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 space-y-2 mt-1">
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-1.5 font-semibold text-primary">
+              <TrendingUp className="h-3.5 w-3.5" /> Indicative FX rate
+            </div>
+            <Badge variant="outline" className="text-[10px] border-primary/30 text-primary">Live mid-market</Badge>
+          </div>
+          <div className="text-sm font-mono">
+            1 {d.ccy} <ArrowRight className="inline h-3 w-3 mx-1 text-muted-foreground" /> {fmtRate(d.ccy, d.settleCcy)} {d.settleCcy}
+          </div>
+          <div className="grid grid-cols-3 gap-2 pt-2 border-t border-primary/10">
+            <div>
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Payer sends</div>
+              <div className="text-sm font-semibold tabular-nums">{fmtMoney(amt, d.ccy)}</div>
+            </div>
+            <div>
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Fee ({feePct}%)</div>
+              <div className="text-sm font-semibold tabular-nums text-muted-foreground">−{fmtMoney(fee, d.settleCcy)}</div>
+            </div>
+            <div>
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">You receive</div>
+              <div className="text-sm font-semibold tabular-nums text-success">{fmtMoney(net, d.settleCcy)}</div>
+            </div>
+          </div>
+          <p className="text-[10px] text-muted-foreground">Rate locks for 60 seconds at checkout. Final settled amount may vary slightly.</p>
+        </div>
+
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
           <Button className="bg-primary" onClick={submit}>Create link</Button>
