@@ -276,20 +276,38 @@ function CardForm() {
   );
 }
 
-function BankInstructions({ ref_, amount }: { ref_: string; amount: string }) {
-  const copy = (s: string) => { navigator.clipboard?.writeText(s); toast.success("Copied"); };
+function BankInstructions({ ref_, amount, ccy, merchantName, linkId }: { ref_: string; amount: string; ccy: string; merchantName: string; linkId: string }) {
+  const accountNumber = virtualAccountFor(linkId);
+  const accountName = `${merchantName} — via Canta`;
+  const bankByCcy: Record<string, string> = {
+    NGN: "Providus Bank (Canta Virtual)",
+    USD: "Canta US Virtual Account · Community Federal Savings Bank",
+    EUR: "Canta EU Virtual Account · Modulr FS Europe",
+    GBP: "Canta UK Virtual Account · Clear Bank",
+    KES: "Canta Kenya Virtual · Equity Bank",
+    ZAR: "Canta SA Virtual · Standard Bank",
+    GHS: "Canta Ghana Virtual · Stanbic Bank",
+    CNY: "Canta CN Virtual · DBS Bank",
+  };
+  const bank = bankByCcy[ccy] || "Canta Virtual Account";
   return (
     <div className="rounded-lg border bg-secondary/30 p-4 grid grid-cols-2 gap-3 text-sm">
-      <Field label="Account name" value="Canta Payments Ltd" />
-      <Field label="Bank" value="Providus Bank" />
-      <Field label="Account number" value="1300912488" copyable />
+      <div className="col-span-2 text-[11px] uppercase tracking-wider text-muted-foreground">
+        Canta virtual account · settles to {merchantName}
+      </div>
+      <Field label="Account name" value={accountName} copyable />
+      <Field label="Bank" value={bank} />
+      <Field label="Account number" value={accountNumber} copyable />
+      <Field label="Currency" value={ccy} />
       <Field label="Amount" value={amount} />
       <Field label="Reference" value={ref_} copyable />
-      <div className="col-span-2 text-[11px] text-muted-foreground">Use the reference exactly so Canta can match your transfer.</div>
-      <button onClick={() => copy("1300912488")} className="hidden" />
+      <div className="col-span-2 text-[11px] text-muted-foreground">
+        This virtual account is dedicated to this payment link. Funds land in {merchantName}'s Canta wallet automatically — use the reference exactly so we can match your transfer instantly.
+      </div>
     </div>
   );
 }
+
 
 function MobileForm() {
   return (
