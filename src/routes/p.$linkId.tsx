@@ -42,7 +42,6 @@ type Invoice = {
 
 const LS_LINKS = "canta:collections:paymentLinks";
 const LS_INVOICES = "canta:collections:invoices";
-const LS_MERCHANT = "canta:merchant:profile:v1";
 
 const DEMO: Record<string, PaymentLink> = {
   "pl-demo-001": { id: "PL-DEMO-001", label: "Tuition — Spring 2026", amount: 8500, ccy: "USD", status: "Active", createdAt: "2026-06-12" },
@@ -56,45 +55,15 @@ function readArr<T>(key: string): T[] {
 function writeArr<T>(key: string, arr: T[]) {
   try { localStorage.setItem(key, JSON.stringify(arr)); } catch {}
 }
-function readMerchantName(): string {
-  try {
-    const raw = localStorage.getItem(LS_MERCHANT);
-    if (!raw) return "Canta Demo Merchant Ltd";
-    const m = JSON.parse(raw);
-    return m?.organizationName || "Canta Demo Merchant Ltd";
-  } catch { return "Canta Demo Merchant Ltd"; }
-}
-// Deterministic 10-digit virtual account number from any seed string.
-function virtualAccountNo(seed: string): string {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
-  const n = (h % 9000000000) + 1000000000;
-  return String(n);
-}
-// Pick the bank rails based on the currency the supplier settles in.
-function bankForCcy(ccy: string): { bank: string; routingLabel: string; routing: string } {
-  switch (ccy) {
-    case "NGN": return { bank: "Providus Bank (Canta Virtual)", routingLabel: "Sort Code", routing: "101152" };
-    case "USD": return { bank: "Community Federal Savings Bank (Canta Virtual)", routingLabel: "Routing (ACH)", routing: "026073150" };
-    case "EUR": return { bank: "Modulr Finance B.V. (Canta Virtual)", routingLabel: "BIC", routing: "MODRNL22" };
-    case "GBP": return { bank: "ClearBank (Canta Virtual)", routingLabel: "Sort Code", routing: "04-00-75" };
-    case "KES": return { bank: "Equity Bank Kenya (Canta Virtual)", routingLabel: "Branch", routing: "068" };
-    case "ZAR": return { bank: "Standard Bank ZA (Canta Virtual)", routingLabel: "Branch", routing: "051001" };
-    case "GHS": return { bank: "Stanbic Ghana (Canta Virtual)", routingLabel: "Branch", routing: "190101" };
-    default:    return { bank: "Canta Virtual Account",            routingLabel: "SWIFT",    routing: "CANTAUS33" };
-  }
-}
 
 function PublicPayPage() {
   const { linkId } = useParams({ from: "/p/$linkId" });
   const [link, setLink] = useState<PaymentLink | null>(null);
   const [invoice, setInvoice] = useState<Invoice | null>(null);
-  const [merchantName, setMerchantName] = useState("Canta Demo Merchant Ltd");
   const [step, setStep] = useState<"review" | "method" | "done">("review");
   const [method, setMethod] = useState<"card" | "bank" | "mobile">("card");
 
   useEffect(() => {
-    setMerchantName(readMerchantName());
     const links = readArr<PaymentLink>(LS_LINKS);
     const id = linkId.toUpperCase();
     let found = links.find(l => l.id?.toUpperCase() === id || l.id?.toLowerCase() === linkId.toLowerCase());
@@ -197,7 +166,7 @@ function PublicPayPage() {
                 <MethodPill icon={Smartphone} label="Mobile" active={method === "mobile"} onClick={() => setMethod("mobile")} />
               </div>
               {method === "card" && <CardForm />}
-              {method === "bank" && <BankInstructions ref_={ref} amount={fmtMoney(link.amount, link.ccy)} merchantName={merchantName} ccy={link.ccy} linkId={link.id} />}
+              {method === "bank" && <BankInstructions ref_={ref} amount={fmtMoney(link.amount, link.ccy)} />}
               {method === "mobile" && <MobileForm />}
               <div className="flex justify-between items-center border-t pt-4">
                 <Button variant="ghost" onClick={() => setStep("review")}>Back</Button>
@@ -282,29 +251,17 @@ function CardForm() {
   );
 }
 
-function BankInstructions({ ref_, amount, merchantName, ccy, linkId }: { ref_: string; amount: string; merchantName: string; ccy: string; linkId: string }) {
-  const rails = bankForCcy(ccy);
-  const acctNo = virtualAccountNo(`${linkId}|${merchantName}|${ccy}`);
+function BankInstructions({ ref_, amount }: { ref_: string; amount: string }) {
+  const copy = (s: string) => { navigator.clipboard?.writeText(s); toast.success("Copied"); };
   return (
-    <div className="rounded-lg border bg-secondary/30 p-4 space-y-3 text-sm">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Canta Virtual Account</div>
-          <div className="font-semibold">{merchantName}</div>
-        </div>
-        <Badge variant="outline" className="text-[10px] border-primary/30 text-primary bg-primary/10">{ccy}</Badge>
-      </div>
-      <div className="grid grid-cols-2 gap-3 border-t pt-3">
-        <Field label="Account name" value={merchantName} />
-        <Field label="Bank" value={rails.bank} />
-        <Field label="Account number" value={acctNo} copyable />
-        <Field label={rails.routingLabel} value={rails.routing} copyable />
-        <Field label="Amount" value={amount} />
-        <Field label="Reference" value={ref_} copyable />
-      </div>
-      <div className="text-[11px] text-muted-foreground">
-        Transfer to this dedicated Canta virtual account in <span className="font-semibold">{merchantName}</span>'s name. Use the reference exactly so the payment is auto-matched.
-      </div>
+    <div className="rounded-lg border bg-secondary/30 p-4 grid grid-cols-2 gap-3 text-sm">
+      <Field label="Account name" value="Canta Payments Ltd" />
+      <Field label="Bank" value="Providus Bank" />
+      <Field label="Account number" value="1300912488" copyable />
+      <Field label="Amount" value={amount} />
+      <Field label="Reference" value={ref_} copyable />
+      <div className="col-span-2 text-[11px] text-muted-foreground">Use the reference exactly so Canta can match your transfer.</div>
+      <button onClick={() => copy("1300912488")} className="hidden" />
     </div>
   );
 }
