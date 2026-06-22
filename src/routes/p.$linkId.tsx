@@ -42,6 +42,7 @@ type Invoice = {
 
 const LS_LINKS = "canta:collections:paymentLinks";
 const LS_INVOICES = "canta:collections:invoices";
+const LS_MERCHANT = "canta:merchant:profile:v1";
 
 const DEMO: Record<string, PaymentLink> = {
   "pl-demo-001": { id: "PL-DEMO-001", label: "Tuition — Spring 2026", amount: 8500, ccy: "USD", status: "Active", createdAt: "2026-06-12" },
@@ -54,6 +55,34 @@ function readArr<T>(key: string): T[] {
 }
 function writeArr<T>(key: string, arr: T[]) {
   try { localStorage.setItem(key, JSON.stringify(arr)); } catch {}
+}
+function readMerchantName(): string {
+  try {
+    const raw = localStorage.getItem(LS_MERCHANT);
+    if (!raw) return "Canta Demo Merchant Ltd";
+    const m = JSON.parse(raw);
+    return m?.organizationName || "Canta Demo Merchant Ltd";
+  } catch { return "Canta Demo Merchant Ltd"; }
+}
+// Deterministic 10-digit virtual account number from any seed string.
+function virtualAccountNo(seed: string): string {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  const n = (h % 9000000000) + 1000000000;
+  return String(n);
+}
+// Pick the bank rails based on the currency the supplier settles in.
+function bankForCcy(ccy: string): { bank: string; routingLabel: string; routing: string } {
+  switch (ccy) {
+    case "NGN": return { bank: "Providus Bank (Canta Virtual)", routingLabel: "Sort Code", routing: "101152" };
+    case "USD": return { bank: "Community Federal Savings Bank (Canta Virtual)", routingLabel: "Routing (ACH)", routing: "026073150" };
+    case "EUR": return { bank: "Modulr Finance B.V. (Canta Virtual)", routingLabel: "BIC", routing: "MODRNL22" };
+    case "GBP": return { bank: "ClearBank (Canta Virtual)", routingLabel: "Sort Code", routing: "04-00-75" };
+    case "KES": return { bank: "Equity Bank Kenya (Canta Virtual)", routingLabel: "Branch", routing: "068" };
+    case "ZAR": return { bank: "Standard Bank ZA (Canta Virtual)", routingLabel: "Branch", routing: "051001" };
+    case "GHS": return { bank: "Stanbic Ghana (Canta Virtual)", routingLabel: "Branch", routing: "190101" };
+    default:    return { bank: "Canta Virtual Account",            routingLabel: "SWIFT",    routing: "CANTAUS33" };
+  }
 }
 
 function PublicPayPage() {
