@@ -89,6 +89,7 @@ function PublicPayPage() {
   const { linkId } = useParams({ from: "/p/$linkId" });
   const [link, setLink] = useState<PaymentLink | null>(null);
   const [invoice, setInvoice] = useState<Invoice | null>(null);
+  const [merchantName, setMerchantName] = useState("Canta Demo Merchant Ltd");
   const [step, setStep] = useState<"review" | "method" | "done">("review");
   const [method, setMethod] = useState<"card" | "bank" | "mobile">("card");
 
