@@ -6,13 +6,13 @@ export const Route = createFileRoute("/importer/cards")({
   component: () => (
     <WorkspaceCardsHub
       workspaceKey="importer"
-      title="Importer Cards"
-      subtitle="Spend cards for procurement, inspections, samples and trade expenses — linked to trade files, shipments and suppliers."
+      title="Cards for your import business"
+      subtitle="Pay for goods, inspections, samples and shipping with cards that track every spend to the right trade file or shipment."
       cardTypes={[
-        { key: "procurement", label: "Procurement Staff Card", desc: "Day-to-day purchasing for your buyers" },
-        { key: "inspection", label: "Inspection Fees Card", desc: "QC visits, factory audits, lab tests" },
-        { key: "samples", label: "Supplier Samples Card", desc: "Sample orders before bulk POs" },
-        { key: "trade", label: "Trade Expenses Card", desc: "Freight, customs, ad-hoc trade costs" },
+        { key: "buying", label: "Buying Card", desc: "Pay suppliers and place orders" },
+        { key: "inspection", label: "Inspection Card", desc: "Pay for QC checks, lab tests and factory visits" },
+        { key: "samples", label: "Samples Card", desc: "Order product samples before bulk orders" },
+        { key: "shipping", label: "Shipping & Clearing Card", desc: "Pay freight, customs and clearing fees" },
       ]}
       linkEntities={["Trade file", "Shipment", "Supplier", "Cost center"]}
       spendDimensions={[
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/importer/cards")({
         { key: "supplier", label: "Supplier" },
       ]}
       backTo={{ to: "/importer", label: "Back to Importer Workspace" }}
-      cardHub={<Link to="/cards" className="text-xs text-accent hover:underline">Open shared card hub →</Link>}
+      cardHub={<Link to="/cards" className="text-xs text-accent hover:underline">See all cards →</Link>}
     />
   ),
 });
