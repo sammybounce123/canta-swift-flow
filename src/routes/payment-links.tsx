@@ -33,10 +33,15 @@ type PaymentLink = {
 
 const LS_KEY = "canta:collections:paymentLinks";
 
+const payUrl = (id: string) => {
+  const base = typeof window !== "undefined" ? window.location.origin : "https://canta.app";
+  return `${base}/p/${id.toLowerCase()}`;
+};
+
 const SEED: PaymentLink[] = [
-  { id: "PL-DEMO-001", label: "Tuition — Spring 2026",  url: "https://pay.canta.app/pl-demo-001", amount: 8500, ccy: "USD", status: "Active", createdAt: "2026-06-12" },
-  { id: "PL-DEMO-002", label: "Donation — June Drive",  url: "https://pay.canta.app/pl-demo-002", amount: 2500, ccy: "USD", status: "Paid",   createdAt: "2026-06-11" },
-  { id: "PL-DEMO-003", label: "Conference ticket",      url: "https://pay.canta.app/pl-demo-003", amount: 350,  ccy: "EUR", status: "Active", createdAt: "2026-06-10" },
+  { id: "PL-DEMO-001", label: "Tuition — Spring 2026",  url: payUrl("PL-DEMO-001"), amount: 8500, ccy: "USD", status: "Active", createdAt: "2026-06-12" },
+  { id: "PL-DEMO-002", label: "Donation — June Drive",  url: payUrl("PL-DEMO-002"), amount: 2500, ccy: "USD", status: "Paid",   createdAt: "2026-06-11" },
+  { id: "PL-DEMO-003", label: "Conference ticket",      url: payUrl("PL-DEMO-003"), amount: 350,  ccy: "EUR", status: "Active", createdAt: "2026-06-10" },
 ];
 
 function readLS(): PaymentLink[] {
@@ -48,7 +53,7 @@ function readLS(): PaymentLink[] {
       id: x.id,
       invoiceId: x.invoiceId,
       label: x.label ?? x.invoiceId ?? x.id,
-      url: x.url ?? `https://pay.canta.app/${(x.id ?? "").toLowerCase()}`,
+      url: payUrl(x.id ?? ""),
       amount: Number(x.amount) || 0,
       ccy: x.ccy ?? "USD",
       status: (x.status as PaymentLink["status"]) ?? "Active",
@@ -157,7 +162,7 @@ function NewLinkDialog({ open, setOpen, onAdd }: { open: boolean; setOpen: (o: b
     onAdd({
       id,
       label: d.label.trim(),
-      url: `https://pay.canta.app/${id.toLowerCase()}`,
+      url: payUrl(id),
       amount: Number(d.amount) || 0,
       ccy: d.ccy,
       status: "Active",

@@ -78,6 +78,7 @@ import { Route as PartnerFxQuotesRouteImport } from './routes/partner.fx-quotes'
 import { Route as PartnerDocumentsRouteImport } from './routes/partner.documents'
 import { Route as PartnerCommissionsRouteImport } from './routes/partner.commissions'
 import { Route as PartnerCasesRouteImport } from './routes/partner.cases'
+import { Route as PLinkIdRouteImport } from './routes/p.$linkId'
 import { Route as ImporterCardsRouteImport } from './routes/importer.cards'
 import { Route as FreightCardsRouteImport } from './routes/freight.cards'
 import { Route as CollectionsNewRouteImport } from './routes/collections.new'
@@ -429,6 +430,11 @@ const PartnerCasesRoute = PartnerCasesRouteImport.update({
   path: '/cases',
   getParentRoute: () => PartnerRoute,
 } as any)
+const PLinkIdRoute = PLinkIdRouteImport.update({
+  id: '/p/$linkId',
+  path: '/p/$linkId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImporterCardsRoute = ImporterCardsRouteImport.update({
   id: '/cards',
   path: '/cards',
@@ -508,6 +514,7 @@ export interface FileRoutesByFullPath {
   '/collections/new': typeof CollectionsNewRoute
   '/freight/cards': typeof FreightCardsRoute
   '/importer/cards': typeof ImporterCardsRoute
+  '/p/$linkId': typeof PLinkIdRoute
   '/partner/cases': typeof PartnerCasesRouteWithChildren
   '/partner/commissions': typeof PartnerCommissionsRoute
   '/partner/documents': typeof PartnerDocumentsRoute
@@ -582,6 +589,7 @@ export interface FileRoutesByTo {
   '/collections/new': typeof CollectionsNewRoute
   '/freight/cards': typeof FreightCardsRoute
   '/importer/cards': typeof ImporterCardsRoute
+  '/p/$linkId': typeof PLinkIdRoute
   '/partner/commissions': typeof PartnerCommissionsRoute
   '/partner/documents': typeof PartnerDocumentsRoute
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
@@ -658,6 +666,7 @@ export interface FileRoutesById {
   '/collections/new': typeof CollectionsNewRoute
   '/freight/cards': typeof FreightCardsRoute
   '/importer/cards': typeof ImporterCardsRoute
+  '/p/$linkId': typeof PLinkIdRoute
   '/partner/cases': typeof PartnerCasesRouteWithChildren
   '/partner/commissions': typeof PartnerCommissionsRoute
   '/partner/documents': typeof PartnerDocumentsRoute
@@ -736,6 +745,7 @@ export interface FileRouteTypes {
     | '/collections/new'
     | '/freight/cards'
     | '/importer/cards'
+    | '/p/$linkId'
     | '/partner/cases'
     | '/partner/commissions'
     | '/partner/documents'
@@ -810,6 +820,7 @@ export interface FileRouteTypes {
     | '/collections/new'
     | '/freight/cards'
     | '/importer/cards'
+    | '/p/$linkId'
     | '/partner/commissions'
     | '/partner/documents'
     | '/partner/fx-quotes'
@@ -885,6 +896,7 @@ export interface FileRouteTypes {
     | '/collections/new'
     | '/freight/cards'
     | '/importer/cards'
+    | '/p/$linkId'
     | '/partner/cases'
     | '/partner/commissions'
     | '/partner/documents'
@@ -959,6 +971,7 @@ export interface RootRouteChildren {
   WalletsRoute: typeof WalletsRoute
   WelcomeRoute: typeof WelcomeRoute
   WhatsappRoute: typeof WhatsappRoute
+  PLinkIdRoute: typeof PLinkIdRoute
   PayLinkIdRoute: typeof PayLinkIdRoute
   TrackIdRoute: typeof TrackIdRoute
   TrackIndexRoute: typeof TrackIndexRoute
@@ -1449,6 +1462,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PartnerCasesRouteImport
       parentRoute: typeof PartnerRoute
     }
+    '/p/$linkId': {
+      id: '/p/$linkId'
+      path: '/p/$linkId'
+      fullPath: '/p/$linkId'
+      preLoaderRoute: typeof PLinkIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/importer/cards': {
       id: '/importer/cards'
       path: '/cards'
@@ -1649,6 +1669,7 @@ const rootRouteChildren: RootRouteChildren = {
   WalletsRoute: WalletsRoute,
   WelcomeRoute: WelcomeRoute,
   WhatsappRoute: WhatsappRoute,
+  PLinkIdRoute: PLinkIdRoute,
   PayLinkIdRoute: PayLinkIdRoute,
   TrackIdRoute: TrackIdRoute,
   TrackIndexRoute: TrackIndexRoute,
