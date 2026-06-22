@@ -28,7 +28,7 @@ const TONES: Record<WorkspaceType, string> = {
   partner_property: "bg-primary/10 text-primary",
 };
 const WHO_FOR: Record<WorkspaceType, string> = {
-  enterprise_treasury: "Multinationals, corporates, oil & gas, large SMEs",
+  enterprise_treasury: "Multinationals, corporates, traders and large SMEs",
   importer_portal: "Importers buying from China, UAE, Turkey, India",
   freight_workspace: "Freight forwarders, clearing agents, logistics operators",
   supplier_dashboard: "Foreign suppliers & exporters in China, UAE, Turkey, India, Europe and other corridors selling to African buyers",
