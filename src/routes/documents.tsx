@@ -52,19 +52,35 @@ function DocumentsPage() {
   const [q, setQ] = useState("");
   const [type, setType] = useState("All");
   const [status, setStatus] = useState<"All" | DocStatus>("All");
+  const [docs, setDocs] = useState<Doc[]>(DOCS);
+  const [uploadOpen, setUploadOpen] = useState(false);
 
-  const filtered = useMemo(() => DOCS.filter((d) =>
+  const filtered = useMemo(() => docs.filter((d) =>
     (type === "All" || d.type === type) &&
     (status === "All" || d.status === status) &&
     (!q || d.name.toLowerCase().includes(q.toLowerCase()) || d.linkedTo.toLowerCase().includes(q.toLowerCase()))
-  ), [q, type, status]);
+  ), [q, type, status, docs]);
 
   const stats = useMemo(() => ({
-    total: DOCS.length,
-    verified: DOCS.filter((d) => d.status === "Verified").length,
-    pending: DOCS.filter((d) => d.status === "Pending review").length,
-    action: DOCS.filter((d) => d.status === "Action required").length,
-  }), []);
+    total: docs.length,
+    verified: docs.filter((d) => d.status === "Verified").length,
+    pending: docs.filter((d) => d.status === "Pending review").length,
+    action: docs.filter((d) => d.status === "Action required").length,
+  }), [docs]);
+
+  function handleUpload(doc: Omit<Doc, "id" | "uploadedAt" | "uploadedBy" | "status">) {
+    const id = `DOC-${2042 + docs.length}`;
+    const newDoc: Doc = {
+      ...doc,
+      id,
+      uploadedAt: new Date().toISOString().slice(0, 10),
+      uploadedBy: "You",
+      status: "Pending review",
+    };
+    setDocs((cur) => [newDoc, ...cur]);
+    toast.success(`${doc.name} uploaded`);
+    setUploadOpen(false);
+  }
 
   return (
     <div className="space-y-6">
@@ -77,9 +93,12 @@ function DocumentsPage() {
             Every trade document in one searchable vault — invoices, BLs, packing lists, customs forms and certificates.
           </p>
         </div>
-        <Button onClick={() => toast.success("Upload dialog opened")}>
-          <Upload className="h-4 w-4 mr-1.5" /> Upload document
-        </Button>
+        <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
+          <DialogTrigger asChild>
+            <Button><Upload className="h-4 w-4 mr-1.5" /> Upload document</Button>
+          </DialogTrigger>
+          <UploadDialog onSubmit={handleUpload} onClose={() => setUploadOpen(false)} />
+        </Dialog>
       </header>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
