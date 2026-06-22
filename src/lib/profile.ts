@@ -242,7 +242,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Operations" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
         { to: "/freight-invoices", label: "Freight Invoices", iconKey: "receipt", group: "Money" },
-        { to: "/freight/cards", label: "Freight Cards", iconKey: "card", group: "Money" },
+        // Cards intentionally removed from Freight Forwarder mode.
         { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
