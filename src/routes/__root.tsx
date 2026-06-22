@@ -97,7 +97,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isLanding = pathname === "/";
-  const isPublic = pathname.startsWith("/track") || pathname.startsWith("/pay") || pathname === "/welcome" || pathname === "/onboarding";
+  const isPublic = pathname.startsWith("/track") || pathname.startsWith("/pay/") || pathname.startsWith("/p/") || pathname === "/welcome" || pathname === "/onboarding";
   return (
     <QueryClientProvider client={queryClient}>
       {isLanding || isPublic ? (
