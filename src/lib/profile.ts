@@ -253,6 +253,8 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       return [
         D,
         { to: "/suppliers", label: "Supplier Dashboard", iconKey: "factory", group: "My Workspace" },
+        { to: "/suppliers/profile", label: "Supplier Profile", iconKey: "building", group: "My Workspace" },
+        { to: "/suppliers/kyb", label: "KYB / Verification", iconKey: "shield-check", group: "My Workspace" },
         { to: "/verified-buyers", label: "Verified Buyers", iconKey: "shield-check", group: "Trade Network" },
         { to: "/buyers", label: "Buyers", iconKey: "users", group: "Trade Network" },
         { to: "/invoices", label: "Invoices", iconKey: "receipt", group: "Money" },
@@ -267,6 +269,8 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       return [
         D,
         { to: "/collections", label: "Global Collections", iconKey: "globe", group: "My Workspace" },
+        { to: "/merchant/profile", label: "Merchant Profile", iconKey: "building", group: "My Workspace" },
+        { to: "/merchant/kyb", label: "KYB / Verification", iconKey: "shield-check", group: "My Workspace" },
         { to: "/collections/new", label: "New Collection", iconKey: "sparkles", group: "Collect" },
         { to: "/payment-links", label: "Payment Links", iconKey: "link", group: "Collect" },
         { to: "/invoices", label: "Invoices", iconKey: "receipt", group: "Collect" },
@@ -275,7 +279,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Money" },
         { to: "/approvals", label: "Settlement Approvals", iconKey: "check", group: "Money" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
-        
+
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
         { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
@@ -313,6 +317,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       }
       const items: SidebarItem[] = [
         { to: "/partner", label: "Dashboard", iconKey: "dashboard", group: "Overview", exact: true },
+        { to: "/partner/clients", label: "Partner Clients", iconKey: "users", group: "Referrals" },
         { to: "/partner/leads", label: "Referral Leads", iconKey: "sparkles", group: "Referrals" },
         { to: "/partner/cases", label: "Client Payment Cases", iconKey: "file", group: "Referrals" },
         { to: "/partner/new-referral", label: "New Payment Case", iconKey: "sparkles", group: "Referrals" },
