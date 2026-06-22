@@ -37,25 +37,25 @@ function PartnerClientsPage() {
   const cases = visibleCases(userId, role);
 
   const rows: Row[] = useMemo(() =>
-    cases.map((c) => ({
-      client: c.clientName,
-      marketer: getMarketer(c.assignedMarketerId)?.name ?? "—",
-      property: c.property,
-      caseStatus: c.status,
-      linkStatus: c.status === "Paid" || c.status === "Funds Released" ? "Paid"
-        : c.status === "Payment Link Sent" || c.status === "FX Quote Sent" ? "Sent"
-        : "None",
-      fundingStatus: c.status === "Funds Released" ? "Released"
-        : c.status === "Paid" ? "Held"
-        : c.status === "Payment Link Sent" || c.status === "FX Quote Sent" ? "Pending"
-        : "Pending",
-      payoutStatus: c.status === "Funds Released" ? "Paid"
-        : c.status === "Paid" ? "Scheduled"
-        : "Awaiting",
-      solicitor: getSolicitor(c.solicitorId)?.firm ?? "—",
-      lastActivity: c.expectedPayout || c.createdAt,
-      caseId: c.id,
-    })),
+    cases.map((c) => {
+      const s = c.status;
+      const isPaid = s === "Completed" || s === "Paid to Solicitor" || s === "Receipt Uploaded";
+      const isReleased = s === "Completed" || s === "Receipt Uploaded";
+      const linkSent = s === "Payment Link Sent" || s === "FX Quote Sent" || s === "Payment Link Generated";
+      const fundingReceived = s === "Funding Received" || s === "Funding Review" || s === "FX Accepted" || s === "FX Converted" || s === "Payout Processing" || isPaid;
+      return {
+        client: c.clientName,
+        marketer: getMarketer(c.assignedMarketerId)?.name ?? "—",
+        property: c.property,
+        caseStatus: c.status,
+        linkStatus: isPaid ? "Paid" : linkSent ? "Sent" : "None",
+        fundingStatus: isReleased ? "Released" : isPaid ? "Held" : fundingReceived ? "Received" : "Pending",
+        payoutStatus: isReleased ? "Paid" : s === "Payout Processing" || s === "Paid to Solicitor" ? "Scheduled" : "Awaiting",
+        solicitor: getSolicitor(c.solicitorId)?.firm ?? "—",
+        lastActivity: c.expectedPayout || c.createdAt,
+        caseId: c.id,
+      };
+    }),
     [cases],
   );
 
