@@ -282,17 +282,29 @@ function CardForm() {
   );
 }
 
-function BankInstructions({ ref_, amount }: { ref_: string; amount: string }) {
-  const copy = (s: string) => { navigator.clipboard?.writeText(s); toast.success("Copied"); };
+function BankInstructions({ ref_, amount, merchantName, ccy, linkId }: { ref_: string; amount: string; merchantName: string; ccy: string; linkId: string }) {
+  const rails = bankForCcy(ccy);
+  const acctNo = virtualAccountNo(`${linkId}|${merchantName}|${ccy}`);
   return (
-    <div className="rounded-lg border bg-secondary/30 p-4 grid grid-cols-2 gap-3 text-sm">
-      <Field label="Account name" value="Canta Payments Ltd" />
-      <Field label="Bank" value="Providus Bank" />
-      <Field label="Account number" value="1300912488" copyable />
-      <Field label="Amount" value={amount} />
-      <Field label="Reference" value={ref_} copyable />
-      <div className="col-span-2 text-[11px] text-muted-foreground">Use the reference exactly so Canta can match your transfer.</div>
-      <button onClick={() => copy("1300912488")} className="hidden" />
+    <div className="rounded-lg border bg-secondary/30 p-4 space-y-3 text-sm">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Canta Virtual Account</div>
+          <div className="font-semibold">{merchantName}</div>
+        </div>
+        <Badge variant="outline" className="text-[10px] border-primary/30 text-primary bg-primary/10">{ccy}</Badge>
+      </div>
+      <div className="grid grid-cols-2 gap-3 border-t pt-3">
+        <Field label="Account name" value={merchantName} />
+        <Field label="Bank" value={rails.bank} />
+        <Field label="Account number" value={acctNo} copyable />
+        <Field label={rails.routingLabel} value={rails.routing} copyable />
+        <Field label="Amount" value={amount} />
+        <Field label="Reference" value={ref_} copyable />
+      </div>
+      <div className="text-[11px] text-muted-foreground">
+        Transfer to this dedicated Canta virtual account in <span className="font-semibold">{merchantName}</span>'s name. Use the reference exactly so the payment is auto-matched.
+      </div>
     </div>
   );
 }
