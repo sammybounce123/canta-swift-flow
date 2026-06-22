@@ -24,28 +24,42 @@ export const Route = createFileRoute("/trade-desk/")({
 
 const STATUS_FILTERS = ["All", "Drafting", "In Transit", "Arrived", "Cleared", "Delivered"] as const;
 
+function readDraftTradeFiles(): typeof tradeFiles {
+  try {
+    const raw = typeof window !== "undefined" ? localStorage.getItem("canta:tradeFiles") : null;
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  } catch { return []; }
+}
+
 function TradeDeskList() {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<(typeof STATUS_FILTERS)[number]>("All");
   const [draftOpen, setDraftOpen] = useState(false);
+  const [drafts, setDrafts] = useState<typeof tradeFiles>([]);
+
+  useEffect(() => { setDrafts(readDraftTradeFiles()); }, [draftOpen]);
+
+  const allFiles = useMemo(() => [...drafts, ...tradeFiles], [drafts]);
 
   const filtered = useMemo(() => {
-    return tradeFiles.filter((f) => {
+    return allFiles.filter((f) => {
       if (status !== "All" && f.status !== status) return false;
       if (!q) return true;
       const s = q.toLowerCase();
       return [f.name, f.id, f.importer, f.supplier, f.forwarder, f.origin, f.destination, f.goods]
-        .some((v) => v.toLowerCase().includes(s));
+        .some((v) => (v ?? "").toLowerCase().includes(s));
     });
-  }, [q, status]);
+  }, [q, status, allFiles]);
 
   const stats = useMemo(() => ({
-    total: tradeFiles.length,
-    inTransit: tradeFiles.filter((f) => f.status === "In Transit").length,
-    arrived: tradeFiles.filter((f) => f.status === "Arrived" || f.status === "Cleared").length,
-    atRisk: tradeFiles.filter((f) => f.risk === "High").length,
-    value: tradeFiles.reduce((s, f) => s + f.invoiceValue, 0),
-  }), []);
+    total: allFiles.length,
+    inTransit: allFiles.filter((f) => f.status === "In Transit").length,
+    arrived: allFiles.filter((f) => f.status === "Arrived" || f.status === "Cleared").length,
+    atRisk: allFiles.filter((f) => f.risk === "High").length,
+    value: allFiles.reduce((s, f) => s + (f.invoiceValue ?? 0), 0),
+  }), [allFiles]);
 
   return (
     <div className="space-y-6">
