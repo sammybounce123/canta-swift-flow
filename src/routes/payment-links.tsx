@@ -53,7 +53,7 @@ function readLS(): PaymentLink[] {
       id: x.id,
       invoiceId: x.invoiceId,
       label: x.label ?? x.invoiceId ?? x.id,
-      url: x.url ?? `https://pay.canta.app/${(x.id ?? "").toLowerCase()}`,
+      url: payUrl(x.id ?? ""),
       amount: Number(x.amount) || 0,
       ccy: x.ccy ?? "USD",
       status: (x.status as PaymentLink["status"]) ?? "Active",
