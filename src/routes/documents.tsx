@@ -1,12 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   FileText, Upload, Search, Download, Eye, Filter, FolderOpen,
   CheckCircle2, AlertCircle, Clock, MoreHorizontal,
@@ -48,19 +52,35 @@ function DocumentsPage() {
   const [q, setQ] = useState("");
   const [type, setType] = useState("All");
   const [status, setStatus] = useState<"All" | DocStatus>("All");
+  const [docs, setDocs] = useState<Doc[]>(DOCS);
+  const [uploadOpen, setUploadOpen] = useState(false);
 
-  const filtered = useMemo(() => DOCS.filter((d) =>
+  const filtered = useMemo(() => docs.filter((d) =>
     (type === "All" || d.type === type) &&
     (status === "All" || d.status === status) &&
     (!q || d.name.toLowerCase().includes(q.toLowerCase()) || d.linkedTo.toLowerCase().includes(q.toLowerCase()))
-  ), [q, type, status]);
+  ), [q, type, status, docs]);
 
   const stats = useMemo(() => ({
-    total: DOCS.length,
-    verified: DOCS.filter((d) => d.status === "Verified").length,
-    pending: DOCS.filter((d) => d.status === "Pending review").length,
-    action: DOCS.filter((d) => d.status === "Action required").length,
-  }), []);
+    total: docs.length,
+    verified: docs.filter((d) => d.status === "Verified").length,
+    pending: docs.filter((d) => d.status === "Pending review").length,
+    action: docs.filter((d) => d.status === "Action required").length,
+  }), [docs]);
+
+  function handleUpload(doc: Omit<Doc, "id" | "uploadedAt" | "uploadedBy" | "status">) {
+    const id = `DOC-${2042 + docs.length}`;
+    const newDoc: Doc = {
+      ...doc,
+      id,
+      uploadedAt: new Date().toISOString().slice(0, 10),
+      uploadedBy: "You",
+      status: "Pending review",
+    };
+    setDocs((cur) => [newDoc, ...cur]);
+    toast.success(`${doc.name} uploaded`);
+    setUploadOpen(false);
+  }
 
   return (
     <div className="space-y-6">
@@ -73,9 +93,12 @@ function DocumentsPage() {
             Every trade document in one searchable vault — invoices, BLs, packing lists, customs forms and certificates.
           </p>
         </div>
-        <Button onClick={() => toast.success("Upload dialog opened")}>
-          <Upload className="h-4 w-4 mr-1.5" /> Upload document
-        </Button>
+        <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
+          <DialogTrigger asChild>
+            <Button><Upload className="h-4 w-4 mr-1.5" /> Upload document</Button>
+          </DialogTrigger>
+          <UploadDialog onSubmit={handleUpload} onClose={() => setUploadOpen(false)} />
+        </Dialog>
       </header>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -178,6 +201,53 @@ function DocumentsPage() {
     </div>
   );
 }
+
+function UploadDialog({ onSubmit, onClose }: { onSubmit: (d: Omit<Doc, "id" | "uploadedAt" | "uploadedBy" | "status">) => void; onClose: () => void }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [name, setName] = useState("");
+  const [size, setSize] = useState("");
+  const [type, setType] = useState("Commercial Invoice");
+  const [linkedTo, setLinkedTo] = useState("");
+
+  function onFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setName(f.name);
+    const kb = f.size / 1024;
+    setSize(kb >= 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${Math.round(kb)} KB`);
+  }
+  function submit() {
+    if (!name.trim()) { toast.error("Choose a file or enter a name"); return; }
+    onSubmit({ name, type, linkedTo: linkedTo || "Unassigned", size: size || "—" });
+  }
+  return (
+    <DialogContent className="max-w-md">
+      <DialogHeader><DialogTitle>Upload document</DialogTitle></DialogHeader>
+      <div className="space-y-3">
+        <div>
+          <Label>File</Label>
+          <div className="flex gap-2">
+            <Input ref={fileRef} type="file" onChange={onFile} />
+          </div>
+          {name && <div className="text-[11px] text-muted-foreground mt-1">{name} · {size}</div>}
+        </div>
+        <div>
+          <Label>Document type</Label>
+          <Select value={type} onValueChange={setType}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>{TYPES.filter((t) => t !== "All").map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+          </Select>
+        </div>
+        <div><Label>Link to (shipment / trade file / supplier)</Label><Input value={linkedTo} onChange={(e) => setLinkedTo(e.target.value)} placeholder="Shipment SH-9012" /></div>
+      </div>
+      <DialogFooter>
+        <Button variant="ghost" onClick={onClose}>Cancel</Button>
+        <Button onClick={submit}>Upload</Button>
+      </DialogFooter>
+    </DialogContent>
+  );
+}
+
 
 function Stat({ label, value, icon, tone }: { label: string; value: string; icon: React.ReactNode; tone?: string }) {
   return (
