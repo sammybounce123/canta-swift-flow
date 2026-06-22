@@ -23,8 +23,17 @@ const ModeCtx = createContext<Ctx | null>(null);
 export function ModeProvider({ children }: { children: ReactNode }) {
   const [mode, setModeState] = useState<Mode>("Enterprise Treasury");
   useEffect(() => {
-    const saved = typeof window !== "undefined" ? (localStorage.getItem("canta:mode") as Mode | null) : null;
-    if (saved && ALL_MODES.find((m) => m.id === saved)) setModeState(saved);
+    const sync = () => {
+      const saved = typeof window !== "undefined" ? (localStorage.getItem("canta:mode") as Mode | null) : null;
+      if (saved && ALL_MODES.find((m) => m.id === saved)) setModeState(saved);
+    };
+    sync();
+    window.addEventListener("canta:mode-change", sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener("canta:mode-change", sync);
+      window.removeEventListener("storage", sync);
+    };
   }, []);
   const setMode = (m: Mode) => {
     setModeState(m);
