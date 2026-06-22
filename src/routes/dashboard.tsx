@@ -119,7 +119,7 @@ function Dashboard() {
             {hidden ? "Show balances" : "Hide balances"}
           </Button>
           <Badge className="bg-accent/15 text-accent-foreground border border-accent/30 hover:bg-accent/20">
-            <Zap className="h-3 w-3 mr-1" /> Oil & Gas Mode
+            <Zap className="h-3 w-3 mr-1" /> Treasury Mode
           </Badge>
         </div>
       </div>
