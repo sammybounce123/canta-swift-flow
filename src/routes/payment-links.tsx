@@ -162,7 +162,7 @@ function NewLinkDialog({ open, setOpen, onAdd }: { open: boolean; setOpen: (o: b
     onAdd({
       id,
       label: d.label.trim(),
-      url: `https://pay.canta.app/${id.toLowerCase()}`,
+      url: payUrl(id),
       amount: Number(d.amount) || 0,
       ccy: d.ccy,
       status: "Active",
