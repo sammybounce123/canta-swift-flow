@@ -202,6 +202,53 @@ function DocumentsPage() {
   );
 }
 
+function UploadDialog({ onSubmit, onClose }: { onSubmit: (d: Omit<Doc, "id" | "uploadedAt" | "uploadedBy" | "status">) => void; onClose: () => void }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [name, setName] = useState("");
+  const [size, setSize] = useState("");
+  const [type, setType] = useState("Commercial Invoice");
+  const [linkedTo, setLinkedTo] = useState("");
+
+  function onFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setName(f.name);
+    const kb = f.size / 1024;
+    setSize(kb >= 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${Math.round(kb)} KB`);
+  }
+  function submit() {
+    if (!name.trim()) { toast.error("Choose a file or enter a name"); return; }
+    onSubmit({ name, type, linkedTo: linkedTo || "Unassigned", size: size || "—" });
+  }
+  return (
+    <DialogContent className="max-w-md">
+      <DialogHeader><DialogTitle>Upload document</DialogTitle></DialogHeader>
+      <div className="space-y-3">
+        <div>
+          <Label>File</Label>
+          <div className="flex gap-2">
+            <Input ref={fileRef} type="file" onChange={onFile} />
+          </div>
+          {name && <div className="text-[11px] text-muted-foreground mt-1">{name} · {size}</div>}
+        </div>
+        <div>
+          <Label>Document type</Label>
+          <Select value={type} onValueChange={setType}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>{TYPES.filter((t) => t !== "All").map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+          </Select>
+        </div>
+        <div><Label>Link to (shipment / trade file / supplier)</Label><Input value={linkedTo} onChange={(e) => setLinkedTo(e.target.value)} placeholder="Shipment SH-9012" /></div>
+      </div>
+      <DialogFooter>
+        <Button variant="ghost" onClick={onClose}>Cancel</Button>
+        <Button onClick={submit}>Upload</Button>
+      </DialogFooter>
+    </DialogContent>
+  );
+}
+
+
 function Stat({ label, value, icon, tone }: { label: string; value: string; icon: React.ReactNode; tone?: string }) {
   return (
     <Card className="p-4 shadow-card">
