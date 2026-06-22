@@ -85,7 +85,8 @@ function TemplateForm({ tpl, onBack }: { tpl: CollectionTemplate; onBack: () => 
 
     const createdAt = new Date().toISOString();
     const invoice = { id, type: tpl.id, purpose: tpl.purpose, subject, amount, ccy, deadline: values.deadline || null, status: "Sent", createdAt, fields: values };
-    const paymentLink = { id: `PL-${id}`, invoiceId: id, url: `https://pay.canta.app/${id.toLowerCase()}`, amount, ccy, status: "Active", createdAt };
+    const payBase = typeof window !== "undefined" ? window.location.origin : "https://canta.app";
+    const paymentLink = { id: `PL-${id}`, invoiceId: id, url: `${payBase}/p/pl-${id.toLowerCase()}`, amount, ccy, status: "Active", createdAt };
     const payer = { id: `PYR-${id}`, name: payerName, country: values.payerCountry || null, type: tpl.purpose, lastInvoiceId: id, createdAt };
     const recon = { id: `REC-${id}`, ref: reconRef, invoiceId: id, amount, ccy, status: "Pending", createdAt };
     const batch = { id: `BATCH-${id}`, invoiceId: id, ccy, amount, status: "Queued", createdAt };
