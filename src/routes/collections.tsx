@@ -228,6 +228,9 @@ function NewInvoiceDialog() {
 // ---------- Page ----------
 function Collections() {
   const [q, setQ] = useState("");
+  const isMerchant = typeof window !== "undefined"
+    ? localStorage.getItem("canta:mode") === "Global Merchant"
+    : true;
 
   const totals = useMemo(() => {
     const total = 842_150;
@@ -271,15 +274,17 @@ function Collections() {
         <KPI label="Reconciliation Issues" value={String(totals.recon)} sub="Unmatched / underpaid" icon={AlertTriangle} tone="bg-warning/10 text-warning" />
       </div>
 
-      {/* Templates */}
-      <Card className="p-5 shadow-card">
-        <div className="text-sm font-semibold mb-3 flex items-center gap-2"><Globe className="h-4 w-4" /> Start with a use-case template</div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3">
-          {templates.map((t) => (
-            <TemplateFlowButton key={t.l} template={t} />
-          ))}
-        </div>
-      </Card>
+      {/* Templates — only for the Global Merchant workspace */}
+      {isMerchant && (
+        <Card className="p-5 shadow-card">
+          <div className="text-sm font-semibold mb-3 flex items-center gap-2"><Globe className="h-4 w-4" /> Start with a use-case template</div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3">
+            {templates.map((t) => (
+              <TemplateFlowButton key={t.l} template={t} />
+            ))}
+          </div>
+        </Card>
+      )}
 
       {/* Tabs */}
       <Tabs defaultValue="links" className="space-y-4">

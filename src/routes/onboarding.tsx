@@ -73,7 +73,7 @@ const steps = [
 ];
 
 const corridors = ["USD", "EUR", "GBP", "CNY", "ZAR", "KES", "GHS", "AED"];
-const industries = ["Oil & Gas", "Manufacturing", "Trading & Commodities", "Technology", "Logistics", "Financial Services", "Agriculture", "Other"];
+const industries = ["Trading & Commodities", "Manufacturing", "Technology", "Logistics", "Financial Services", "Agriculture", "Retail & E-commerce", "Professional Services", "Other"];
 const sizes = ["1–50", "51–200", "201–1,000", "1,001–5,000", "5,000+"];
 const countries = ["Nigeria", "Ghana", "Kenya", "South Africa", "United Kingdom", "United States", "UAE"];
 

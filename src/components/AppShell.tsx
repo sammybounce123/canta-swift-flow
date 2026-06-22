@@ -153,13 +153,14 @@ function ModeSwitcher() {
   const { mode, setMode } = useMode();
   const navigate = useNavigate();
   const current = ALL_MODES.find((m) => m.id === mode)!;
+  // Default home for every mode is the dashboard.
   const MODE_HOME: Record<Mode, string> = {
-    "Enterprise Treasury": "/treasury",
-    "Importer": "/importer",
-    "Freight Forwarder": "/freight",
-    "Supplier": "/suppliers",
-    "Global Merchant": "/collections",
-    "Partner Property": "/partner",
+    "Enterprise Treasury": "/dashboard",
+    "Importer": "/dashboard",
+    "Freight Forwarder": "/dashboard",
+    "Supplier": "/dashboard",
+    "Global Merchant": "/dashboard",
+    "Partner Property": "/dashboard",
   };
   return (
     <DropdownMenu>

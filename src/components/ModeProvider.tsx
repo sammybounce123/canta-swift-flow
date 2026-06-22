@@ -28,11 +28,12 @@ export function ModeProvider({ children }: { children: ReactNode }) {
       if (saved && ALL_MODES.find((m) => m.id === saved)) setModeState(saved);
     };
     sync();
+    // Only respond to our own explicit mode-change event. Listening to
+    // cross-tab "storage" events caused the mode to appear to switch by
+    // itself when other tabs or unrelated localStorage writes fired.
     window.addEventListener("canta:mode-change", sync);
-    window.addEventListener("storage", sync);
     return () => {
       window.removeEventListener("canta:mode-change", sync);
-      window.removeEventListener("storage", sync);
     };
   }, []);
   const setMode = (m: Mode) => {

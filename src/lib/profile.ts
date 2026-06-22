@@ -36,7 +36,7 @@ export const SEGMENTS: Segment[] = [
     defaultPermissions: ["view dashboard", "view wallet balances", "approve payment", "create FX conversion", "create staff card"],
     route: "/treasury",
     welcome: "Manage FX, wallets, beneficiaries, approvals, cards, and global treasury.",
-    tagline: "Multinationals, corporates, oil & gas, SMEs",
+    tagline: "Multinationals, corporates, traders and large SMEs",
   },
   {
     id: "importer_portal",
@@ -242,7 +242,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Operations" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
         { to: "/freight-invoices", label: "Freight Invoices", iconKey: "receipt", group: "Money" },
-        { to: "/freight/cards", label: "Freight Cards", iconKey: "card", group: "Money" },
+        // Cards intentionally removed from Freight Forwarder mode.
         { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
