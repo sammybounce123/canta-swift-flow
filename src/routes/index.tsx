@@ -29,7 +29,7 @@ const pillars = [
     headline: "Treasury, FX, wallets, beneficiaries and settlements — orchestrated.",
     description: "Manage treasury, FX conversion, wallets, beneficiaries, approvals, and global settlements.",
     features: ["Multi-currency wallets", "Real-time FX", "Beneficiaries", "Transaction approvals", "Settlement tracking", "Audit-ready records"],
-    cta: { label: "Explore Treasury Platform", to: "/dashboard" },
+    cta: { label: "Explore Treasury Platform", to: "/welcome" },
     accent: "from-primary to-primary-glow",
   },
   {
@@ -39,7 +39,7 @@ const pillars = [
     headline: "From pro-forma to port — a full trade workspace.",
     description: "Track shipments, organize documents, manage suppliers, calculate landed cost, and prepare for arrival.",
     features: ["Trade Desk", "Shipment timelines", "Document vault", "Freight forwarder workspace", "Landed cost calculator", "WhatsApp updates", "Clearing readiness"],
-    cta: { label: "Start with Canta Trade Desk", to: "/trade-desk" },
+    cta: { label: "Start with Canta Trade Desk", to: "/welcome" },
     accent: "from-accent to-primary",
   },
   {
@@ -49,7 +49,7 @@ const pillars = [
     headline: "Local African collections. Global settlement.",
     description: "Help global businesses collect locally from African customers and settle globally.",
     features: ["NGN local collections", "Payment links", "Invoice references", "Reconciliation", "USD / GBP / EUR / RMB / AED settlement", "Merchant reports"],
-    cta: { label: "Open Global Collections", to: "/collections" },
+    cta: { label: "Open Global Collections", to: "/welcome" },
     accent: "from-success to-accent",
   },
   {
@@ -59,7 +59,7 @@ const pillars = [
     headline: "Purpose-built global cards for every African business need.",
     description: "Purpose-built global cards for business, travel, import expenses, students, teams, and ad spend.",
     features: ["Travel cards", "Team cards", "Importer cards", "Student cards", "Ad spend cards", "Limits and approvals", "Receipt tracking"],
-    cta: { label: "Create Global Spend Card", to: "/cards" },
+    cta: { label: "Create Global Spend Card", to: "/welcome" },
     accent: "from-warning to-accent",
   },
 ] as const;

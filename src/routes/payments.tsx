@@ -15,7 +15,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Receipt, Plus, Search, Filter, Download, ArrowRight, CheckCircle2,
-  Clock, AlertCircle, Building2, Truck, FileText, Wallet,
+  Clock, AlertCircle, Building2, Truck, FileText, Wallet, Link as LinkIcon,
 } from "lucide-react";
 import { fmtMoney } from "@/lib/mock";
 import { toast } from "sonner";
@@ -99,6 +99,26 @@ function PaymentsPage() {
           </Dialog>
         </div>
       </header>
+
+      <Card className="p-5 shadow-card border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5">
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div className="flex items-start gap-3 min-w-0">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 grid place-items-center shrink-0">
+              <LinkIcon className="h-5 w-5 text-primary" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-sm font-semibold">Need to get paid? Create a payment link.</div>
+              <div className="text-xs text-muted-foreground mt-1 max-w-xl">
+                Share a secure Canta link with any customer — collect locally, settle globally. New links appear under your Payment Links tab.
+              </div>
+            </div>
+          </div>
+          <Button asChild className="shrink-0">
+            <Link to="/payment-links">Create payment link <ArrowRight className="h-4 w-4 ml-1" /></Link>
+          </Button>
+        </div>
+      </Card>
+
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <Stat label="Paid (last 30 days)" value={fmtMoney(stats.paid, "USD")} icon={<CheckCircle2 className="h-3.5 w-3.5 text-success" />} tone="text-success" />
