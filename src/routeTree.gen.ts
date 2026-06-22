@@ -64,6 +64,8 @@ import { Route as PartnerIndexRouteImport } from './routes/partner.index'
 import { Route as TreasuryCardsRouteImport } from './routes/treasury.cards'
 import { Route as TradeDeskFileIdRouteImport } from './routes/trade-desk.$fileId'
 import { Route as TrackIdRouteImport } from './routes/track.$id'
+import { Route as SuppliersProfileRouteImport } from './routes/suppliers.profile'
+import { Route as SuppliersKybRouteImport } from './routes/suppliers.kyb'
 import { Route as PayLinkIdRouteImport } from './routes/pay.$linkId'
 import { Route as PartnerTeamRouteImport } from './routes/partner.team'
 import { Route as PartnerSolicitorsRouteImport } from './routes/partner.solicitors'
@@ -76,9 +78,13 @@ import { Route as PartnerMarketersRouteImport } from './routes/partner.marketers
 import { Route as PartnerLeadsRouteImport } from './routes/partner.leads'
 import { Route as PartnerFxQuotesRouteImport } from './routes/partner.fx-quotes'
 import { Route as PartnerDocumentsRouteImport } from './routes/partner.documents'
+import { Route as PartnerDisputesRouteImport } from './routes/partner.disputes'
 import { Route as PartnerCommissionsRouteImport } from './routes/partner.commissions'
+import { Route as PartnerClientsRouteImport } from './routes/partner.clients'
 import { Route as PartnerCasesRouteImport } from './routes/partner.cases'
 import { Route as PLinkIdRouteImport } from './routes/p.$linkId'
+import { Route as MerchantProfileRouteImport } from './routes/merchant.profile'
+import { Route as MerchantKybRouteImport } from './routes/merchant.kyb'
 import { Route as ImporterCardsRouteImport } from './routes/importer.cards'
 import { Route as FreightCardsRouteImport } from './routes/freight.cards'
 import { Route as CollectionsNewRouteImport } from './routes/collections.new'
@@ -360,6 +366,16 @@ const TrackIdRoute = TrackIdRouteImport.update({
   path: '/track/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SuppliersProfileRoute = SuppliersProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => SuppliersRoute,
+} as any)
+const SuppliersKybRoute = SuppliersKybRouteImport.update({
+  id: '/kyb',
+  path: '/kyb',
+  getParentRoute: () => SuppliersRoute,
+} as any)
 const PayLinkIdRoute = PayLinkIdRouteImport.update({
   id: '/pay/$linkId',
   path: '/pay/$linkId',
@@ -420,9 +436,19 @@ const PartnerDocumentsRoute = PartnerDocumentsRouteImport.update({
   path: '/documents',
   getParentRoute: () => PartnerRoute,
 } as any)
+const PartnerDisputesRoute = PartnerDisputesRouteImport.update({
+  id: '/disputes',
+  path: '/disputes',
+  getParentRoute: () => PartnerRoute,
+} as any)
 const PartnerCommissionsRoute = PartnerCommissionsRouteImport.update({
   id: '/commissions',
   path: '/commissions',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerClientsRoute = PartnerClientsRouteImport.update({
+  id: '/clients',
+  path: '/clients',
   getParentRoute: () => PartnerRoute,
 } as any)
 const PartnerCasesRoute = PartnerCasesRouteImport.update({
@@ -433,6 +459,16 @@ const PartnerCasesRoute = PartnerCasesRouteImport.update({
 const PLinkIdRoute = PLinkIdRouteImport.update({
   id: '/p/$linkId',
   path: '/p/$linkId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MerchantProfileRoute = MerchantProfileRouteImport.update({
+  id: '/merchant/profile',
+  path: '/merchant/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MerchantKybRoute = MerchantKybRouteImport.update({
+  id: '/merchant/kyb',
+  path: '/merchant/kyb',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImporterCardsRoute = ImporterCardsRouteImport.update({
@@ -497,7 +533,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
-  '/suppliers': typeof SuppliersRoute
+  '/suppliers': typeof SuppliersRouteWithChildren
   '/support': typeof SupportRoute
   '/team': typeof TeamRoute
   '/trade-desk': typeof TradeDeskRouteWithChildren
@@ -514,9 +550,13 @@ export interface FileRoutesByFullPath {
   '/collections/new': typeof CollectionsNewRoute
   '/freight/cards': typeof FreightCardsRoute
   '/importer/cards': typeof ImporterCardsRoute
+  '/merchant/kyb': typeof MerchantKybRoute
+  '/merchant/profile': typeof MerchantProfileRoute
   '/p/$linkId': typeof PLinkIdRoute
   '/partner/cases': typeof PartnerCasesRouteWithChildren
+  '/partner/clients': typeof PartnerClientsRoute
   '/partner/commissions': typeof PartnerCommissionsRoute
+  '/partner/disputes': typeof PartnerDisputesRoute
   '/partner/documents': typeof PartnerDocumentsRoute
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
   '/partner/leads': typeof PartnerLeadsRoute
@@ -529,6 +569,8 @@ export interface FileRoutesByFullPath {
   '/partner/solicitors': typeof PartnerSolicitorsRoute
   '/partner/team': typeof PartnerTeamRoute
   '/pay/$linkId': typeof PayLinkIdRoute
+  '/suppliers/kyb': typeof SuppliersKybRoute
+  '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/treasury/cards': typeof TreasuryCardsRoute
@@ -573,7 +615,7 @@ export interface FileRoutesByTo {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
-  '/suppliers': typeof SuppliersRoute
+  '/suppliers': typeof SuppliersRouteWithChildren
   '/support': typeof SupportRoute
   '/team': typeof TeamRoute
   '/trade-network': typeof TradeNetworkRoute
@@ -589,8 +631,12 @@ export interface FileRoutesByTo {
   '/collections/new': typeof CollectionsNewRoute
   '/freight/cards': typeof FreightCardsRoute
   '/importer/cards': typeof ImporterCardsRoute
+  '/merchant/kyb': typeof MerchantKybRoute
+  '/merchant/profile': typeof MerchantProfileRoute
   '/p/$linkId': typeof PLinkIdRoute
+  '/partner/clients': typeof PartnerClientsRoute
   '/partner/commissions': typeof PartnerCommissionsRoute
+  '/partner/disputes': typeof PartnerDisputesRoute
   '/partner/documents': typeof PartnerDocumentsRoute
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
   '/partner/leads': typeof PartnerLeadsRoute
@@ -603,6 +649,8 @@ export interface FileRoutesByTo {
   '/partner/solicitors': typeof PartnerSolicitorsRoute
   '/partner/team': typeof PartnerTeamRoute
   '/pay/$linkId': typeof PayLinkIdRoute
+  '/suppliers/kyb': typeof SuppliersKybRoute
+  '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/treasury/cards': typeof TreasuryCardsRoute
@@ -649,7 +697,7 @@ export interface FileRoutesById {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
-  '/suppliers': typeof SuppliersRoute
+  '/suppliers': typeof SuppliersRouteWithChildren
   '/support': typeof SupportRoute
   '/team': typeof TeamRoute
   '/trade-desk': typeof TradeDeskRouteWithChildren
@@ -666,9 +714,13 @@ export interface FileRoutesById {
   '/collections/new': typeof CollectionsNewRoute
   '/freight/cards': typeof FreightCardsRoute
   '/importer/cards': typeof ImporterCardsRoute
+  '/merchant/kyb': typeof MerchantKybRoute
+  '/merchant/profile': typeof MerchantProfileRoute
   '/p/$linkId': typeof PLinkIdRoute
   '/partner/cases': typeof PartnerCasesRouteWithChildren
+  '/partner/clients': typeof PartnerClientsRoute
   '/partner/commissions': typeof PartnerCommissionsRoute
+  '/partner/disputes': typeof PartnerDisputesRoute
   '/partner/documents': typeof PartnerDocumentsRoute
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
   '/partner/leads': typeof PartnerLeadsRoute
@@ -681,6 +733,8 @@ export interface FileRoutesById {
   '/partner/solicitors': typeof PartnerSolicitorsRoute
   '/partner/team': typeof PartnerTeamRoute
   '/pay/$linkId': typeof PayLinkIdRoute
+  '/suppliers/kyb': typeof SuppliersKybRoute
+  '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/treasury/cards': typeof TreasuryCardsRoute
@@ -745,9 +799,13 @@ export interface FileRouteTypes {
     | '/collections/new'
     | '/freight/cards'
     | '/importer/cards'
+    | '/merchant/kyb'
+    | '/merchant/profile'
     | '/p/$linkId'
     | '/partner/cases'
+    | '/partner/clients'
     | '/partner/commissions'
+    | '/partner/disputes'
     | '/partner/documents'
     | '/partner/fx-quotes'
     | '/partner/leads'
@@ -760,6 +818,8 @@ export interface FileRouteTypes {
     | '/partner/solicitors'
     | '/partner/team'
     | '/pay/$linkId'
+    | '/suppliers/kyb'
+    | '/suppliers/profile'
     | '/track/$id'
     | '/trade-desk/$fileId'
     | '/treasury/cards'
@@ -820,8 +880,12 @@ export interface FileRouteTypes {
     | '/collections/new'
     | '/freight/cards'
     | '/importer/cards'
+    | '/merchant/kyb'
+    | '/merchant/profile'
     | '/p/$linkId'
+    | '/partner/clients'
     | '/partner/commissions'
+    | '/partner/disputes'
     | '/partner/documents'
     | '/partner/fx-quotes'
     | '/partner/leads'
@@ -834,6 +898,8 @@ export interface FileRouteTypes {
     | '/partner/solicitors'
     | '/partner/team'
     | '/pay/$linkId'
+    | '/suppliers/kyb'
+    | '/suppliers/profile'
     | '/track/$id'
     | '/trade-desk/$fileId'
     | '/treasury/cards'
@@ -896,9 +962,13 @@ export interface FileRouteTypes {
     | '/collections/new'
     | '/freight/cards'
     | '/importer/cards'
+    | '/merchant/kyb'
+    | '/merchant/profile'
     | '/p/$linkId'
     | '/partner/cases'
+    | '/partner/clients'
     | '/partner/commissions'
+    | '/partner/disputes'
     | '/partner/documents'
     | '/partner/fx-quotes'
     | '/partner/leads'
@@ -911,6 +981,8 @@ export interface FileRouteTypes {
     | '/partner/solicitors'
     | '/partner/team'
     | '/pay/$linkId'
+    | '/suppliers/kyb'
+    | '/suppliers/profile'
     | '/track/$id'
     | '/trade-desk/$fileId'
     | '/treasury/cards'
@@ -957,7 +1029,7 @@ export interface RootRouteChildren {
   ReportsRoute: typeof ReportsRoute
   SettingsRoute: typeof SettingsRoute
   ShipmentsRoute: typeof ShipmentsRoute
-  SuppliersRoute: typeof SuppliersRoute
+  SuppliersRoute: typeof SuppliersRouteWithChildren
   SupportRoute: typeof SupportRoute
   TeamRoute: typeof TeamRoute
   TradeDeskRoute: typeof TradeDeskRouteWithChildren
@@ -971,6 +1043,8 @@ export interface RootRouteChildren {
   WalletsRoute: typeof WalletsRoute
   WelcomeRoute: typeof WelcomeRoute
   WhatsappRoute: typeof WhatsappRoute
+  MerchantKybRoute: typeof MerchantKybRoute
+  MerchantProfileRoute: typeof MerchantProfileRoute
   PLinkIdRoute: typeof PLinkIdRoute
   PayLinkIdRoute: typeof PayLinkIdRoute
   TrackIdRoute: typeof TrackIdRoute
@@ -1364,6 +1438,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrackIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/suppliers/profile': {
+      id: '/suppliers/profile'
+      path: '/profile'
+      fullPath: '/suppliers/profile'
+      preLoaderRoute: typeof SuppliersProfileRouteImport
+      parentRoute: typeof SuppliersRoute
+    }
+    '/suppliers/kyb': {
+      id: '/suppliers/kyb'
+      path: '/kyb'
+      fullPath: '/suppliers/kyb'
+      preLoaderRoute: typeof SuppliersKybRouteImport
+      parentRoute: typeof SuppliersRoute
+    }
     '/pay/$linkId': {
       id: '/pay/$linkId'
       path: '/pay/$linkId'
@@ -1448,11 +1536,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PartnerDocumentsRouteImport
       parentRoute: typeof PartnerRoute
     }
+    '/partner/disputes': {
+      id: '/partner/disputes'
+      path: '/disputes'
+      fullPath: '/partner/disputes'
+      preLoaderRoute: typeof PartnerDisputesRouteImport
+      parentRoute: typeof PartnerRoute
+    }
     '/partner/commissions': {
       id: '/partner/commissions'
       path: '/commissions'
       fullPath: '/partner/commissions'
       preLoaderRoute: typeof PartnerCommissionsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/clients': {
+      id: '/partner/clients'
+      path: '/clients'
+      fullPath: '/partner/clients'
+      preLoaderRoute: typeof PartnerClientsRouteImport
       parentRoute: typeof PartnerRoute
     }
     '/partner/cases': {
@@ -1467,6 +1569,20 @@ declare module '@tanstack/react-router' {
       path: '/p/$linkId'
       fullPath: '/p/$linkId'
       preLoaderRoute: typeof PLinkIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/merchant/profile': {
+      id: '/merchant/profile'
+      path: '/merchant/profile'
+      fullPath: '/merchant/profile'
+      preLoaderRoute: typeof MerchantProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/merchant/kyb': {
+      id: '/merchant/kyb'
+      path: '/merchant/kyb'
+      fullPath: '/merchant/kyb'
+      preLoaderRoute: typeof MerchantKybRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/importer/cards': {
@@ -1558,7 +1674,9 @@ const PartnerCasesRouteWithChildren = PartnerCasesRoute._addFileChildren(
 
 interface PartnerRouteChildren {
   PartnerCasesRoute: typeof PartnerCasesRouteWithChildren
+  PartnerClientsRoute: typeof PartnerClientsRoute
   PartnerCommissionsRoute: typeof PartnerCommissionsRoute
+  PartnerDisputesRoute: typeof PartnerDisputesRoute
   PartnerDocumentsRoute: typeof PartnerDocumentsRoute
   PartnerFxQuotesRoute: typeof PartnerFxQuotesRoute
   PartnerLeadsRoute: typeof PartnerLeadsRoute
@@ -1575,7 +1693,9 @@ interface PartnerRouteChildren {
 
 const PartnerRouteChildren: PartnerRouteChildren = {
   PartnerCasesRoute: PartnerCasesRouteWithChildren,
+  PartnerClientsRoute: PartnerClientsRoute,
   PartnerCommissionsRoute: PartnerCommissionsRoute,
+  PartnerDisputesRoute: PartnerDisputesRoute,
   PartnerDocumentsRoute: PartnerDocumentsRoute,
   PartnerFxQuotesRoute: PartnerFxQuotesRoute,
   PartnerLeadsRoute: PartnerLeadsRoute,
@@ -1592,6 +1712,20 @@ const PartnerRouteChildren: PartnerRouteChildren = {
 
 const PartnerRouteWithChildren =
   PartnerRoute._addFileChildren(PartnerRouteChildren)
+
+interface SuppliersRouteChildren {
+  SuppliersKybRoute: typeof SuppliersKybRoute
+  SuppliersProfileRoute: typeof SuppliersProfileRoute
+}
+
+const SuppliersRouteChildren: SuppliersRouteChildren = {
+  SuppliersKybRoute: SuppliersKybRoute,
+  SuppliersProfileRoute: SuppliersProfileRoute,
+}
+
+const SuppliersRouteWithChildren = SuppliersRoute._addFileChildren(
+  SuppliersRouteChildren,
+)
 
 interface TradeDeskRouteChildren {
   TradeDeskFileIdRoute: typeof TradeDeskFileIdRoute
@@ -1655,7 +1789,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReportsRoute: ReportsRoute,
   SettingsRoute: SettingsRoute,
   ShipmentsRoute: ShipmentsRoute,
-  SuppliersRoute: SuppliersRoute,
+  SuppliersRoute: SuppliersRouteWithChildren,
   SupportRoute: SupportRoute,
   TeamRoute: TeamRoute,
   TradeDeskRoute: TradeDeskRouteWithChildren,
@@ -1669,6 +1803,8 @@ const rootRouteChildren: RootRouteChildren = {
   WalletsRoute: WalletsRoute,
   WelcomeRoute: WelcomeRoute,
   WhatsappRoute: WhatsappRoute,
+  MerchantKybRoute: MerchantKybRoute,
+  MerchantProfileRoute: MerchantProfileRoute,
   PLinkIdRoute: PLinkIdRoute,
   PayLinkIdRoute: PayLinkIdRoute,
   TrackIdRoute: TrackIdRoute,

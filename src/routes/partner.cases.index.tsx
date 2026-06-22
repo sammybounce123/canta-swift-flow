@@ -4,10 +4,15 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Search, Plus, Download, ArrowRightLeft } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
+import { Search, Plus, Download, ArrowRightLeft, Flag } from "lucide-react";
 import { toast } from "sonner";
 import {
   CASE_STATUSES, formatGBP, getSolicitor, statusTone, visibleCases, getMarketer,
@@ -29,6 +34,8 @@ function CasesList() {
   const [status, setStatus] = useState<CaseStatus | "all">("all");
   const [marketer, setMarketer] = useState<string>("all");
   const [solicitor, setSolicitor] = useState<string>("all");
+  const [flagFor, setFlagFor] = useState<{ id: string; clientName: string } | null>(null);
+  const [flagged, setFlagged] = useState<Set<string>>(new Set());
 
   const showMarketerFilter = canSeeAllMarketers(role);
 
@@ -139,6 +146,10 @@ function CasesList() {
                     <td className="py-3 px-3 text-xs text-muted-foreground tabular-nums">{c.createdAt}</td>
                     <td className="py-3 px-3 text-xs text-muted-foreground tabular-nums">{c.expectedPayout}</td>
                     <td className="py-3 px-3 text-right whitespace-nowrap">
+                      {flagged.has(c.id) && <Badge variant="outline" className="text-[10px] bg-amber-500/15 text-amber-700 border-amber-500/30 mr-1"><Flag className="h-3 w-3 mr-1" />Flagged for Review</Badge>}
+                      <Button size="sm" variant="ghost" title="Flag case for review" onClick={() => setFlagFor({ id: c.id, clientName: c.clientName })}>
+                        <Flag className="h-3.5 w-3.5" />
+                      </Button>
                       {canReassign(role) && (
                         <Button size="sm" variant="ghost" onClick={() => toast.success("Case reassigned", { description: `${c.clientName} · activity log updated.` })}>
                           <ArrowRightLeft className="h-3.5 w-3.5" />
@@ -158,6 +169,53 @@ function CasesList() {
           </table>
         </div>
       </Card>
+
+      {flagFor && (
+        <FlagDialog
+          caseId={flagFor.id}
+          clientName={flagFor.clientName}
+          onClose={() => setFlagFor(null)}
+          onSubmit={() => {
+            setFlagged((prev) => { const next = new Set(prev); next.add(flagFor.id); return next; });
+            setFlagFor(null);
+            toast.success("Case flagged for review.");
+          }}
+        />
+      )}
     </div>
+  );
+}
+
+function FlagDialog({ caseId, clientName, onClose, onSubmit }: { caseId: string; clientName: string; onClose: () => void; onSubmit: () => void }) {
+  const [reason, setReason] = useState("");
+  const [category, setCategory] = useState("Funding mismatch");
+  const [notes, setNotes] = useState("");
+  const [doc, setDoc] = useState("");
+  return (
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader><DialogTitle>Flag case for review — {clientName} <span className="text-xs text-muted-foreground font-normal">({caseId})</span></DialogTitle></DialogHeader>
+        <div className="space-y-3">
+          <div><Label>Reason</Label><Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Short reason for flagging..." /></div>
+          <div><Label>Risk category</Label>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {["Funding mismatch", "Name mismatch", "Suspicious source of funds", "Document issue", "Solicitor beneficiary issue", "Expired quote payment", "Other"].map((x) => <SelectItem key={x} value={x}>{x}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div><Label>Notes</Label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} /></div>
+          <div><Label>Supporting document (optional)</Label>
+            <Input type="file" onChange={(e) => { const f = e.target.files?.[0]; if (f) setDoc(f.name); }} />
+            {doc && <div className="text-[11px] text-muted-foreground mt-1">{doc}</div>}
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+          <Button onClick={() => { if (!reason.trim()) { toast.error("Reason is required"); return; } onSubmit(); }}>Submit flag</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
