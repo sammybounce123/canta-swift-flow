@@ -314,7 +314,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center gap-2 sm:pl-2 sm:border-l sm:border-border hover:opacity-80">
-                    <div className="h-8 w-8 rounded-full bg-gradient-primary text-primary-foreground grid place-items-center text-xs font-semibold flex-shrink-0">{isPartner ? partnerInitials : profile.initials}</div>
+                    <div className="h-8 w-8 rounded-full bg-gradient-primary text-primary-foreground grid place-items-center text-xs font-semibold flex-shrink-0">{isPartner ? partnerInitials : tbInitials}</div>
                     <div className="hidden sm:block leading-tight text-left">
                       {isPartner && partner.user ? (
                         <>
@@ -323,11 +323,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         </>
                       ) : (
                         <>
-                          <div className="text-xs font-semibold">{profile.name}</div>
-                          <div className="text-[10px] text-muted-foreground">{role} · {profile.title}</div>
+                          <div className="text-xs font-semibold">{tbName}</div>
+                          <div className="text-[10px] text-muted-foreground">{tbTitle}</div>
                         </>
                       )}
                     </div>
+
                     <ChevronDown className="h-3.5 w-3.5 text-muted-foreground hidden sm:block" />
                   </button>
                 </DropdownMenuTrigger>
