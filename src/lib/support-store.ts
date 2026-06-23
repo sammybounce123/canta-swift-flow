@@ -39,7 +39,13 @@ const SEED: SupportTicket[] = [
 ];
 function read(): SupportTicket[] {
   if (typeof window === "undefined") return SEED;
-  try { const raw = window.localStorage.getItem(KEY); return raw ? JSON.parse(raw) : SEED; } catch { return SEED; }
+  try {
+    const raw = window.localStorage.getItem(KEY);
+    if (!raw) return SEED;
+    const saved = JSON.parse(raw) as SupportTicket[];
+    const savedIds = new Set(saved.map((t) => t.id));
+    return [...saved, ...SEED.filter((t) => !savedIds.has(t.id))];
+  } catch { return SEED; }
 }
 function write(list: SupportTicket[]) {
   if (typeof window !== "undefined") window.localStorage.setItem(KEY, JSON.stringify(list));
