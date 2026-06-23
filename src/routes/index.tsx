@@ -153,13 +153,13 @@ function Landing() {
               </a>
             </Button>
             <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-              <Link to="/trade-desk">Start with Canta Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
+              <Link to="/trade-desk" onClick={pickWorkspace("Importer")}>Start with Canta Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
             </Button>
             <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-              <Link to="/dashboard">Explore Treasury Platform</Link>
+              <Link to="/treasury" onClick={pickWorkspace("Enterprise Treasury")}>Explore Treasury Platform</Link>
             </Button>
             <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-              <Link to="/cards">Create Global Spend Card</Link>
+              <Link to="/cards" onClick={pickWorkspace("Global Spend Cards")}>Create Global Spend Card</Link>
             </Button>
           </div>
 
