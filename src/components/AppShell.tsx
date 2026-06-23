@@ -117,10 +117,18 @@ function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceT
   if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
   if (pathname.startsWith("/suppliers") || pathname.startsWith("/buyers") ||
       pathname.startsWith("/verified-buyers") || pathname.startsWith("/escrow")) return "supplier_dashboard";
-  if (pathname === "/cards" || pathname.startsWith("/cards/")) return "global_spend_cards";
+  if (pathname === "/cards" || pathname.startsWith("/cards/") ||
+      pathname.startsWith("/receipts") || pathname.startsWith("/spend-controls") ||
+      pathname.startsWith("/wallet-funding")) return "global_spend_cards";
   if (pathname.startsWith("/treasury") || pathname.startsWith("/wallets") ||
       pathname.startsWith("/fx") || pathname.startsWith("/beneficiaries")) return "enterprise_treasury";
-  // /shipments is shared between Importer and Freight; default to active mode (handled by caller).
+  // Canta Ops / Internal surfaces — when opened directly without other context.
+  if (pathname.startsWith("/whatsapp") || pathname.startsWith("/integrations") ||
+      pathname.startsWith("/ai-growth") || pathname.startsWith("/ai-insights") ||
+      pathname.startsWith("/ai-document-extraction") ||
+      pathname.startsWith("/verification-center")) return "canta_ops";
+  // /support, /reports, /compliance, /approvals, /audit-logs follow the saved
+  // active mode (caller falls back to it).
   return null;
 }
 
