@@ -220,9 +220,9 @@ function WhatsAppDesk() {
         <div>
           <h1 className="text-2xl font-semibold flex items-center gap-2">
             <span className="h-9 w-9 grid place-items-center rounded-xl bg-success/15 text-success"><MessageCircle className="h-5 w-5" /></span>
-            WhatsApp Import Desk
+            WhatsApp Updates
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">Human-assisted, WhatsApp-first workspace for Canta Trade Officers managing importer conversations.</p>
+          <p className="text-sm text-muted-foreground mt-1">Send shipment, payment and document updates to your customers and suppliers on WhatsApp.</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => toast.success("Broadcast queued")}><Send className="h-4 w-4 mr-1.5" /> Broadcast update</Button>
