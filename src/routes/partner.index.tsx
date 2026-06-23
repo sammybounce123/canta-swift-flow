@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
+import { StartHereCard } from "@/components/StartHereCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -64,6 +65,16 @@ function AdminDashboard() {
   return (
     <div className="space-y-6">
       <Hero title="Baron & Cabot — Partner Property Payments" subtitle="Track every referred client, marketer and UK solicitor payout end-to-end." />
+      <StartHereCard
+        title="Create Payment Case"
+        description="Refer a client, generate FX quote, create payment link, and track solicitor payout."
+        primary={{ label: "Add Referral", to: "/partner/new-referral" }}
+        secondary={[
+          { label: "Create FX Quote", to: "/partner/fx-quotes" },
+          { label: "Generate Payment Link", to: "/partner/payment-links" },
+          { label: "View Solicitor Payouts", to: "/partner/payouts" },
+        ]}
+      />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {kpis.map((k) => <Kpi key={k.l} {...k} />)}

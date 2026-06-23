@@ -11,6 +11,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { tradeFiles, fmtMoney } from "@/lib/mock";
+import { TradeFileExplainer } from "@/components/TradeFileExplainer";
 import { FileText, Plus, Search, ArrowRight, Ship, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -76,6 +77,10 @@ function TradeDeskList() {
       </div>
 
       <NewTradeFileDialog open={draftOpen} setOpen={setDraftOpen} />
+
+      <TradeFileExplainer />
+
+
 
 
       {/* KPI strip */}

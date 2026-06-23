@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { cards as baseCards, fmtMoney, type Card as MockCard } from "@/lib/mock";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
+import { StartHereCard } from "@/components/StartHereCard";
 import {
   Plus, Snowflake, Plane, Briefcase, Ship, GraduationCap, Megaphone, Users,
   CreditCard as CreditCardIcon, User, Wallet, Banknote, AlertTriangle, CheckCircle2,
@@ -737,6 +738,16 @@ function CardsPage() {
   return (
     <div className="space-y-6">
       <WorkspaceWelcome workspace="global_spend_cards" />
+      <StartHereCard
+        title="Create Card"
+        description="Create a virtual card for travel, team spend, trade expenses, or online payments."
+        primary={{ label: "Create Card", to: "/cards" }}
+        secondary={[
+          { label: "View Transactions", to: "/transactions" },
+          { label: "Upload Receipt", to: "/documents" },
+          { label: "Set Spend Controls", to: "/cards" },
+        ]}
+      />
       {/* Header */}
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>

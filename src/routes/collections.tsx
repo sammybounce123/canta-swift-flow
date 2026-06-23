@@ -16,6 +16,7 @@ import {
 import { collections, fmtMoney } from "@/lib/mock";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
+import { StartHereCard } from "@/components/StartHereCard";
 import {
   Globe, Plus, Link as LinkIcon, GraduationCap, Home, Stethoscope, Plane, ShoppingBag, Receipt,
   Banknote, TrendingUp, AlertTriangle, Users, FileText, ArrowRight, Copy, Download,
@@ -245,6 +246,17 @@ function Collections() {
   return (
     <div className="space-y-6">
       <WorkspaceWelcome workspace="global_collections" />
+      <StartHereCard
+        title="Create Payment Link"
+        description="Collect from customers globally and reconcile payments into settlements."
+        primary={{ label: "Create Payment Link", to: "/payment-links" }}
+        secondary={[
+          { label: "Create Invoice", to: "/invoices" },
+          { label: "Add Payer", to: "/payers" },
+          { label: "View Reconciliation", to: "/reconciliation" },
+          { label: "View Settlements", to: "/transactions" },
+        ]}
+      />
       {/* Header */}
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>

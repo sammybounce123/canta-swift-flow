@@ -6,6 +6,7 @@ import { Calendar, Layers } from "lucide-react";
 import { useActions } from "@/components/ActionsProvider";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
+import { StartHereCard } from "@/components/StartHereCard";
 
 const allocation = [
   { name: "USD", value: 62 },
@@ -33,6 +34,16 @@ function Treasury() {
   return (
     <div className="space-y-6">
       <WorkspaceWelcome workspace="enterprise_treasury" />
+      <StartHereCard
+        title="Start FX Transfer"
+        description="Convert funds, manage beneficiaries, and track approvals from one treasury workspace."
+        primary={{ label: "Start FX Conversion", to: "/fx" }}
+        secondary={[
+          { label: "Add Beneficiary", to: "/beneficiaries" },
+          { label: "View Transactions", to: "/transactions" },
+          { label: "Create Company Card", to: "/treasury/cards" },
+        ]}
+      />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Treasury & Liquidity</h1>
