@@ -7,7 +7,8 @@ export type Mode =
   | "Supplier"
   | "Global Merchant"
   | "Global Spend Cards"
-  | "Partner Property";
+  | "Partner Property"
+  | "Canta Ops";
 
 export const ALL_MODES: { id: Mode; tag: string; desc: string }[] = [
   { id: "Enterprise Treasury", tag: "ET", desc: "FX, wallets, settlements" },
@@ -17,6 +18,7 @@ export const ALL_MODES: { id: Mode; tag: string; desc: string }[] = [
   { id: "Global Merchant", tag: "GM", desc: "Collections & payment links" },
   { id: "Global Spend Cards", tag: "GC", desc: "Cards-only spend workspace" },
   { id: "Partner Property", tag: "PP", desc: "Property partner client referrals" },
+  { id: "Canta Ops", tag: "OP", desc: "Canta internal operations" },
 ];
 
 type Ctx = { mode: Mode; setMode: (m: Mode) => void };
