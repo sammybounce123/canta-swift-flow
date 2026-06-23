@@ -167,6 +167,18 @@ function ReportsPage() {
     toast.success(`${r.name} PDF queued for download`);
   }
 
+  const WS_IDENTITY: Record<WorkspaceType, { name: string; title: string; mode: string }> = {
+    enterprise_treasury: { name: "Adaeze Okonkwo", title: "Treasury Admin",  mode: "Enterprise Treasury Mode" },
+    importer_portal:     { name: "Tunde Bakare",   title: "Importer Owner",  mode: "Importer Mode" },
+    freight_workspace:   { name: "Chinedu Okafor", title: "Freight Owner",   mode: "Freight Workspace Mode" },
+    global_collections:  { name: "Amaka Bello",    title: "Merchant Owner",  mode: "Global Collections Mode" },
+    supplier_dashboard:  { name: "Li Wei",         title: "Supplier Admin",  mode: "Supplier Mode" },
+    partner_property:    { name: "Sarah Adeyemi",  title: "Partner Admin",   mode: "Partner Property Mode" },
+    global_spend_cards:  { name: "James Okoro",    title: "Card Owner",      mode: "Global Spend Cards Mode" },
+    canta_ops:           { name: "Tunde Bakare",   title: "Importer Owner",  mode: "Importer Mode" },
+  };
+  const identity = WS_IDENTITY[workspace];
+
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -174,8 +186,13 @@ function ReportsPage() {
           <h1 className="text-2xl font-semibold flex items-center gap-2"><BarChart3 className="h-5 w-5 text-primary" /> Reports</h1>
           <p className="text-sm text-muted-foreground mt-1">Workspace-aware reports. Filter, preview, and export to CSV or PDF.</p>
         </div>
-        <Badge variant="outline" className="text-xs">{WORKSPACE_LABELS[workspace]}</Badge>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Badge variant="outline" className="text-xs">{identity.mode}</Badge>
+          <Badge className="text-xs bg-primary/10 text-primary border-primary/30">{identity.name} · {identity.title}</Badge>
+          <Badge variant="secondary" className="text-xs">{WORKSPACE_LABELS[workspace]}</Badge>
+        </div>
       </div>
+
 
       {/* Filters */}
       <Card className="p-4 shadow-card">
