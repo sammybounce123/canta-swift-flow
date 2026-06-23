@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ReadinessBar } from "@/components/ReadinessBar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, Filter, X } from "lucide-react";
@@ -8,7 +9,6 @@ import { StatusPill } from "@/components/StatusPill";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 import {
-import { ReadinessBar } from "@/components/ReadinessBar";
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
 

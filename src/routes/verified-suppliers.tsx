@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ReadinessBar } from "@/components/ReadinessBar";
 import { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +16,6 @@ import {
 import { toast } from "sonner";
 import { ImporterActions } from "@/components/ImporterActions";
 import {
-import { ReadinessBar } from "@/components/ReadinessBar";
   SUPPLIERS, COUNTRIES_SUPPLIER, CATEGORIES, VERIFICATION_LEVELS, STATUS_TONE,
   type Supplier,
 } from "@/lib/trade-network";
