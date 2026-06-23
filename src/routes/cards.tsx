@@ -716,14 +716,14 @@ function CardsPage() {
 
 
   const kpis = useMemo(() => {
-    const activeCount = rich.filter(c => c.status === "Active").length;
-    const totalSpend = rich.reduce((s, c) => s + c.monthlySpend, 0);
-    const monthlyBudget = rich.reduce((s, c) => s + (c.budget ?? c.limit), 0);
-    const frozen = rich.filter(c => c.status === "Frozen").length;
+    const activeCount = cardList.filter(c => c.status === "Active").length;
+    const totalSpend = cardList.reduce((s, c) => s + c.monthlySpend, 0);
+    const monthlyBudget = cardList.reduce((s, c) => s + (c.budget ?? c.limit), 0);
+    const frozen = cardList.filter(c => c.status === "Frozen").length;
     const failed = txns.filter(t => t.status === "Failed").length;
     const receiptsMissing = txns.filter(t => !t.receipt).length;
     return { activeCount, totalSpend, monthlyBudget, frozen, failed, receiptsMissing };
-  }, []);
+  }, [cardList]);
 
   const topCategories = useMemo(() => {
     const map = new Map<string, number>();
@@ -731,7 +731,8 @@ function CardsPage() {
     return [...map.entries()].sort((a,b) => b[1]-a[1]).slice(0, 5);
   }, []);
 
-  const filtered = purposeFilter === "All" ? rich : rich.filter(c => c.purpose === purposeFilter);
+  const filtered = purposeFilter === "All" ? cardList : cardList.filter(c => c.purpose === purposeFilter);
+
 
   return (
     <div className="space-y-6">
