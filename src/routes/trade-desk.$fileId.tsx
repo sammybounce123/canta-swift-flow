@@ -85,16 +85,27 @@ function TradeFileDetail() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-5">
-        <TabsList className="flex flex-wrap h-auto gap-1 p-1 justify-start w-full">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-background">Overview</TabsTrigger>
-          <TabsTrigger value="timeline" className="data-[state=active]:bg-background">Shipment Timeline</TabsTrigger>
-          <TabsTrigger value="documents" className="data-[state=active]:bg-background">Documents</TabsTrigger>
-          <TabsTrigger value="payments" className="data-[state=active]:bg-background">Payments</TabsTrigger>
-          <TabsTrigger value="landed" className="data-[state=active]:bg-background">Landed Cost</TabsTrigger>
-          <TabsTrigger value="escrow" className="data-[state=active]:bg-background">Escrow</TabsTrigger>
-          <TabsTrigger value="whatsapp" className="data-[state=active]:bg-background">WhatsApp History</TabsTrigger>
-          <TabsTrigger value="activity" className="data-[state=active]:bg-background">Activity Log</TabsTrigger>
+        <TabsList className="flex flex-wrap h-auto gap-2 p-2 justify-start w-full bg-muted/60 rounded-lg">
+          {[
+            ["overview", "Overview"],
+            ["timeline", "Shipment Timeline"],
+            ["documents", "Documents"],
+            ["payments", "Payments"],
+            ["landed", "Landed Cost"],
+            ["escrow", "Escrow"],
+            ["whatsapp", "WhatsApp History"],
+            ["activity", "Activity Log"],
+          ].map(([v, label]) => (
+            <TabsTrigger
+              key={v}
+              value={v}
+              className="border border-border bg-background/60 px-3 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary"
+            >
+              {label}
+            </TabsTrigger>
+          ))}
         </TabsList>
+
 
         <TabsContent value="overview" className="space-y-5">
           <Card className="p-6 shadow-card">
