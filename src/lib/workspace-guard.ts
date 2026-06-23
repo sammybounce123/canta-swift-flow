@@ -14,6 +14,19 @@ const MODE_TO_WORKSPACE: Record<Mode, WorkspaceType> = {
   "Canta Ops": "canta_ops",
 };
 
+const WORKSPACE_TO_MODE: Record<WorkspaceType, Mode> = {
+  enterprise_treasury: "Enterprise Treasury",
+  importer_portal: "Importer",
+  freight_workspace: "Freight Forwarder",
+  supplier_dashboard: "Supplier",
+  global_collections: "Global Merchant",
+  global_spend_cards: "Global Spend Cards",
+  partner_property: "Partner Property",
+  canta_ops: "Enterprise Treasury",
+};
+
+const ACTIVE_WORKSPACE_KEY = "canta:active_workspace";
+
 const PROFILES: Record<WorkspaceType, { name: string; title: string; badge: string; workspaceLabel: string }> = {
   enterprise_treasury: { name: "Adaeze Okonkwo", title: "Treasury Admin",  badge: "Enterprise Treasury Mode", workspaceLabel: "Enterprise Treasury" },
   importer_portal:     { name: "Tunde Bakare",   title: "Importer Owner",  badge: "Importer Mode",            workspaceLabel: "Importer" },
@@ -40,8 +53,18 @@ function isCustomerWorkspace(workspace?: WorkspaceType | null): workspace is Wor
   return Boolean(workspace && workspace !== "canta_ops");
 }
 
+export function saveActiveWorkspace(workspace: WorkspaceType) {
+  if (typeof window === "undefined" || !isCustomerWorkspace(workspace)) return;
+  window.localStorage.setItem(ACTIVE_WORKSPACE_KEY, workspace);
+  window.localStorage.setItem("canta:mode", WORKSPACE_TO_MODE[workspace]);
+  window.dispatchEvent(new Event("canta:mode-change"));
+}
+
 export function getSavedCustomerWorkspace(): WorkspaceType | null {
   if (typeof window === "undefined") return null;
+  const savedWorkspace = window.localStorage.getItem(ACTIVE_WORKSPACE_KEY) as WorkspaceType | null;
+  if (isCustomerWorkspace(savedWorkspace)) return savedWorkspace;
+
   const savedMode = window.localStorage.getItem("canta:mode") as Mode | null;
   const savedModeWorkspace = savedMode ? MODE_TO_WORKSPACE[savedMode] : null;
   if (isCustomerWorkspace(savedModeWorkspace)) return savedModeWorkspace;
@@ -68,6 +91,10 @@ export function useActiveWorkspace() {
   const { mode } = useMode();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const modeWorkspace = MODE_TO_WORKSPACE[mode];
-  const ws = workspaceFromPath(pathname) ?? getSavedCustomerWorkspace() ?? (isCustomerWorkspace(modeWorkspace) ? modeWorkspace : "enterprise_treasury");
+  const pathWorkspace = workspaceFromPath(pathname);
+  useEffect(() => {
+    if (pathWorkspace) saveActiveWorkspace(pathWorkspace);
+  }, [pathWorkspace]);
+  const ws = pathWorkspace ?? getSavedCustomerWorkspace() ?? (isCustomerWorkspace(modeWorkspace) ? modeWorkspace : "enterprise_treasury");
   return { workspace: ws, ...PROFILES[ws] };
 }
