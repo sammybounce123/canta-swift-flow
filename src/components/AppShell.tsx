@@ -229,9 +229,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { role, setRole, profile } = useRole();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { mode } = useMode();
+  const { mode, setMode } = useMode();
   const partner = usePartnerRole();
-  const isPartner = (MODE_TO_WORKSPACE[mode] ?? "enterprise_treasury") === "partner_property";
+
+  // Derive the active workspace from path first, then fall back to saved mode.
+  const pathWorkspace = workspaceFromPath(pathname);
+  const activeWorkspace = pathWorkspace ?? MODE_TO_WORKSPACE[mode] ?? "enterprise_treasury";
+  const displayMode: Mode = WORKSPACE_TO_MODE[activeWorkspace];
+
+  // Persist the inferred mode so other surfaces (dashboard hero, etc.) follow.
+  useEffect(() => {
+    if (pathWorkspace && WORKSPACE_TO_MODE[pathWorkspace] !== mode) {
+      setMode(WORKSPACE_TO_MODE[pathWorkspace]);
+    }
+  }, [pathWorkspace, mode, setMode]);
+
+  const isPartner = activeWorkspace === "partner_property";
   const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
   const partnerInitials = partner.user ? partner.user.name.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase() : "BC";
 
@@ -248,8 +261,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </SheetContent>
       </Sheet>
 
-      {/* mobile-only menu button is rendered in the header below */}
-
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
         <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-border">
 
@@ -258,7 +269,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Menu className="h-5 w-5" />
             </button>
 
-            <ModeSwitcher />
+            <ModeSwitcher displayMode={displayMode} />
+
 
             <div className="hidden lg:flex items-center gap-2 flex-1 max-w-md ml-2">
               <div className="relative w-full">
