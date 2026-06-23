@@ -87,8 +87,13 @@ function WhatsAppCustomer() {
           <p className="text-sm text-muted-foreground mt-1">
             Your WhatsApp conversations with suppliers, customers and Canta — all in one place.
           </p>
-          <div className="text-[11px] text-muted-foreground mt-1">Signed in as <span className="font-semibold text-foreground">{ws.name}</span> · {ws.title} · <Badge variant="outline" className="ml-1 text-[10px]">{ws.badge}</Badge></div>
+          <div className="flex items-center gap-2 flex-wrap mt-2">
+            <Badge variant="outline" className="text-xs">{ws.badge}</Badge>
+            <Badge className="text-xs bg-primary/10 text-primary border-primary/30">{ws.name} · {ws.title}</Badge>
+            <Badge variant="secondary" className="text-xs">{ws.workspaceLabel}</Badge>
+          </div>
         </div>
+
         <div className="flex flex-wrap gap-2">
           <Button size="sm" variant="outline" onClick={() => openWhatsApp("general")}>
             <MessageCircle className="h-4 w-4 mr-1.5" /> Message Canta
