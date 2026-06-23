@@ -1,9 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-import { Shield, Key, Building2, Activity, Copy, Workflow, ArrowRight } from "lucide-react";
+import { Shield, Key, Building2, Activity, Copy, Workflow, ArrowRight, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/settings")({
@@ -11,13 +11,30 @@ export const Route = createFileRoute("/settings")({
   component: Settings,
 });
 
+
 function Settings() {
+  const navigate = useNavigate();
+  function resetDemo() {
+    if (typeof window === "undefined") return;
+    const keep = new Set(["theme"]);
+    Object.keys(window.localStorage)
+      .filter((k) => k.startsWith("canta") || k.startsWith("canta:") || k.startsWith("canta."))
+      .forEach((k) => { if (!keep.has(k)) window.localStorage.removeItem(k); });
+    toast.success("Demo workspace reset", { description: "Choose a workspace to start fresh." });
+    setTimeout(() => navigate({ to: "/onboarding" }), 400);
+  }
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Settings</h1>
-        <p className="text-sm text-muted-foreground mt-1">Company profile, security and integrations.</p>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-semibold">Settings</h1>
+          <p className="text-sm text-muted-foreground mt-1">Company profile, security and integrations.</p>
+        </div>
+        <Button variant="outline" onClick={resetDemo}>
+          <RefreshCw className="h-4 w-4 mr-1.5" /> Reset Demo Workspace
+        </Button>
       </div>
+
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <Card className="lg:col-span-2 p-6 shadow-card">
