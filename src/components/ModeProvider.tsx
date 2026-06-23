@@ -18,7 +18,6 @@ export const ALL_MODES: { id: Mode; tag: string; desc: string }[] = [
   { id: "Global Merchant", tag: "GM", desc: "Collections & payment links" },
   { id: "Global Spend Cards", tag: "GC", desc: "Cards-only spend workspace" },
   { id: "Partner Property", tag: "PP", desc: "Property partner client referrals" },
-  { id: "Canta Ops", tag: "OP", desc: "Canta internal operations" },
 ];
 
 type Ctx = { mode: Mode; setMode: (m: Mode) => void };
