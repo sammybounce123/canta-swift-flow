@@ -403,7 +403,8 @@ export function saveProfile(segment: Segment): Profile {
       supplier_dashboard: "Supplier",
       global_collections: "Global Merchant",
       partner_property: "Partner Property",
-      global_spend_cards: undefined,
+      global_spend_cards: "Global Spend Cards",
+      canta_ops: "Canta Ops",
     };
     const mode = WORKSPACE_TO_MODE[segment.id];
     if (mode) {
