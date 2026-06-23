@@ -214,7 +214,7 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
             <div className="flex-1 min-w-0">
               <div className="text-sm font-medium flex items-center gap-2">
                 {m.id}
-                {mode === m.id && <Check className="h-3.5 w-3.5 text-accent" />}
+                {displayMode === m.id && <Check className="h-3.5 w-3.5 text-accent" />}
               </div>
               <div className="text-[11px] text-muted-foreground">{m.desc}</div>
             </div>
