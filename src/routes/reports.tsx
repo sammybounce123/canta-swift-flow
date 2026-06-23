@@ -13,6 +13,7 @@ import { BarChart3, Download, FileText, Play } from "lucide-react";
 import { toast } from "sonner";
 import { loadProfile, type WorkspaceType } from "@/lib/profile";
 import { useMode, type Mode } from "@/components/ModeProvider";
+import { useRequireWorkspace } from "@/lib/workspace-guard";
 
 const MODE_TO_WORKSPACE: Record<Mode, WorkspaceType> = {
   "Enterprise Treasury": "enterprise_treasury",
@@ -114,6 +115,7 @@ function workspaceFromPath(pathname: string): WorkspaceType | null {
 }
 
 function ReportsPage() {
+  useRequireWorkspace();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const profile = loadProfile();
   const { mode } = useMode();
@@ -183,7 +185,7 @@ function ReportsPage() {
             <Select value={workspace} onValueChange={(v) => setWorkspace(v as WorkspaceType)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                {(Object.keys(WORKSPACE_LABELS) as WorkspaceType[]).map((w) => (
+                {(Object.keys(WORKSPACE_LABELS) as WorkspaceType[]).filter((w) => w !== "canta_ops").map((w) => (
                   <SelectItem key={w} value={w}>{WORKSPACE_LABELS[w]}</SelectItem>
                 ))}
               </SelectContent>

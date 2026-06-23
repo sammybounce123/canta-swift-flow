@@ -71,8 +71,8 @@ const pillars = [
 
 const aiFeatures = [
   { icon: ScanLine, t: "Document extraction", d: "AI parses BLs, invoices, packing lists and receipts in seconds." },
-  { icon: TrendingUp, t: "Lead scoring", d: "Rank importer, supplier and merchant prospects by conversion intent." },
-  { icon: Brain, t: "Sales copilot", d: "Auto-draft outreach, follow-ups and call summaries for Canta teams." },
+  { icon: TrendingUp, t: "Deal insights", d: "Spot which shipments, suppliers and payments need attention next." },
+  { icon: Brain, t: "AI assistant", d: "Helps your team extract documents, summarize trade conversations, draft replies, and track next steps." },
   { icon: Receipt, t: "Landed cost estimates", d: "Forecast duty, freight, clearing and FX before the goods ship." },
   { icon: Factory, t: "Supplier matching", d: "Match importers to verified Chinese, Turkish and UAE suppliers." },
   { icon: Languages, t: "WhatsApp onboarding", d: "Onboard non-tech importers conversationally — no app required." },
@@ -391,7 +391,7 @@ function Landing() {
             </div>
             <div className="mt-8 flex items-center gap-2 text-xs text-primary-foreground/70">
               <MessageCircle className="h-3.5 w-3.5" />
-              Prefer WhatsApp? Canta Trade Officers can onboard your business directly on WhatsApp.
+              Prefer WhatsApp? Start by sending your invoice, BL, container number, or shipment details and Canta will guide you from there.
             </div>
           </div>
         </div>
