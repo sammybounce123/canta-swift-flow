@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, ArrowRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { ReadinessBar } from "@/components/ReadinessBar";
+import type { ReadinessStatus } from "@/components/StatusLabel";
 
 export function WorkspacePlaceholder({
-  title, subtitle, icon, bullets, primaryAction, learnMore,
+  title, subtitle, icon, bullets, primaryAction, learnMore, readiness, trustCue,
 }: {
   title: string;
   subtitle: string;
@@ -14,10 +16,15 @@ export function WorkspacePlaceholder({
   bullets: string[];
   primaryAction?: { label: string; onClick?: () => void };
   learnMore?: { to: string; label: string };
+  readiness?: ReadinessStatus;
+  trustCue?: string;
 }) {
   const onPrimary = primaryAction?.onClick ?? (() => toast.success(`${title} module — coming soon`));
   return (
     <div className="space-y-6">
+      {readiness && (
+        <ReadinessBar status={readiness} cue={trustCue ?? `${title} availability depends on activation and compliance review.`} />
+      )}
       <div className="flex items-end justify-between flex-wrap gap-3">
         <div>
           <Badge variant="outline" className="gap-1"><Sparkles className="h-3 w-3" /> Module</Badge>
