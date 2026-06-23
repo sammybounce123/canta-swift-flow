@@ -34,6 +34,7 @@ function PaymentLinksPage() {
 
   return (
     <div className="space-y-5">
+      <ReadinessBar status="Requires Setup" cue="Payment links include payer and reconciliation references." />
       <div>
         <h1 className="text-2xl font-semibold flex items-center gap-2"><LinkIcon className="h-5 w-5 text-primary" /> Payment Links</h1>
         <p className="text-sm text-muted-foreground mt-1">Secure Canta × Baron &amp; Cabot payment pages — one link per payment case.</p>

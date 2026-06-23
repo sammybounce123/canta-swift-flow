@@ -43,6 +43,7 @@ function Leads() {
 
   return (
     <div className="space-y-5">
+      <ReadinessBar status="Demo Preview" cue="Capture client consent before sharing payment instructions." />
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Referral leads</h1>

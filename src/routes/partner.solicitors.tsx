@@ -52,6 +52,7 @@ function Solicitors() {
 
   return (
     <div className="space-y-5">
+      <ReadinessBar status="Live" cue="Verify solicitor account details before initiating payouts." />
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Solicitor directory</h1>
