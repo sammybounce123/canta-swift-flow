@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { LifeBuoy, Plus, MessageCircle, CheckCircle2, XCircle, Reply, RefreshCw } from "lucide-react";
+import { LifeBuoy, Plus, MessageCircle, CheckCircle2, XCircle, Reply, RefreshCw, Paperclip, Clock3 } from "lucide-react";
 import { toast } from "sonner";
 import {
   listTickets, createTicket, updateTicketStatus, appendMessage, getTicket,
@@ -39,7 +39,7 @@ function SupportPage() {
   const ws = useActiveWorkspace();
   const [, force] = useState(0);
   useEffect(() => subscribeSupport(() => force((n) => n + 1)), []);
-  const tickets = listTickets().filter((t) => t.workspace === ws.workspaceLabel || t.organization === ws.name || true).slice(0, 50);
+  const tickets = listTickets(ws.workspaceLabel).slice(0, 50);
   const [statusFilter, setStatusFilter] = useState<CustomerStatus | "All">("All");
   const [openId, setOpenId] = useState<string | null>(null);
   const open = useMemo(() => (openId ? getTicket(openId) ?? null : null), [openId, tickets]);
@@ -106,11 +106,16 @@ function SupportPage() {
                       <div className="inline-flex flex-wrap gap-1 justify-end">
                         <Button size="sm" variant="outline" className="h-7" onClick={() => setOpenId(t.id)}>Open</Button>
                         <Button size="sm" variant="outline" className="h-7" onClick={() => setOpenId(t.id)}><Reply className="h-3 w-3 mr-1" />Reply</Button>
-                        {cs === "Closed" || cs === "Resolved" ? (
-                          <Button size="sm" variant="ghost" className="h-7" onClick={() => { updateTicketStatus(t.id, "Open"); toast.success("Ticket reopened"); }}><RefreshCw className="h-3 w-3 mr-1" />Reopen</Button>
-                        ) : (
-                          <Button size="sm" variant="ghost" className="h-7" onClick={() => { updateTicketStatus(t.id, "Closed"); toast.success("Ticket closed"); }}><XCircle className="h-3 w-3 mr-1" />Close</Button>
-                        )}
+                        <Button size="sm" variant="ghost" className="h-7" onClick={() => {
+                          if (cs === "Closed") return toast.info("Ticket is already closed");
+                          updateTicketStatus(t.id, "Closed");
+                          toast.success("Ticket closed");
+                        }}><XCircle className="h-3 w-3 mr-1" />Close Ticket</Button>
+                        <Button size="sm" variant="ghost" className="h-7" onClick={() => {
+                          if (cs !== "Closed" && cs !== "Resolved") return toast.info("Ticket is already open");
+                          updateTicketStatus(t.id, "Open");
+                          toast.success("Ticket reopened");
+                        }}><RefreshCw className="h-3 w-3 mr-1" />Reopen Ticket</Button>
                       </div>
                     </td>
 
@@ -118,7 +123,7 @@ function SupportPage() {
                 );
               })}
               {filtered.length === 0 && (
-                <tr><td colSpan={7} className="py-10 text-center text-sm text-muted-foreground"><MessageCircle className="h-5 w-5 inline mr-1.5" /> No tickets match this filter.</td></tr>
+                <tr><td colSpan={7} className="py-10 text-center text-sm text-muted-foreground"><MessageCircle className="h-5 w-5 inline mr-1.5" /> No {ws.workspaceLabel.toLowerCase()} tickets match this filter.</td></tr>
               )}
             </tbody>
           </table>
@@ -143,10 +148,19 @@ function TicketDetailDialog({ ticket, onClose, tone }: { ticket: SupportTicket; 
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-3 text-xs">
+          <Info label="Ticket reference" value={ticket.ref} />
           <Info label="Issue type" value={ticket.issueType} />
-          <Info label="Priority" value={ticket.priority} />
+          <Info label="Status" value={cs} />
           <Info label="Linked reference" value={ticket.linkedRef ?? "—"} />
+          <Info label="Priority" value={ticket.priority} />
           <Info label="Opened" value={ticket.createdAt} />
+        </div>
+
+        <div className="border-t pt-3">
+          <div className="text-xs font-semibold mb-2 flex items-center gap-1.5"><Paperclip className="h-3.5 w-3.5" /> Attachments</div>
+          <div className="rounded-lg border border-dashed border-border p-3 text-xs text-muted-foreground">
+            No attachments yet. Add files from the reply box when Canta asks for documents or receipts.
+          </div>
         </div>
 
         <div className="border-t pt-3">
@@ -188,6 +202,19 @@ function TicketDetailDialog({ ticket, onClose, tone }: { ticket: SupportTicket; 
                 toast.success("Reply sent to Canta");
               }}><Reply className="h-3.5 w-3.5 mr-1" /> Send reply</Button>
             </div>
+          </div>
+        </div>
+
+        <div className="border-t pt-3">
+          <div className="text-xs font-semibold mb-2 flex items-center gap-1.5"><Clock3 className="h-3.5 w-3.5" /> Timeline</div>
+          <div className="space-y-2 text-xs">
+            <div className="rounded-lg bg-secondary/40 p-2">{ticket.createdAt} · Ticket opened for {ticket.linkedRef ?? ticket.issueType}</div>
+            <div className="rounded-lg bg-secondary/40 p-2">{ticket.lastUpdate} · Status is {cs}</div>
+            {ticket.messages.filter((m) => !m.body.startsWith("[note]")).map((m) => (
+              <div key={`tl-${m.id}`} className="rounded-lg bg-secondary/40 p-2">
+                {new Date(m.at).toLocaleDateString()} · {m.role === "canta" ? "Canta Support replied" : "Customer message added"}
+              </div>
+            ))}
           </div>
         </div>
 

@@ -71,6 +71,12 @@ function WhatsAppCustomer() {
 
   const current = convos.find((c) => c.id === active);
 
+  const pageTitle = ws.workspace === "importer_portal" ? "Importer WhatsApp Updates"
+    : ws.workspace === "freight_workspace" ? "Freight WhatsApp Updates"
+    : ws.workspace === "global_collections" ? "Merchant WhatsApp Support"
+    : ws.workspace === "supplier_dashboard" ? "Supplier WhatsApp Support"
+    : "WhatsApp Updates";
+
   const statusTone = (s: Convo["status"]) =>
     s === "Active" ? "bg-primary/10 text-primary border-primary/30"
     : s === "Awaiting reply" ? "bg-warning/15 text-warning border-warning/30"
@@ -82,7 +88,7 @@ function WhatsAppCustomer() {
         <div>
           <h1 className="text-2xl font-semibold flex items-center gap-2">
             <span className="h-9 w-9 grid place-items-center rounded-xl bg-success/15 text-success"><MessageCircle className="h-5 w-5" /></span>
-            WhatsApp Updates
+            {pageTitle}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
             Your WhatsApp conversations with suppliers, customers and Canta — all in one place.
@@ -107,25 +113,24 @@ function WhatsAppCustomer() {
       {/* Quick customer-facing actions */}
       <Card className="p-4 shadow-card">
         <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Quick actions</div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-          <Button size="sm" variant="outline" asChild className="justify-start"><Link to="/trade-desk"><FilePlus2 className="h-3.5 w-3.5 mr-1.5" /> Create Trade File</Link></Button>
-          <Button size="sm" variant="outline" className="justify-start" onClick={() => toast.success("Upload dialog opened")}><Upload className="h-3.5 w-3.5 mr-1.5" /> Upload Document</Button>
-          <Button size="sm" variant="outline" className="justify-start" onClick={() => openWhatsApp("missingDocumentReminder")}><Bell className="h-3.5 w-3.5 mr-1.5" /> Request Missing Document</Button>
-          <Button size="sm" variant="outline" className="justify-start" onClick={() => openWhatsApp("trackShipment")}><Ship className="h-3.5 w-3.5 mr-1.5" /> Request Shipment Update</Button>
-          <Button size="sm" variant="outline" className="justify-start" onClick={() => { setReply(""); toast.success("Reply box focused"); }}><Send className="h-3.5 w-3.5 mr-1.5" /> Send Reply</Button>
-          <Button size="sm" variant="outline" asChild className="justify-start"><Link to="/support"><LifeBuoy className="h-3.5 w-3.5 mr-1.5" /> Contact Support</Link></Button>
-          <Button size="sm" variant="outline" asChild className="justify-start"><Link to="/shipments"><Link2 className="h-3.5 w-3.5 mr-1.5" /> Link to Shipment</Link></Button>
-          <Button size="sm" variant="outline" className="justify-start" onClick={() => openWhatsApp("landedCost")}><DollarSign className="h-3.5 w-3.5 mr-1.5" /> Request Landed Cost</Button>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+          <Button size="sm" variant="outline" className="h-auto min-h-10 justify-start whitespace-normal text-left" onClick={() => toast.success("Upload dialog opened")}><Upload className="h-3.5 w-3.5 mr-1.5" /> Upload Document</Button>
+          <Button size="sm" variant="outline" className="h-auto min-h-10 justify-start whitespace-normal text-left" onClick={() => openWhatsApp("trackShipment")}><Ship className="h-3.5 w-3.5 mr-1.5" /> Request Shipment Update</Button>
+          <Button size="sm" variant="outline" className="h-auto min-h-10 justify-start whitespace-normal text-left" onClick={() => openWhatsApp("landedCost")}><DollarSign className="h-3.5 w-3.5 mr-1.5" /> Request Landed Cost</Button>
+          <Button size="sm" variant="outline" className="h-auto min-h-10 justify-start whitespace-normal text-left" onClick={() => openWhatsApp("missingDocumentReminder")}><Bell className="h-3.5 w-3.5 mr-1.5" /> Send Reminder</Button>
+          <Button size="sm" variant="outline" asChild className="h-auto min-h-10 justify-start whitespace-normal text-left"><Link to="/trade-desk"><FilePlus2 className="h-3.5 w-3.5 mr-1.5" /> Create Trade File</Link></Button>
+          <Button size="sm" variant="outline" asChild className="h-auto min-h-10 justify-start whitespace-normal text-left"><Link to="/shipments"><Link2 className="h-3.5 w-3.5 mr-1.5" /> Link to Shipment</Link></Button>
+          <Button size="sm" variant="outline" asChild className="h-auto min-h-10 justify-start whitespace-normal text-left"><Link to="/support"><LifeBuoy className="h-3.5 w-3.5 mr-1.5" /> Contact Support</Link></Button>
         </div>
       </Card>
 
 
       <Tabs defaultValue="all" className="space-y-3">
-        <TabsList>
-          <TabsTrigger value="all">My WhatsApp Updates</TabsTrigger>
-          <TabsTrigger value="ship">Shipment Conversations</TabsTrigger>
-          <TabsTrigger value="trade">Trade File Conversations</TabsTrigger>
-          <TabsTrigger value="docs">Missing Document Requests</TabsTrigger>
+        <TabsList className="flex h-auto w-full flex-wrap items-stretch justify-start gap-2 rounded-none bg-transparent p-0">
+          <TabsTrigger className="border border-border bg-card px-3 py-2 whitespace-normal data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none" value="all">My WhatsApp Updates</TabsTrigger>
+          <TabsTrigger className="border border-border bg-card px-3 py-2 whitespace-normal data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none" value="ship">Shipment Conversations</TabsTrigger>
+          <TabsTrigger className="border border-border bg-card px-3 py-2 whitespace-normal data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none" value="trade">Trade File Conversations</TabsTrigger>
+          <TabsTrigger className="border border-border bg-card px-3 py-2 whitespace-normal data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none" value="docs">Missing Document Requests</TabsTrigger>
         </TabsList>
 
         {(["all", "ship", "trade", "docs"] as const).map((tab) => {
