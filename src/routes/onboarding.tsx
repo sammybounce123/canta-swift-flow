@@ -28,7 +28,7 @@ const ICONS: Partial<Record<WorkspaceType, typeof Building2>> = {
   global_spend_cards: CreditCard,
   partner_property: Home,
 };
-const TONES: Partial<Record<WorkspaceType, string> = {
+const TONES: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "bg-primary/10 text-primary",
   importer_portal: "bg-accent/15 text-accent",
   freight_workspace: "bg-warning/15 text-warning",
@@ -37,7 +37,7 @@ const TONES: Partial<Record<WorkspaceType, string> = {
   global_spend_cards: "bg-destructive/10 text-destructive",
   partner_property: "bg-primary/10 text-primary",
 };
-const WHO_FOR: Partial<Record<WorkspaceType, string> = {
+const WHO_FOR: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "Multinationals, corporates, traders and large SMEs",
   importer_portal: "Importers buying from China, UAE, Turkey, India",
   freight_workspace: "Freight forwarders, clearing agents, logistics operators",
@@ -46,7 +46,7 @@ const WHO_FOR: Partial<Record<WorkspaceType, string> = {
   global_spend_cards: "Individuals & small businesses spending globally",
   partner_property: "Property partners like Baron & Cabot referring clients",
 };
-const DO_BULLETS: Partial<Record<WorkspaceType, string[]> = {
+const DO_BULLETS: Partial<Record<WorkspaceType, string[]>> = {
   enterprise_treasury: ["FX & multi-currency wallets", "Approvals & beneficiaries", "Company cards & compliance"],
   importer_portal: ["Track shipments & landed cost", "Manage suppliers & documents", "Pay in any currency"],
   freight_workspace: ["Run shipment pipeline", "Invoice customers & collect", "WhatsApp updates at scale"],
@@ -56,7 +56,7 @@ const DO_BULLETS: Partial<Record<WorkspaceType, string[]> = {
   partner_property: ["Refer property clients", "Track FX & solicitor payouts", "Download payout receipts"],
 };
 
-const ROUTE_FOR: Partial<Record<WorkspaceType, string> = {
+const ROUTE_FOR: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "/treasury",
   importer_portal: "/importer",
   freight_workspace: "/freight",
