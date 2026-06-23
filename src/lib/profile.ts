@@ -8,7 +8,8 @@ export type WorkspaceType =
   | "global_collections"
   | "supplier_dashboard"
   | "global_spend_cards"
-  | "partner_property";
+  | "partner_property"
+  | "canta_ops";
 
 export type Segment = {
   id: WorkspaceType;
@@ -180,6 +181,8 @@ export function defaultFlagsFor(workspace: WorkspaceType): FeatureFlags {
       return { ...ALL_OFF, cards_module_enabled: true };
     case "partner_property":
       return { ...ALL_OFF, compliance_module_enabled: true };
+    case "canta_ops":
+      return { ...ALL_ON };
   }
 }
 // Silence unused-export warning for ALL_ON (retained for future use)
@@ -339,6 +342,23 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       ];
       return items;
     }
+    case "canta_ops":
+      return [
+        D,
+        { to: "/whatsapp", label: "WhatsApp Desk", iconKey: "whatsapp", group: "Ops" },
+        { to: "/ai-growth", label: "AI Growth", iconKey: "brain", group: "Intelligence" },
+        { to: "/ai-document-extraction", label: "AI Document Extraction", iconKey: "sparkles", group: "Intelligence" },
+        { to: "/ai-insights", label: "AI Insights", iconKey: "brain", group: "Intelligence" },
+        { to: "/trade-desk", label: "Trade Files", iconKey: "trade", group: "Ops" },
+        { to: "/partner/cases", label: "Payment Cases", iconKey: "file", group: "Ops" },
+        { to: "/support", label: "Support Tickets", iconKey: "users", group: "Ops" },
+        { to: "/verification-center", label: "Verification Center", iconKey: "shield-check", group: "Governance" },
+        { to: "/compliance", label: "Compliance", iconKey: "shield", group: "Governance" },
+        { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
+        { to: "/integrations", label: "Integrations", iconKey: "plug", group: "Ops" },
+        { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        Settings,
+      ];
   }
 }
 
@@ -383,7 +403,8 @@ export function saveProfile(segment: Segment): Profile {
       supplier_dashboard: "Supplier",
       global_collections: "Global Merchant",
       partner_property: "Partner Property",
-      global_spend_cards: undefined,
+      global_spend_cards: "Global Spend Cards",
+      canta_ops: "Canta Ops",
     };
     const mode = WORKSPACE_TO_MODE[segment.id];
     if (mode) {

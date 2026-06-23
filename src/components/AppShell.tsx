@@ -77,6 +77,7 @@ const MODE_TO_WORKSPACE: Record<Mode, import("@/lib/profile").WorkspaceType> = {
   "Global Merchant": "global_collections",
   "Global Spend Cards": "global_spend_cards",
   "Partner Property": "partner_property",
+  "Canta Ops": "canta_ops",
 };
 
 const WORKSPACE_TO_MODE: Record<import("@/lib/profile").WorkspaceType, Mode> = {
@@ -87,18 +88,20 @@ const WORKSPACE_TO_MODE: Record<import("@/lib/profile").WorkspaceType, Mode> = {
   global_collections: "Global Merchant",
   global_spend_cards: "Global Spend Cards",
   partner_property: "Partner Property",
+  canta_ops: "Canta Ops",
 };
 
 // Per-workspace demo identity. Drives topbar avatar/name/role and sidebar footer.
 type WorkspaceProfile = { name: string; initials: string; title: string; badge: string };
 const WORKSPACE_PROFILES: Record<import("@/lib/profile").WorkspaceType, WorkspaceProfile> = {
-  enterprise_treasury: { name: "Adaeze Okonkwo", initials: "AO", title: "Treasury Admin",  badge: "Enterprise Treasury Mode" },
-  importer_portal:     { name: "Tunde Bakare",   initials: "TB", title: "Importer Owner",  badge: "Importer Mode" },
-  freight_workspace:   { name: "Chinedu Okafor", initials: "CO", title: "Freight Owner",   badge: "Freight Workspace Mode" },
-  global_collections:  { name: "Amaka Bello",    initials: "AB", title: "Merchant Owner",  badge: "Global Collections Mode" },
-  supplier_dashboard:  { name: "Li Wei",         initials: "LW", title: "Supplier Admin",  badge: "Supplier Mode" },
-  partner_property:    { name: "Sarah Adeyemi",  initials: "SA", title: "Partner Admin",   badge: "Partner Property Mode" },
-  global_spend_cards:  { name: "James Okoro",    initials: "JO", title: "Card Owner",      badge: "Global Spend Cards Mode" },
+  enterprise_treasury: { name: "Adaeze Okonkwo", initials: "AO", title: "Treasury Admin",          badge: "Enterprise Treasury Mode" },
+  importer_portal:     { name: "Tunde Bakare",   initials: "TB", title: "Importer Owner",          badge: "Importer Mode" },
+  freight_workspace:   { name: "Chinedu Okafor", initials: "CO", title: "Freight Owner",           badge: "Freight Workspace Mode" },
+  global_collections:  { name: "Amaka Bello",    initials: "AB", title: "Merchant Owner",          badge: "Global Collections Mode" },
+  supplier_dashboard:  { name: "Li Wei",         initials: "LW", title: "Supplier Admin",          badge: "Supplier Mode" },
+  partner_property:    { name: "Sarah Adeyemi",  initials: "SA", title: "Partner Admin",           badge: "Partner Property Mode" },
+  global_spend_cards:  { name: "James Okoro",    initials: "JO", title: "Card Owner",              badge: "Global Spend Cards Mode" },
+  canta_ops:           { name: "Ezekiel Oni",    initials: "EO", title: "Canta Operations Admin", badge: "Canta Ops Mode" },
 };
 
 // Derive workspace from the current pathname so visiting a workspace's routes
@@ -114,10 +117,18 @@ function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceT
   if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
   if (pathname.startsWith("/suppliers") || pathname.startsWith("/buyers") ||
       pathname.startsWith("/verified-buyers") || pathname.startsWith("/escrow")) return "supplier_dashboard";
-  if (pathname === "/cards" || pathname.startsWith("/cards/")) return "global_spend_cards";
+  if (pathname === "/cards" || pathname.startsWith("/cards/") ||
+      pathname.startsWith("/receipts") || pathname.startsWith("/spend-controls") ||
+      pathname.startsWith("/wallet-funding")) return "global_spend_cards";
   if (pathname.startsWith("/treasury") || pathname.startsWith("/wallets") ||
       pathname.startsWith("/fx") || pathname.startsWith("/beneficiaries")) return "enterprise_treasury";
-  // /shipments is shared between Importer and Freight; default to active mode (handled by caller).
+  // Canta Ops / Internal surfaces — when opened directly without other context.
+  if (pathname.startsWith("/whatsapp") || pathname.startsWith("/integrations") ||
+      pathname.startsWith("/ai-growth") || pathname.startsWith("/ai-insights") ||
+      pathname.startsWith("/ai-document-extraction") ||
+      pathname.startsWith("/verification-center")) return "canta_ops";
+  // /support, /reports, /compliance, /approvals, /audit-logs follow the saved
+  // active mode (caller falls back to it).
   return null;
 }
 
@@ -215,6 +226,7 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
     "Global Merchant": "/collections",
     "Global Spend Cards": "/cards",
     "Partner Property": "/partner",
+    "Canta Ops": "/whatsapp",
   };
   return (
     <DropdownMenu>

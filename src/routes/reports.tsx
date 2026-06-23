@@ -71,6 +71,12 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
     { id: "txn",       name: "Transaction report",     desc: "All card transactions with receipts" },
     { id: "fund",      name: "Wallet funding report",  desc: "Top-ups received and source" },
   ],
+  canta_ops: [
+    { id: "tickets",   name: "Support tickets report", desc: "Volume, SLAs, resolution times" },
+    { id: "kyb",       name: "Verification report",    desc: "KYB throughput and approvals" },
+    { id: "wa",        name: "WhatsApp desk report",   desc: "Inbound flow and AI handoff" },
+    { id: "integ",     name: "Integrations report",    desc: "Webhook health, failures, retries" },
+  ],
 };
 
 const WORKSPACE_LABELS: Record<WorkspaceType, string> = {
@@ -81,6 +87,7 @@ const WORKSPACE_LABELS: Record<WorkspaceType, string> = {
   supplier_dashboard: "Supplier Dashboard",
   partner_property: "Partner Property",
   global_spend_cards: "Global Spend Cards",
+  canta_ops: "Canta Ops",
 };
 
 function workspaceFromPath(pathname: string): WorkspaceType | null {
