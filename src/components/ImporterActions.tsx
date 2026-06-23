@@ -180,18 +180,21 @@ export function ImporterActions({
 
   return (
     <div className={className}>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5" role="group" aria-label={variant === "tradefile" ? "Trade file quick actions" : "Importer quick actions"}>
         {buttons.filter((b) => b.show).map((b) => (
-          <Button
+          <button
             key={b.label}
-            size="sm"
-            variant={b.primary ? "default" : "outline"}
+            type="button"
             onClick={b.onClick}
-            className="justify-start w-full h-auto min-h-9 py-2 px-3 text-left whitespace-normal leading-tight items-start"
+            className={`group flex min-h-12 w-full items-start gap-2 rounded-md border px-3 py-2.5 text-left text-sm font-medium leading-snug transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+              b.primary
+                ? "border-primary bg-primary text-primary-foreground hover:bg-primary/90"
+                : "border-border bg-background text-foreground hover:border-primary/40 hover:bg-secondary/70"
+            }`}
           >
-            <b.icon className="h-4 w-4 mr-2 mt-0.5 shrink-0" />
-            <span className="break-words">{b.label}</span>
-          </Button>
+            <b.icon className="mt-0.5 h-4 w-4 shrink-0" />
+            <span className="min-w-0 whitespace-normal break-words">{b.label}</span>
+          </button>
         ))}
       </div>
 

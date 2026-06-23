@@ -134,7 +134,7 @@ function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceT
 
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   const { role, profile } = useRole();
-  const { mode } = useMode();
+  const { mode, setMode } = useMode();
   const userProfile = loadProfile();
   const pathWorkspace = workspaceFromPath(pathname);
   const workspace = pathWorkspace ?? MODE_TO_WORKSPACE[mode] ?? userProfile?.workspace_type ?? "enterprise_treasury";
@@ -172,7 +172,10 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
                   <Link
                     key={`${item.to}-${item.label}`}
                     to={item.to as never}
-                    onClick={onNavigate}
+                    onClick={() => {
+                      setMode(WORKSPACE_TO_MODE[workspace]);
+                      onNavigate?.();
+                    }}
                     className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                       active
                         ? "bg-sidebar-accent text-sidebar-accent-foreground border-l-2 border-sidebar-primary"

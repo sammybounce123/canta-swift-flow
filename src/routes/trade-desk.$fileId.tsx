@@ -85,7 +85,7 @@ function TradeFileDetail() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-5">
-        <TabsList className="flex flex-wrap h-auto gap-2 p-2 justify-start w-full bg-muted/60 rounded-lg">
+        <TabsList aria-label="Trade file sections" className="flex h-auto w-full flex-wrap items-center justify-start gap-2 rounded-lg border border-border bg-muted/60 p-2">
           {[
             ["overview", "Overview"],
             ["timeline", "Shipment Timeline"],
@@ -99,7 +99,7 @@ function TradeFileDetail() {
             <TabsTrigger
               key={v}
               value={v}
-              className="border border-border bg-background/60 px-3 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary"
+              className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               {label}
             </TabsTrigger>
