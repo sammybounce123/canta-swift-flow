@@ -617,12 +617,14 @@ function TemplateFlowButton({ template }: { template: typeof templates[number] }
   return (
     <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) reset(); }}>
       <DialogTrigger asChild>
-        <button className="text-left p-4 rounded-xl border border-border hover:border-accent hover:shadow-card transition">
+        <button className="text-left p-4 rounded-xl border border-border hover:border-accent hover:shadow-card transition flex flex-col">
           <div className="h-9 w-9 rounded-lg bg-primary/10 grid place-items-center"><Icon className="h-4 w-4 text-primary" /></div>
           <div className="text-sm font-semibold mt-2">{template.l}</div>
-          <div className="text-[11px] text-muted-foreground">{template.d}</div>
+          <div className="text-[11px] text-muted-foreground flex-1">{template.d}</div>
+          <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-accent">Start →</span>
         </button>
       </DialogTrigger>
+
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2"><Icon className="h-4 w-4 text-primary" /> {template.l} — guided flow</DialogTitle>
