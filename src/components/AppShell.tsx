@@ -78,17 +78,38 @@ const MODE_TO_WORKSPACE: Record<string, "enterprise_treasury" | "importer_portal
   "Partner Property": "partner_property",
 };
 
+// Derive workspace from the current pathname so visiting a workspace's routes
+// always renders that workspace's sidebar, regardless of saved mode.
+function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceType | null {
+  if (pathname.startsWith("/partner")) return "partner_property";
+  if (pathname.startsWith("/collections") || pathname.startsWith("/payment-links") ||
+      pathname.startsWith("/payers") || pathname.startsWith("/reconciliation") ||
+      pathname.startsWith("/merchant")) return "global_collections";
+  if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
+  if (pathname.startsWith("/importer") || pathname.startsWith("/trade-desk") ||
+      pathname.startsWith("/shipments") || pathname.startsWith("/my-suppliers") ||
+      pathname.startsWith("/verified-suppliers") || pathname.startsWith("/landed-cost")) return "importer_portal";
+  if (pathname.startsWith("/suppliers") || pathname.startsWith("/buyers") ||
+      pathname.startsWith("/verified-buyers") || pathname.startsWith("/escrow")) return "supplier_dashboard";
+  if (pathname === "/cards" || pathname.startsWith("/cards/")) return "global_spend_cards";
+  if (pathname.startsWith("/treasury") || pathname.startsWith("/wallets") ||
+      pathname.startsWith("/fx") || pathname.startsWith("/beneficiaries")) return "enterprise_treasury";
+  return null;
+}
+
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   const { role, profile } = useRole();
   const { mode } = useMode();
   const userProfile = loadProfile();
-  const workspace = MODE_TO_WORKSPACE[mode] ?? userProfile?.workspace_type ?? "enterprise_treasury";
+  const pathWorkspace = workspaceFromPath(pathname);
+  const workspace = pathWorkspace ?? MODE_TO_WORKSPACE[mode] ?? userProfile?.workspace_type ?? "enterprise_treasury";
   const flags = userProfile?.feature_flags ?? defaultFlagsFor(workspace);
   const items: SidebarItem[] = getSidebarForWorkspace(workspace, flags);
   const groups: string[] = Array.from(new Set(items.map((n) => n.group)));
   const partner = usePartnerRole();
   const isPartner = workspace === "partner_property";
   const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
+
   return (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
       <Link to="/dashboard" onClick={onNavigate} className="px-6 py-5 flex items-center gap-2 border-b border-sidebar-border hover:bg-sidebar-accent/30">

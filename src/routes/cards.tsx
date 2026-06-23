@@ -634,8 +634,9 @@ function CardControls({ card }: { card: RichCard }) {
     <div className="space-y-4">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
         {status === "Frozen"
-          ? <Button variant="outline" onClick={unfreeze}><Snowflake className="h-3.5 w-3.5 mr-1.5" /> Unfreeze card</Button>
-          : <Button variant="outline" onClick={freeze}><Snowflake className="h-3.5 w-3.5 mr-1.5" /> Freeze card</Button>}
+          ? <Button variant="outline" onClick={unfreeze}><Flame className="h-3.5 w-3.5 mr-1.5" /> Unfreeze Card</Button>
+          : <Button variant="outline" onClick={freeze}><Snowflake className="h-3.5 w-3.5 mr-1.5" /> Freeze Card</Button>}
+
         <Button variant="outline" onClick={() => toast.success("Funding initiated")}><Banknote className="h-3.5 w-3.5 mr-1.5" /> Fund card</Button>
         <Button variant="outline" onClick={() => toast.success("Limit updated")}><ShieldAlert className="h-3.5 w-3.5 mr-1.5" /> Set limit</Button>
         <Button variant="outline" onClick={() => toast.success("Cardholder assigned")}><User className="h-3.5 w-3.5 mr-1.5" /> Assign user</Button>
