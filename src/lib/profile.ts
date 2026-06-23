@@ -303,9 +303,12 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       ];
     case "global_spend_cards":
       return [
-        D,
-        { to: "/cards", label: "Global Spend Cards", iconKey: "card", group: "My Workspace" },
+        { to: "/cards", label: "Cards Dashboard", iconKey: "dashboard", group: "Overview", exact: true },
+        { to: "/cards", label: "My Cards", iconKey: "card", group: "Spend" },
         { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Activity" },
+        { to: "/wallets", label: "Wallet Funding", iconKey: "wallet", group: "Spend" },
+        { to: "/documents", label: "Receipts", iconKey: "file", group: "Activity" },
+        { to: "/cards", label: "Spend Controls", iconKey: "shield", group: "Spend" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         Settings,
       ];
