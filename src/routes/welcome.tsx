@@ -118,7 +118,7 @@ function WelcomePage() {
 
                 <div className="mt-3 text-[11px] uppercase tracking-widest text-muted-foreground">What you can do</div>
                 <ul className="mt-1 space-y-1">
-                  {DO_BULLETS[s.id].map((b) => (
+                  {(DO_BULLETS[s.id] ?? []).map((b) => (
                     <li key={b} className="flex items-start gap-1.5 text-xs">
                       <CheckCircle2 className="h-3 w-3 text-accent mt-0.5 shrink-0" /> {b}
                     </li>
