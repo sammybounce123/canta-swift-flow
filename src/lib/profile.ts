@@ -249,7 +249,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
-        { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
+        { to: "/audit-logs", label: "Activity Log", iconKey: "shield", group: "Governance" },
         Team, Settings,
       ];
     case "supplier_dashboard":
@@ -285,7 +285,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
 
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
-        { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
+        { to: "/audit-logs", label: "Activity Log", iconKey: "shield", group: "Governance" },
         Team, Settings,
       ];
     case "enterprise_treasury":
@@ -299,7 +299,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/approvals", label: "Approvals", iconKey: "check", group: "Governance" },
         { to: "/treasury/cards", label: "Company Cards", iconKey: "card", group: "Spend" },
         { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
-        { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
+        { to: "/audit-logs", label: "Activity Log", iconKey: "shield", group: "Governance" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         Team, Settings,
@@ -336,7 +336,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/partner/marketers", label: "Marketer Performance", iconKey: "users", group: "Insights" },
         ...(commissionsEnabled ? [{ to: "/partner/commissions", label: "Commissions", iconKey: "receipt", group: "Insights" } as SidebarItem] : []),
         { to: "/partner/reports", label: "Reports", iconKey: "chart", group: "Insights" },
-        { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
+        { to: "/audit-logs", label: "Activity Log", iconKey: "shield", group: "Governance" },
         { to: "/partner/team", label: "Team", iconKey: "team", group: "Workspace" },
         { to: "/partner/settings", label: "Settings", iconKey: "settings", group: "Workspace" },
       ];
@@ -354,7 +354,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/support", label: "Support Tickets", iconKey: "users", group: "Ops" },
         { to: "/verification-center", label: "Verification Center", iconKey: "shield-check", group: "Governance" },
         { to: "/compliance", label: "Compliance", iconKey: "shield", group: "Governance" },
-        { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
+        { to: "/audit-logs", label: "Activity Log", iconKey: "shield", group: "Governance" },
         { to: "/integrations", label: "Integrations", iconKey: "plug", group: "Ops" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         Settings,
