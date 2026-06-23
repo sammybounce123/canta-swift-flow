@@ -8,7 +8,8 @@ export type WorkspaceType =
   | "global_collections"
   | "supplier_dashboard"
   | "global_spend_cards"
-  | "partner_property";
+  | "partner_property"
+  | "canta_ops";
 
 export type Segment = {
   id: WorkspaceType;
