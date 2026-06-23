@@ -93,7 +93,7 @@ function WelcomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {SEGMENTS.map((s) => {
-            const Icon = ICONS[s.id];
+            const Icon = ICONS[s.id] ?? Building2;
             const hot = hovered === s.id;
             return (
               <button
