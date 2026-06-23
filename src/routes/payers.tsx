@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogT
 import { fmtMoney } from "@/lib/mock";
 import { toast } from "sonner";
 import { Users, Plus, Building2, ShieldCheck, Upload, Download, CheckCircle2, AlertTriangle } from "lucide-react";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/payers")({
   head: () => ({ meta: [{ title: "Payers — Canta" }] }),
@@ -66,6 +67,7 @@ function PayersPage() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Live" cue="Payer details are stored for reconciliation and audit." />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Payers</h1>

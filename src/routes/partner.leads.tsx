@@ -15,6 +15,7 @@ import {
   type LeadStatus,
 } from "@/lib/partner";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/leads")({
   head: () => ({ meta: [{ title: "Referral Leads — Baron & Cabot" }] }),
@@ -42,6 +43,7 @@ function Leads() {
 
   return (
     <div className="space-y-5">
+      <ReadinessBar status="Demo Preview" cue="Capture client consent before sharing payment instructions." />
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Referral leads</h1>

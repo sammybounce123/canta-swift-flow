@@ -16,6 +16,7 @@ import { StartHereCard } from "@/components/StartHereCard";
 import { Truck, Plus, MessageCircle, FileText, DollarSign, Users as UsersIcon, AlertTriangle, Ship, Eye, Upload, CheckCircle2, Clock, TrendingUp, BarChart3, Send, Download, UserPlus, Banknote } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/freight")({
   head: () => ({ meta: [{ title: "Freight Forwarder Workspace — Canta" }] }),
@@ -79,6 +80,7 @@ function Freight() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Demo Preview" cue="Tracking depends on the accuracy of BL, container, shipment, VIN, or AWB details." />
       <WorkspaceWelcome workspace="freight_workspace" />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>

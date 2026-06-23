@@ -14,6 +14,7 @@ import {
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ImporterActions } from "@/components/ImporterActions";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/trade-desk/$fileId")({
   head: ({ params }) => ({ meta: [{ title: `${params.fileId} · Trade Desk — Canta` }] }),
@@ -46,6 +47,7 @@ function TradeFileDetail() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Demo Preview" cue="Documents remain linked to this transaction for audit and reference." />
       {/* Header */}
       <div>
         <Link to="/trade-desk" className="text-xs text-muted-foreground inline-flex items-center gap-1 hover:text-foreground">

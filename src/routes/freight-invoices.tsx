@@ -1,11 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { WorkspacePlaceholder } from "@/components/WorkspacePlaceholder";
 import { Receipt } from "lucide-react";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/freight-invoices")({
   head: () => ({ meta: [{ title: "Freight Invoices — Canta" }] }),
   component: () => (
     <WorkspacePlaceholder
+      readiness="Demo Preview"
+      trustCue={`Mark invoice status carefully so customers can track outstanding payments.`}
+      
       title="Freight Invoices"
       icon={<Receipt className="h-5 w-5 text-primary" />}
       subtitle="Issue freight invoices to your customers and track collection — auto-linked to shipments and routes."

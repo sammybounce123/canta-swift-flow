@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { toast } from "sonner";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/importer")({
   head: () => ({ meta: [{ title: "Importer Portal — Canta" }] }),
@@ -87,6 +88,7 @@ function ImporterPortal() {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
+      <ReadinessBar status="Demo Preview" cue="Documents remain linked to this transaction for audit and reference." />
       <WorkspaceWelcome workspace="importer_portal" />
       <div>
         <h1 className="text-2xl font-semibold">Welcome back, Tunde 👋</h1>

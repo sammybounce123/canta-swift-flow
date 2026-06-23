@@ -14,6 +14,7 @@ import {
 import { Users, Plus, MessageCircle, Mail, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { fmtMoney } from "@/lib/mock";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/buyers")({
   head: () => ({ meta: [{ title: "Buyers — Canta" }] }),
@@ -68,6 +69,7 @@ function BuyersPage() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Demo Preview" cue="Buyer verification helps improve trust but does not guarantee payment or purchase completion." />
       <div className="flex items-end justify-between flex-wrap gap-3">
         <div className="min-w-0">
           <Badge variant="outline" className="gap-1"><Users className="h-3 w-3" /> Buyers</Badge>

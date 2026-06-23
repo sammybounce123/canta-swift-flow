@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Building, Zap, Coins } from "lucide-react";
 import { wallets, fmtMoney } from "@/lib/mock";
 import { useActions } from "@/components/ActionsProvider";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/wallets")({
   head: () => ({ meta: [{ title: "Wallets — Canta" }] }),
@@ -14,6 +15,7 @@ function Wallets() {
   const { openFund, openSend } = useActions();
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Demo Preview" cue="Wallet balances reflect cleared funds only." />
       <div>
         <h1 className="text-2xl font-semibold">Wallets</h1>
         <p className="text-sm text-muted-foreground mt-1">Multi-currency balances and funding sources.</p>

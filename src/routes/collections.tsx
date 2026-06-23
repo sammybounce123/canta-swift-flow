@@ -23,6 +23,7 @@ import {
   Search, ShieldCheck, Briefcase, CheckCircle2, XCircle, Clock, RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/collections")({
   head: () => ({ meta: [{ title: "Global Collections — Canta" }] }),
@@ -245,6 +246,7 @@ function Collections() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Demo Preview" cue="Settlement timing depends on payment method, currency, compliance review, and payout rail." />
       <WorkspaceWelcome workspace="global_collections" />
       <StartHereCard
         title="Create Payment Link"

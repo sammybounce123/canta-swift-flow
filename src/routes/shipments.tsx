@@ -12,6 +12,7 @@ import { shipments, shippingLines, fmtMoney, type Shipment, type ShipmentVertica
 import { Plus, Search, Ship, Anchor, Truck, Plane, Package, Calendar as CalendarIcon, List, FileText, ExternalLink } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/shipments")({
   head: () => ({ meta: [{ title: "Shipments — Canta" }] }),
@@ -61,6 +62,7 @@ function ShipmentsPage() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Demo Preview" cue="Tracking depends on the accuracy of BL, container, shipment, VIN, or AWB details." />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Shipments</h1>

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ReadinessBar } from "@/components/ReadinessBar";
 import { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -44,6 +45,7 @@ function VerifiedSuppliersPage() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Demo Preview" cue="Verification helps reduce supplier risk but does not guarantee supplier performance." />
       <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">

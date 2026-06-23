@@ -13,6 +13,7 @@ import {
   MARKETERS, canSeeAllMarketers,
 } from "@/lib/partner";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/payouts")({
   head: () => ({ meta: [{ title: "Solicitor Payouts — Baron & Cabot" }] }),
@@ -54,6 +55,7 @@ function Payouts() {
 
   return (
     <div className="space-y-5">
+      <ReadinessBar status="Requires Setup" cue="Solicitor payouts are tracked from payment case to receipt." />
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Solicitor payouts</h1>

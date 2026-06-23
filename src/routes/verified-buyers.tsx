@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { BUYERS, COUNTRIES_BUYER, CATEGORIES, VERIFICATION_LEVELS, STATUS_TONE, type Buyer } from "@/lib/trade-network";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/verified-buyers")({
   head: () => ({ meta: [{ title: "Verified Buyers · Canta Trade Network" }] }),
@@ -38,6 +39,7 @@ function VerifiedBuyersPage() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Demo Preview" cue="Buyer verification helps improve trust but does not guarantee payment or purchase completion." />
       <header>
         <Badge variant="outline" className="gap-1"><ShieldCheck className="h-3 w-3" /> Canta Trade Network</Badge>
         <h1 className="text-2xl font-semibold tracking-tight mt-2">Verified African Buyers</h1>

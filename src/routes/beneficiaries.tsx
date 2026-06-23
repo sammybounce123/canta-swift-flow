@@ -5,6 +5,7 @@ import { Plus, Send, Search } from "lucide-react";
 import { beneficiaries } from "@/lib/mock";
 import { useActions } from "@/components/ActionsProvider";
 import { useState, useMemo } from "react";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/beneficiaries")({
   head: () => ({ meta: [{ title: "Beneficiaries — Canta" }] }),
@@ -22,6 +23,7 @@ function Beneficiaries() {
   );
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Live" cue="Verify beneficiary details before sending funds." />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Beneficiaries</h1>

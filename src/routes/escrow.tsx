@@ -1,11 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { WorkspacePlaceholder } from "@/components/WorkspacePlaceholder";
 import { ShieldCheck } from "lucide-react";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/escrow")({
   head: () => ({ meta: [{ title: "Escrow — Canta" }] }),
   component: () => (
     <WorkspacePlaceholder
+      readiness="Contact Canta to Activate"
+      trustCue={`Escrow availability depends on transaction type, compliance review, and supported settlement rails.`}
+      
       title="Escrow"
       icon={<ShieldCheck className="h-5 w-5 text-accent" />}
       subtitle="Hold buyer funds securely until trade milestones clear. Manage release conditions and disputes."

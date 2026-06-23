@@ -14,6 +14,7 @@ import {
 import { Link as LinkIcon, Plus, Copy, Trash2, ExternalLink, ArrowRight, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { fmtMoney } from "@/lib/mock";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/payment-links")({
   head: () => ({ meta: [{ title: "Payment Links — Canta" }] }),
@@ -125,6 +126,7 @@ function PaymentLinksPage() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Live" cue="Payment links include payer and reconciliation references." />
       <div className="flex items-end justify-between flex-wrap gap-3">
         <div className="min-w-0">
           <Badge variant="outline" className="gap-1"><LinkIcon className="h-3 w-3" /> Payment Links</Badge>

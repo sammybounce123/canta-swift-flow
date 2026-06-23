@@ -7,6 +7,7 @@ import { useActions } from "@/components/ActionsProvider";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import { StartHereCard } from "@/components/StartHereCard";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 const allocation = [
   { name: "USD", value: 62 },
@@ -33,6 +34,7 @@ function Treasury() {
   const { openBulk, openSchedule } = useActions();
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Demo Preview" cue="Treasury actions may require approval and KYC/KYB documents." />
       <WorkspaceWelcome workspace="enterprise_treasury" />
       <StartHereCard
         title="Start FX Transfer"

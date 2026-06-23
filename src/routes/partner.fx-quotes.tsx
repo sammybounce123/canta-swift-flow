@@ -7,6 +7,7 @@ import { usePartnerCases } from "@/hooks/usePartnerCases";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { visibleCases, formatGBP } from "@/lib/partner";
 import { useEffect, useState } from "react";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/fx-quotes")({
   head: () => ({ meta: [{ title: "FX Quotes — Baron & Cabot" }] }),
@@ -27,6 +28,7 @@ function FxQuotesPage() {
 
   return (
     <div className="space-y-5">
+      <ReadinessBar status="Demo Preview" cue="FX quotes are indicative and subject to market movement until locked." />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold flex items-center gap-2"><ArrowLeftRight className="h-5 w-5 text-primary" /> FX Quotes</h1>

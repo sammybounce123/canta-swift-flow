@@ -19,6 +19,7 @@ import {
   canRevealSolicitorBank, SOLICITOR_STATUSES, subscribeExtras, type SolicitorVStatus,
 } from "@/lib/partner-extras";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/solicitors")({
   head: () => ({ meta: [{ title: "Solicitors — Baron & Cabot" }] }),
@@ -51,6 +52,7 @@ function Solicitors() {
 
   return (
     <div className="space-y-5">
+      <ReadinessBar status="Live" cue="Verify solicitor account details before initiating payouts." />
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Solicitor directory</h1>

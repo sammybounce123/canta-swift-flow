@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ReadinessBar } from "@/components/ReadinessBar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, Filter, X } from "lucide-react";
@@ -59,6 +60,7 @@ function Transactions() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Live" cue="Transactions are recorded in your activity history." />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Transactions</h1>

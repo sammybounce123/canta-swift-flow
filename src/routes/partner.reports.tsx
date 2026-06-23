@@ -6,6 +6,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line,
 } from "recharts";
 import { CASES, SOLICITORS, formatGBP, getSolicitor } from "@/lib/partner";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/reports")({
   head: () => ({ meta: [{ title: "Reports — Baron & Cabot" }] }),
@@ -38,6 +39,7 @@ function Reports() {
 
   return (
     <div className="space-y-5">
+      <ReadinessBar status="Demo Preview" cue="Reports reflect data captured in your workspace." />
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Partner reports</h1>

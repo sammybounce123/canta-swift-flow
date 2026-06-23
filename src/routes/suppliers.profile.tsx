@@ -15,6 +15,7 @@ import {
   Factory, Edit3, Plus, Upload, ShieldCheck, Award, CheckCircle2, AlertCircle, X,
 } from "lucide-react";
 import { toast } from "sonner";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/suppliers/profile")({
   head: () => ({ meta: [{ title: "Supplier Profile — Canta" }] }),
@@ -79,6 +80,7 @@ function SupplierProfilePage() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Live" cue="Complete profile information helps buyers trust your business." />
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:flex-wrap sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
