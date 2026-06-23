@@ -18,7 +18,7 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/whatsapp")({
-  head: () => ({ meta: [{ title: "WhatsApp Import Desk — Canta" }] }),
+  head: () => ({ meta: [{ title: "WhatsApp Updates — Canta" }] }),
   component: WhatsAppDesk,
 });
 
