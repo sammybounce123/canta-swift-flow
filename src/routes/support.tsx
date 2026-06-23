@@ -60,10 +60,15 @@ function SupportPage() {
         <div>
           <h1 className="text-2xl font-semibold flex items-center gap-2"><LifeBuoy className="h-5 w-5 text-primary" /> My support tickets</h1>
           <p className="text-sm text-muted-foreground mt-1">Open a ticket, message the Canta team and track responses.</p>
-          <div className="text-[11px] text-muted-foreground mt-1">Signed in as <span className="font-semibold text-foreground">{ws.name}</span> · {ws.title} · <Badge variant="outline" className="ml-1 text-[10px]">{ws.badge}</Badge></div>
+          <div className="flex items-center gap-2 flex-wrap mt-2">
+            <Badge variant="outline" className="text-xs">{ws.badge}</Badge>
+            <Badge className="text-xs bg-primary/10 text-primary border-primary/30">{ws.name} · {ws.title}</Badge>
+            <Badge variant="secondary" className="text-xs">{ws.workspaceLabel}</Badge>
+          </div>
         </div>
         <NewTicketDialog workspaceLabel={ws.workspaceLabel} customer={ws.name} organization={ws.workspaceLabel} />
       </div>
+
 
       <Card className="p-3 shadow-card flex flex-wrap gap-2 items-center">
         <span className="text-xs text-muted-foreground">Filter:</span>
@@ -98,8 +103,17 @@ function SupportPage() {
                     <td className="py-3 px-3"><Badge variant="outline" className={`text-[10px] ${tone(cs)}`}>{cs}</Badge></td>
                     <td className="py-3 px-3 text-xs">{t.lastUpdate}</td>
                     <td className="py-3 px-3 text-right">
-                      <Button size="sm" variant="outline" className="h-7" onClick={() => setOpenId(t.id)}>Open</Button>
+                      <div className="inline-flex flex-wrap gap-1 justify-end">
+                        <Button size="sm" variant="outline" className="h-7" onClick={() => setOpenId(t.id)}>Open</Button>
+                        <Button size="sm" variant="outline" className="h-7" onClick={() => setOpenId(t.id)}><Reply className="h-3 w-3 mr-1" />Reply</Button>
+                        {cs === "Closed" || cs === "Resolved" ? (
+                          <Button size="sm" variant="ghost" className="h-7" onClick={() => { updateTicketStatus(t.id, "Open"); toast.success("Ticket reopened"); }}><RefreshCw className="h-3 w-3 mr-1" />Reopen</Button>
+                        ) : (
+                          <Button size="sm" variant="ghost" className="h-7" onClick={() => { updateTicketStatus(t.id, "Closed"); toast.success("Ticket closed"); }}><XCircle className="h-3 w-3 mr-1" />Close</Button>
+                        )}
+                      </div>
                     </td>
+
                   </tr>
                 );
               })}
