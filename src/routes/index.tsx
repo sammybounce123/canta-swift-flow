@@ -2,12 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { setActiveMode, type Mode } from "@/components/ModeProvider";
 import {
   ArrowRight, Zap, Shield, Globe2, Sparkles, TrendingUp, CheckCircle2,
   Building2, Lock, Quote, Wallet, Ship, CreditCard, Brain, FileText,
   MessageCircle, Truck, Factory, Users, GraduationCap, Plane, Briefcase,
   ShieldCheck, ScanLine, Receipt, Languages,
 } from "lucide-react";
+
+// Set workspace on click so the destination renders its correct shell, sidebar
+// and topbar from the very first paint.
+const pickWorkspace = (m: Mode) => () => setActiveMode(m);
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -148,13 +153,13 @@ function Landing() {
               </a>
             </Button>
             <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-              <Link to="/trade-desk">Start with Canta Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
+              <Link to="/trade-desk" onClick={pickWorkspace("Importer")}>Start with Canta Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
             </Button>
             <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-              <Link to="/dashboard">Explore Treasury Platform</Link>
+              <Link to="/treasury" onClick={pickWorkspace("Enterprise Treasury")}>Explore Treasury Platform</Link>
             </Button>
             <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-              <Link to="/cards">Create Global Spend Card</Link>
+              <Link to="/cards" onClick={pickWorkspace("Global Spend Cards")}>Create Global Spend Card</Link>
             </Button>
           </div>
 
@@ -196,17 +201,17 @@ function Landing() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[
-            { icon: Ship, tag: "Track My Shipment", desc: "For importers managing goods, suppliers, documents, landed cost, and arrival readiness.", cta: "Start Import Desk", to: "/welcome", tone: "bg-accent/15 text-accent" },
-            { icon: Truck, tag: "Manage Freight Customers", desc: "For freight forwarders and clearing agents managing shipments, documents, invoices, and WhatsApp updates.", cta: "Open Freight Workspace", to: "/welcome", tone: "bg-warning/15 text-warning" },
-            { icon: Globe2, tag: "Collect from African Customers", desc: "For universities, hospitals, airlines, property firms, travel companies, and global merchants collecting locally and settling globally.", cta: "Start Global Collections", to: "/welcome", tone: "bg-success/15 text-success" },
-            { icon: Factory, tag: "Invoice African Buyers", desc: "For suppliers and exporters in China, UAE, Turkey, India, and other markets selling to African buyers.", cta: "Open Supplier Dashboard", to: "/welcome", tone: "bg-amber-500/15 text-amber-700" },
-            { icon: Building2, tag: "Manage Company Treasury", desc: "For enterprises managing FX, wallets, beneficiaries, approvals, settlement, and company cards.", cta: "Explore Treasury", to: "/welcome", tone: "bg-primary/10 text-primary" },
-            { icon: CreditCard, tag: "Create Global Spend Cards", desc: "For businesses, travelers, students, teams, importers, and ad spend.", cta: "Create Card", to: "/welcome", tone: "bg-destructive/10 text-destructive" },
-          ].map((c) => {
+          {([
+            { icon: Ship,        tag: "Track My Shipment",            desc: "For importers managing goods, suppliers, documents, landed cost, and arrival readiness.", cta: "Start Import Desk",       to: "/importer",   mode: "Importer" as Mode,            tone: "bg-accent/15 text-accent" },
+            { icon: Truck,       tag: "Manage Freight Customers",     desc: "For freight forwarders and clearing agents managing shipments, documents, invoices, and WhatsApp updates.", cta: "Open Freight Workspace",  to: "/freight",    mode: "Freight Forwarder" as Mode,   tone: "bg-warning/15 text-warning" },
+            { icon: Globe2,      tag: "Collect from African Customers", desc: "For universities, hospitals, airlines, property firms, travel companies, and global merchants collecting locally and settling globally.", cta: "Start Global Collections", to: "/collections", mode: "Global Merchant" as Mode,    tone: "bg-success/15 text-success" },
+            { icon: Factory,     tag: "Invoice African Buyers",       desc: "For suppliers and exporters in China, UAE, Turkey, India, and other markets selling to African buyers.", cta: "Open Supplier Dashboard", to: "/suppliers",  mode: "Supplier" as Mode,            tone: "bg-amber-500/15 text-amber-700" },
+            { icon: Building2,   tag: "Manage Company Treasury",      desc: "For enterprises managing FX, wallets, beneficiaries, approvals, settlement, and company cards.", cta: "Explore Treasury",         to: "/treasury",   mode: "Enterprise Treasury" as Mode, tone: "bg-primary/10 text-primary" },
+            { icon: CreditCard,  tag: "Create Global Spend Cards",    desc: "For businesses, travelers, students, teams, importers, and ad spend.", cta: "Create Card",              to: "/cards",      mode: "Global Spend Cards" as Mode,  tone: "bg-destructive/10 text-destructive" },
+          ] as const).map((c) => {
             const Icon = c.icon;
             return (
-              <Link key={c.tag} to={c.to} className="group p-6 rounded-2xl border border-border bg-card hover:shadow-elevated hover:-translate-y-0.5 transition">
+              <Link key={c.tag} to={c.to} onClick={pickWorkspace(c.mode)} className="group p-6 rounded-2xl border border-border bg-card hover:shadow-elevated hover:-translate-y-0.5 transition">
                 <div className={`h-12 w-12 rounded-2xl grid place-items-center ${c.tone}`}>
                   <Icon className="h-6 w-6" />
                 </div>
@@ -375,13 +380,13 @@ function Landing() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold">
-                <Link to="/trade-desk">Start with Canta Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
+                <Link to="/trade-desk" onClick={pickWorkspace("Importer")}>Start with Canta Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
               </Button>
               <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-                <Link to="/dashboard">Explore Treasury Platform</Link>
+                <Link to="/treasury" onClick={pickWorkspace("Enterprise Treasury")}>Explore Treasury Platform</Link>
               </Button>
               <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-                <Link to="/cards">Create Global Spend Card</Link>
+                <Link to="/cards" onClick={pickWorkspace("Global Spend Cards")}>Create Global Spend Card</Link>
               </Button>
             </div>
             <div className="mt-8 flex items-center gap-2 text-xs text-primary-foreground/70">

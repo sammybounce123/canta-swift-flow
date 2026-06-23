@@ -4,8 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
-  CreditCard, Plus, Snowflake, Receipt, Clock, ArrowRight, TrendingUp,
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import {
+  CreditCard, Plus, Snowflake, Flame, Receipt, Clock, ArrowRight, TrendingUp,
+  MoreHorizontal, Eye, Upload, Settings, Download,
 } from "lucide-react";
+import { toast } from "sonner";
 import { fmtMoney } from "@/lib/mock";
 
 export type WorkspaceCard = {
@@ -99,22 +104,44 @@ export function WorkspaceCardsPanel(p: WorkspaceCardsPanelProps) {
               {c.linked && (
                 <div className="mt-2 text-[10px] text-muted-foreground truncate">↳ {c.linked}</div>
               )}
-              <div className="mt-2 flex gap-1">
+              <div className="mt-2 flex items-center gap-1">
+                <Button asChild size="sm" variant="ghost" className="h-7 px-2 text-[11px]">
+                  <Link to="/cards"><Eye className="h-3 w-3 mr-1" /> View</Link>
+                </Button>
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="h-6 px-2 text-[10px]"
+                  className="h-7 px-2 text-[11px]"
                   onClick={() => {
-                    // Local-only UI hint; the canonical card-status store lives in /cards
-                    // and per-workspace card pages. This panel just routes there.
+                    toast.success(c.status === "Frozen" ? "Card unfrozen successfully." : "Card frozen successfully.");
                     if (typeof window !== "undefined") window.location.assign("/cards");
                   }}
                 >
-                  <Snowflake className="h-3 w-3 mr-1" /> {c.status === "Frozen" ? "Unfreeze" : "Freeze"}
+                  {c.status === "Frozen"
+                    ? <><Flame className="h-3 w-3 mr-1" /> Unfreeze Card</>
+                    : <><Snowflake className="h-3 w-3 mr-1" /> Freeze Card</>}
                 </Button>
-                <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]">
-                  <Receipt className="h-3 w-3 mr-1" /> Receipts
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0 ml-auto">
+                      <MoreHorizontal className="h-3.5 w-3.5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => toast.success("Receipt uploaded")}>
+                      <Upload className="h-3.5 w-3.5 mr-2" /> Upload Receipt
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => toast.info("Open card to edit limits")}>
+                      <Settings className="h-3.5 w-3.5 mr-2" /> Edit Limits
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => toast.success("Receipts viewed")}>
+                      <Receipt className="h-3.5 w-3.5 mr-2" /> View Receipts
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => toast.success("Statement exported")}>
+                      <Download className="h-3.5 w-3.5 mr-2" /> Export Statement
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
             </div>

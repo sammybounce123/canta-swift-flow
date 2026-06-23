@@ -69,33 +69,46 @@ function FxTicker() {
   );
 }
 
-const MODE_TO_WORKSPACE: Record<string, "enterprise_treasury" | "importer_portal" | "freight_workspace" | "supplier_dashboard" | "global_collections" | "partner_property"> = {
+const MODE_TO_WORKSPACE: Record<Mode, import("@/lib/profile").WorkspaceType> = {
   "Enterprise Treasury": "enterprise_treasury",
   "Importer": "importer_portal",
   "Freight Forwarder": "freight_workspace",
   "Supplier": "supplier_dashboard",
   "Global Merchant": "global_collections",
+  "Global Spend Cards": "global_spend_cards",
   "Partner Property": "partner_property",
 };
 
+const WORKSPACE_TO_MODE: Record<import("@/lib/profile").WorkspaceType, Mode> = {
+  enterprise_treasury: "Enterprise Treasury",
+  importer_portal: "Importer",
+  freight_workspace: "Freight Forwarder",
+  supplier_dashboard: "Supplier",
+  global_collections: "Global Merchant",
+  global_spend_cards: "Global Spend Cards",
+  partner_property: "Partner Property",
+};
+
 // Derive workspace from the current pathname so visiting a workspace's routes
-// always renders that workspace's sidebar, regardless of saved mode.
+// always renders that workspace's sidebar/topbar/badge, regardless of saved mode.
 function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceType | null {
   if (pathname.startsWith("/partner")) return "partner_property";
   if (pathname.startsWith("/collections") || pathname.startsWith("/payment-links") ||
       pathname.startsWith("/payers") || pathname.startsWith("/reconciliation") ||
       pathname.startsWith("/merchant")) return "global_collections";
-  if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
   if (pathname.startsWith("/importer") || pathname.startsWith("/trade-desk") ||
-      pathname.startsWith("/shipments") || pathname.startsWith("/my-suppliers") ||
-      pathname.startsWith("/verified-suppliers") || pathname.startsWith("/landed-cost")) return "importer_portal";
+      pathname.startsWith("/my-suppliers") || pathname.startsWith("/verified-suppliers") ||
+      pathname.startsWith("/landed-cost")) return "importer_portal";
+  if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
   if (pathname.startsWith("/suppliers") || pathname.startsWith("/buyers") ||
       pathname.startsWith("/verified-buyers") || pathname.startsWith("/escrow")) return "supplier_dashboard";
   if (pathname === "/cards" || pathname.startsWith("/cards/")) return "global_spend_cards";
   if (pathname.startsWith("/treasury") || pathname.startsWith("/wallets") ||
       pathname.startsWith("/fx") || pathname.startsWith("/beneficiaries")) return "enterprise_treasury";
+  // /shipments is shared between Importer and Freight; default to active mode (handled by caller).
   return null;
 }
+
 
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   const { role, profile } = useRole();
@@ -170,18 +183,18 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
   );
 }
 
-function ModeSwitcher() {
-  const { mode, setMode } = useMode();
+function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
+  const { setMode } = useMode();
   const navigate = useNavigate();
-  const current = ALL_MODES.find((m) => m.id === mode)!;
-  // Default home for every mode is the dashboard.
+  const current = ALL_MODES.find((m) => m.id === displayMode) ?? ALL_MODES[0];
   const MODE_HOME: Record<Mode, string> = {
-    "Enterprise Treasury": "/dashboard",
-    "Importer": "/dashboard",
-    "Freight Forwarder": "/dashboard",
-    "Supplier": "/dashboard",
-    "Global Merchant": "/dashboard",
-    "Partner Property": "/dashboard",
+    "Enterprise Treasury": "/treasury",
+    "Importer": "/importer",
+    "Freight Forwarder": "/freight",
+    "Supplier": "/suppliers",
+    "Global Merchant": "/collections",
+    "Global Spend Cards": "/cards",
+    "Partner Property": "/partner",
   };
   return (
     <DropdownMenu>
@@ -201,7 +214,7 @@ function ModeSwitcher() {
             <div className="flex-1 min-w-0">
               <div className="text-sm font-medium flex items-center gap-2">
                 {m.id}
-                {mode === m.id && <Check className="h-3.5 w-3.5 text-accent" />}
+                {displayMode === m.id && <Check className="h-3.5 w-3.5 text-accent" />}
               </div>
               <div className="text-[11px] text-muted-foreground">{m.desc}</div>
             </div>
@@ -216,9 +229,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { role, setRole, profile } = useRole();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { mode } = useMode();
+  const { mode, setMode } = useMode();
   const partner = usePartnerRole();
-  const isPartner = (MODE_TO_WORKSPACE[mode] ?? "enterprise_treasury") === "partner_property";
+
+  // Derive the active workspace from path first, then fall back to saved mode.
+  const pathWorkspace = workspaceFromPath(pathname);
+  const activeWorkspace = pathWorkspace ?? MODE_TO_WORKSPACE[mode] ?? "enterprise_treasury";
+  const displayMode: Mode = WORKSPACE_TO_MODE[activeWorkspace];
+
+  // Persist the inferred mode so other surfaces (dashboard hero, etc.) follow.
+  useEffect(() => {
+    if (pathWorkspace && WORKSPACE_TO_MODE[pathWorkspace] !== mode) {
+      setMode(WORKSPACE_TO_MODE[pathWorkspace]);
+    }
+  }, [pathWorkspace, mode, setMode]);
+
+  const isPartner = activeWorkspace === "partner_property";
   const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
   const partnerInitials = partner.user ? partner.user.name.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase() : "BC";
 
@@ -235,8 +261,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </SheetContent>
       </Sheet>
 
-      {/* mobile-only menu button is rendered in the header below */}
-
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
         <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-border">
 
@@ -245,7 +269,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Menu className="h-5 w-5" />
             </button>
 
-            <ModeSwitcher />
+            <ModeSwitcher displayMode={displayMode} />
+
 
             <div className="hidden lg:flex items-center gap-2 flex-1 max-w-md ml-2">
               <div className="relative w-full">
