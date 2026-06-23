@@ -29,14 +29,23 @@ export function subscribeSupport(fn: () => void) {
   return () => window.removeEventListener(EVT, fn);
 }
 const SEED: SupportTicket[] = [
+  { id: "T-000", ref: "SUP-9000", customer: "Tunde Bakare", organization: "Bakare Imports", workspace: "Importer", linkedRef: "TF-2026-0214", priority: "Normal", status: "Open", assigned: "Canta Support", issueType: "Shipment issue", messages: [{ id: "m1", author: "Tunde", role: "customer", body: "Please help confirm the latest shipment update and linked documents.", at: "2026-06-10T09:00:00Z" }], createdAt: "2026-06-10", lastUpdate: "2026-06-10" },
   { id: "T-001", ref: "SUP-9001", customer: "Adekunle Okoye", organization: "Baron & Cabot client", workspace: "Partner Property", linkedRef: "BC-2026-1001", priority: "High", status: "Waiting on Canta", assigned: "Daniel Whitfield", issueType: "Payout issue", messages: [{ id: "m1", author: "Adekunle", role: "customer", body: "Solicitor hasn't received the payment yet.", at: "2026-06-05T10:00:00Z" }], createdAt: "2026-06-05", lastUpdate: "2026-06-05" },
   { id: "T-002", ref: "SUP-9002", customer: "Lagos Med Clinic", organization: "Lagos Med Clinic", workspace: "Global Merchant", linkedRef: "INV-2034", priority: "Normal", status: "Open", assigned: "Canta Ops", issueType: "Funding mismatch", messages: [{ id: "m1", author: "Tope", role: "customer", body: "Payer sent ₦4,100,000 instead of ₦4,200,000.", at: "2026-06-04T14:00:00Z" }], createdAt: "2026-06-04", lastUpdate: "2026-06-04" },
   { id: "T-003", ref: "SUP-9003", customer: "Bayo Logistics Ltd", organization: "Bayo Logistics", workspace: "Freight", linkedRef: "SHP-10421", priority: "Low", status: "Resolved", assigned: "Canta Ops", issueType: "Shipment issue", messages: [], createdAt: "2026-06-02", lastUpdate: "2026-06-03" },
   { id: "T-004", ref: "SUP-9004", customer: "Sino Trade Co.", organization: "Sino Trade", workspace: "Supplier", linkedRef: "INV-2030", priority: "Urgent", status: "Escalated", assigned: "Compliance", issueType: "KYC/KYB issue", messages: [], createdAt: "2026-06-08", lastUpdate: "2026-06-09" },
+  { id: "T-005", ref: "SUP-9005", customer: "James Okoro", organization: "Global Spend Cards", workspace: "Global Spend Cards", linkedRef: "CARD-4481", priority: "Normal", status: "Waiting on Customer", assigned: "Canta Support", issueType: "Card issue", messages: [{ id: "m1", author: "Canta Support", role: "canta", body: "Please attach the merchant receipt so we can review the decline.", at: "2026-06-11T11:00:00Z" }], createdAt: "2026-06-11", lastUpdate: "2026-06-11" },
+  { id: "T-006", ref: "SUP-9006", customer: "Adaeze Okonkwo", organization: "Enterprise Treasury", workspace: "Enterprise Treasury", linkedRef: "PAY-7782", priority: "High", status: "Open", assigned: "Canta Support", issueType: "Payment issue", messages: [{ id: "m1", author: "Adaeze", role: "customer", body: "A beneficiary payout needs a status check.", at: "2026-06-12T08:30:00Z" }], createdAt: "2026-06-12", lastUpdate: "2026-06-12" },
 ];
 function read(): SupportTicket[] {
   if (typeof window === "undefined") return SEED;
-  try { const raw = window.localStorage.getItem(KEY); return raw ? JSON.parse(raw) : SEED; } catch { return SEED; }
+  try {
+    const raw = window.localStorage.getItem(KEY);
+    if (!raw) return SEED;
+    const saved = JSON.parse(raw) as SupportTicket[];
+    const savedIds = new Set(saved.map((t) => t.id));
+    return [...saved, ...SEED.filter((t) => !savedIds.has(t.id))];
+  } catch { return SEED; }
 }
 function write(list: SupportTicket[]) {
   if (typeof window !== "undefined") window.localStorage.setItem(KEY, JSON.stringify(list));
@@ -44,7 +53,9 @@ function write(list: SupportTicket[]) {
 }
 export function listTickets(workspace?: string) {
   const all = read();
-  return workspace ? all.filter((t) => t.workspace === workspace) : all;
+  if (!workspace) return all;
+  const filtered = all.filter((t) => t.workspace === workspace);
+  return filtered.length ? filtered : SEED.filter((t) => t.workspace === workspace);
 }
 export function createTicket(input: Omit<SupportTicket, "id" | "ref" | "messages" | "createdAt" | "lastUpdate" | "status"> & { firstMessage?: string }): SupportTicket {
   const n = read().length + 9001;
