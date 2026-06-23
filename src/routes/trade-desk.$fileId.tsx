@@ -83,15 +83,15 @@ function TradeFileDetail() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-5">
-        <TabsList className="flex flex-wrap h-auto">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="timeline">Shipment Timeline</TabsTrigger>
-          <TabsTrigger value="documents">Documents</TabsTrigger>
-          <TabsTrigger value="payments">Payments</TabsTrigger>
-          <TabsTrigger value="landed">Landed Cost</TabsTrigger>
-          <TabsTrigger value="escrow">Escrow</TabsTrigger>
-          <TabsTrigger value="whatsapp">WhatsApp History</TabsTrigger>
-          <TabsTrigger value="activity">Activity Log</TabsTrigger>
+        <TabsList className="flex flex-wrap h-auto gap-1 p-1 justify-start w-full">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-background">Overview</TabsTrigger>
+          <TabsTrigger value="timeline" className="data-[state=active]:bg-background">Shipment Timeline</TabsTrigger>
+          <TabsTrigger value="documents" className="data-[state=active]:bg-background">Documents</TabsTrigger>
+          <TabsTrigger value="payments" className="data-[state=active]:bg-background">Payments</TabsTrigger>
+          <TabsTrigger value="landed" className="data-[state=active]:bg-background">Landed Cost</TabsTrigger>
+          <TabsTrigger value="escrow" className="data-[state=active]:bg-background">Escrow</TabsTrigger>
+          <TabsTrigger value="whatsapp" className="data-[state=active]:bg-background">WhatsApp History</TabsTrigger>
+          <TabsTrigger value="activity" className="data-[state=active]:bg-background">Activity Log</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-5">
