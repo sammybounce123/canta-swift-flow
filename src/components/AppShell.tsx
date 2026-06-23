@@ -132,8 +132,6 @@ function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceT
   // ops surfaces like /support and /integrations default to Canta Ops.
   if (typeof window !== "undefined") {
     const saved = window.localStorage.getItem("canta:mode");
-    // eslint-disable-next-line no-console
-    console.log("[workspaceFromPath]", pathname, "saved=", saved);
     if (!saved) {
       if (pathname === "/support" || pathname.startsWith("/support/") ||
           pathname === "/integrations" || pathname.startsWith("/integrations/")) {
