@@ -12,6 +12,7 @@ import { loadProfile, getSidebarForWorkspace, defaultFlagsFor, type SidebarItem 
 import { useMode, ALL_MODES, type Mode } from "@/components/ModeProvider";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { PARTNER_ROLES, PARTNER_ORG, MARKETERS, setActivePartnerUser } from "@/lib/partner";
+import { getSavedCustomerWorkspace, saveActiveWorkspace } from "@/lib/workspace-guard";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -137,7 +138,7 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
   const { mode, setMode } = useMode();
   const userProfile = loadProfile();
   const pathWorkspace = workspaceFromPath(pathname);
-  const workspace = pathWorkspace ?? MODE_TO_WORKSPACE[mode] ?? userProfile?.workspace_type ?? "enterprise_treasury";
+  const workspace = pathWorkspace ?? getSavedCustomerWorkspace() ?? MODE_TO_WORKSPACE[mode] ?? userProfile?.workspace_type ?? "enterprise_treasury";
   const flags = userProfile?.feature_flags ?? defaultFlagsFor(workspace);
   const items: SidebarItem[] = getSidebarForWorkspace(workspace, flags);
   const groups: string[] = Array.from(new Set(items.map((n) => n.group)));
@@ -173,6 +174,7 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
                     key={`${item.to}-${item.label}`}
                     to={item.to as never}
                     onClick={() => {
+                      saveActiveWorkspace(workspace);
                       setMode(WORKSPACE_TO_MODE[workspace]);
                       onNavigate?.();
                     }}
@@ -267,11 +269,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   // Derive the active workspace from path first, then fall back to saved mode.
   const pathWorkspace = workspaceFromPath(pathname);
-  const activeWorkspace = pathWorkspace ?? MODE_TO_WORKSPACE[mode] ?? "enterprise_treasury";
+  const activeWorkspace = pathWorkspace ?? getSavedCustomerWorkspace() ?? MODE_TO_WORKSPACE[mode] ?? "enterprise_treasury";
   const displayMode: Mode = WORKSPACE_TO_MODE[activeWorkspace];
 
   // Persist the inferred mode so other surfaces (dashboard hero, etc.) follow.
   useEffect(() => {
+    if (pathWorkspace) saveActiveWorkspace(pathWorkspace);
     if (pathWorkspace && WORKSPACE_TO_MODE[pathWorkspace] !== mode) {
       setMode(WORKSPACE_TO_MODE[pathWorkspace]);
     }
