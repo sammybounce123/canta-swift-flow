@@ -103,8 +103,17 @@ function SupportPage() {
                     <td className="py-3 px-3"><Badge variant="outline" className={`text-[10px] ${tone(cs)}`}>{cs}</Badge></td>
                     <td className="py-3 px-3 text-xs">{t.lastUpdate}</td>
                     <td className="py-3 px-3 text-right">
-                      <Button size="sm" variant="outline" className="h-7" onClick={() => setOpenId(t.id)}>Open</Button>
+                      <div className="inline-flex flex-wrap gap-1 justify-end">
+                        <Button size="sm" variant="outline" className="h-7" onClick={() => setOpenId(t.id)}>Open</Button>
+                        <Button size="sm" variant="outline" className="h-7" onClick={() => setOpenId(t.id)}><Reply className="h-3 w-3 mr-1" />Reply</Button>
+                        {cs === "Closed" || cs === "Resolved" ? (
+                          <Button size="sm" variant="ghost" className="h-7" onClick={() => { updateTicketStatus(t.id, "Open"); toast.success("Ticket reopened"); }}><RefreshCw className="h-3 w-3 mr-1" />Reopen</Button>
+                        ) : (
+                          <Button size="sm" variant="ghost" className="h-7" onClick={() => { updateTicketStatus(t.id, "Closed"); toast.success("Ticket closed"); }}><XCircle className="h-3 w-3 mr-1" />Close</Button>
+                        )}
+                      </div>
                     </td>
+
                   </tr>
                 );
               })}
