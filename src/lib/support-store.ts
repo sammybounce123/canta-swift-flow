@@ -64,3 +64,13 @@ export function createTicket(input: Omit<SupportTicket, "id" | "ref" | "messages
 export function updateTicketStatus(id: string, status: TicketStatus) {
   write(read().map((t) => t.id === id ? { ...t, status, lastUpdate: new Date().toISOString().slice(0, 10) } : t));
 }
+export function assignTicket(id: string, assigned: string) {
+  write(read().map((t) => t.id === id ? { ...t, assigned, lastUpdate: new Date().toISOString().slice(0, 10) } : t));
+}
+export function appendMessage(id: string, msg: Omit<TicketMessage, "id" | "at">) {
+  write(read().map((t) => t.id === id ? { ...t, messages: [...t.messages, { ...msg, id: `m${t.messages.length + 1}`, at: new Date().toISOString() }], lastUpdate: new Date().toISOString().slice(0, 10) } : t));
+}
+export function getTicket(id: string) {
+  return read().find((t) => t.id === id);
+}
+

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,20 +8,31 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { LifeBuoy, Plus, MessageCircle } from "lucide-react";
+import {
+  LifeBuoy, Plus, MessageCircle, AlertTriangle, CheckCircle2, XCircle, UserCog, Reply, Send,
+} from "lucide-react";
 import { toast } from "sonner";
-import { listTickets, createTicket, updateTicketStatus, subscribeSupport, TICKET_STATUSES, ISSUE_TYPES, type TicketStatus, type IssueType } from "@/lib/support-store";
+import {
+  listTickets, createTicket, updateTicketStatus, assignTicket, appendMessage, getTicket,
+  subscribeSupport, TICKET_STATUSES, ISSUE_TYPES, type TicketStatus, type IssueType,
+  type SupportTicket,
+} from "@/lib/support-store";
 
 export const Route = createFileRoute("/support")({
   head: () => ({ meta: [{ title: "Support — Canta" }] }),
   component: SupportPage,
 });
 
+const ASSIGNEES = ["Canta Ops", "Compliance", "Treasury", "Trade Desk", "Daniel Whitfield", "Ada Lovell"];
+
 function SupportPage() {
   const [, force] = useState(0);
   useEffect(() => subscribeSupport(() => force((n) => n + 1)), []);
   const tickets = listTickets();
   const [statusFilter, setStatusFilter] = useState<TicketStatus | "All">("All");
+  const [openId, setOpenId] = useState<string | null>(null);
+  const open = useMemo(() => (openId ? getTicket(openId) ?? null : null), [openId, tickets]);
+
   const filtered = statusFilter === "All" ? tickets : tickets.filter((t) => t.status === statusFilter);
 
   const tone = (s: TicketStatus) => ({
@@ -57,7 +68,8 @@ function SupportPage() {
               <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
                 <th className="py-3 px-3">Ref</th><th className="py-3 px-3">Customer</th><th className="py-3 px-3">Workspace</th>
                 <th className="py-3 px-3">Linked</th><th className="py-3 px-3">Issue</th><th className="py-3 px-3">Priority</th>
-                <th className="py-3 px-3">Assigned</th><th className="py-3 px-3">Status</th><th className="py-3 px-3">Updated</th><th />
+                <th className="py-3 px-3">Assigned</th><th className="py-3 px-3">Status</th><th className="py-3 px-3">Updated</th>
+                <th className="py-3 px-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -73,10 +85,14 @@ function SupportPage() {
                   <td className="py-3 px-3"><Badge variant="outline" className={`text-[10px] ${tone(t.status)}`}>{t.status}</Badge></td>
                   <td className="py-3 px-3 text-xs">{t.lastUpdate}</td>
                   <td className="py-3 px-3 text-right">
-                    <Select value={t.status} onValueChange={(v) => { updateTicketStatus(t.id, v as TicketStatus); toast.success("Ticket updated"); }}>
-                      <SelectTrigger className="h-7 w-[140px] text-xs"><SelectValue /></SelectTrigger>
-                      <SelectContent>{TICKET_STATUSES.map((s) => <SelectItem key={s} value={s} className="text-xs">{s}</SelectItem>)}</SelectContent>
-                    </Select>
+                    <div className="inline-flex gap-1">
+                      <Button size="sm" variant="outline" className="h-7" onClick={() => setOpenId(t.id)}>Open</Button>
+                      {t.status !== "Resolved" && t.status !== "Closed" && (
+                        <Button size="sm" variant="ghost" className="h-7" onClick={() => { updateTicketStatus(t.id, "Resolved"); toast.success(`${t.ref} resolved`); }}>
+                          <CheckCircle2 className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -87,6 +103,102 @@ function SupportPage() {
           </table>
         </div>
       </Card>
+
+      {open && (
+        <TicketDetailDialog ticket={open} onClose={() => setOpenId(null)} tone={tone} />
+      )}
+    </div>
+  );
+}
+
+function TicketDetailDialog({ ticket, onClose, tone }: { ticket: SupportTicket; onClose: () => void; tone: (s: TicketStatus) => string | undefined }) {
+  const [reply, setReply] = useState("");
+  const [note, setNote] = useState("");
+  return (
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            {ticket.ref} <Badge variant="outline" className={`text-[10px] ${tone(ticket.status)}`}>{ticket.status}</Badge>
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="grid grid-cols-2 gap-3 text-xs">
+          <Info label="Customer" value={ticket.customer} />
+          <Info label="Organization" value={ticket.organization} />
+          <Info label="Workspace" value={ticket.workspace} />
+          <Info label="Linked reference" value={ticket.linkedRef ?? "—"} />
+          <Info label="Issue type" value={ticket.issueType} />
+          <Info label="Priority" value={ticket.priority} />
+          <Info label="Assigned" value={ticket.assigned} />
+          <Info label="Created" value={ticket.createdAt} />
+        </div>
+
+        <div className="flex flex-wrap gap-2 pt-2">
+          <Select onValueChange={(v) => { assignTicket(ticket.id, v); toast.success(`Assigned to ${v}`); }}>
+            <SelectTrigger className="h-8 w-[160px] text-xs"><UserCog className="h-3.5 w-3.5 mr-1" /><SelectValue placeholder="Assign" /></SelectTrigger>
+            <SelectContent>{ASSIGNEES.map((a) => <SelectItem key={a} value={a} className="text-xs">{a}</SelectItem>)}</SelectContent>
+          </Select>
+          <Button size="sm" variant="outline" onClick={() => { updateTicketStatus(ticket.id, "Escalated"); toast.success("Ticket escalated"); }}>
+            <AlertTriangle className="h-3.5 w-3.5 mr-1" /> Escalate
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => { updateTicketStatus(ticket.id, "Resolved"); toast.success("Marked resolved"); }}>
+            <CheckCircle2 className="h-3.5 w-3.5 mr-1" /> Mark Resolved
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => { updateTicketStatus(ticket.id, "Closed"); toast.success("Ticket closed"); onClose(); }}>
+            <XCircle className="h-3.5 w-3.5 mr-1" /> Close
+          </Button>
+        </div>
+
+        <div className="border-t pt-3">
+          <div className="text-xs font-semibold mb-2">Conversation</div>
+          <div className="space-y-2 max-h-60 overflow-y-auto">
+            {ticket.messages.length === 0 && <div className="text-xs text-muted-foreground">No messages yet.</div>}
+            {ticket.messages.map((m) => (
+              <div key={m.id} className={`p-2 rounded-lg text-xs ${m.role === "canta" ? "bg-primary/10" : "bg-secondary/40"}`}>
+                <div className="text-[10px] font-semibold text-muted-foreground">{m.author} · {new Date(m.at).toLocaleString()}</div>
+                <div className="mt-1">{m.body}</div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-2 flex gap-2">
+            <Input value={reply} onChange={(e) => setReply(e.target.value)} placeholder="Reply to customer…" />
+            <Button size="sm" onClick={() => {
+              if (!reply.trim()) { toast.error("Type a reply"); return; }
+              appendMessage(ticket.id, { author: "Canta Support", role: "canta", body: reply });
+              updateTicketStatus(ticket.id, "Waiting on Customer");
+              setReply("");
+              toast.success("Reply sent");
+            }}><Reply className="h-3.5 w-3.5 mr-1" /> Reply</Button>
+          </div>
+        </div>
+
+        <div className="border-t pt-3">
+          <Label className="text-xs">Internal note (not visible to customer)</Label>
+          <div className="flex gap-2 mt-1">
+            <Textarea value={note} onChange={(e) => setNote(e.target.value)} className="min-h-[60px]" />
+            <Button size="sm" variant="outline" onClick={() => {
+              if (!note.trim()) { toast.error("Type a note"); return; }
+              appendMessage(ticket.id, { author: "Internal", role: "canta", body: `[note] ${note}` });
+              setNote("");
+              toast.success("Note saved");
+            }}><Send className="h-3.5 w-3.5" /></Button>
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button variant="ghost" onClick={onClose}>Close</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function Info({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</div>
+      <div className="text-sm">{value}</div>
     </div>
   );
 }
