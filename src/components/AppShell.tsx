@@ -135,6 +135,11 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
   const partner = usePartnerRole();
   const isPartner = workspace === "partner_property";
   const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
+  const wsProfile = WORKSPACE_PROFILES[workspace];
+  // Enterprise Treasury still respects the role-based identity so role-switching demos work there.
+  const displayName = workspace === "enterprise_treasury" ? profile.name : wsProfile.name;
+  const displayTitle = workspace === "enterprise_treasury" ? `${role} · ${profile.title}` : wsProfile.title;
+
 
   return (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
