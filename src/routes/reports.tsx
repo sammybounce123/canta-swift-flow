@@ -13,6 +13,7 @@ import { BarChart3, Download, FileText, Play } from "lucide-react";
 import { toast } from "sonner";
 import { loadProfile, type WorkspaceType } from "@/lib/profile";
 import { useMode, type Mode } from "@/components/ModeProvider";
+import { useRequireWorkspace } from "@/lib/workspace-guard";
 
 const MODE_TO_WORKSPACE: Record<Mode, WorkspaceType> = {
   "Enterprise Treasury": "enterprise_treasury",
