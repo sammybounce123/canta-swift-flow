@@ -697,6 +697,23 @@ function CardControls({ card }: { card: RichCard }) {
 function CardsPage() {
   const [purposeFilter, setPurposeFilter] = useState<"All" | Purpose>("All");
   const [active, setActive] = useState<RichCard | null>(null);
+  const [cardList, setCardList] = useState<RichCard[]>(rich);
+
+  const toggleFreeze = (id: string) => {
+    setCardList((prev) => prev.map((c) => {
+      if (c.id !== id) return c;
+      const next = c.status === "Frozen" ? "Active" : "Frozen";
+      toast.success(next === "Frozen" ? "Card frozen successfully." : "Card unfrozen successfully.");
+      try {
+        const raw = localStorage.getItem("canta:auditLogs");
+        const arr = raw ? JSON.parse(raw) : [];
+        arr.unshift({ at: new Date().toISOString(), action: next === "Frozen" ? "card.freeze" : "card.unfreeze", target: id, by: "James Okoro" });
+        localStorage.setItem("canta:auditLogs", JSON.stringify(arr.slice(0, 200)));
+      } catch { /* ignore */ }
+      return { ...c, status: next };
+    }));
+  };
+
 
   const kpis = useMemo(() => {
     const activeCount = rich.filter(c => c.status === "Active").length;
