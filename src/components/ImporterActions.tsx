@@ -180,10 +180,17 @@ export function ImporterActions({
 
   return (
     <div className={className}>
-      <div className="flex flex-wrap gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
         {buttons.filter((b) => b.show).map((b) => (
-          <Button key={b.label} size="sm" variant={b.primary ? "default" : "outline"} onClick={b.onClick} className="justify-start">
-            <b.icon className="h-4 w-4 mr-2" /> {b.label}
+          <Button
+            key={b.label}
+            size="sm"
+            variant={b.primary ? "default" : "outline"}
+            onClick={b.onClick}
+            className="justify-start w-full h-auto py-2 px-3 text-left whitespace-normal leading-tight"
+          >
+            <b.icon className="h-4 w-4 mr-2 shrink-0" />
+            <span className="truncate">{b.label}</span>
           </Button>
         ))}
       </div>
