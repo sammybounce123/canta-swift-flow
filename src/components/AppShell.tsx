@@ -267,6 +267,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isPartner = activeWorkspace === "partner_property";
   const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
   const partnerInitials = partner.user ? partner.user.name.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase() : "BC";
+  const wsProfile = WORKSPACE_PROFILES[activeWorkspace];
+  const isEnterprise = activeWorkspace === "enterprise_treasury";
+  const tbName = isEnterprise ? profile.name : wsProfile.name;
+  const tbInitials = isEnterprise ? profile.initials : wsProfile.initials;
+  const tbTitle = isEnterprise ? `${role} · ${profile.title}` : wsProfile.title;
+
 
   return (
     <div className="h-screen flex bg-background overflow-hidden">
