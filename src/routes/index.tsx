@@ -2,12 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { setActiveMode, type Mode } from "@/components/ModeProvider";
 import {
   ArrowRight, Zap, Shield, Globe2, Sparkles, TrendingUp, CheckCircle2,
   Building2, Lock, Quote, Wallet, Ship, CreditCard, Brain, FileText,
   MessageCircle, Truck, Factory, Users, GraduationCap, Plane, Briefcase,
   ShieldCheck, ScanLine, Receipt, Languages,
 } from "lucide-react";
+
+// Set workspace on click so the destination renders its correct shell, sidebar
+// and topbar from the very first paint.
+const pickWorkspace = (m: Mode) => () => setActiveMode(m);
 
 export const Route = createFileRoute("/")({
   head: () => ({
