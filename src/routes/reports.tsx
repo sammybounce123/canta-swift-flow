@@ -115,6 +115,7 @@ function workspaceFromPath(pathname: string): WorkspaceType | null {
 }
 
 function ReportsPage() {
+  useRequireWorkspace();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const profile = loadProfile();
   const { mode } = useMode();
