@@ -181,6 +181,8 @@ export function defaultFlagsFor(workspace: WorkspaceType): FeatureFlags {
       return { ...ALL_OFF, cards_module_enabled: true };
     case "partner_property":
       return { ...ALL_OFF, compliance_module_enabled: true };
+    case "canta_ops":
+      return { ...ALL_ON };
   }
 }
 // Silence unused-export warning for ALL_ON (retained for future use)
