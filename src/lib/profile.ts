@@ -342,6 +342,23 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       ];
       return items;
     }
+    case "canta_ops":
+      return [
+        D,
+        { to: "/whatsapp", label: "WhatsApp Desk", iconKey: "whatsapp", group: "Ops" },
+        { to: "/ai-growth", label: "AI Growth", iconKey: "brain", group: "Intelligence" },
+        { to: "/ai-document-extraction", label: "AI Document Extraction", iconKey: "sparkles", group: "Intelligence" },
+        { to: "/ai-insights", label: "AI Insights", iconKey: "brain", group: "Intelligence" },
+        { to: "/trade-desk", label: "Trade Files", iconKey: "trade", group: "Ops" },
+        { to: "/partner/cases", label: "Payment Cases", iconKey: "file", group: "Ops" },
+        { to: "/support", label: "Support Tickets", iconKey: "users", group: "Ops" },
+        { to: "/verification-center", label: "Verification Center", iconKey: "shield-check", group: "Governance" },
+        { to: "/compliance", label: "Compliance", iconKey: "shield", group: "Governance" },
+        { to: "/audit-logs", label: "Audit Logs", iconKey: "shield", group: "Governance" },
+        { to: "/integrations", label: "Integrations", iconKey: "plug", group: "Ops" },
+        { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        Settings,
+      ];
   }
 }
 
