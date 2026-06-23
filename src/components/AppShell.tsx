@@ -122,23 +122,9 @@ function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceT
       pathname.startsWith("/wallet-funding")) return "global_spend_cards";
   if (pathname.startsWith("/treasury") || pathname.startsWith("/wallets") ||
       pathname.startsWith("/fx") || pathname.startsWith("/beneficiaries")) return "enterprise_treasury";
-  // Canta Ops / Internal surfaces — when opened directly without other context.
-  if (pathname.startsWith("/whatsapp") || pathname.startsWith("/integrations") ||
-      pathname.startsWith("/ai-growth") || pathname.startsWith("/ai-insights") ||
-      pathname.startsWith("/ai-document-extraction") ||
-      pathname.startsWith("/verification-center")) return "canta_ops";
-  // /support, /reports, /compliance, /approvals, /audit-logs follow the saved
-  // active mode. If no mode has been chosen yet (direct URL visit), shared
-  // ops surfaces like /support and /integrations default to Canta Ops.
-  if (typeof window !== "undefined") {
-    const saved = window.localStorage.getItem("canta:mode");
-    if (!saved) {
-      if (pathname === "/support" || pathname.startsWith("/support/") ||
-          pathname === "/integrations" || pathname.startsWith("/integrations/")) {
-        return "canta_ops";
-      }
-    }
-  }
+  // /whatsapp, /support, /reports, /compliance, /approvals, /audit-logs,
+  // /integrations follow the saved active customer mode. No internal/Canta Ops
+  // fallback for direct visits — these are customer-facing surfaces.
   return null;
 }
 
