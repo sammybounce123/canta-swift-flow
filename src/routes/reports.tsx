@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,18 @@ import {
 import { BarChart3, Download, FileText, Play } from "lucide-react";
 import { toast } from "sonner";
 import { loadProfile, type WorkspaceType } from "@/lib/profile";
+import { useMode, type Mode } from "@/components/ModeProvider";
+
+const MODE_TO_WORKSPACE: Record<Mode, WorkspaceType> = {
+  "Enterprise Treasury": "enterprise_treasury",
+  "Importer": "importer_portal",
+  "Freight Forwarder": "freight_workspace",
+  "Supplier": "supplier_dashboard",
+  "Global Merchant": "global_collections",
+  "Global Spend Cards": "global_spend_cards",
+  "Partner Property": "partner_property",
+  "Canta Ops": "canta_ops",
+};
 
 export const Route = createFileRoute("/reports")({
   head: () => ({ meta: [{ title: "Reports — Canta" }] }),
