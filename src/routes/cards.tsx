@@ -802,7 +802,7 @@ function CardsPage() {
 
       {/* Cards grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filtered.map(c => <CardVisual key={c.id} c={c} onClick={() => setActive(c)} />)}
+        {filtered.map(c => <CardVisual key={c.id} c={c} onClick={() => setActive(c)} onToggleFreeze={toggleFreeze} />)}
         {filtered.length === 0 && (
           <Card className="p-6 text-center text-sm text-muted-foreground col-span-full">
             No cards for this purpose yet.
