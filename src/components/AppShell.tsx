@@ -218,6 +218,7 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
     "Global Merchant": "/collections",
     "Global Spend Cards": "/cards",
     "Partner Property": "/partner",
+    "Canta Ops": "/whatsapp",
   };
   return (
     <DropdownMenu>
