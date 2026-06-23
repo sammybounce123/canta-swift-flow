@@ -89,6 +89,18 @@ const WORKSPACE_TO_MODE: Record<import("@/lib/profile").WorkspaceType, Mode> = {
   partner_property: "Partner Property",
 };
 
+// Per-workspace demo identity. Drives topbar avatar/name/role and sidebar footer.
+type WorkspaceProfile = { name: string; initials: string; title: string; badge: string };
+const WORKSPACE_PROFILES: Record<import("@/lib/profile").WorkspaceType, WorkspaceProfile> = {
+  enterprise_treasury: { name: "Adaeze Okonkwo", initials: "AO", title: "Treasury Admin",  badge: "Enterprise Treasury Mode" },
+  importer_portal:     { name: "Tunde Bakare",   initials: "TB", title: "Importer Owner",  badge: "Importer Mode" },
+  freight_workspace:   { name: "Chinedu Okafor", initials: "CO", title: "Freight Owner",   badge: "Freight Workspace Mode" },
+  global_collections:  { name: "Amaka Bello",    initials: "AB", title: "Merchant Owner",  badge: "Global Collections Mode" },
+  supplier_dashboard:  { name: "Li Wei",         initials: "LW", title: "Supplier Admin",  badge: "Supplier Mode" },
+  partner_property:    { name: "Sarah Adeyemi",  initials: "SA", title: "Partner Admin",   badge: "Partner Property Mode" },
+  global_spend_cards:  { name: "James Okoro",    initials: "JO", title: "Card Owner",      badge: "Global Spend Cards Mode" },
+};
+
 // Derive workspace from the current pathname so visiting a workspace's routes
 // always renders that workspace's sidebar/topbar/badge, regardless of saved mode.
 function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceType | null {
@@ -110,6 +122,7 @@ function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceT
 }
 
 
+
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   const { role, profile } = useRole();
   const { mode } = useMode();
@@ -122,6 +135,11 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
   const partner = usePartnerRole();
   const isPartner = workspace === "partner_property";
   const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
+  const wsProfile = WORKSPACE_PROFILES[workspace];
+  // Enterprise Treasury still respects the role-based identity so role-switching demos work there.
+  const displayName = workspace === "enterprise_treasury" ? profile.name : wsProfile.name;
+  const displayTitle = workspace === "enterprise_treasury" ? `${role} · ${profile.title}` : wsProfile.title;
+
 
   return (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
@@ -173,12 +191,14 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
             </>
           ) : (
             <>
-              <div className="text-sm font-semibold">{profile.name}</div>
-              <div className="text-[11px] text-sidebar-foreground/70">{role} · {profile.title}</div>
+              <div className="text-sm font-semibold">{displayName}</div>
+              <div className="text-[11px] text-sidebar-foreground/70">{displayTitle}</div>
+              <div className="text-[10px] text-sidebar-foreground/50 mt-1">{wsProfile.badge}</div>
             </>
           )}
         </div>
       </div>
+
     </div>
   );
 }
@@ -247,6 +267,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isPartner = activeWorkspace === "partner_property";
   const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
   const partnerInitials = partner.user ? partner.user.name.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase() : "BC";
+  const wsProfile = WORKSPACE_PROFILES[activeWorkspace];
+  const isEnterprise = activeWorkspace === "enterprise_treasury";
+  const tbName = isEnterprise ? profile.name : wsProfile.name;
+  const tbInitials = isEnterprise ? profile.initials : wsProfile.initials;
+  const tbTitle = isEnterprise ? `${role} · ${profile.title}` : wsProfile.title;
+
 
   return (
     <div className="h-screen flex bg-background overflow-hidden">
@@ -288,7 +314,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center gap-2 sm:pl-2 sm:border-l sm:border-border hover:opacity-80">
-                    <div className="h-8 w-8 rounded-full bg-gradient-primary text-primary-foreground grid place-items-center text-xs font-semibold flex-shrink-0">{isPartner ? partnerInitials : profile.initials}</div>
+                    <div className="h-8 w-8 rounded-full bg-gradient-primary text-primary-foreground grid place-items-center text-xs font-semibold flex-shrink-0">{isPartner ? partnerInitials : tbInitials}</div>
                     <div className="hidden sm:block leading-tight text-left">
                       {isPartner && partner.user ? (
                         <>
@@ -297,11 +323,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         </>
                       ) : (
                         <>
-                          <div className="text-xs font-semibold">{profile.name}</div>
-                          <div className="text-[10px] text-muted-foreground">{role} · {profile.title}</div>
+                          <div className="text-xs font-semibold">{tbName}</div>
+                          <div className="text-[10px] text-muted-foreground">{tbTitle}</div>
                         </>
                       )}
                     </div>
+
                     <ChevronDown className="h-3.5 w-3.5 text-muted-foreground hidden sm:block" />
                   </button>
                 </DropdownMenuTrigger>
