@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Factory, Plus, Search, Mail, Phone, MapPin } from "lucide-react";
 import { toast } from "sonner";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/my-suppliers")({
   head: () => ({ meta: [{ title: "My Suppliers — Canta" }] }),
@@ -60,6 +61,7 @@ function MySuppliersPage() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Live" cue="Verification helps reduce supplier risk but does not guarantee supplier performance." />
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:flex-wrap sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">

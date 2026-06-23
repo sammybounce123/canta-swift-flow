@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/suppliers")({
   head: () => ({ meta: [{ title: "Supplier Dashboard — Canta" }] }),
@@ -132,6 +133,7 @@ function SupplierDashboard() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Demo Preview" cue="Buyer verification helps improve trust but does not guarantee payment or purchase completion." />
       <WorkspaceWelcome workspace="supplier_dashboard" />
       <StartHereCard
         title="Create Invoice or View Verified Buyers"

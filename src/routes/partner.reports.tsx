@@ -6,6 +6,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line,
 } from "recharts";
 import { CASES, SOLICITORS, formatGBP, getSolicitor } from "@/lib/partner";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/reports")({
   head: () => ({ meta: [{ title: "Reports — Baron & Cabot" }] }),

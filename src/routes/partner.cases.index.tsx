@@ -20,6 +20,7 @@ import {
   type CaseStatus,
 } from "@/lib/partner";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/cases/")({
   head: () => ({ meta: [{ title: "Client Payment Cases — Baron & Cabot" }] }),

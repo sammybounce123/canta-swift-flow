@@ -7,6 +7,7 @@ import { usePartnerCases } from "@/hooks/usePartnerCases";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { visibleCases, formatGBP } from "@/lib/partner";
 import { useEffect, useState } from "react";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/fx-quotes")({
   head: () => ({ meta: [{ title: "FX Quotes — Baron & Cabot" }] }),

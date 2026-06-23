@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { WorkspaceCardsHub } from "@/components/WorkspaceCardsHub";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/freight/cards")({
   head: () => ({ meta: [{ title: "Freight Cards — Canta" }] }),

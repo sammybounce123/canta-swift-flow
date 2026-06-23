@@ -15,6 +15,7 @@ import {
 import { toast } from "sonner";
 import { ImporterActions } from "@/components/ImporterActions";
 import {
+import { ReadinessBar } from "@/components/ReadinessBar";
   SUPPLIERS, COUNTRIES_SUPPLIER, CATEGORIES, VERIFICATION_LEVELS, STATUS_TONE,
   type Supplier,
 } from "@/lib/trade-network";
@@ -44,6 +45,7 @@ function VerifiedSuppliersPage() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Demo Preview" cue="Verification helps reduce supplier risk but does not guarantee supplier performance." />
       <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">

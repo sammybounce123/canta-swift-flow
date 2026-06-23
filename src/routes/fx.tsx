@@ -11,6 +11,7 @@ import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianG
 import { fxHistory, beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
 import { toast } from "sonner";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/fx")({
   head: () => ({ meta: [{ title: "FX / Exchange — Canta" }] }),
@@ -81,6 +82,7 @@ function FX() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Demo Preview" cue="FX rates are indicative and confirmed at settlement." />
       <div>
         <h1 className="text-2xl font-semibold">FX / Exchange</h1>
         <p className="text-sm text-muted-foreground mt-1">Convert between currencies at the best available rate.</p>

@@ -13,6 +13,7 @@ import {
   MARKETERS, canSeeAllMarketers,
 } from "@/lib/partner";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/payouts")({
   head: () => ({ meta: [{ title: "Solicitor Payouts — Baron & Cabot" }] }),

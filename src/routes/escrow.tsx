@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { WorkspacePlaceholder } from "@/components/WorkspacePlaceholder";
 import { ShieldCheck } from "lucide-react";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/escrow")({
   head: () => ({ meta: [{ title: "Escrow — Canta" }] }),

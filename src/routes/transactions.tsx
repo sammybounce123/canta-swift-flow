@@ -8,6 +8,7 @@ import { StatusPill } from "@/components/StatusPill";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 import {
+import { ReadinessBar } from "@/components/ReadinessBar";
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
 
@@ -59,6 +60,7 @@ function Transactions() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Live" cue="Transactions are recorded in your activity history." />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Transactions</h1>

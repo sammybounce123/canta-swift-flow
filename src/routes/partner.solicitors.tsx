@@ -19,6 +19,7 @@ import {
   canRevealSolicitorBank, SOLICITOR_STATUSES, subscribeExtras, type SolicitorVStatus,
 } from "@/lib/partner-extras";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/solicitors")({
   head: () => ({ meta: [{ title: "Solicitors — Baron & Cabot" }] }),

@@ -26,6 +26,7 @@ import {
 import { toast } from "sonner";
 import { CardPurposeWizard } from "@/components/CardPurposeWizard";
 import { CardActions } from "@/components/CardActions";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/cards")({
   head: () => ({ meta: [{ title: "Global Spend Cards — Canta" }] }),
@@ -737,6 +738,7 @@ function CardsPage() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Requires Setup" cue="Freeze or unfreeze cards instantly. Set limits and require receipts for controlled spending." />
       <WorkspaceWelcome workspace="global_spend_cards" />
       <StartHereCard
         title="Create Card"

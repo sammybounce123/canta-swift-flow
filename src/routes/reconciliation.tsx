@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { fmtMoney } from "@/lib/mock";
 import { toast } from "sonner";
 import { CheckSquare, CheckCircle2, Download, CreditCard, Plane, GraduationCap, Megaphone, Calendar, Briefcase, MapPin } from "lucide-react";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/reconciliation")({
   head: () => ({ meta: [{ title: "Reconciliation — Canta" }] }),
@@ -84,6 +85,7 @@ function ReconciliationPage() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Demo Preview" cue="Matched and unmatched payments should be reviewed before settlement reporting." />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold flex items-center gap-2"><CheckSquare className="h-6 w-6 text-success" /> Reconciliation</h1>

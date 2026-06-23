@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/approvals")({
   head: () => ({ meta: [{ title: "Approvals — Canta" }] }),
@@ -111,6 +112,7 @@ function Approvals() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Live" cue="Approvals enforce dual control on high-value actions." />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Approvals</h1>

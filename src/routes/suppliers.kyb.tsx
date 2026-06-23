@@ -13,6 +13,7 @@ import {
   ShieldCheck, Upload, Download, CheckCircle2, Clock, AlertCircle, FileText, RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/suppliers/kyb")({
   head: () => ({ meta: [{ title: "Supplier KYB — Canta" }] }),
@@ -66,6 +67,7 @@ function SupplierKybPage() {
 
   return (
     <div className="space-y-6">
+      <ReadinessBar status="Live" cue="KYB verification helps improve trust and unlocks more features." />
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:flex-wrap sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { WorkspacePlaceholder } from "@/components/WorkspacePlaceholder";
 import { Receipt } from "lucide-react";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/freight-invoices")({
   head: () => ({ meta: [{ title: "Freight Invoices — Canta" }] }),

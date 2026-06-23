@@ -15,6 +15,7 @@ import {
   type LeadStatus,
 } from "@/lib/partner";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
+import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/leads")({
   head: () => ({ meta: [{ title: "Referral Leads — Baron & Cabot" }] }),
