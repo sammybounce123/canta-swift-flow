@@ -8,8 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger } from "@/components/ui/dropdown-menu";
 import {
-  LifeBuoy, Plus, MessageCircle, AlertTriangle, CheckCircle2, XCircle, UserCog, Reply, Send,
+  LifeBuoy, Plus, MessageCircle, AlertTriangle, CheckCircle2, XCircle, UserCog, Reply, Send, MoreHorizontal,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -85,13 +86,43 @@ function SupportPage() {
                   <td className="py-3 px-3"><Badge variant="outline" className={`text-[10px] ${tone(t.status)}`}>{t.status}</Badge></td>
                   <td className="py-3 px-3 text-xs">{t.lastUpdate}</td>
                   <td className="py-3 px-3 text-right">
-                    <div className="inline-flex gap-1">
+                    <div className="inline-flex gap-1 items-center">
                       <Button size="sm" variant="outline" className="h-7" onClick={() => setOpenId(t.id)}>Open</Button>
-                      {t.status !== "Resolved" && t.status !== "Closed" && (
-                        <Button size="sm" variant="ghost" className="h-7" onClick={() => { updateTicketStatus(t.id, "Resolved"); toast.success(`${t.ref} resolved`); }}>
-                          <CheckCircle2 className="h-3.5 w-3.5" />
-                        </Button>
-                      )}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="sm" variant="ghost" className="h-7 w-7 p-0" aria-label="Ticket actions">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-52">
+                          <DropdownMenuLabel className="text-xs">{t.ref}</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => setOpenId(t.id)}>
+                            <Reply className="h-3.5 w-3.5 mr-2" /> Open & Reply
+                          </DropdownMenuItem>
+                          <DropdownMenuSub>
+                            <DropdownMenuSubTrigger>
+                              <UserCog className="h-3.5 w-3.5 mr-2" /> Assign
+                            </DropdownMenuSubTrigger>
+                            <DropdownMenuSubContent>
+                              {ASSIGNEES.map((a) => (
+                                <DropdownMenuItem key={a} onClick={() => { assignTicket(t.id, a); toast.success(`${t.ref} assigned to ${a}`); }}>
+                                  {a}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuSubContent>
+                          </DropdownMenuSub>
+                          <DropdownMenuItem onClick={() => { updateTicketStatus(t.id, "Escalated"); toast.success(`${t.ref} escalated`); }}>
+                            <AlertTriangle className="h-3.5 w-3.5 mr-2" /> Escalate
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => { updateTicketStatus(t.id, "Resolved"); toast.success(`${t.ref} resolved`); }}>
+                            <CheckCircle2 className="h-3.5 w-3.5 mr-2" /> Mark Resolved
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => { updateTicketStatus(t.id, "Closed"); toast.success(`${t.ref} closed`); }}>
+                            <XCircle className="h-3.5 w-3.5 mr-2" /> Close ticket
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </td>
                 </tr>
