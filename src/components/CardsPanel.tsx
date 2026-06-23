@@ -100,13 +100,23 @@ export function WorkspaceCardsPanel(p: WorkspaceCardsPanelProps) {
                 <div className="mt-2 text-[10px] text-muted-foreground truncate">↳ {c.linked}</div>
               )}
               <div className="mt-2 flex gap-1">
-                <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]">
-                  <Snowflake className="h-3 w-3 mr-1" /> Freeze
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 px-2 text-[10px]"
+                  onClick={() => {
+                    // Local-only UI hint; the canonical card-status store lives in /cards
+                    // and per-workspace card pages. This panel just routes there.
+                    if (typeof window !== "undefined") window.location.assign("/cards");
+                  }}
+                >
+                  <Snowflake className="h-3 w-3 mr-1" /> {c.status === "Frozen" ? "Unfreeze" : "Freeze"}
                 </Button>
                 <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]">
                   <Receipt className="h-3 w-3 mr-1" /> Receipts
                 </Button>
               </div>
+
             </div>
           );
         })}
