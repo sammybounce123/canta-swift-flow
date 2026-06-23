@@ -77,6 +77,7 @@ const MODE_TO_WORKSPACE: Record<Mode, import("@/lib/profile").WorkspaceType> = {
   "Global Merchant": "global_collections",
   "Global Spend Cards": "global_spend_cards",
   "Partner Property": "partner_property",
+  "Canta Ops": "canta_ops",
 };
 
 const WORKSPACE_TO_MODE: Record<import("@/lib/profile").WorkspaceType, Mode> = {
@@ -87,18 +88,20 @@ const WORKSPACE_TO_MODE: Record<import("@/lib/profile").WorkspaceType, Mode> = {
   global_collections: "Global Merchant",
   global_spend_cards: "Global Spend Cards",
   partner_property: "Partner Property",
+  canta_ops: "Canta Ops",
 };
 
 // Per-workspace demo identity. Drives topbar avatar/name/role and sidebar footer.
 type WorkspaceProfile = { name: string; initials: string; title: string; badge: string };
 const WORKSPACE_PROFILES: Record<import("@/lib/profile").WorkspaceType, WorkspaceProfile> = {
-  enterprise_treasury: { name: "Adaeze Okonkwo", initials: "AO", title: "Treasury Admin",  badge: "Enterprise Treasury Mode" },
-  importer_portal:     { name: "Tunde Bakare",   initials: "TB", title: "Importer Owner",  badge: "Importer Mode" },
-  freight_workspace:   { name: "Chinedu Okafor", initials: "CO", title: "Freight Owner",   badge: "Freight Workspace Mode" },
-  global_collections:  { name: "Amaka Bello",    initials: "AB", title: "Merchant Owner",  badge: "Global Collections Mode" },
-  supplier_dashboard:  { name: "Li Wei",         initials: "LW", title: "Supplier Admin",  badge: "Supplier Mode" },
-  partner_property:    { name: "Sarah Adeyemi",  initials: "SA", title: "Partner Admin",   badge: "Partner Property Mode" },
-  global_spend_cards:  { name: "James Okoro",    initials: "JO", title: "Card Owner",      badge: "Global Spend Cards Mode" },
+  enterprise_treasury: { name: "Adaeze Okonkwo", initials: "AO", title: "Treasury Admin",          badge: "Enterprise Treasury Mode" },
+  importer_portal:     { name: "Tunde Bakare",   initials: "TB", title: "Importer Owner",          badge: "Importer Mode" },
+  freight_workspace:   { name: "Chinedu Okafor", initials: "CO", title: "Freight Owner",           badge: "Freight Workspace Mode" },
+  global_collections:  { name: "Amaka Bello",    initials: "AB", title: "Merchant Owner",          badge: "Global Collections Mode" },
+  supplier_dashboard:  { name: "Li Wei",         initials: "LW", title: "Supplier Admin",          badge: "Supplier Mode" },
+  partner_property:    { name: "Sarah Adeyemi",  initials: "SA", title: "Partner Admin",           badge: "Partner Property Mode" },
+  global_spend_cards:  { name: "James Okoro",    initials: "JO", title: "Card Owner",              badge: "Global Spend Cards Mode" },
+  canta_ops:           { name: "Ezekiel Oni",    initials: "EO", title: "Canta Operations Admin", badge: "Canta Ops Mode" },
 };
 
 // Derive workspace from the current pathname so visiting a workspace's routes
