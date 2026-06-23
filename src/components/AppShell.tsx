@@ -183,18 +183,18 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
   );
 }
 
-function ModeSwitcher() {
-  const { mode, setMode } = useMode();
+function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
+  const { setMode } = useMode();
   const navigate = useNavigate();
-  const current = ALL_MODES.find((m) => m.id === mode)!;
-  // Default home for every mode is the dashboard.
+  const current = ALL_MODES.find((m) => m.id === displayMode) ?? ALL_MODES[0];
   const MODE_HOME: Record<Mode, string> = {
-    "Enterprise Treasury": "/dashboard",
-    "Importer": "/dashboard",
-    "Freight Forwarder": "/dashboard",
-    "Supplier": "/dashboard",
-    "Global Merchant": "/dashboard",
-    "Partner Property": "/dashboard",
+    "Enterprise Treasury": "/treasury",
+    "Importer": "/importer",
+    "Freight Forwarder": "/freight",
+    "Supplier": "/suppliers",
+    "Global Merchant": "/collections",
+    "Global Spend Cards": "/cards",
+    "Partner Property": "/partner",
   };
   return (
     <DropdownMenu>
