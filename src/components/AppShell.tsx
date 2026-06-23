@@ -191,12 +191,14 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
             </>
           ) : (
             <>
-              <div className="text-sm font-semibold">{profile.name}</div>
-              <div className="text-[11px] text-sidebar-foreground/70">{role} · {profile.title}</div>
+              <div className="text-sm font-semibold">{displayName}</div>
+              <div className="text-[11px] text-sidebar-foreground/70">{displayTitle}</div>
+              <div className="text-[10px] text-sidebar-foreground/50 mt-1">{wsProfile.badge}</div>
             </>
           )}
         </div>
       </div>
+
     </div>
   );
 }
