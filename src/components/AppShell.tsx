@@ -69,33 +69,46 @@ function FxTicker() {
   );
 }
 
-const MODE_TO_WORKSPACE: Record<string, "enterprise_treasury" | "importer_portal" | "freight_workspace" | "supplier_dashboard" | "global_collections" | "partner_property"> = {
+const MODE_TO_WORKSPACE: Record<Mode, import("@/lib/profile").WorkspaceType> = {
   "Enterprise Treasury": "enterprise_treasury",
   "Importer": "importer_portal",
   "Freight Forwarder": "freight_workspace",
   "Supplier": "supplier_dashboard",
   "Global Merchant": "global_collections",
+  "Global Spend Cards": "global_spend_cards",
   "Partner Property": "partner_property",
 };
 
+const WORKSPACE_TO_MODE: Record<import("@/lib/profile").WorkspaceType, Mode> = {
+  enterprise_treasury: "Enterprise Treasury",
+  importer_portal: "Importer",
+  freight_workspace: "Freight Forwarder",
+  supplier_dashboard: "Supplier",
+  global_collections: "Global Merchant",
+  global_spend_cards: "Global Spend Cards",
+  partner_property: "Partner Property",
+};
+
 // Derive workspace from the current pathname so visiting a workspace's routes
-// always renders that workspace's sidebar, regardless of saved mode.
+// always renders that workspace's sidebar/topbar/badge, regardless of saved mode.
 function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceType | null {
   if (pathname.startsWith("/partner")) return "partner_property";
   if (pathname.startsWith("/collections") || pathname.startsWith("/payment-links") ||
       pathname.startsWith("/payers") || pathname.startsWith("/reconciliation") ||
       pathname.startsWith("/merchant")) return "global_collections";
-  if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
   if (pathname.startsWith("/importer") || pathname.startsWith("/trade-desk") ||
-      pathname.startsWith("/shipments") || pathname.startsWith("/my-suppliers") ||
-      pathname.startsWith("/verified-suppliers") || pathname.startsWith("/landed-cost")) return "importer_portal";
+      pathname.startsWith("/my-suppliers") || pathname.startsWith("/verified-suppliers") ||
+      pathname.startsWith("/landed-cost")) return "importer_portal";
+  if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
   if (pathname.startsWith("/suppliers") || pathname.startsWith("/buyers") ||
       pathname.startsWith("/verified-buyers") || pathname.startsWith("/escrow")) return "supplier_dashboard";
   if (pathname === "/cards" || pathname.startsWith("/cards/")) return "global_spend_cards";
   if (pathname.startsWith("/treasury") || pathname.startsWith("/wallets") ||
       pathname.startsWith("/fx") || pathname.startsWith("/beneficiaries")) return "enterprise_treasury";
+  // /shipments is shared between Importer and Freight; default to active mode (handled by caller).
   return null;
 }
+
 
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   const { role, profile } = useRole();
