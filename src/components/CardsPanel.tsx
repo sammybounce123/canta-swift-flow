@@ -4,8 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
-  CreditCard, Plus, Snowflake, Receipt, Clock, ArrowRight, TrendingUp,
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import {
+  CreditCard, Plus, Snowflake, Flame, Receipt, Clock, ArrowRight, TrendingUp,
+  MoreHorizontal, Eye, Upload, Settings, Download,
 } from "lucide-react";
+import { toast } from "sonner";
 import { fmtMoney } from "@/lib/mock";
 
 export type WorkspaceCard = {
