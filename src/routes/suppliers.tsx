@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogT
 import { fmtMoney } from "@/lib/mock";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
+import { StartHereCard } from "@/components/StartHereCard";
 import {
   Users, FileText, ShieldCheck, Wallet, CheckCircle2, AlertTriangle, Plus, Copy,
   Lock, Banknote, Calendar, Download, Globe, Award, Receipt, Upload, Building2,
@@ -132,6 +133,16 @@ function SupplierDashboard() {
   return (
     <div className="space-y-6">
       <WorkspaceWelcome workspace="supplier_dashboard" />
+      <StartHereCard
+        title="Create Invoice or View Verified Buyers"
+        description="Sell to verified African buyers, issue invoices, and track payment confirmation."
+        primary={{ label: "View Verified Buyers", to: "/verified-buyers" }}
+        secondary={[
+          { label: "Create Invoice", to: "/invoices" },
+          { label: "Send Quote", to: "/buyers" },
+          { label: "View Escrow", to: "/escrow" },
+        ]}
+      />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Supplier Dashboard</h1>

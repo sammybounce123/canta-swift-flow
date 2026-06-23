@@ -11,6 +11,8 @@ import { buildWhatsAppUrl, type WhatsAppTemplateKey } from "@/lib/whatsapp";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import { ImporterActions } from "@/components/ImporterActions";
+import { StartHereCard } from "@/components/StartHereCard";
+import { TradeFileExplainer } from "@/components/TradeFileExplainer";
 import {
   MessageCircle, Upload, Sparkles, FileQuestion, Ship, Calendar, Truck, Bell, ShieldCheck,
   CheckCircle2, AlertCircle, ArrowRight, Receipt, Package, Send, Link as LinkIcon, Copy, Lock,
@@ -90,6 +92,20 @@ function ImporterPortal() {
         <h1 className="text-2xl font-semibold">Welcome back, Tunde 👋</h1>
         <p className="text-sm text-muted-foreground mt-1">Here's a simple view of your goods, suppliers and payments.</p>
       </div>
+
+      <StartHereCard
+        title="Create Trade File"
+        description="Upload your invoice, BL, container number, or supplier details to organize your import transaction."
+        primary={{ label: "Create Trade File", to: "/trade-desk" }}
+        secondary={[
+          { label: "Upload Invoice or BL", to: "/trade-desk" },
+          { label: "Track Shipment", to: "/shipments" },
+          { label: "Verify Supplier", to: "/verified-suppliers" },
+          { label: "Calculate Landed Cost", to: "/landed-cost" },
+        ]}
+      />
+
+      <TradeFileExplainer />
 
       {/* KPIs in plain language */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

@@ -77,6 +77,10 @@ function TradeDeskList() {
 
       <NewTradeFileDialog open={draftOpen} setOpen={setDraftOpen} />
 
+      <TradeFileExplainer />
+
+
+
 
       {/* KPI strip */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

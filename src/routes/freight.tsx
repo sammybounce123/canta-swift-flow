@@ -12,6 +12,7 @@ import { shipments, importers, freightInvoices, monthlyShipmentVolume, shippingL
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
+import { StartHereCard } from "@/components/StartHereCard";
 import { Truck, Plus, MessageCircle, FileText, DollarSign, Users as UsersIcon, AlertTriangle, Ship, Eye, Upload, CheckCircle2, Clock, TrendingUp, BarChart3, Send, Download, UserPlus, Banknote } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -91,6 +92,18 @@ function Freight() {
           </Dialog>
         </div>
       </div>
+
+      <StartHereCard
+        title="Add Customer / Create Shipment"
+        description="Create a shipment record, link documents, and send tracking updates to your customers."
+        primary={{ label: "Create Shipment", onClick: () => setCreateOpen(true) }}
+        secondary={[
+          { label: "Add Customer", to: "/customers" },
+          { label: "Send WhatsApp Update", to: "/whatsapp" },
+          { label: "Create Freight Invoice", to: "/freight-invoices" },
+        ]}
+      />
+
 
       {/* KPI grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
