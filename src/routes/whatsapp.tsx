@@ -107,16 +107,18 @@ function WhatsAppCustomer() {
       {/* Quick customer-facing actions */}
       <Card className="p-4 shadow-card">
         <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Quick actions</div>
-        <div className="flex flex-wrap gap-2">
-          <Button size="sm" variant="outline" onClick={() => toast.success("Upload dialog opened")}><Upload className="h-3.5 w-3.5 mr-1.5" /> Upload Document</Button>
-          <Button size="sm" variant="outline" onClick={() => openWhatsApp("trackShipment")}><Ship className="h-3.5 w-3.5 mr-1.5" /> Request Shipment Update</Button>
-          <Button size="sm" variant="outline" onClick={() => openWhatsApp("landedCost")}><DollarSign className="h-3.5 w-3.5 mr-1.5" /> Request Landed Cost</Button>
-          <Button size="sm" variant="outline" onClick={() => openWhatsApp("missingDocumentReminder")}><Bell className="h-3.5 w-3.5 mr-1.5" /> Send Reminder</Button>
-          <Button size="sm" variant="outline" asChild><Link to="/trade-desk"><FilePlus2 className="h-3.5 w-3.5 mr-1.5" /> Create Trade File</Link></Button>
-          <Button size="sm" variant="outline" asChild><Link to="/shipments"><Link2 className="h-3.5 w-3.5 mr-1.5" /> Link to Shipment</Link></Button>
-          <Button size="sm" variant="outline" asChild><Link to="/support"><LifeBuoy className="h-3.5 w-3.5 mr-1.5" /> Contact Support</Link></Button>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+          <Button size="sm" variant="outline" asChild className="justify-start"><Link to="/trade-desk"><FilePlus2 className="h-3.5 w-3.5 mr-1.5" /> Create Trade File</Link></Button>
+          <Button size="sm" variant="outline" className="justify-start" onClick={() => toast.success("Upload dialog opened")}><Upload className="h-3.5 w-3.5 mr-1.5" /> Upload Document</Button>
+          <Button size="sm" variant="outline" className="justify-start" onClick={() => openWhatsApp("missingDocumentReminder")}><Bell className="h-3.5 w-3.5 mr-1.5" /> Request Missing Document</Button>
+          <Button size="sm" variant="outline" className="justify-start" onClick={() => openWhatsApp("trackShipment")}><Ship className="h-3.5 w-3.5 mr-1.5" /> Request Shipment Update</Button>
+          <Button size="sm" variant="outline" className="justify-start" onClick={() => { setReply(""); toast.success("Reply box focused"); }}><Send className="h-3.5 w-3.5 mr-1.5" /> Send Reply</Button>
+          <Button size="sm" variant="outline" asChild className="justify-start"><Link to="/support"><LifeBuoy className="h-3.5 w-3.5 mr-1.5" /> Contact Support</Link></Button>
+          <Button size="sm" variant="outline" asChild className="justify-start"><Link to="/shipments"><Link2 className="h-3.5 w-3.5 mr-1.5" /> Link to Shipment</Link></Button>
+          <Button size="sm" variant="outline" className="justify-start" onClick={() => openWhatsApp("landedCost")}><DollarSign className="h-3.5 w-3.5 mr-1.5" /> Request Landed Cost</Button>
         </div>
       </Card>
+
 
       <Tabs defaultValue="all" className="space-y-3">
         <TabsList>
