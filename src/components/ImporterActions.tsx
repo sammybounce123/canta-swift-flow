@@ -187,10 +187,10 @@ export function ImporterActions({
             size="sm"
             variant={b.primary ? "default" : "outline"}
             onClick={b.onClick}
-            className="justify-start w-full h-auto py-2 px-3 text-left whitespace-normal leading-tight"
+            className="justify-start w-full h-auto min-h-9 py-2 px-3 text-left whitespace-normal leading-tight items-start"
           >
-            <b.icon className="h-4 w-4 mr-2 shrink-0" />
-            <span className="truncate">{b.label}</span>
+            <b.icon className="h-4 w-4 mr-2 mt-0.5 shrink-0" />
+            <span className="break-words">{b.label}</span>
           </Button>
         ))}
       </div>
