@@ -82,8 +82,7 @@ function Dashboard() {
           {mode === "Freight Forwarder" && <Button asChild size="sm" variant="outline"><Link to="/freight">Open Workspace</Link></Button>}
           {mode === "Supplier" && <Button asChild size="sm" variant="outline"><Link to="/suppliers">Open Suppliers</Link></Button>}
           {mode === "Global Merchant" && <Button asChild size="sm" variant="outline"><Link to="/collections">Open Collections</Link></Button>}
-          
-          <Button asChild size="sm" variant="ghost"><Link to="/trade-desk">Trade Desk</Link></Button>
+          {mode === "Importer" && <Button asChild size="sm" variant="ghost"><Link to="/trade-desk">Trade Desk</Link></Button>}
         </div>
       </Card>
       {!onboardingDone && (
