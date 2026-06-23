@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { useRouterState } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,20 +10,8 @@ import {
 } from "@/components/ui/select";
 import { BarChart3, Download, FileText, Play } from "lucide-react";
 import { toast } from "sonner";
-import { loadProfile, type WorkspaceType } from "@/lib/profile";
-import { useMode, type Mode } from "@/components/ModeProvider";
-import { useRequireWorkspace } from "@/lib/workspace-guard";
-
-const MODE_TO_WORKSPACE: Record<Mode, WorkspaceType> = {
-  "Enterprise Treasury": "enterprise_treasury",
-  "Importer": "importer_portal",
-  "Freight Forwarder": "freight_workspace",
-  "Supplier": "supplier_dashboard",
-  "Global Merchant": "global_collections",
-  "Global Spend Cards": "global_spend_cards",
-  "Partner Property": "partner_property",
-  "Canta Ops": "canta_ops",
-};
+import { type WorkspaceType } from "@/lib/profile";
+import { useActiveWorkspace, useRequireWorkspace } from "@/lib/workspace-guard";
 
 export const Route = createFileRoute("/reports")({
   head: () => ({ meta: [{ title: "Reports — Canta" }] }),
@@ -43,11 +30,12 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
     { id: "comp",      name: "Compliance report",      desc: "Sanction checks, EDD, document expiry" },
   ],
   importer_portal: [
-    { id: "tf",        name: "Trade file report",      desc: "Open, in-transit, cleared, value per trade file" },
-    { id: "ship",      name: "Shipment report",        desc: "Lanes, ETAs, delays, demurrage exposure" },
-    { id: "landed",    name: "Landed cost report",     desc: "Goods + freight + duty + FX by SKU" },
-    { id: "sup",       name: "Supplier report",        desc: "Spend per supplier, on-time delivery, disputes" },
-    { id: "cards",     name: "Importer card spend",    desc: "Trade-file linked card spend and receipts" },
+    { id: "tf",        name: "Trade Files",            desc: "Open, in-transit, cleared, value per trade file" },
+    { id: "ship",      name: "Shipments",              desc: "Lanes, ETAs, delays, demurrage exposure" },
+    { id: "landed",    name: "Landed Cost",            desc: "Goods + freight + duty + FX by SKU" },
+    { id: "sup",       name: "Suppliers",              desc: "Spend per supplier, on-time delivery, disputes" },
+    { id: "payments",  name: "Payments",               desc: "Supplier deposits, escrow releases, duties and freight invoices" },
+    { id: "cards",     name: "Importer Card Spend",    desc: "Trade-file linked card spend and receipts" },
   ],
   freight_workspace: [
     { id: "vol",       name: "Shipment volume",        desc: "Shipments per lane, mode, month" },
@@ -103,32 +91,25 @@ const WORKSPACE_LABELS: Record<WorkspaceType, string> = {
   canta_ops: "Canta Ops",
 };
 
-function workspaceFromPath(pathname: string): WorkspaceType | null {
-  if (pathname.startsWith("/partner")) return "partner_property";
-  if (pathname.startsWith("/collections") || pathname.startsWith("/merchant")) return "global_collections";
-  if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
-  if (pathname.startsWith("/importer") || pathname.startsWith("/trade-desk")) return "importer_portal";
-  if (pathname.startsWith("/suppliers")) return "supplier_dashboard";
-  if (pathname.startsWith("/treasury")) return "enterprise_treasury";
-  if (pathname === "/cards") return "global_spend_cards";
-  return null;
-}
+const REPORT_GROUP_LABELS: Record<WorkspaceType, string> = {
+  enterprise_treasury: "Enterprise reports",
+  importer_portal: "Importer reports",
+  freight_workspace: "Freight reports",
+  global_collections: "Collection reports",
+  supplier_dashboard: "Supplier reports",
+  partner_property: "Partner reports",
+  global_spend_cards: "Card reports",
+  canta_ops: "Importer reports",
+};
 
 function ReportsPage() {
   useRequireWorkspace();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const profile = loadProfile();
-  const { mode } = useMode();
-  const inferred = workspaceFromPath(pathname);
-  // Resolution order: path-specific → active workspace mode → saved profile → enterprise.
-  const initialWorkspace =
-    inferred ?? MODE_TO_WORKSPACE[mode] ?? profile?.workspace_type ?? "enterprise_treasury";
-  const [workspace, setWorkspace] = useState<WorkspaceType>(initialWorkspace);
-  // Keep workspace in sync if the active mode changes while on this page.
+  const activeWorkspace = useActiveWorkspace();
+  const [workspace, setWorkspace] = useState<WorkspaceType>(activeWorkspace.workspace);
+  // Keep reports aligned with the workspace that opened /reports.
   useEffect(() => {
-    const resolved = inferred ?? MODE_TO_WORKSPACE[mode] ?? profile?.workspace_type ?? "enterprise_treasury";
-    setWorkspace(resolved);
-  }, [mode, inferred, profile?.workspace_type]);
+    setWorkspace(activeWorkspace.workspace);
+  }, [activeWorkspace.workspace]);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [status, setStatus] = useState("all");
@@ -189,7 +170,7 @@ function ReportsPage() {
         <div className="flex items-center gap-2 flex-wrap">
           <Badge variant="outline" className="text-xs">{identity.mode}</Badge>
           <Badge className="text-xs bg-primary/10 text-primary border-primary/30">{identity.name} · {identity.title}</Badge>
-          <Badge variant="secondary" className="text-xs">{WORKSPACE_LABELS[workspace]}</Badge>
+          <Badge variant="secondary" className="text-xs">{REPORT_GROUP_LABELS[workspace]}</Badge>
         </div>
       </div>
 

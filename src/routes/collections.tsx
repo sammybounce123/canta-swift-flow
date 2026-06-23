@@ -302,13 +302,13 @@ function Collections() {
 
       {/* Tabs */}
       <Tabs defaultValue="links" className="space-y-4">
-        <TabsList className="flex flex-wrap">
-          <TabsTrigger value="links">Payment Links</TabsTrigger>
-          <TabsTrigger value="invoices">Invoices</TabsTrigger>
-          <TabsTrigger value="payers">Payers</TabsTrigger>
-          <TabsTrigger value="settlements">Settlements</TabsTrigger>
-          <TabsTrigger value="recon">Reconciliation</TabsTrigger>
-          <TabsTrigger value="reports">Reports</TabsTrigger>
+        <TabsList aria-label="Global Collections sections" className="flex h-auto w-full flex-wrap items-center justify-start gap-2 rounded-lg border border-border bg-muted/60 p-2">
+          <TabsTrigger value="links" className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Payment Links</TabsTrigger>
+          <TabsTrigger value="invoices" className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Invoices</TabsTrigger>
+          <TabsTrigger value="payers" className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Payers</TabsTrigger>
+          <TabsTrigger value="settlements" className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settlements</TabsTrigger>
+          <TabsTrigger value="recon" className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Reconciliation</TabsTrigger>
+          <TabsTrigger value="reports" className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Reports</TabsTrigger>
         </TabsList>
 
         {/* PAYMENT LINKS */}
