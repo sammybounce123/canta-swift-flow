@@ -88,7 +88,9 @@ const WORKSPACE_TO_MODE: Record<import("@/lib/profile").WorkspaceType, Mode> = {
   global_collections: "Global Merchant",
   global_spend_cards: "Global Spend Cards",
   partner_property: "Partner Property",
-  canta_ops: "Canta Ops",
+  // canta_ops is internal-only and never surfaced as a customer mode; if a
+  // legacy profile points here, fall back to Enterprise Treasury.
+  canta_ops: "Enterprise Treasury",
 };
 
 // Per-workspace demo identity. Drives topbar avatar/name/role and sidebar footer.
