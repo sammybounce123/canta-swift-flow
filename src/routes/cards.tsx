@@ -466,11 +466,13 @@ function CardSetupFields({ purpose }: { purpose: Purpose }) {
 }
 
 // ---------- Visual card component ----------
-function CardVisual({ c, onClick }: { c: RichCard; onClick: () => void }) {
+function CardVisual({ c, onClick, onToggleFreeze }: { c: RichCard; onClick: () => void; onToggleFreeze: (id: string) => void }) {
   const meta = PURPOSES.find(p => p.l === c.purpose)!;
   const used = Math.min(100, Math.round((c.monthlySpend / Math.max(1, c.limit)) * 100));
+  const isFrozen = c.status === "Frozen";
+  const stop = (fn: () => void) => (e: React.MouseEvent) => { e.stopPropagation(); e.preventDefault(); fn(); };
   return (
-    <button onClick={onClick} className="text-left group">
+    <button onClick={onClick} className="text-left group w-full">
       <Card className="p-4 shadow-card hover:shadow-elevated transition relative overflow-hidden">
         <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-primary/5 group-hover:bg-primary/10 transition" />
         <div className="flex items-start justify-between relative">
@@ -512,10 +514,37 @@ function CardVisual({ c, onClick }: { c: RichCard; onClick: () => void }) {
             <ChevronRight className="h-3 w-3" /> {c.linked}
           </div>
         )}
+
+        {/* Visible card actions */}
+        <div className="mt-3 pt-3 border-t border-border flex flex-wrap items-center gap-1.5">
+          <Button asChild={false} size="sm" variant="ghost" className="h-7 px-2 text-[11px]" onClick={stop(onClick)}>
+            <span><Receipt className="h-3 w-3 mr-1" /> View Transactions</span>
+          </Button>
+          <Button
+            size="sm"
+            variant={isFrozen ? "default" : "outline"}
+            className="h-7 px-2 text-[11px]"
+            onClick={stop(() => onToggleFreeze(c.id))}
+          >
+            {isFrozen
+              ? <><Flame className="h-3 w-3 mr-1" /> Unfreeze Card</>
+              : <><Snowflake className="h-3 w-3 mr-1" /> Freeze Card</>}
+          </Button>
+          <Button size="sm" variant="ghost" className="h-7 px-2 text-[11px]" onClick={stop(() => toast.success("Receipt uploaded"))}>
+            <FileText className="h-3 w-3 mr-1" /> Upload Receipt
+          </Button>
+          <Button size="sm" variant="ghost" className="h-7 px-2 text-[11px]" onClick={stop(() => toast.info("Open card to edit limits"))}>
+            <ShieldAlert className="h-3 w-3 mr-1" /> Edit Limits
+          </Button>
+          <Button size="sm" variant="ghost" className="h-7 px-2 text-[11px]" onClick={stop(() => toast.success("Statement exported"))}>
+            <Download className="h-3 w-3 mr-1" /> Export Statement
+          </Button>
+        </div>
       </Card>
     </button>
   );
 }
+
 
 // ---------- Detail Drawer/Dialog ----------
 function CardDetail({ c, onClose }: { c: RichCard; onClose: () => void }) {
