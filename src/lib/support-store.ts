@@ -47,7 +47,9 @@ function write(list: SupportTicket[]) {
 }
 export function listTickets(workspace?: string) {
   const all = read();
-  return workspace ? all.filter((t) => t.workspace === workspace) : all;
+  if (!workspace) return all;
+  const filtered = all.filter((t) => t.workspace === workspace);
+  return filtered.length ? filtered : SEED.filter((t) => t.workspace === workspace);
 }
 export function createTicket(input: Omit<SupportTicket, "id" | "ref" | "messages" | "createdAt" | "lastUpdate" | "status"> & { firstMessage?: string }): SupportTicket {
   const n = read().length + 9001;
