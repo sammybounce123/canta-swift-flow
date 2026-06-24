@@ -22,7 +22,7 @@ import { ReadinessBar } from "@/components/ReadinessBar";
 import {
   type ClearingBid, type ClearingRequest, type ServiceScope,
   getRequests, getBidsForRequest, createRequest, acceptBid,
-  cancelRequest, reportIssue,
+  cancelRequest, reportIssue, loadDemoData,
   SERVICE_SCOPES, CLEARING_DISCLAIMER, WORKFLOW_STAGES,
 } from "@/lib/clearing-store";
 import { tradeFiles } from "@/lib/mock";
