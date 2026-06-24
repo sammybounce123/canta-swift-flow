@@ -41,13 +41,14 @@ const PROFILES: Record<WorkspaceType, { name: string; title: string; badge: stri
 function workspaceFromPath(pathname: string): WorkspaceType | null {
   if (pathname.startsWith("/partner")) return "partner_property";
   if (pathname.startsWith("/collections") || pathname.startsWith("/merchant") || pathname.startsWith("/payment-links") || pathname.startsWith("/payers") || pathname.startsWith("/reconciliation")) return "global_collections";
-  if (pathname.startsWith("/importer") || pathname.startsWith("/trade-desk") || pathname.startsWith("/my-suppliers") || pathname.startsWith("/verified-suppliers") || pathname.startsWith("/landed-cost")) return "importer_portal";
+  if (pathname.startsWith("/importer") || pathname.startsWith("/trade-desk") || pathname.startsWith("/my-suppliers") || pathname.startsWith("/verified-suppliers") || pathname.startsWith("/landed-cost") || pathname.startsWith("/clearing-quotes")) return "importer_portal";
   if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
   if (pathname.startsWith("/suppliers") || pathname.startsWith("/buyers") || pathname.startsWith("/verified-buyers") || pathname.startsWith("/escrow")) return "supplier_dashboard";
   if (pathname === "/cards" || pathname.startsWith("/cards/")) return "global_spend_cards";
   if (pathname.startsWith("/treasury") || pathname.startsWith("/wallets") || pathname.startsWith("/fx") || pathname.startsWith("/beneficiaries")) return "enterprise_treasury";
   return null;
 }
+
 
 function isCustomerWorkspace(workspace?: WorkspaceType | null): workspace is WorkspaceType {
   return Boolean(workspace && workspace !== "canta_ops");
