@@ -49,6 +49,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as CollectionsRouteImport } from './routes/collections'
+import { Route as ClearingQuotesRouteImport } from './routes/clearing-quotes'
 import { Route as CardsRouteImport } from './routes/cards'
 import { Route as BuyersRouteImport } from './routes/buyers'
 import { Route as BeneficiariesRouteImport } from './routes/beneficiaries'
@@ -291,6 +292,11 @@ const CollectionsRoute = CollectionsRouteImport.update({
   path: '/collections',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClearingQuotesRoute = ClearingQuotesRouteImport.update({
+  id: '/clearing-quotes',
+  path: '/clearing-quotes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CardsRoute = CardsRouteImport.update({
   id: '/cards',
   path: '/cards',
@@ -507,6 +513,7 @@ export interface FileRoutesByFullPath {
   '/beneficiaries': typeof BeneficiariesRoute
   '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
+  '/clearing-quotes': typeof ClearingQuotesRoute
   '/collections': typeof CollectionsRouteWithChildren
   '/compliance': typeof ComplianceRoute
   '/customers': typeof CustomersRoute
@@ -590,6 +597,7 @@ export interface FileRoutesByTo {
   '/beneficiaries': typeof BeneficiariesRoute
   '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
+  '/clearing-quotes': typeof ClearingQuotesRoute
   '/collections': typeof CollectionsRouteWithChildren
   '/compliance': typeof ComplianceRoute
   '/customers': typeof CustomersRoute
@@ -671,6 +679,7 @@ export interface FileRoutesById {
   '/beneficiaries': typeof BeneficiariesRoute
   '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
+  '/clearing-quotes': typeof ClearingQuotesRoute
   '/collections': typeof CollectionsRouteWithChildren
   '/compliance': typeof ComplianceRoute
   '/customers': typeof CustomersRoute
@@ -756,6 +765,7 @@ export interface FileRouteTypes {
     | '/beneficiaries'
     | '/buyers'
     | '/cards'
+    | '/clearing-quotes'
     | '/collections'
     | '/compliance'
     | '/customers'
@@ -839,6 +849,7 @@ export interface FileRouteTypes {
     | '/beneficiaries'
     | '/buyers'
     | '/cards'
+    | '/clearing-quotes'
     | '/collections'
     | '/compliance'
     | '/customers'
@@ -919,6 +930,7 @@ export interface FileRouteTypes {
     | '/beneficiaries'
     | '/buyers'
     | '/cards'
+    | '/clearing-quotes'
     | '/collections'
     | '/compliance'
     | '/customers'
@@ -1003,6 +1015,7 @@ export interface RootRouteChildren {
   BeneficiariesRoute: typeof BeneficiariesRoute
   BuyersRoute: typeof BuyersRoute
   CardsRoute: typeof CardsRoute
+  ClearingQuotesRoute: typeof ClearingQuotesRoute
   CollectionsRoute: typeof CollectionsRouteWithChildren
   ComplianceRoute: typeof ComplianceRoute
   CustomersRoute: typeof CustomersRoute
@@ -1331,6 +1344,13 @@ declare module '@tanstack/react-router' {
       path: '/collections'
       fullPath: '/collections'
       preLoaderRoute: typeof CollectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clearing-quotes': {
+      id: '/clearing-quotes'
+      path: '/clearing-quotes'
+      fullPath: '/clearing-quotes'
+      preLoaderRoute: typeof ClearingQuotesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cards': {
@@ -1763,6 +1783,7 @@ const rootRouteChildren: RootRouteChildren = {
   BeneficiariesRoute: BeneficiariesRoute,
   BuyersRoute: BuyersRoute,
   CardsRoute: CardsRoute,
+  ClearingQuotesRoute: ClearingQuotesRoute,
   CollectionsRoute: CollectionsRouteWithChildren,
   ComplianceRoute: ComplianceRoute,
   CustomersRoute: CustomersRoute,
