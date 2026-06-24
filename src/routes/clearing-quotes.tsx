@@ -604,9 +604,13 @@ function AcceptBidDialog({
           <DialogTitle>Confirm clearing agent selection</DialogTitle>
         </DialogHeader>
         {state ? (
-          <div className="text-sm text-muted-foreground">
-            You are selecting <span className="text-foreground font-semibold">{state.bid.agentName}</span> to handle clearing for this trade file.
-            Canta will help track the workflow, but clearing fees, timelines, and service delivery are provided by the clearing agent.
+          <div className="space-y-3 text-sm">
+            <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-800 dark:text-amber-200">
+              <span className="font-semibold">Canta is not the clearing agent.</span> Canta connects you with verified clearing agents and helps track the workflow.
+            </div>
+            <p className="text-muted-foreground">
+              You are selecting <span className="text-foreground font-semibold">{state.bid.agentName}</span> to handle clearing for this Trade File. Canta will help track the workflow, but clearing fees, timelines, duty estimates, and service delivery are provided by the clearing agent.
+            </p>
           </div>
         ) : null}
         <DialogFooter>
