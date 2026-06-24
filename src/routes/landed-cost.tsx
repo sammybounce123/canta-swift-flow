@@ -31,7 +31,7 @@ function LandedCostPage() {
     { id: "1", label: "Goods cost (supplier invoice)", amount: 2500 },
     { id: "2", label: "Freight / shipping", amount: 600 },
     { id: "3", label: "Customs duty", amount: 320 },
-    { id: "4", label: "Clearing & port fees", amount: 180 },
+    { id: "4", label: "Clearing agent fee (agent quote)", amount: 180 },
     { id: "5", label: "Inland transport", amount: 90 },
   ]);
 
