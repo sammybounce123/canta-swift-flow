@@ -17,7 +17,9 @@ import { Truck, Plus, MessageCircle, FileText, DollarSign, Users as UsersIcon, A
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
-import { getRequests as getClearingRequests, getBids as getClearingBids, getBidsForRequest as getClearingBidsForRequest, CLEARING_DISCLAIMER } from "@/lib/clearing-store";
+import { getRequests as getClearingRequests, getBids as getClearingBids, getBidsForRequest as getClearingBidsForRequest, CLEARING_DISCLAIMER, getAgentVerified, setAgentVerified, submitBid as submitClearingBid, withdrawBid as withdrawClearingBid, markUnableToProceed as markBidUnable, SERVICE_SCOPES, type ServiceScope } from "@/lib/clearing-store";
+import { Switch } from "@/components/ui/switch";
+import { ShieldCheck, Lock as LockIcon } from "lucide-react";
 
 export const Route = createFileRoute("/freight")({
   head: () => ({ meta: [{ title: "Freight Forwarder Workspace — Canta" }] }),
