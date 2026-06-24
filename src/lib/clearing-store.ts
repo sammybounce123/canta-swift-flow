@@ -244,11 +244,58 @@ export function acceptBid(requestId: string, bidId: string) {
           ...r,
           status: "In Workflow" as RequestStatus,
           selectedBidId: bidId,
-          workflow: [{ status: "Agent Selected" as WorkflowStatus, at: new Date().toISOString(), actor: "Importer" }],
+          workflow: [{ status: "Agent Selected" as WorkflowStatus, at: new Date().toISOString(), actor: "Importer", note: "Importer accepted bid and authorised the agent to begin clearing." }],
         }
       : r,
   );
   saveRequests(rs);
+}
+
+export function cancelRequest(requestId: string, reason?: string) {
+  saveRequests(getRequests().map((r) => r.id === requestId ? { ...r, status: "Cancelled" as RequestStatus, workflow: [...r.workflow, { status: "Cancelled" as WorkflowStatus, at: new Date().toISOString(), actor: "Importer", note: reason || "Quote request cancelled by importer." }] } : r));
+}
+
+export function reportIssue(requestId: string, note: string) {
+  saveRequests(getRequests().map((r) => r.id === requestId ? { ...r, workflow: [...r.workflow, { status: "Disputed" as WorkflowStatus, at: new Date().toISOString(), actor: "Importer", note }] } : r));
+}
+
+export function withdrawBid(bidId: string) {
+  saveBids(getBids().map((b) => b.id === bidId ? { ...b, status: "Withdrawn" as BidStatus } : b));
+}
+
+export function markUnableToProceed(requestId: string, bidId: string, reason: string) {
+  saveBids(getBids().map((b) => b.id === bidId ? { ...b, status: "Declined" as BidStatus } : b));
+  saveRequests(getRequests().map((r) => r.id === requestId ? { ...r, workflow: [...r.workflow, { status: "Disputed" as WorkflowStatus, at: new Date().toISOString(), actor: "Agent", note: `Unable to proceed: ${reason}` }] } : r));
+}
+
+export function advanceWorkflow(requestId: string, status: WorkflowStatus, actor: string, note?: string) {
+  saveRequests(getRequests().map((r) => r.id === requestId ? { ...r, workflow: [...r.workflow, { status, at: new Date().toISOString(), actor, note }] } : r));
+}
+
+export function submitBid(input: Omit<ClearingBid, "id" | "status">) {
+  const id = `BID-${Math.floor(7700 + Math.random() * 999)}`;
+  const bid: ClearingBid = { ...input, id, status: "Submitted" };
+  saveBids([bid, ...getBids()]);
+  const rs = getRequests().map((r) => r.id === input.requestId && r.status === "Quote Request Sent" ? { ...r, status: "Bids Received" as RequestStatus } : r);
+  saveRequests(rs);
+  return bid;
+}
+
+export function getAcceptedBid(requestId?: string): ClearingBid | undefined {
+  const bs = getBids().filter((b) => b.status === "Accepted");
+  if (requestId) return bs.find((b) => b.requestId === requestId);
+  return bs[0];
+}
+
+// Agent verification (demo state — toggled in Freight workspace)
+const LS_AGENT_VERIFIED = "canta:clearing:agentVerified";
+export function getAgentVerified(): boolean {
+  if (typeof window === "undefined") return true;
+  const v = window.localStorage.getItem(LS_AGENT_VERIFIED);
+  return v === null ? true : v === "true";
+}
+export function setAgentVerified(v: boolean) {
+  if (typeof window !== "undefined") window.localStorage.setItem(LS_AGENT_VERIFIED, String(v));
 }
 
 export const WORKFLOW_STAGES: WorkflowStatus[] = [
