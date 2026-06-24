@@ -67,6 +67,11 @@ function LandedCostPage() {
         <Button onClick={() => toast.success("Estimate saved")}>Save estimate</Button>
       </header>
 
+      <Card className="p-3 shadow-card border-amber-500/30 bg-amber-500/5 text-xs text-muted-foreground">
+        <span className="font-semibold text-foreground">Clearing fee source:</span> Awaiting agent bids by default. Replace with the agent-provided clearing quote once you accept a bid in the Clearing Agent Marketplace. Canta does not quote clearing fees directly — fees, timelines, duty estimates and service delivery are provided by the selected clearing agent.
+      </Card>
+
+
       <Card className="p-4 shadow-card">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div><Label>Shipment / Trade file</Label><Input value={shipment} onChange={(e) => setShipment(e.target.value)} placeholder="SH-9012" /></div>
