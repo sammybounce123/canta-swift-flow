@@ -22,7 +22,7 @@ import { ReadinessBar } from "@/components/ReadinessBar";
 import {
   type ClearingBid, type ClearingRequest, type ServiceScope,
   getRequests, getBidsForRequest, createRequest, acceptBid,
-  cancelRequest, reportIssue,
+  cancelRequest, reportIssue, loadDemoData,
   SERVICE_SCOPES, CLEARING_DISCLAIMER, WORKFLOW_STAGES,
 } from "@/lib/clearing-store";
 import { tradeFiles } from "@/lib/mock";
@@ -54,6 +54,11 @@ function ClearingQuotesPage() {
     if (!search.file) return requests;
     return requests.filter((r) => r.tradeFileId === search.file);
   }, [requests, search.file]);
+
+  // Auto-select first request so smoke testers immediately see bid comparison, accept flow, and workflow tracker.
+  useEffect(() => {
+    if (!activeReqId && filtered.length > 0) setActiveReqId(filtered[0].id);
+  }, [filtered, activeReqId]);
 
   const activeRequest = activeReqId ? requests.find((r) => r.id === activeReqId) : null;
 
@@ -91,7 +96,7 @@ function ClearingQuotesPage() {
       </Card>
 
       {filtered.length === 0 ? (
-        <EmptyRequests onCreate={() => setFormOpen(true)} />
+        <EmptyRequests onCreate={() => setFormOpen(true)} onSeed={() => { loadDemoData(); setTick((t) => t + 1); toast.success("Demo data loaded"); }} />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-[360px_minmax(0,1fr)] gap-4">
           <Card className="p-3 shadow-card h-fit">
@@ -166,7 +171,7 @@ function ClearingQuotesPage() {
   );
 }
 
-function EmptyRequests({ onCreate }: { onCreate: () => void }) {
+function EmptyRequests({ onCreate, onSeed }: { onCreate: () => void; onSeed: () => void }) {
   return (
     <Card className="p-10 text-center shadow-card">
       <Inbox className="h-6 w-6 text-muted-foreground mx-auto mb-2" />
@@ -174,9 +179,13 @@ function EmptyRequests({ onCreate }: { onCreate: () => void }) {
       <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
         Request quotes from verified clearing agents to compare fee, timeline, service scope, and rating before choosing who handles your clearing.
       </p>
-      <Button className="mt-4" onClick={onCreate}>
-        <Send className="h-4 w-4 mr-1.5" /> Request Clearing Quotes
-      </Button>
+      <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">
+        <Button onClick={onCreate}>
+          <Send className="h-4 w-4 mr-1.5" /> Request Clearing Quotes
+        </Button>
+        <Button variant="outline" onClick={onSeed}>Load demo data</Button>
+      </div>
+      <p className="text-[11px] text-muted-foreground mt-3">Demo data shows a sample request, three agent bids, accept-bid confirmation, and the clearing workflow tracker.</p>
     </Card>
   );
 }

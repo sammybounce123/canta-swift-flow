@@ -200,6 +200,10 @@ export function getRequests(): ClearingRequest[] {
   write(LS_REQUESTS, SEED_REQUESTS);
   return SEED_REQUESTS;
 }
+export function loadDemoData() {
+  write(LS_REQUESTS, SEED_REQUESTS);
+  write(LS_BIDS, SEED_BIDS);
+}
 export function saveRequests(rs: ClearingRequest[]) {
   write(LS_REQUESTS, rs);
 }
