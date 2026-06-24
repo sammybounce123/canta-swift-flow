@@ -91,6 +91,7 @@ function TradeFileDetail() {
             ["timeline", "Shipment Timeline"],
             ["documents", "Documents"],
             ["payments", "Payments"],
+            ["clearing", "Clearing Quotes"],
             ["landed", "Landed Cost"],
             ["escrow", "Escrow"],
             ["whatsapp", "WhatsApp History"],
