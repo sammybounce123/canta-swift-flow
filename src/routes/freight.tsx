@@ -124,18 +124,28 @@ function Freight() {
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="flex-wrap h-auto">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="customers">Customers</TabsTrigger>
-          <TabsTrigger value="pipeline">Shipment Pipeline</TabsTrigger>
-          <TabsTrigger value="arriving">Arriving Shipments</TabsTrigger>
-          <TabsTrigger value="quote-requests">Available Quote Requests</TabsTrigger>
-          <TabsTrigger value="my-bids">My Bids</TabsTrigger>
-          <TabsTrigger value="documents">Documents</TabsTrigger>
-          <TabsTrigger value="invoices">Invoices</TabsTrigger>
-          <TabsTrigger value="insurance">Insurance</TabsTrigger>
-          <TabsTrigger value="whatsapp">WhatsApp Updates</TabsTrigger>
-          <TabsTrigger value="reports">Reports</TabsTrigger>
+        <TabsList aria-label="Freight sections" className="flex h-auto w-full flex-wrap items-center justify-start gap-2 rounded-lg border border-border bg-muted/60 p-2">
+          {[
+            ["overview", "Overview"],
+            ["customers", "Customers"],
+            ["pipeline", "Shipment Pipeline"],
+            ["arriving", "Arriving Shipments"],
+            ["quote-requests", "Available Quote Requests"],
+            ["my-bids", "My Bids"],
+            ["documents", "Documents"],
+            ["invoices", "Invoices"],
+            ["insurance", "Insurance"],
+            ["whatsapp", "WhatsApp Updates"],
+            ["reports", "Reports"],
+          ].map(([v, l]) => (
+            <TabsTrigger
+              key={v}
+              value={v}
+              className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              {l}
+            </TabsTrigger>
+          ))}
         </TabsList>
 
         <TabsContent value="quote-requests" className="mt-6"><AgentQuoteRequestsTab /></TabsContent>
