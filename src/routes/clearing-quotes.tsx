@@ -472,7 +472,16 @@ function RequestForm({
   const [docs, setDocs] = useState<string[]>(["Supplier invoice", "Packing list", "Bill of lading"]);
 
   useEffect(() => {
-    if (open) setF((p) => ({ ...p, tradeFileId: defaultFile ?? p.tradeFileId }));
+    if (!open) return;
+    const tf = defaultFile ? tradeFiles.find((t) => t.id === defaultFile) : undefined;
+    setF((p) => ({
+      ...p,
+      tradeFileId: defaultFile ?? p.tradeFileId,
+      goodsDescription: tf?.goods ?? p.goodsDescription,
+      invoiceValue: tf ? String(tf.invoiceValue) : p.invoiceValue,
+      currency: tf?.ccy ?? p.currency,
+      portOfArrival: tf?.destination ?? p.portOfArrival,
+    }));
   }, [open, defaultFile]);
 
   const toggleDoc = (d: string) =>
