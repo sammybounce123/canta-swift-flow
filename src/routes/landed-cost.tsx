@@ -35,6 +35,22 @@ function LandedCostPage() {
     { id: "4", label: "Clearing agent fee (agent quote)", amount: 180 },
     { id: "5", label: "Inland transport", amount: 90 },
   ]);
+  const [clearingTouched, setClearingTouched] = useState(false);
+  const [acceptedBid, setAcceptedBid] = useState(() => getAcceptedBid());
+
+  useEffect(() => { setAcceptedBid(getAcceptedBid()); }, []);
+
+  // When an accepted bid exists and user hasn't manually overridden, sync the clearing line.
+  useEffect(() => {
+    if (!acceptedBid || clearingTouched) return;
+    setLines((cur) => cur.map((l) => l.id === "4" ? { ...l, label: `Clearing agent fee (${acceptedBid.agentName})`, amount: acceptedBid.clearingFee } : l));
+  }, [acceptedBid, clearingTouched]);
+
+  const clearingSource = acceptedBid && !clearingTouched
+    ? { label: `Selected agent quote — ${acceptedBid.agentName}`, tone: "border-success/40 bg-success/10" }
+    : clearingTouched
+      ? { label: "Manual estimate", tone: "border-border bg-muted/30" }
+      : { label: "Awaiting agent bids", tone: "border-amber-500/30 bg-amber-500/5" };
 
   const totals = useMemo(() => {
     const total = lines.reduce((s, l) => s + (Number(l.amount) || 0), 0);
