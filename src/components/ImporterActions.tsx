@@ -169,7 +169,7 @@ export function ImporterActions({
     { label: "Verify Supplier",        icon: BadgeCheck,    onClick: () => setOpen("verify"),        show: true },
     { label: "Save Supplier",          icon: Bookmark,      onClick: saveSupplier,                   show: variant === "supplier" },
     { label: "Request Escrow",         icon: Lock,          onClick: () => setOpen("escrow"),        show: true },
-    { label: "Request Clearing Quotes", icon: Calculator,   onClick: () => navigate({ to: "/clearing-quotes", search: ctx.tradeFileId ? { file: ctx.tradeFileId } : undefined }), show: true },
+    { label: "Request Clearing Quotes", icon: Calculator,   onClick: () => navigate({ to: "/clearing-quotes", search: { file: ctx.tradeFileId, request: undefined } }), show: true },
     { label: "Estimate Landed Cost",   icon: Calculator,    onClick: () => setOpen("landed"),        show: true },
     { label: "Link Shipment",          icon: Ship,          onClick: () => setOpen("linkShipment"),  show: variant !== "supplier" },
     { label: "Link Documents",         icon: Paperclip,     onClick: () => setOpen("linkDocs"),      show: variant === "tradefile" },
