@@ -1178,7 +1178,7 @@ function AgentQuoteRequestsTab() {
 
 function AgentMyBidsTab() {
   const bids = getClearingBids();
-  const bids = getBids();
+  const bids = getClearingBids();
   return (
     <Card className="p-4 shadow-card">
       <div className="text-sm font-semibold">My bids</div>
