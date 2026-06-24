@@ -183,12 +183,17 @@ function EmptyRequests({ onCreate }: { onCreate: () => void }) {
 function RequestDetail({
   request,
   onAccept,
+  onRefresh,
 }: {
   request: ClearingRequest;
   onAccept: (b: ClearingBid) => void;
+  onRefresh: () => void;
 }) {
   const bids = getBidsForRequest(request.id);
   const accepted = bids.find((b) => b.status === "Accepted");
+  const cancelled = request.status === "Cancelled";
+  const [issueOpen, setIssueOpen] = useState(false);
+  const [issueNote, setIssueNote] = useState("");
 
   return (
     <>
@@ -201,7 +206,20 @@ function RequestDetail({
               {request.portOfArrival} · {request.goodsCategory} · {request.serviceRequired}
             </div>
           </div>
-          <Badge variant="outline" className="text-[10px]">{request.status}</Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-[10px]">{request.status}</Badge>
+            {!accepted && !cancelled ? (
+              <Button size="sm" variant="outline" onClick={() => {
+                if (!confirm("Cancel this quote request? Agents will be notified.")) return;
+                cancelRequest(request.id);
+                toast.success("Quote request cancelled.");
+                onRefresh();
+              }}>Cancel Quote Request</Button>
+            ) : null}
+            {accepted ? (
+              <Button size="sm" variant="outline" onClick={() => setIssueOpen(true)}>Report Issue</Button>
+            ) : null}
+          </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 text-xs">
           <Info label="Trade file" v={request.tradeFileId ?? "—"} />
@@ -231,8 +249,36 @@ function RequestDetail({
           </p>
         </Card>
       ) : (
-        <BidComparison bids={bids} disabled={!!accepted} onAccept={onAccept} />
+        <>
+          {!accepted && !cancelled ? (
+            <Card className="p-3 shadow-card border-primary/30 bg-primary/5 text-xs text-muted-foreground">
+              Compare available bids and select a clearing agent when you are ready.
+            </Card>
+          ) : null}
+          <BidComparison bids={bids} disabled={!!accepted || cancelled} onAccept={onAccept} />
+        </>
       )}
+
+      <Dialog open={issueOpen} onOpenChange={(o) => !o && setIssueOpen(false)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Report an issue with this clearing</DialogTitle>
+            <DialogDescription>Canta will log the dispute and notify the clearing agent. Clearing outcome remains the agent's responsibility.</DialogDescription>
+          </DialogHeader>
+          <Textarea value={issueNote} onChange={(e) => setIssueNote(e.target.value)} placeholder="Describe the issue (e.g. duty mismatch, delay, missing docs)…" rows={4} />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIssueOpen(false)}>Cancel</Button>
+            <Button onClick={() => {
+              if (!issueNote.trim()) return toast.error("Please describe the issue");
+              reportIssue(request.id, issueNote.trim());
+              setIssueOpen(false);
+              setIssueNote("");
+              toast.success("Issue reported. Canta has logged the dispute.");
+              onRefresh();
+            }}>Submit Issue</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
