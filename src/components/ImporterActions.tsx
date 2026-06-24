@@ -181,7 +181,12 @@ export function ImporterActions({
 
   return (
     <div className={className}>
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5" role="group" aria-label={variant === "tradefile" ? "Trade file quick actions" : "Importer quick actions"}>
+      <div
+        className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+        style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "0.5rem" }}
+        role="group"
+        aria-label={variant === "tradefile" ? "Trade file quick actions" : "Importer quick actions"}
+      >
         {buttons.filter((b) => b.show).map((b) => (
           <button
             key={b.label}
