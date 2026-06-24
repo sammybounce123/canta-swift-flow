@@ -1136,8 +1136,7 @@ function InsurancePanel() {
 }
 
 function AgentQuoteRequestsTab() {
-  const { getRequests, getBidsForRequest, CLEARING_DISCLAIMER } = require("@/lib/clearing-store") as typeof import("@/lib/clearing-store");
-  const requests = getRequests();
+  const requests = getClearingRequests();
   return (
     <div className="space-y-4">
       <Card className="p-4 shadow-card border-amber-500/30 bg-amber-500/5 text-xs text-muted-foreground">
