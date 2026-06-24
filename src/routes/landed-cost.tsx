@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { Calculator, Plus, Trash2 } from "lucide-react";
 import { fmtMoney } from "@/lib/mock";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { getAcceptedBid } from "@/lib/clearing-store";
 
 export const Route = createFileRoute("/landed-cost")({
   head: () => ({ meta: [{ title: "Landed Cost — Canta" }] }),
