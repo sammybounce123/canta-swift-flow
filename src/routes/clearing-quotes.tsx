@@ -96,7 +96,7 @@ function ClearingQuotesPage() {
       </Card>
 
       {filtered.length === 0 ? (
-        <EmptyRequests onCreate={() => setFormOpen(true)} />
+        <EmptyRequests onCreate={() => setFormOpen(true)} onSeed={() => { loadDemoData(); setTick((t) => t + 1); toast.success("Demo data loaded"); }} />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-[360px_minmax(0,1fr)] gap-4">
           <Card className="p-3 shadow-card h-fit">
