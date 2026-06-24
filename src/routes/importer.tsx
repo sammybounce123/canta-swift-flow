@@ -103,7 +103,7 @@ function ImporterPortal() {
           { label: "Upload Invoice or BL", to: "/trade-desk" },
           { label: "Track Shipment", to: "/shipments" },
           { label: "Verify Supplier", to: "/verified-suppliers" },
-          { label: "Calculate Landed Cost", to: "/landed-cost" },
+          { label: "Request Clearing Quotes", to: "/clearing-quotes" },
         ]}
       />
 
