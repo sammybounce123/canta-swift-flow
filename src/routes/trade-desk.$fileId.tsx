@@ -452,7 +452,13 @@ function LandedCost({ value }: { value: number }) {
 
   return (
     <Card className="p-6 shadow-card border-accent/20 bg-gradient-to-br from-accent/5 to-transparent">
-      <div className="text-sm font-semibold flex items-center gap-2"><Calculator className="h-4 w-4 text-accent" /> Landed cost calculator</div>
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="text-sm font-semibold flex items-center gap-2"><Calculator className="h-4 w-4 text-accent" /> Landed cost calculator</div>
+        <Badge variant="outline" className="text-[10px]">Clearing fee source: Manual estimate</Badge>
+      </div>
+      <p className="text-[11px] text-muted-foreground mt-1">
+        Clearing fee comes from a verified agent bid where available, otherwise from your manual estimate. Canta does not quote clearing fees directly — request bids in <span className="font-semibold">Clearing Quotes</span>.
+      </p>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-5">
         <div className="grid grid-cols-2 gap-3">
           {inputs.map(([label, val, set]) => (
@@ -475,6 +481,45 @@ function LandedCost({ value }: { value: number }) {
         </div>
       </div>
     </Card>
+  );
+}
+
+function ClearingQuotesTab({ fileId }: { fileId: string }) {
+  return (
+    <Card className="p-6 shadow-card">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="text-sm font-semibold flex items-center gap-2"><Shield className="h-4 w-4 text-primary" /> Clearing Agent Marketplace</div>
+          <p className="text-xs text-muted-foreground mt-1 max-w-xl">
+            Get quotes from verified clearing agents and compare fee, timeline, service scope, and rating before choosing who handles your clearing.
+          </p>
+        </div>
+        <Link
+          to="/clearing-quotes"
+          search={{ file: fileId, request: undefined }}
+          className="inline-flex items-center gap-1.5 rounded-md bg-primary text-primary-foreground px-3 py-2 text-sm font-medium hover:bg-primary/90"
+        >
+          Request Clearing Quotes
+        </Link>
+      </div>
+      <div className="mt-4 rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-muted-foreground">
+        Canta connects importers with verified clearing agents. Clearing fees, timelines, duty estimates, and service delivery are provided by the clearing agent. Importers should review bids carefully before accepting.
+      </div>
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+        <Info2 label="Bids include" v="Fee, timeline, duty estimate, service scope, required docs, terms" />
+        <Info2 label="You control" v="Compare bids and pick the agent that fits — never auto-selected by Canta" />
+        <Info2 label="Workflow tracked" v="Agent selected → Documents → Clearing → Cleared → Delivered" />
+      </div>
+    </Card>
+  );
+}
+
+function Info2({ label, v }: { label: string; v: string }) {
+  return (
+    <div className="rounded-md border border-border bg-secondary/30 p-3">
+      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</div>
+      <div className="text-xs mt-1">{v}</div>
+    </div>
   );
 }
 
