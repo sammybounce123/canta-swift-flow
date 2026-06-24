@@ -443,7 +443,7 @@ function LandedCost({ value }: { value: number }) {
     ["Freight (USD)", freight, setFreight],
     ["Insurance (USD)", insurance, setInsurance],
     ["Duty estimate (USD)", duty, setDuty],
-    ["Clearing (USD)", clearing, setClearing],
+    ["Clearing agent fee (USD)", clearing, setClearing],
     ["Port / terminal (USD)", terminal, setTerminal],
     ["Local delivery (USD)", delivery, setDelivery],
     ["Repairs / other (USD)", other, setOther],
