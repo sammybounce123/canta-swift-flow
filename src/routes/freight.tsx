@@ -126,12 +126,17 @@ function Freight() {
           <TabsTrigger value="customers">Customers</TabsTrigger>
           <TabsTrigger value="pipeline">Shipment Pipeline</TabsTrigger>
           <TabsTrigger value="arriving">Arriving Shipments</TabsTrigger>
+          <TabsTrigger value="quote-requests">Available Quote Requests</TabsTrigger>
+          <TabsTrigger value="my-bids">My Bids</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="invoices">Invoices</TabsTrigger>
           <TabsTrigger value="insurance">Insurance</TabsTrigger>
           <TabsTrigger value="whatsapp">WhatsApp Updates</TabsTrigger>
           <TabsTrigger value="reports">Reports</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="quote-requests" className="mt-6"><AgentQuoteRequestsTab /></TabsContent>
+        <TabsContent value="my-bids" className="mt-6"><AgentMyBidsTab /></TabsContent>
 
         <TabsContent value="overview" className="mt-6 space-y-5">
           <Card className="p-5 shadow-card">
