@@ -1149,7 +1149,7 @@ function AgentQuoteRequestsTab() {
           {requests.length === 0 ? (
             <div className="text-sm text-muted-foreground py-6 text-center">No open quote requests right now.</div>
           ) : requests.map((r) => {
-            const bids = getBidsForRequest(r.id);
+            const bids = getClearingBidsForRequest(r.id);
             return (
               <div key={r.id} className="rounded-md border border-border p-3 flex flex-wrap items-center justify-between gap-3">
                 <div className="min-w-0">
@@ -1177,7 +1177,7 @@ function AgentQuoteRequestsTab() {
 }
 
 function AgentMyBidsTab() {
-  const { getBids } = require("@/lib/clearing-store") as typeof import("@/lib/clearing-store");
+  const bids = getClearingBids();
   const bids = getBids();
   return (
     <Card className="p-4 shadow-card">
