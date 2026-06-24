@@ -55,6 +55,11 @@ function ClearingQuotesPage() {
     return requests.filter((r) => r.tradeFileId === search.file);
   }, [requests, search.file]);
 
+  // Auto-select first request so smoke testers immediately see bid comparison, accept flow, and workflow tracker.
+  useEffect(() => {
+    if (!activeReqId && filtered.length > 0) setActiveReqId(filtered[0].id);
+  }, [filtered, activeReqId]);
+
   const activeRequest = activeReqId ? requests.find((r) => r.id === activeReqId) : null;
 
   return (
