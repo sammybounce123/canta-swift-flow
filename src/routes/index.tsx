@@ -391,7 +391,7 @@ function Landing() {
             </div>
             <div className="mt-8 flex items-center gap-2 text-xs text-primary-foreground/70">
               <MessageCircle className="h-3.5 w-3.5" />
-              Prefer WhatsApp? Start by sending your invoice, BL, container number, or shipment details and Canta will guide you from there.
+              Prefer WhatsApp? Send your invoice, BL, container number, or shipment details and Canta will guide you from there.
             </div>
           </div>
         </div>
