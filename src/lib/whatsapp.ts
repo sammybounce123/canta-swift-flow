@@ -50,7 +50,7 @@ ETA, if known: ${ctx.eta ?? ""}`,
 Goods cost: ${ctx.goodsCost ?? ""}
 Currency: ${ctx.currency ?? ""}
 Freight cost: ${ctx.freight ?? ""}
-Clearing estimate, if known: ${ctx.clearing ?? ""}
+Agent-provided clearing quote, if known: ${ctx.clearing ?? ""}
 Destination: ${ctx.destination ?? ""}
 Expected selling price: ${ctx.sellingPrice ?? ""}`,
 

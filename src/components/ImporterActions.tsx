@@ -169,7 +169,8 @@ export function ImporterActions({
     { label: "Verify Supplier",        icon: BadgeCheck,    onClick: () => setOpen("verify"),        show: true },
     { label: "Save Supplier",          icon: Bookmark,      onClick: saveSupplier,                   show: variant === "supplier" },
     { label: "Request Escrow",         icon: Lock,          onClick: () => setOpen("escrow"),        show: true },
-    { label: "Calculate Landed Cost",  icon: Calculator,    onClick: () => setOpen("landed"),        show: true },
+    { label: "Request Clearing Quotes", icon: Calculator,   onClick: () => navigate({ to: "/clearing-quotes", search: { file: ctx.tradeFileId, request: undefined } }), show: true },
+    { label: "Estimate Landed Cost",   icon: Calculator,    onClick: () => setOpen("landed"),        show: true },
     { label: "Link Shipment",          icon: Ship,          onClick: () => setOpen("linkShipment"),  show: variant !== "supplier" },
     { label: "Link Documents",         icon: Paperclip,     onClick: () => setOpen("linkDocs"),      show: variant === "tradefile" },
     { label: "Create Importer Card",   icon: CreditCard,    onClick: () => setOpen("card"),          show: variant !== "supplier" },
@@ -257,7 +258,7 @@ export function ImporterActions({
       {/* Landed cost */}
       <Dialog open={open === "landed"} onOpenChange={(o) => !o && setOpen(null)}>
         <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>Calculate Landed Cost</DialogTitle><DialogDescription>Get duty, freight, clearing and FX-included totals.</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>Estimated Landed Cost</DialogTitle><DialogDescription>Goods, freight, duty estimate and FX. Clearing fee comes from a selected agent quote — request bids in the Clearing Agent Marketplace.</DialogDescription></DialogHeader>
           <div className="grid grid-cols-2 gap-3">
             <div><Label className="text-xs">Goods cost</Label><Input value={landed.goodsCost} onChange={(e) => setLanded({ ...landed, goodsCost: e.target.value })} /></div>
             <div><Label className="text-xs">Currency</Label>
@@ -267,10 +268,11 @@ export function ImporterActions({
               </Select>
             </div>
             <div><Label className="text-xs">Freight</Label><Input value={landed.freight} onChange={(e) => setLanded({ ...landed, freight: e.target.value })} /></div>
-            <div><Label className="text-xs">Clearing estimate</Label><Input value={landed.clearing} onChange={(e) => setLanded({ ...landed, clearing: e.target.value })} /></div>
+            <div><Label className="text-xs">Agent-provided clearing quote</Label><Input value={landed.clearing} onChange={(e) => setLanded({ ...landed, clearing: e.target.value })} placeholder="From selected agent bid" /></div>
             <div><Label className="text-xs">Destination</Label><Input value={landed.destination} onChange={(e) => setLanded({ ...landed, destination: e.target.value })} /></div>
             <div><Label className="text-xs">Selling price</Label><Input value={landed.sellingPrice} onChange={(e) => setLanded({ ...landed, sellingPrice: e.target.value })} /></div>
           </div>
+          <p className="text-[11px] text-muted-foreground mt-2">Clearing fee source: selected agent quote, manual estimate, or awaiting agent bids. Canta does not quote clearing fees directly.</p>
           <DialogFooter>
             <Button variant="outline" onClick={() => { navigate({ to: "/landed-cost" }); setOpen(null); }}>Open Landed Cost Tool</Button>
             <Button onClick={submitLanded}>Request Estimate</Button>

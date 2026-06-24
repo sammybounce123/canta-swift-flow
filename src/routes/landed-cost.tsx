@@ -31,7 +31,7 @@ function LandedCostPage() {
     { id: "1", label: "Goods cost (supplier invoice)", amount: 2500 },
     { id: "2", label: "Freight / shipping", amount: 600 },
     { id: "3", label: "Customs duty", amount: 320 },
-    { id: "4", label: "Clearing & port fees", amount: 180 },
+    { id: "4", label: "Clearing agent fee (agent quote)", amount: 180 },
     { id: "5", label: "Inland transport", amount: 90 },
   ]);
 
@@ -66,6 +66,11 @@ function LandedCostPage() {
         </div>
         <Button onClick={() => toast.success("Estimate saved")}>Save estimate</Button>
       </header>
+
+      <Card className="p-3 shadow-card border-amber-500/30 bg-amber-500/5 text-xs text-muted-foreground">
+        <span className="font-semibold text-foreground">Clearing fee source:</span> Awaiting agent bids by default. Replace with the agent-provided clearing quote once you accept a bid in the Clearing Agent Marketplace. Canta does not quote clearing fees directly — fees, timelines, duty estimates and service delivery are provided by the selected clearing agent.
+      </Card>
+
 
       <Card className="p-4 shadow-card">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
