@@ -62,6 +62,7 @@ function LandedCostPage() {
   }, [lines, units, salePrice]);
 
   function update(id: string, patch: Partial<CostLine>) {
+    if (id === "4") setClearingTouched(true);
     setLines((cur) => cur.map((l) => (l.id === id ? { ...l, ...patch } : l)));
   }
   function add() {
