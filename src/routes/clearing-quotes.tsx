@@ -368,9 +368,16 @@ function BidCard({ bid, disabled, onAccept }: { bid: ClearingBid; disabled: bool
 }
 
 function WorkflowCard({ request, bid }: { request: ClearingRequest; bid: ClearingBid }) {
-  const reachedIdx = Math.max(0, request.workflow.length);
+  const stageIdxByStatus = (s: string) => WORKFLOW_STAGES.indexOf(s as never);
+  const lastStageIdx = request.workflow
+    .map((w) => stageIdxByStatus(w.status))
+    .filter((i) => i >= 0)
+    .reduce((m, i) => Math.max(m, i), 0);
+  const isDisputed = request.workflow.some((w) => w.status === "Disputed");
+  const isCancelled = request.status === "Cancelled";
+
   return (
-    <Card className="p-5 shadow-card border-success/30 bg-success/5">
+    <Card className={`p-5 shadow-card ${isDisputed ? "border-amber-500/40 bg-amber-500/5" : isCancelled ? "border-destructive/40 bg-destructive/5" : "border-success/30 bg-success/5"}`}>
       <div className="flex items-start justify-between flex-wrap gap-2">
         <div>
           <div className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Clearing workflow</div>
@@ -380,12 +387,15 @@ function WorkflowCard({ request, bid }: { request: ClearingRequest; bid: Clearin
           <div className="text-xs text-muted-foreground mt-0.5">
             Clearing fee: {fmtMoney(bid.clearingFee, "USD")} · Timeline: {bid.timelineDays} days · {bid.serviceScope}
           </div>
+          <div className="text-[11px] text-muted-foreground mt-1">Next action: agent to request documents and start clearing.</div>
         </div>
-        <Badge className="bg-success/15 text-success border-success/30">Agent Selected</Badge>
+        <Badge className={isDisputed ? "bg-amber-500/15 text-amber-700 border-amber-500/30" : isCancelled ? "bg-destructive/15 text-destructive border-destructive/30" : "bg-success/15 text-success border-success/30"}>
+          {isDisputed ? "Disputed" : isCancelled ? "Cancelled" : "Agent Selected"}
+        </Badge>
       </div>
       <div className="mt-4 grid grid-cols-2 md:grid-cols-5 gap-2">
         {WORKFLOW_STAGES.map((s, i) => {
-          const reached = i < reachedIdx || s === "Agent Selected";
+          const reached = i <= lastStageIdx;
           return (
             <div key={s} className={`rounded-md border p-2 text-[11px] ${reached ? "border-success/40 bg-success/10 text-success" : "border-border bg-card text-muted-foreground"}`}>
               <div className="font-semibold flex items-center gap-1">
@@ -396,6 +406,22 @@ function WorkflowCard({ request, bid }: { request: ClearingRequest; bid: Clearin
           );
         })}
       </div>
+      {request.workflow.length ? (
+        <div className="mt-4 border-t border-border/60 pt-3">
+          <div className="text-[11px] uppercase tracking-widest text-muted-foreground font-semibold mb-2">Workflow history</div>
+          <ul className="space-y-2">
+            {request.workflow.slice().reverse().map((w, i) => (
+              <li key={i} className="text-xs flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                <div>
+                  <div className="font-medium">{w.status} <span className="text-muted-foreground font-normal">· {new Date(w.at).toLocaleString()} · {w.actor ?? "System"}</span></div>
+                  {w.note ? <div className="text-muted-foreground">{w.note}</div> : null}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </Card>
   );
 }
