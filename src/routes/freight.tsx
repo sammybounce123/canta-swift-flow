@@ -1133,3 +1133,73 @@ function InsurancePanel() {
     </Card>
   );
 }
+
+function AgentQuoteRequestsTab() {
+  const { getRequests, getBidsForRequest, CLEARING_DISCLAIMER } = require("@/lib/clearing-store") as typeof import("@/lib/clearing-store");
+  const requests = getRequests();
+  return (
+    <div className="space-y-4">
+      <Card className="p-4 shadow-card border-amber-500/30 bg-amber-500/5 text-xs text-muted-foreground">
+        {CLEARING_DISCLAIMER}
+      </Card>
+      <Card className="p-4 shadow-card">
+        <div className="text-sm font-semibold">Available clearing quote requests</div>
+        <p className="text-xs text-muted-foreground mt-1">Review the request, then submit your bid with fee, timeline, service scope and required documents.</p>
+        <div className="mt-4 space-y-2">
+          {requests.length === 0 ? (
+            <div className="text-sm text-muted-foreground py-6 text-center">No open quote requests right now.</div>
+          ) : requests.map((r) => {
+            const bids = getBidsForRequest(r.id);
+            return (
+              <div key={r.id} className="rounded-md border border-border p-3 flex flex-wrap items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold flex items-center gap-2">
+                    {r.id}
+                    <Badge variant="outline" className="text-[10px]">{r.status}</Badge>
+                  </div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">
+                    {r.tradeFileId ? `${r.tradeFileId} · ` : ""}{r.portOfArrival} · {r.serviceRequired}
+                  </div>
+                  <div className="text-[11px] text-muted-foreground">{r.goodsDescription}</div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-[10px]">{bids.length} bid{bids.length === 1 ? "" : "s"} submitted</Badge>
+                  <Button size="sm" variant="outline" onClick={() => toast.info("Quote request details opened")}>View Request</Button>
+                  <Button size="sm" onClick={() => toast.success("Bid submitted to importer for review")}>Submit Bid</Button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function AgentMyBidsTab() {
+  const { getBids } = require("@/lib/clearing-store") as typeof import("@/lib/clearing-store");
+  const bids = getBids();
+  return (
+    <Card className="p-4 shadow-card">
+      <div className="text-sm font-semibold">My bids</div>
+      <p className="text-xs text-muted-foreground mt-1">Track bid status across all clearing quote requests you have responded to.</p>
+      <div className="mt-4 space-y-2">
+        {bids.map((b) => (
+          <div key={b.id} className="rounded-md border border-border p-3 flex flex-wrap items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-sm font-semibold">{b.agentName} · {b.id}</div>
+              <div className="text-[11px] text-muted-foreground mt-0.5">
+                Request {b.requestId} · {b.serviceScope} · Fee {fmtMoney(b.clearingFee, "USD")} · {b.timelineDays} days
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-[10px]">{b.status}</Badge>
+              <Button size="sm" variant="outline" onClick={() => toast.info("Documents requested from importer")}>Request Documents</Button>
+              <Button size="sm" variant="ghost" onClick={() => toast.info("Status update sent")}>Update Status</Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
