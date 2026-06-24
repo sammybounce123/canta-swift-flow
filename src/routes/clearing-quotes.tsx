@@ -22,8 +22,10 @@ import { ReadinessBar } from "@/components/ReadinessBar";
 import {
   type ClearingBid, type ClearingRequest, type ServiceScope,
   getRequests, getBidsForRequest, createRequest, acceptBid,
+  cancelRequest, reportIssue,
   SERVICE_SCOPES, CLEARING_DISCLAIMER, WORKFLOW_STAGES,
 } from "@/lib/clearing-store";
+import { tradeFiles } from "@/lib/mock";
 import { fmtMoney } from "@/lib/mock";
 
 export const Route = createFileRoute("/clearing-quotes")({
@@ -127,6 +129,7 @@ function ClearingQuotesPage() {
               <RequestDetail
                 request={activeRequest}
                 onAccept={(bid) => setAcceptBidState({ requestId: activeRequest.id, bid })}
+                onRefresh={() => setTick((t) => t + 1)}
               />
             ) : (
               <Card className="p-10 text-center text-sm text-muted-foreground shadow-card">
@@ -181,12 +184,17 @@ function EmptyRequests({ onCreate }: { onCreate: () => void }) {
 function RequestDetail({
   request,
   onAccept,
+  onRefresh,
 }: {
   request: ClearingRequest;
   onAccept: (b: ClearingBid) => void;
+  onRefresh: () => void;
 }) {
   const bids = getBidsForRequest(request.id);
   const accepted = bids.find((b) => b.status === "Accepted");
+  const cancelled = request.status === "Cancelled";
+  const [issueOpen, setIssueOpen] = useState(false);
+  const [issueNote, setIssueNote] = useState("");
 
   return (
     <>
@@ -199,7 +207,20 @@ function RequestDetail({
               {request.portOfArrival} · {request.goodsCategory} · {request.serviceRequired}
             </div>
           </div>
-          <Badge variant="outline" className="text-[10px]">{request.status}</Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-[10px]">{request.status}</Badge>
+            {!accepted && !cancelled ? (
+              <Button size="sm" variant="outline" onClick={() => {
+                if (!confirm("Cancel this quote request? Agents will be notified.")) return;
+                cancelRequest(request.id);
+                toast.success("Quote request cancelled.");
+                onRefresh();
+              }}>Cancel Quote Request</Button>
+            ) : null}
+            {accepted ? (
+              <Button size="sm" variant="outline" onClick={() => setIssueOpen(true)}>Report Issue</Button>
+            ) : null}
+          </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 text-xs">
           <Info label="Trade file" v={request.tradeFileId ?? "—"} />
@@ -229,8 +250,36 @@ function RequestDetail({
           </p>
         </Card>
       ) : (
-        <BidComparison bids={bids} disabled={!!accepted} onAccept={onAccept} />
+        <>
+          {!accepted && !cancelled ? (
+            <Card className="p-3 shadow-card border-primary/30 bg-primary/5 text-xs text-muted-foreground">
+              Compare available bids and select a clearing agent when you are ready.
+            </Card>
+          ) : null}
+          <BidComparison bids={bids} disabled={!!accepted || cancelled} onAccept={onAccept} />
+        </>
       )}
+
+      <Dialog open={issueOpen} onOpenChange={(o) => !o && setIssueOpen(false)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Report an issue with this clearing</DialogTitle>
+            <DialogDescription>Canta will log the dispute and notify the clearing agent. Clearing outcome remains the agent's responsibility.</DialogDescription>
+          </DialogHeader>
+          <Textarea value={issueNote} onChange={(e) => setIssueNote(e.target.value)} placeholder="Describe the issue (e.g. duty mismatch, delay, missing docs)…" rows={4} />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIssueOpen(false)}>Cancel</Button>
+            <Button onClick={() => {
+              if (!issueNote.trim()) return toast.error("Please describe the issue");
+              reportIssue(request.id, issueNote.trim());
+              setIssueOpen(false);
+              setIssueNote("");
+              toast.success("Issue reported. Canta has logged the dispute.");
+              onRefresh();
+            }}>Submit Issue</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
@@ -319,9 +368,16 @@ function BidCard({ bid, disabled, onAccept }: { bid: ClearingBid; disabled: bool
 }
 
 function WorkflowCard({ request, bid }: { request: ClearingRequest; bid: ClearingBid }) {
-  const reachedIdx = Math.max(0, request.workflow.length);
+  const stageIdxByStatus = (s: string) => WORKFLOW_STAGES.indexOf(s as never);
+  const lastStageIdx = request.workflow
+    .map((w) => stageIdxByStatus(w.status))
+    .filter((i) => i >= 0)
+    .reduce((m, i) => Math.max(m, i), 0);
+  const isDisputed = request.workflow.some((w) => w.status === "Disputed");
+  const isCancelled = request.status === "Cancelled";
+
   return (
-    <Card className="p-5 shadow-card border-success/30 bg-success/5">
+    <Card className={`p-5 shadow-card ${isDisputed ? "border-amber-500/40 bg-amber-500/5" : isCancelled ? "border-destructive/40 bg-destructive/5" : "border-success/30 bg-success/5"}`}>
       <div className="flex items-start justify-between flex-wrap gap-2">
         <div>
           <div className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Clearing workflow</div>
@@ -331,12 +387,15 @@ function WorkflowCard({ request, bid }: { request: ClearingRequest; bid: Clearin
           <div className="text-xs text-muted-foreground mt-0.5">
             Clearing fee: {fmtMoney(bid.clearingFee, "USD")} · Timeline: {bid.timelineDays} days · {bid.serviceScope}
           </div>
+          <div className="text-[11px] text-muted-foreground mt-1">Next action: agent to request documents and start clearing.</div>
         </div>
-        <Badge className="bg-success/15 text-success border-success/30">Agent Selected</Badge>
+        <Badge className={isDisputed ? "bg-amber-500/15 text-amber-700 border-amber-500/30" : isCancelled ? "bg-destructive/15 text-destructive border-destructive/30" : "bg-success/15 text-success border-success/30"}>
+          {isDisputed ? "Disputed" : isCancelled ? "Cancelled" : "Agent Selected"}
+        </Badge>
       </div>
       <div className="mt-4 grid grid-cols-2 md:grid-cols-5 gap-2">
         {WORKFLOW_STAGES.map((s, i) => {
-          const reached = i < reachedIdx || s === "Agent Selected";
+          const reached = i <= lastStageIdx;
           return (
             <div key={s} className={`rounded-md border p-2 text-[11px] ${reached ? "border-success/40 bg-success/10 text-success" : "border-border bg-card text-muted-foreground"}`}>
               <div className="font-semibold flex items-center gap-1">
@@ -347,6 +406,22 @@ function WorkflowCard({ request, bid }: { request: ClearingRequest; bid: Clearin
           );
         })}
       </div>
+      {request.workflow.length ? (
+        <div className="mt-4 border-t border-border/60 pt-3">
+          <div className="text-[11px] uppercase tracking-widest text-muted-foreground font-semibold mb-2">Workflow history</div>
+          <ul className="space-y-2">
+            {request.workflow.slice().reverse().map((w, i) => (
+              <li key={i} className="text-xs flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                <div>
+                  <div className="font-medium">{w.status} <span className="text-muted-foreground font-normal">· {new Date(w.at).toLocaleString()} · {w.actor ?? "System"}</span></div>
+                  {w.note ? <div className="text-muted-foreground">{w.note}</div> : null}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </Card>
   );
 }
@@ -397,7 +472,16 @@ function RequestForm({
   const [docs, setDocs] = useState<string[]>(["Supplier invoice", "Packing list", "Bill of lading"]);
 
   useEffect(() => {
-    if (open) setF((p) => ({ ...p, tradeFileId: defaultFile ?? p.tradeFileId }));
+    if (!open) return;
+    const tf = defaultFile ? tradeFiles.find((t) => t.id === defaultFile) : undefined;
+    setF((p) => ({
+      ...p,
+      tradeFileId: defaultFile ?? p.tradeFileId,
+      goodsDescription: tf?.goods ?? p.goodsDescription,
+      invoiceValue: tf ? String(tf.invoiceValue) : p.invoiceValue,
+      currency: tf?.ccy ?? p.currency,
+      portOfArrival: tf?.destination ?? p.portOfArrival,
+    }));
   }, [open, defaultFile]);
 
   const toggleDoc = (d: string) =>
@@ -520,9 +604,13 @@ function AcceptBidDialog({
           <DialogTitle>Confirm clearing agent selection</DialogTitle>
         </DialogHeader>
         {state ? (
-          <div className="text-sm text-muted-foreground">
-            You are selecting <span className="text-foreground font-semibold">{state.bid.agentName}</span> to handle clearing for this trade file.
-            Canta will help track the workflow, but clearing fees, timelines, and service delivery are provided by the clearing agent.
+          <div className="space-y-3 text-sm">
+            <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-800 dark:text-amber-200">
+              <span className="font-semibold">Canta is not the clearing agent.</span> Canta connects you with verified clearing agents and helps track the workflow.
+            </div>
+            <p className="text-muted-foreground">
+              You are selecting <span className="text-foreground font-semibold">{state.bid.agentName}</span> to handle clearing for this Trade File. Canta will help track the workflow, but clearing fees, timelines, duty estimates, and service delivery are provided by the clearing agent.
+            </p>
           </div>
         ) : null}
         <DialogFooter>
