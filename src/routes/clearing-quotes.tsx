@@ -129,6 +129,7 @@ function ClearingQuotesPage() {
               <RequestDetail
                 request={activeRequest}
                 onAccept={(bid) => setAcceptBidState({ requestId: activeRequest.id, bid })}
+                onRefresh={() => setTick((t) => t + 1)}
               />
             ) : (
               <Card className="p-10 text-center text-sm text-muted-foreground shadow-card">
