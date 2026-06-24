@@ -184,6 +184,10 @@ function TradeFileDetail() {
           <Payments file={file} />
         </TabsContent>
 
+        <TabsContent value="clearing">
+          <ClearingQuotesTab fileId={file.id} />
+        </TabsContent>
+
         <TabsContent value="landed">
           <LandedCost value={file.invoiceValue} />
         </TabsContent>
