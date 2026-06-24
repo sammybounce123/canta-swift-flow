@@ -1137,70 +1137,221 @@ function InsurancePanel() {
   );
 }
 
+function AgentVerificationBar({ verified, onToggle }: { verified: boolean; onToggle: (v: boolean) => void }) {
+  return (
+    <Card className={`p-3 shadow-card flex items-center justify-between gap-3 ${verified ? "border-success/30 bg-success/5" : "border-amber-500/30 bg-amber-500/5"}`}>
+      <div className="flex items-center gap-2 text-xs">
+        {verified ? <ShieldCheck className="h-4 w-4 text-success" /> : <LockIcon className="h-4 w-4 text-amber-600" />}
+        <div>
+          <div className="font-semibold text-sm">{verified ? "Verified clearing agent" : "Verification required"}</div>
+          <div className="text-muted-foreground">{verified ? "You can view and bid on importer quote requests." : "Complete verification to bid on clearing quote requests."}</div>
+        </div>
+      </div>
+      <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+        <span>Demo verification</span>
+        <Switch checked={verified} onCheckedChange={onToggle} />
+      </div>
+    </Card>
+  );
+}
+
 function AgentQuoteRequestsTab() {
-  const requests = getClearingRequests();
+  const [verified, setVerified] = useState(() => getAgentVerified());
+  const [tick, setTick] = useState(0);
+  const requests = useMemo(() => getClearingRequests().filter((r) => r.status !== "Cancelled"), [tick]);
+  const [bidFor, setBidFor] = useState<string | null>(null);
+
+  const toggleVerify = (v: boolean) => { setAgentVerified(v); setVerified(v); };
+
   return (
     <div className="space-y-4">
       <Card className="p-4 shadow-card border-amber-500/30 bg-amber-500/5 text-xs text-muted-foreground">
         {CLEARING_DISCLAIMER}
       </Card>
-      <Card className="p-4 shadow-card">
-        <div className="text-sm font-semibold">Available clearing quote requests</div>
-        <p className="text-xs text-muted-foreground mt-1">Review the request, then submit your bid with fee, timeline, service scope and required documents.</p>
-        <div className="mt-4 space-y-2">
-          {requests.length === 0 ? (
-            <div className="text-sm text-muted-foreground py-6 text-center">No open quote requests right now.</div>
-          ) : requests.map((r) => {
-            const bids = getClearingBidsForRequest(r.id);
-            return (
-              <div key={r.id} className="rounded-md border border-border p-3 flex flex-wrap items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold flex items-center gap-2">
-                    {r.id}
-                    <Badge variant="outline" className="text-[10px]">{r.status}</Badge>
+      <AgentVerificationBar verified={verified} onToggle={toggleVerify} />
+      {!verified ? (
+        <Card className="p-8 text-center shadow-card border-dashed">
+          <LockIcon className="h-6 w-6 text-muted-foreground mx-auto mb-2" />
+          <div className="text-base font-semibold">Complete verification to bid on clearing quote requests</div>
+          <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
+            Only verified clearing agents can view and bid on importer quote requests. Submit your verification documents to start receiving requests.
+          </p>
+        </Card>
+      ) : (
+        <Card className="p-4 shadow-card">
+          <div className="text-sm font-semibold">Available clearing quote requests</div>
+          <p className="text-xs text-muted-foreground mt-1">Each request shows only the details the importer chose to share. Review and submit a bid with fee, timeline, service scope and required documents.</p>
+          <div className="mt-4 space-y-2">
+            {requests.length === 0 ? (
+              <div className="text-sm text-muted-foreground py-6 text-center">No open quote requests right now.</div>
+            ) : requests.map((r) => {
+              const bids = getClearingBidsForRequest(r.id);
+              return (
+                <div key={r.id} className="rounded-md border border-border p-3 flex flex-wrap items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold flex items-center gap-2">
+                      {r.id}
+                      <Badge variant="outline" className="text-[10px]">{r.status}</Badge>
+                    </div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">
+                      {r.portOfArrival} · {r.serviceRequired}
+                    </div>
+                    <div className="text-[11px] text-muted-foreground">{r.goodsDescription}</div>
                   </div>
-                  <div className="text-[11px] text-muted-foreground mt-0.5">
-                    {r.tradeFileId ? `${r.tradeFileId} · ` : ""}{r.portOfArrival} · {r.serviceRequired}
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-[10px]">{bids.length} bid{bids.length === 1 ? "" : "s"} submitted</Badge>
+                    <Button size="sm" disabled={r.status === "In Workflow" || r.status === "Completed"} onClick={() => setBidFor(r.id)}>Submit Bid</Button>
                   </div>
-                  <div className="text-[11px] text-muted-foreground">{r.goodsDescription}</div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-[10px]">{bids.length} bid{bids.length === 1 ? "" : "s"} submitted</Badge>
-                  <Button size="sm" variant="outline" onClick={() => toast.info("Quote request details opened")}>View Request</Button>
-                  <Button size="sm" onClick={() => toast.success("Bid submitted to importer for review")}>Submit Bid</Button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </Card>
+              );
+            })}
+          </div>
+        </Card>
+      )}
+      <SubmitBidDialog requestId={bidFor} onClose={() => setBidFor(null)} onSubmitted={() => { setBidFor(null); setTick((t) => t + 1); }} />
     </div>
   );
 }
 
+function SubmitBidDialog({ requestId, onClose, onSubmitted }: { requestId: string | null; onClose: () => void; onSubmitted: () => void }) {
+  const [f, setF] = useState({
+    agentName: "Apapa Prime Clearing Ltd",
+    clearingFee: "2400",
+    dutyEstimate: "",
+    serviceScope: "Clearing + delivery" as ServiceScope,
+    timelineDays: "6",
+    requiredDocs: "Form M, PAAR, SONCAP",
+    terms: "50% upfront, 50% on release.",
+    notes: "",
+    expiresInHrs: "72",
+  });
+
+  const submit = () => {
+    if (!requestId) return;
+    if (!f.agentName || !f.clearingFee || !f.timelineDays) return toast.error("Agent name, fee and timeline are required");
+    submitClearingBid({
+      requestId,
+      agentName: f.agentName,
+      verified: true,
+      rating: 4.7,
+      completedJobs: 220,
+      responseTimeHrs: 3,
+      clearingFee: Number(f.clearingFee) || 0,
+      dutyEstimate: f.dutyEstimate ? Number(f.dutyEstimate) : undefined,
+      serviceScope: f.serviceScope,
+      timelineDays: Number(f.timelineDays) || 0,
+      requiredDocs: f.requiredDocs.split(",").map((s) => s.trim()).filter(Boolean),
+      terms: f.terms,
+      notes: f.notes || undefined,
+      expiresAt: new Date(Date.now() + (Number(f.expiresInHrs) || 72) * 3600_000).toISOString(),
+    });
+    toast.success("Bid submitted to importer for review");
+    onSubmitted();
+  };
+
+  return (
+    <Dialog open={!!requestId} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Submit clearing bid</DialogTitle>
+        </DialogHeader>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2"><Label className="text-xs">Agent name</Label><Input value={f.agentName} onChange={(e) => setF({ ...f, agentName: e.target.value })} /></div>
+          <div><Label className="text-xs">Clearing fee (USD)</Label><Input value={f.clearingFee} onChange={(e) => setF({ ...f, clearingFee: e.target.value })} /></div>
+          <div><Label className="text-xs">Duty estimate (USD, optional)</Label><Input value={f.dutyEstimate} onChange={(e) => setF({ ...f, dutyEstimate: e.target.value })} /></div>
+          <div><Label className="text-xs">Timeline (days)</Label><Input value={f.timelineDays} onChange={(e) => setF({ ...f, timelineDays: e.target.value })} /></div>
+          <div><Label className="text-xs">Bid expires in (hrs)</Label><Input value={f.expiresInHrs} onChange={(e) => setF({ ...f, expiresInHrs: e.target.value })} /></div>
+          <div className="col-span-2"><Label className="text-xs">Service scope</Label>
+            <Select value={f.serviceScope} onValueChange={(v) => setF({ ...f, serviceScope: v as ServiceScope })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>{SERVICE_SCOPES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
+          <div className="col-span-2"><Label className="text-xs">Required documents (comma-separated)</Label><Input value={f.requiredDocs} onChange={(e) => setF({ ...f, requiredDocs: e.target.value })} /></div>
+          <div className="col-span-2"><Label className="text-xs">Payment terms</Label><Textarea value={f.terms} onChange={(e) => setF({ ...f, terms: e.target.value })} rows={2} /></div>
+          <div className="col-span-2"><Label className="text-xs">Notes (optional)</Label><Textarea value={f.notes} onChange={(e) => setF({ ...f, notes: e.target.value })} rows={2} /></div>
+        </div>
+        <p className="text-[11px] text-muted-foreground">By submitting, you confirm the fee, timeline and service scope. Canta does not guarantee clearing outcomes.</p>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button onClick={submit}>Submit Bid</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function AgentMyBidsTab() {
-  const bids = getClearingBids();
+  const [tick, setTick] = useState(0);
+  const bids = useMemo(() => getClearingBids(), [tick]);
+  const requests = useMemo(() => getClearingRequests(), [tick]);
+  const [unableFor, setUnableFor] = useState<string | null>(null);
+  const [unableNote, setUnableNote] = useState("");
+
   return (
     <Card className="p-4 shadow-card">
       <div className="text-sm font-semibold">My bids</div>
       <p className="text-xs text-muted-foreground mt-1">Track bid status across all clearing quote requests you have responded to.</p>
       <div className="mt-4 space-y-2">
-        {bids.map((b) => (
-          <div key={b.id} className="rounded-md border border-border p-3 flex flex-wrap items-center justify-between gap-3">
-            <div className="min-w-0">
-              <div className="text-sm font-semibold">{b.agentName} · {b.id}</div>
-              <div className="text-[11px] text-muted-foreground mt-0.5">
-                Request {b.requestId} · {b.serviceScope} · Fee {fmtMoney(b.clearingFee, "USD")} · {b.timelineDays} days
+        {bids.length === 0 ? (
+          <div className="text-sm text-muted-foreground py-6 text-center">No bids submitted yet.</div>
+        ) : bids.map((b) => {
+          const accepted = b.status === "Accepted";
+          const withdrawn = b.status === "Withdrawn";
+          const inactive = b.status === "Not Selected" || b.status === "Declined" || b.status === "Expired";
+          return (
+            <div key={b.id} className="rounded-md border border-border p-3 flex flex-wrap items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-sm font-semibold">{b.agentName} · {b.id}</div>
+                <div className="text-[11px] text-muted-foreground mt-0.5">
+                  Request {b.requestId} · {b.serviceScope} · Fee {fmtMoney(b.clearingFee, "USD")} · {b.timelineDays} days
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-[10px]">{b.status}</Badge>
+                {!accepted && !withdrawn && !inactive ? (
+                  <Button size="sm" variant="outline" onClick={() => {
+                    if (!confirm("Withdraw this bid? The importer will be notified.")) return;
+                    withdrawClearingBid(b.id);
+                    toast.success("Bid withdrawn");
+                    setTick((t) => t + 1);
+                  }}>Withdraw Bid</Button>
+                ) : null}
+                {accepted ? (
+                  <>
+                    <Button size="sm" variant="outline" onClick={() => toast.info("Documents requested from importer")}>Request Documents</Button>
+                    <Button size="sm" variant="outline" onClick={() => toast.info("Status update sent")}>Update Status</Button>
+                    <Button size="sm" variant="outline" className="text-destructive" onClick={() => setUnableFor(b.id)}>Unable to Proceed</Button>
+                  </>
+                ) : null}
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-[10px]">{b.status}</Badge>
-              <Button size="sm" variant="outline" onClick={() => toast.info("Documents requested from importer")}>Request Documents</Button>
-              <Button size="sm" variant="ghost" onClick={() => toast.info("Status update sent")}>Update Status</Button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
+
+      <Dialog open={!!unableFor} onOpenChange={(o) => !o && setUnableFor(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Mark as unable to proceed</DialogTitle>
+          </DialogHeader>
+          <Textarea value={unableNote} onChange={(e) => setUnableNote(e.target.value)} placeholder="Reason (e.g. missing docs, port conditions, duty dispute)…" rows={4} />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setUnableFor(null)}>Cancel</Button>
+            <Button onClick={() => {
+              if (!unableFor) return;
+              if (!unableNote.trim()) return toast.error("Please provide a reason");
+              const bid = bids.find((b) => b.id === unableFor);
+              const req = requests.find((r) => r.id === bid?.requestId);
+              if (bid && req) markBidUnable(req.id, bid.id, unableNote.trim());
+              toast.success("Marked as unable to proceed. Importer notified.");
+              setUnableFor(null);
+              setUnableNote("");
+              setTick((t) => t + 1);
+            }}>Confirm</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
