@@ -171,7 +171,7 @@ function ClearingQuotesPage() {
   );
 }
 
-function EmptyRequests({ onCreate }: { onCreate: () => void }) {
+function EmptyRequests({ onCreate, onSeed }: { onCreate: () => void; onSeed: () => void }) {
   return (
     <Card className="p-10 text-center shadow-card">
       <Inbox className="h-6 w-6 text-muted-foreground mx-auto mb-2" />
@@ -179,9 +179,13 @@ function EmptyRequests({ onCreate }: { onCreate: () => void }) {
       <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
         Request quotes from verified clearing agents to compare fee, timeline, service scope, and rating before choosing who handles your clearing.
       </p>
-      <Button className="mt-4" onClick={onCreate}>
-        <Send className="h-4 w-4 mr-1.5" /> Request Clearing Quotes
-      </Button>
+      <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">
+        <Button onClick={onCreate}>
+          <Send className="h-4 w-4 mr-1.5" /> Request Clearing Quotes
+        </Button>
+        <Button variant="outline" onClick={onSeed}>Load demo data</Button>
+      </div>
+      <p className="text-[11px] text-muted-foreground mt-3">Demo data shows a sample request, three agent bids, accept-bid confirmation, and the clearing workflow tracker.</p>
     </Card>
   );
 }
