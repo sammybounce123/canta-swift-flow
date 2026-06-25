@@ -82,19 +82,19 @@ function Landing() {
         <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-accent/15 blur-3xl -z-10" />
         <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-primary-glow/25 blur-3xl -z-10" />
 
-        <div className="max-w-7xl mx-auto px-6 pt-20 pb-24 lg:pt-28 lg:pb-32 text-primary-foreground relative">
+        <div className="max-w-6xl mx-auto px-6 pt-20 pb-24 lg:pt-28 lg:pb-32 text-primary-foreground relative flex flex-col items-center text-center">
           <Badge className="bg-white/10 text-primary-foreground border border-white/20 hover:bg-white/15">
             <Sparkles className="h-3 w-3 mr-1" /> A focused trade & treasury platform
           </Badge>
-          <h1 className="mt-6 text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05] max-w-5xl">
+          <h1 className="mt-6 text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05] max-w-5xl mx-auto">
             One trusted workspace for{" "}
             <span className="text-accent">trade, treasury, and clearing</span>.
           </h1>
-          <p className="mt-6 max-w-3xl text-lg text-primary-foreground/80">
+          <p className="mt-6 max-w-3xl mx-auto text-lg text-primary-foreground/80">
             Canta helps importers, enterprises, clearing agents, and partners manage trade files,
             FX, supplier payments, clearing quotes, documents, and payouts from one trusted workspace.
           </p>
-          <div className="mt-10 flex flex-wrap gap-3">
+          <div className="mt-10 flex flex-wrap gap-3 justify-center">
             <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold">
               <Link to="/importer" onClick={pickWorkspace("Importer")}>Start with Importer Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
             </Button>
@@ -108,7 +108,7 @@ function Landing() {
             </Button>
           </div>
 
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl">
+          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto w-full">
             {[
               { v: "1 platform", l: "Trade, treasury & clearing" },
               { v: "4", l: "Focused workspaces" },
