@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ActionButton, ActionGroup } from "@/components/ui/action-group";
 import {
   MessageCircle, Send, Upload, Bell, FileText, Ship, DollarSign,
   LifeBuoy, Paperclip, Plus, FilePlus2, Link2,
@@ -113,15 +114,15 @@ function WhatsAppCustomer() {
       {/* Quick customer-facing actions */}
       <Card className="p-4 shadow-card">
         <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Quick actions</div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
-          <Button size="sm" variant="outline" className="h-auto min-h-10 justify-start whitespace-normal text-left" onClick={() => toast.success("Upload dialog opened")}><Upload className="h-3.5 w-3.5 mr-1.5" /> Upload Document</Button>
-          <Button size="sm" variant="outline" className="h-auto min-h-10 justify-start whitespace-normal text-left" onClick={() => openWhatsApp("trackShipment")}><Ship className="h-3.5 w-3.5 mr-1.5" /> Request Shipment Update</Button>
-          <Button size="sm" variant="outline" className="h-auto min-h-10 justify-start whitespace-normal text-left" onClick={() => openWhatsApp("landedCost")}><DollarSign className="h-3.5 w-3.5 mr-1.5" /> Request Landed Cost</Button>
-          <Button size="sm" variant="outline" className="h-auto min-h-10 justify-start whitespace-normal text-left" onClick={() => openWhatsApp("missingDocumentReminder")}><Bell className="h-3.5 w-3.5 mr-1.5" /> Send Reminder</Button>
-          <Button size="sm" variant="outline" asChild className="h-auto min-h-10 justify-start whitespace-normal text-left"><Link to="/trade-desk"><FilePlus2 className="h-3.5 w-3.5 mr-1.5" /> Create Trade File</Link></Button>
-          <Button size="sm" variant="outline" asChild className="h-auto min-h-10 justify-start whitespace-normal text-left"><Link to="/shipments"><Link2 className="h-3.5 w-3.5 mr-1.5" /> Link to Shipment</Link></Button>
-          <Button size="sm" variant="outline" asChild className="h-auto min-h-10 justify-start whitespace-normal text-left"><Link to="/support"><LifeBuoy className="h-3.5 w-3.5 mr-1.5" /> Contact Support</Link></Button>
-        </div>
+        <ActionGroup label="WhatsApp quick actions" className="lg:grid-cols-4">
+          <ActionButton onClick={() => toast.success("Upload dialog opened")}><Upload className="h-3.5 w-3.5" /> Upload Document</ActionButton>
+          <ActionButton onClick={() => openWhatsApp("trackShipment")}><Ship className="h-3.5 w-3.5" /> Request Shipment Update</ActionButton>
+          <ActionButton onClick={() => openWhatsApp("landedCost")}><DollarSign className="h-3.5 w-3.5" /> Request Landed Cost</ActionButton>
+          <ActionButton onClick={() => openWhatsApp("missingDocumentReminder")}><Bell className="h-3.5 w-3.5" /> Send Reminder</ActionButton>
+          <ActionButton asChild><Link to="/trade-desk"><FilePlus2 className="h-3.5 w-3.5" /> Create Trade File</Link></ActionButton>
+          <ActionButton asChild><Link to="/shipments"><Link2 className="h-3.5 w-3.5" /> Link to Shipment</Link></ActionButton>
+          <ActionButton asChild><Link to="/support"><LifeBuoy className="h-3.5 w-3.5" /> Contact Support</Link></ActionButton>
+        </ActionGroup>
       </Card>
 
 

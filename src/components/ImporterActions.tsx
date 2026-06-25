@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
+import { ActionButton, ActionGroup } from "@/components/ui/action-group";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription,
 } from "@/components/ui/dialog";
@@ -181,28 +182,24 @@ export function ImporterActions({
 
   return (
     <div className={className}>
-      <div
-        className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
-        style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "0.5rem" }}
-        role="group"
-        aria-label={variant === "tradefile" ? "Trade file quick actions" : "Importer quick actions"}
-      >
+      <ActionGroup label={variant === "tradefile" ? "Trade file quick actions" : "Importer quick actions"}>
         {buttons.filter((b) => b.show).map((b) => (
-          <button
+          <ActionButton
             key={b.label}
             type="button"
             onClick={b.onClick}
-            className={`group flex min-h-12 w-full items-start gap-2 rounded-md border px-3 py-2.5 text-left text-sm font-medium leading-snug transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+            variant={b.primary ? "default" : "outline"}
+            className={
               b.primary
-                ? "border-primary bg-primary text-primary-foreground hover:bg-primary/90"
-                : "border-border bg-background text-foreground hover:border-primary/40 hover:bg-secondary/70"
-            }`}
+                ? "hover:bg-primary/90"
+                : "bg-background text-foreground hover:bg-secondary/70"
+            }
           >
             <b.icon className="mt-0.5 h-4 w-4 shrink-0" />
             <span className="min-w-0 whitespace-normal break-words">{b.label}</span>
-          </button>
+          </ActionButton>
         ))}
-      </div>
+      </ActionGroup>
 
       {/* Quote */}
       <Dialog open={open === "quote"} onOpenChange={(o) => !o && setOpen(null)}>
