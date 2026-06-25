@@ -7,7 +7,7 @@ import {
   ArrowRight, Zap, Shield, Globe2, Sparkles, TrendingUp, CheckCircle2,
   Building2, Lock, Quote, Wallet, Ship, CreditCard, Brain, FileText,
   MessageCircle, Truck, Factory, Users, GraduationCap, Plane, Briefcase,
-  ShieldCheck, ScanLine, Receipt, Languages,
+  ShieldCheck, ScanLine, Receipt, Languages, Home,
 } from "lucide-react";
 
 // Set workspace on click so the destination renders its correct shell, sidebar
