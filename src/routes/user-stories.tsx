@@ -41,8 +41,7 @@ const GROUPS: Group[] = [
       { as: "an importer", want: "to save a verified supplier to My Suppliers", so: "I can reuse them on future trade files" },
       { as: "an importer", want: "to start a trade file directly from a supplier profile", so: "the supplier is pre-linked to the trade" },
       { as: "an importer", want: "to request escrow on a trade file", so: "funds release only when shipment conditions are met" },
-      { as: "an importer", want: "to request a landed cost estimate, link shipments and link documents to a trade file", so: "everything for a trade lives in one place" },
-      { as: "an importer", want: "to create an importer card linked to a trade file or shipment", so: "spend is attributed and capped per trade" },
+      { as: "an importer", want: "to request clearing quotes, link shipments and link documents to a trade file", so: "everything for a trade lives in one place" },
       { as: "an importer", want: "to invite a freight forwarder to a trade file and send WhatsApp updates", so: "all parties stay in sync" },
     ],
   },
@@ -69,7 +68,7 @@ const GROUPS: Group[] = [
       { as: "a global merchant", want: "to land on /collections by default (not the generic dashboard)", so: "my collections workspace opens directly" },
       { as: "a global merchant", want: "to pick a guided template (Tuition, Medical, Property, Travel, E-commerce Order, Professional Services, Supplier Invoice) at /collections/new", so: "I capture the right fields for my use case" },
       { as: "a global merchant", want: "each template submission to create an invoice + payment link + payer record + reconciliation reference + settlement batch entry", so: "downstream finance work is automatic" },
-      { as: "a global merchant", want: "to manage Payers, Payment Links, Reconciliation, Settlement Approvals, Reports and Global Spend Cards in one workspace", so: "I run the whole collections cycle in Canta" },
+      { as: "a global merchant", want: "to manage Payers, Payment Links, Reconciliation, Settlement Approvals and Reports in one workspace", so: "I run the whole collections cycle in Canta" },
     ],
   },
   {
@@ -84,17 +83,6 @@ const GROUPS: Group[] = [
       { as: "a foreign supplier", want: "to request proof of funds from a buyer before shipping", so: "I de-risk large orders" },
       { as: "a foreign supplier", want: "to offer escrow terms on a trade", so: "the buyer is comfortable and I am protected" },
       { as: "a foreign supplier", want: "Verified Suppliers to NOT be my primary discovery module", so: "my workspace stays buyer-focused" },
-    ],
-  },
-  {
-    persona: "Global Spend & Cards",
-    route: "/cards",
-    tagline: "Cards across /cards, /treasury/cards, /importer/cards and /freight/cards.",
-    stories: [
-      { as: "a card admin", want: "a 5-step card purpose wizard (purpose → user → linked entity → controls → review)", so: "every card is issued with intent" },
-      { as: "a card admin", want: "to link cards to a Project, Trade File, Shipment, Supplier, Property Case, Freight Route, Department, Customer or Wallet", so: "spend is attributed to the right entity" },
-      { as: "a card admin", want: "to set daily, monthly, total and single-transaction limits, an approval threshold, receipt rules and allowed/blocked categories", so: "policy is enforced at issuance" },
-      { as: "a card admin", want: "to freeze / unfreeze, top up, view transactions, upload receipts, export spend reports and view spend by user / category / project / linked entity", so: "I have full control and visibility" },
     ],
   },
   {
