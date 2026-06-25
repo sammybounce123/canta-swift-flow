@@ -289,15 +289,17 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       return [
         D,
         { to: "/treasury", label: "Enterprise Treasury", iconKey: "building", group: "My Workspace" },
-        { to: "/wallets", label: "Wallets", iconKey: "wallet", group: "Move Money" },
+        { to: "/wallets", label: "Balances", iconKey: "wallet", group: "Move Money" },
         { to: "/fx", label: "FX Conversion", iconKey: "fx", group: "Move Money" },
+        { to: "/payments", label: "Bulk Payouts", iconKey: "receipt", group: "Move Money" },
         { to: "/beneficiaries", label: "Beneficiaries", iconKey: "users", group: "Move Money" },
-        { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Move Money" },
         { to: "/approvals", label: "Approvals", iconKey: "check", group: "Governance" },
-        { to: "/treasury/cards", label: "Company Cards", iconKey: "card", group: "Spend" },
-        { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
-        { to: "/audit-logs", label: "Activity Log", iconKey: "shield", group: "Governance" },
+        { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Money" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        { to: "/support", label: "Support", iconKey: "users", group: "Help" },
+        Team, Settings,
+      ];
+
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         Team, Settings,
       ];
