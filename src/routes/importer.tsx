@@ -22,6 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState } from "react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { ActionButton, ActionGroup } from "@/components/ui/action-group";
 
 export const Route = createFileRoute("/importer")({
   head: () => ({ meta: [{ title: "Importer Portal — Canta" }] }),
@@ -192,16 +193,16 @@ function WhatsAppActions() {
         <MessageCircle className="h-4 w-4 text-accent" /> WhatsApp Import Desk
       </div>
       <p className="text-sm text-muted-foreground mt-2">Don't worry about forms — just send us a message and we'll handle the rest.</p>
-      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-2">
+      <ActionGroup label="WhatsApp Import Desk actions" className="mt-4 xl:grid-cols-3">
         {actions.map((a) => (
-          <Button asChild key={a.l} variant="outline" className="justify-start h-auto min-h-[3rem] py-2.5 px-3 hover:border-[#25D366] hover:bg-[#25D366]/10 hover:text-foreground transition">
+          <ActionButton asChild key={a.l} className="hover:border-[#25D366] hover:bg-[#25D366]/10 hover:text-foreground">
             <a href={buildWhatsAppUrl(a.tpl)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 min-w-0 w-full">
               <a.i className="h-4 w-4 shrink-0 text-[#25D366]" />
               <span className="text-xs text-left leading-snug whitespace-normal break-words min-w-0">{a.l}</span>
             </a>
-          </Button>
+          </ActionButton>
         ))}
-      </div>
+      </ActionGroup>
     </Card>
   );
 }
