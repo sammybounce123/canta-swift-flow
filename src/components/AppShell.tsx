@@ -9,7 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import { useRole, ALL_ROLES, type Role } from "@/components/RoleProvider";
 import { loadProfile, getSidebarForWorkspace, defaultFlagsFor, type SidebarItem } from "@/lib/profile";
-import { useMode, ALL_MODES, type Mode } from "@/components/ModeProvider";
+import { useMode, ALL_MODES, MODE_DISPLAY_LABEL, type Mode } from "@/components/ModeProvider";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { PARTNER_ROLES, PARTNER_ORG, MARKETERS, setActivePartnerUser } from "@/lib/partner";
 import { getSavedCustomerWorkspace, saveActiveWorkspace } from "@/lib/workspace-guard";
@@ -99,7 +99,7 @@ type WorkspaceProfile = { name: string; initials: string; title: string; badge: 
 const WORKSPACE_PROFILES: Record<import("@/lib/profile").WorkspaceType, WorkspaceProfile> = {
   enterprise_treasury: { name: "Adaeze Okonkwo", initials: "AO", title: "Treasury Admin",          badge: "Enterprise Treasury Mode" },
   importer_portal:     { name: "Tunde Bakare",   initials: "TB", title: "Importer Owner",          badge: "Importer Mode" },
-  freight_workspace:   { name: "Chinedu Okafor", initials: "CO", title: "Freight Owner",           badge: "Freight Workspace Mode" },
+  freight_workspace:   { name: "Chinedu Okafor", initials: "CO", title: "Clearing Agent",          badge: "Clearing Agent Portal Mode" },
   global_collections:  { name: "Amaka Bello",    initials: "AB", title: "Merchant Owner",          badge: "Global Collections Mode" },
   supplier_dashboard:  { name: "Li Wei",         initials: "LW", title: "Supplier Admin",          badge: "Supplier Mode" },
   partner_property:    { name: "Sarah Adeyemi",  initials: "SA", title: "Partner Admin",           badge: "Partner Property Mode" },
@@ -237,7 +237,7 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
       <DropdownMenuTrigger asChild>
         <button className="flex items-center gap-2 px-2 sm:px-3 py-1.5 rounded-lg border border-border bg-card hover:bg-secondary text-sm font-medium min-w-0">
           <div className="h-6 w-6 rounded bg-gradient-accent text-sidebar-primary-foreground grid place-items-center text-[10px] font-bold flex-shrink-0">{current.tag}</div>
-          <span className="hidden sm:inline truncate max-w-[140px] md:max-w-none">{current.id} Mode</span>
+          <span className="hidden sm:inline truncate max-w-[160px] md:max-w-none">{MODE_DISPLAY_LABEL[current.id]} Mode</span>
           <ChevronDown className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
         </button>
       </DropdownMenuTrigger>
@@ -245,11 +245,11 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
         <DropdownMenuLabel>Switch workspace mode</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {ALL_MODES.map((m) => (
-          <DropdownMenuItem key={m.id} onClick={() => { setMode(m.id); const home = MODE_HOME[m.id]; navigate({ to: home as never }); toast.success(`${m.id} mode`); }} className="flex items-start gap-3 py-2">
+          <DropdownMenuItem key={m.id} onClick={() => { setMode(m.id); const home = MODE_HOME[m.id]; navigate({ to: home as never }); toast.success(`${MODE_DISPLAY_LABEL[m.id]} mode`); }} className="flex items-start gap-3 py-2">
             <div className="h-7 w-7 rounded bg-secondary text-foreground grid place-items-center text-[10px] font-bold flex-shrink-0">{m.tag}</div>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-medium flex items-center gap-2">
-                {m.id}
+                {MODE_DISPLAY_LABEL[m.id]}
                 {displayMode === m.id && <Check className="h-3.5 w-3.5 text-accent" />}
               </div>
               <div className="text-[11px] text-muted-foreground">{m.desc}</div>

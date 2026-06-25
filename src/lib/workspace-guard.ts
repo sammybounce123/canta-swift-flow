@@ -30,7 +30,7 @@ const ACTIVE_WORKSPACE_KEY = "canta:active_workspace";
 const PROFILES: Record<WorkspaceType, { name: string; title: string; badge: string; workspaceLabel: string }> = {
   enterprise_treasury: { name: "Adaeze Okonkwo", title: "Treasury Admin",  badge: "Enterprise Treasury Mode", workspaceLabel: "Enterprise Treasury" },
   importer_portal:     { name: "Tunde Bakare",   title: "Importer Owner",  badge: "Importer Mode",            workspaceLabel: "Importer" },
-  freight_workspace:   { name: "Chinedu Okafor", title: "Freight Owner",   badge: "Freight Workspace Mode",   workspaceLabel: "Freight" },
+  freight_workspace:   { name: "Chinedu Okafor", title: "Clearing Agent",  badge: "Clearing Agent Portal Mode", workspaceLabel: "Clearing Agent" },
   global_collections:  { name: "Amaka Bello",    title: "Merchant Owner",  badge: "Global Collections Mode",  workspaceLabel: "Global Merchant" },
   supplier_dashboard:  { name: "Li Wei",         title: "Supplier Admin",  badge: "Supplier Mode",            workspaceLabel: "Supplier" },
   partner_property:    { name: "Sarah Adeyemi",  title: "Partner Admin",   badge: "Partner Property Mode",    workspaceLabel: "Partner Property" },

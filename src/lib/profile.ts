@@ -54,17 +54,18 @@ export const SEGMENTS: Segment[] = [
   },
   {
     id: "freight_workspace",
-    label: "Freight Forwarder / Clearing Agent",
-    shortLabel: "Freight",
+    label: "Clearing Agent Portal",
+    shortLabel: "Clearing Agent",
     accountType: "business",
-    customerSegment: "freight",
-    primaryUseCase: "Shipments, customers, invoices, port expenses",
-    defaultRole: "Freight Owner",
-    defaultPermissions: ["view dashboard", "create customer", "create shipment", "send WhatsApp update", "create freight invoice"],
+    customerSegment: "clearing_agent",
+    primaryUseCase: "Receive quote requests, submit bids, run clearing jobs",
+    defaultRole: "Clearing Agent",
+    defaultPermissions: ["view dashboard", "view quote requests", "submit bid", "update clearing job"],
     route: "/freight",
-    welcome: "Manage customers, shipments, documents, invoices, cards, and WhatsApp updates.",
-    tagline: "Freight forwarders, clearing agents, logistics operators",
+    welcome: "See importer quote requests, submit bids, manage accepted jobs, and post clearing status updates.",
+    tagline: "Verified clearing agents bidding for importer jobs",
   },
+
   {
     id: "global_collections",
     label: "University / Global Merchant",
@@ -224,13 +225,11 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       return [
         D,
         { to: "/importer", label: "Importer Dashboard", iconKey: "importer", group: "My Workspace" },
-        { to: "/trade-desk", label: "Trade Desk", iconKey: "trade", group: "Move Goods" },
+        { to: "/trade-desk", label: "Trade Files", iconKey: "trade", group: "Move Goods" },
         { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Move Goods" },
-        { to: "/verified-suppliers", label: "Verified Suppliers", iconKey: "shield-check", group: "Trade Network" },
-        { to: "/my-suppliers", label: "My Suppliers", iconKey: "factory", group: "Trade Network" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Trade Ops" },
+        { to: "/clearing-quotes", label: "Clearing Quotes", iconKey: "shield-check", group: "Trade Ops" },
         { to: "/landed-cost", label: "Landed Cost", iconKey: "calculator", group: "Trade Ops" },
-        { to: "/importer/cards", label: "Importer Cards", iconKey: "card", group: "Money" },
         { to: "/payments", label: "Payments", iconKey: "receipt", group: "Money" },
         { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
@@ -240,18 +239,16 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
     case "freight_workspace":
       return [
         D,
-        { to: "/freight", label: "Freight Workspace", iconKey: "freight", group: "My Workspace" },
-        { to: "/customers", label: "Customers", iconKey: "users", group: "Operations" },
-        { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Operations" },
+        { to: "/freight", label: "Clearing Agent Dashboard", iconKey: "freight", group: "My Workspace" },
+        { to: "/freight", label: "Available Quote Requests", iconKey: "sparkles", group: "Jobs" },
+        { to: "/freight", label: "My Bids", iconKey: "receipt", group: "Jobs" },
+        { to: "/freight", label: "Accepted Jobs", iconKey: "check", group: "Jobs" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
-        { to: "/freight-invoices", label: "Freight Invoices", iconKey: "receipt", group: "Money" },
-        // Cards intentionally removed from Freight Forwarder mode.
-        { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
-        { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        { to: "/whatsapp", label: "Messages", iconKey: "whatsapp", group: "Updates" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
-        { to: "/audit-logs", label: "Activity Log", iconKey: "shield", group: "Governance" },
-        Team, Settings,
+        Settings,
       ];
+
     case "supplier_dashboard":
       return [
         D,
@@ -292,18 +289,18 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       return [
         D,
         { to: "/treasury", label: "Enterprise Treasury", iconKey: "building", group: "My Workspace" },
-        { to: "/wallets", label: "Wallets", iconKey: "wallet", group: "Move Money" },
+        { to: "/wallets", label: "Balances", iconKey: "wallet", group: "Move Money" },
         { to: "/fx", label: "FX Conversion", iconKey: "fx", group: "Move Money" },
+        { to: "/payments", label: "Bulk Payouts", iconKey: "receipt", group: "Move Money" },
         { to: "/beneficiaries", label: "Beneficiaries", iconKey: "users", group: "Move Money" },
-        { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Move Money" },
         { to: "/approvals", label: "Approvals", iconKey: "check", group: "Governance" },
-        { to: "/treasury/cards", label: "Company Cards", iconKey: "card", group: "Spend" },
-        { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
-        { to: "/audit-logs", label: "Activity Log", iconKey: "shield", group: "Governance" },
+        { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Money" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         Team, Settings,
       ];
+
+
     case "global_spend_cards":
       return [
         { to: "/cards", label: "Cards Dashboard", iconKey: "dashboard", group: "Overview", exact: true },

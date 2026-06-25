@@ -30,30 +30,24 @@ const TONES: Partial<Record<WorkspaceType, string>> = {
 const WHO_FOR: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "Multinationals, corporates, traders and large SMEs",
   importer_portal: "Importers buying from China, UAE, Turkey, India",
-  freight_workspace: "Freight forwarders, clearing agents, logistics operators",
-  supplier_dashboard: "Foreign suppliers & exporters in China, UAE, Turkey, India, Europe and other corridors selling to African buyers",
-  global_collections: "Universities, hospitals, airlines, travel, e-commerce",
-  global_spend_cards: "Individuals & small businesses spending globally",
+  freight_workspace: "Verified clearing agents bidding for importer jobs",
   partner_property: "Property partners like Baron & Cabot referring clients",
 };
 const DO_BULLETS: Partial<Record<WorkspaceType, string[]>> = {
-  enterprise_treasury: ["FX & multi-currency wallets", "Approvals & beneficiaries", "Company cards & compliance"],
-  importer_portal: ["Track shipments & landed cost", "Manage suppliers & documents", "Pay in any currency"],
-  freight_workspace: ["Run shipment pipeline", "Invoice customers & collect", "WhatsApp updates at scale"],
-  supplier_dashboard: ["Invoice African buyers", "Confirm funds via escrow", "Receive global settlement"],
-  global_collections: ["Collect locally via links", "Reconcile and settle globally", "Manage staff cards"],
-  global_spend_cards: ["Create purpose-built cards", "Travel, students, ads", "Track every transaction"],
+  enterprise_treasury: ["FX & multi-currency balances", "Bulk payouts & approvals", "Beneficiaries & treasury reports"],
+  importer_portal: ["Send BL & track shipments", "Organize goods & documents", "Compare clearing agents & pay"],
+  freight_workspace: ["See importer quote requests", "Submit & manage bids", "Run accepted clearing jobs"],
   partner_property: ["Refer property clients", "Track FX & solicitor payouts", "Download payout receipts"],
 };
 const CTA: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "Enter Treasury",
-  importer_portal: "Enter Importer Portal",
-  freight_workspace: "Enter Freight Workspace",
-  supplier_dashboard: "Enter Supplier Dashboard",
-  global_collections: "Enter Global Collections",
-  global_spend_cards: "Enter Spend Cards",
-  partner_property: "Enter Partner Workspace",
+  importer_portal: "Enter Importer Trade Desk",
+  freight_workspace: "Enter Clearing Agent Portal",
+  partner_property: "Enter Partner Mode",
 };
+
+const VISIBLE: WorkspaceType[] = ["importer_portal", "freight_workspace", "enterprise_treasury", "partner_property"];
+
 
 function WelcomePage() {
   const navigate = useNavigate();
@@ -84,15 +78,16 @@ function WelcomePage() {
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="text-center mb-10">
           <Badge variant="outline" className="mb-3">Step 1 · Tell us about you</Badge>
-          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">What best describes you?</h1>
+          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">Choose your workspace</h1>
           <p className="text-sm text-muted-foreground mt-2 max-w-2xl mx-auto">
-            We'll set up the right workspace, navigation, roles and tools for how you use Canta.
+            Canta is a focused trade and treasury platform. Pick the workspace that matches how you'll use it.
+
             You can switch later from your account menu.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {SEGMENTS.map((s) => {
+          {SEGMENTS.filter((s) => VISIBLE.includes(s.id)).map((s) => {
             const Icon = ICONS[s.id] ?? Building2;
             const hot = hovered === s.id;
             return (

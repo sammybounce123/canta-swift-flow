@@ -11,14 +11,24 @@ export type Mode =
   | "Canta Ops";
 
 export const ALL_MODES: { id: Mode; tag: string; desc: string }[] = [
-  { id: "Enterprise Treasury", tag: "ET", desc: "FX, wallets, settlements" },
-  { id: "Importer", tag: "IM", desc: "Shipments, suppliers, landed cost" },
-  { id: "Freight Forwarder", tag: "FF", desc: "Operations workspace" },
-  { id: "Supplier", tag: "SU", desc: "Invoices & global settlement" },
-  { id: "Global Merchant", tag: "GM", desc: "Collections & payment links" },
-  { id: "Global Spend Cards", tag: "GC", desc: "Cards-only spend workspace" },
+  { id: "Importer", tag: "IM", desc: "BL, shipments, clearing, landed cost" },
+  { id: "Freight Forwarder", tag: "CA", desc: "Clearing Agent Portal" },
+  { id: "Enterprise Treasury", tag: "ET", desc: "FX, balances, payouts, approvals" },
   { id: "Partner Property", tag: "PP", desc: "Property partner client referrals" },
 ];
+
+/** Display label override — "Freight Forwarder" mode id renders as "Clearing Agent". */
+export const MODE_DISPLAY_LABEL: Record<Mode, string> = {
+  "Enterprise Treasury": "Enterprise Treasury",
+  "Importer": "Importer Trade Desk",
+  "Freight Forwarder": "Clearing Agent",
+  "Supplier": "Supplier",
+  "Global Merchant": "Global Merchant",
+  "Global Spend Cards": "Global Spend Cards",
+  "Partner Property": "Partner",
+  "Canta Ops": "Canta Ops",
+};
+
 
 type Ctx = { mode: Mode; setMode: (m: Mode) => void };
 const ModeCtx = createContext<Ctx | null>(null);

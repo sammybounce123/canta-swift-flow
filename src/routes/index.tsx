@@ -7,7 +7,7 @@ import {
   ArrowRight, Zap, Shield, Globe2, Sparkles, TrendingUp, CheckCircle2,
   Building2, Lock, Quote, Wallet, Ship, CreditCard, Brain, FileText,
   MessageCircle, Truck, Factory, Users, GraduationCap, Plane, Briefcase,
-  ShieldCheck, ScanLine, Receipt, Languages,
+  ShieldCheck, ScanLine, Receipt, Languages, Home,
 } from "lucide-react";
 
 // Set workspace on click so the destination renders its correct shell, sidebar
@@ -202,12 +202,10 @@ function Landing() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {([
-            { icon: Ship,        tag: "Track My Shipment",            desc: "For importers managing goods, suppliers, documents, landed cost, and arrival readiness.", cta: "Start Import Desk",       to: "/importer",   mode: "Importer" as Mode,            tone: "bg-accent/15 text-accent" },
-            { icon: Truck,       tag: "Manage Freight Customers",     desc: "For freight forwarders and clearing agents managing shipments, documents, invoices, and WhatsApp updates.", cta: "Open Freight Workspace",  to: "/freight",    mode: "Freight Forwarder" as Mode,   tone: "bg-warning/15 text-warning" },
-            { icon: Globe2,      tag: "Collect from African Customers", desc: "For universities, hospitals, airlines, property firms, travel companies, and global merchants collecting locally and settling globally.", cta: "Start Global Collections", to: "/collections", mode: "Global Merchant" as Mode,    tone: "bg-success/15 text-success" },
-            { icon: Factory,     tag: "Invoice African Buyers",       desc: "For suppliers and exporters in China, UAE, Turkey, India, and other markets selling to African buyers.", cta: "Open Supplier Dashboard", to: "/suppliers",  mode: "Supplier" as Mode,            tone: "bg-amber-500/15 text-amber-700" },
-            { icon: Building2,   tag: "Manage Company Treasury",      desc: "For enterprises managing FX, wallets, beneficiaries, approvals, settlement, and company cards.", cta: "Explore Treasury",         to: "/treasury",   mode: "Enterprise Treasury" as Mode, tone: "bg-primary/10 text-primary" },
-            { icon: CreditCard,  tag: "Create Global Spend Cards",    desc: "For businesses, travelers, students, teams, importers, and ad spend.", cta: "Create Card",              to: "/cards",      mode: "Global Spend Cards" as Mode,  tone: "bg-destructive/10 text-destructive" },
+            { icon: Ship,        tag: "Importer Trade Desk",          desc: "Send your BL. Track your shipment. Organize goods and documents. Compare clearing agents. Pay safely.", cta: "Enter Importer Trade Desk", to: "/importer",   mode: "Importer" as Mode,            tone: "bg-accent/15 text-accent" },
+            { icon: Truck,       tag: "Clearing Agent Portal",        desc: "Verified clearing agents: see importer quote requests, submit bids, and run accepted jobs.",         cta: "Enter Clearing Agent Portal", to: "/freight",  mode: "Freight Forwarder" as Mode,   tone: "bg-warning/15 text-warning" },
+            { icon: Building2,   tag: "Enterprise Treasury",          desc: "Multi-currency balances, FX, bulk payouts, approvals, beneficiaries, and treasury reports.",         cta: "Enter Treasury",             to: "/treasury",   mode: "Enterprise Treasury" as Mode, tone: "bg-primary/10 text-primary" },
+            { icon: Home,        tag: "Partner Mode",                 desc: "Property and company partners referring clients to Canta. Track referrals, payments and commission.", cta: "Enter Partner Mode",         to: "/partner",    mode: "Partner Property" as Mode,    tone: "bg-primary/10 text-primary" },
           ] as const).map((c) => {
             const Icon = c.icon;
             return (
