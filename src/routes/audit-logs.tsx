@@ -24,8 +24,8 @@ const BY_WS: Record<string, Entry[]> = {
     { id: "A-1010", ts: "2026-06-23 09:14", module: "Trade Files",    action: "Trade file created",        target: "TF-2026-0214",            status: "Success" },
     { id: "A-1011", ts: "2026-06-23 09:22", module: "Documents",      action: "Document uploaded",         target: "BL-FE-7711.pdf",          status: "Success" },
     { id: "A-1012", ts: "2026-06-23 10:35", module: "Payments",       action: "Payment link generated",    target: "PL-9921",                 status: "Success" },
-    { id: "A-1013", ts: "2026-06-23 11:48", module: "Cards",          action: "Card frozen",               target: "Card ****4421",           status: "Success" },
-    { id: "A-1014", ts: "2026-06-23 12:01", module: "Cards",          action: "Card unfrozen",             target: "Card ****4421",           status: "Success" },
+    { id: "A-1013", ts: "2026-06-23 11:48", module: "Payments",       action: "Payment reviewed",          target: "PAY-4421",                status: "Success" },
+    { id: "A-1014", ts: "2026-06-23 12:01", module: "Payments",       action: "Payment approved",          target: "PAY-4421",                status: "Success" },
     { id: "A-1015", ts: "2026-06-22 16:02", module: "Suppliers",      action: "Supplier added",            target: "Shenzhen LedTech",        status: "Success" },
     { id: "A-1016", ts: "2026-06-22 15:10", module: "Support",        action: "Support ticket opened",     target: "SUP-9001",                status: "Success" },
   ],
@@ -49,10 +49,7 @@ const BY_WS: Record<string, Entry[]> = {
     { id: "A-5002", ts: "2026-06-23 10:35", module: "Payments",       action: "Payment approved",          target: "TX-9921",                 status: "Success" },
     { id: "A-5003", ts: "2026-06-23 11:00", module: "Beneficiaries",  action: "Beneficiary added",         target: "Shenzhen LedTech",        status: "Success" },
   ],
-  global_spend_cards: [
-    { id: "A-6001", ts: "2026-06-23 12:01", module: "Cards",          action: "Card frozen",               target: "Card ****4421",           status: "Success" },
-    { id: "A-6002", ts: "2026-06-23 12:08", module: "Cards",          action: "Card unfrozen",             target: "Card ****4421",           status: "Success" },
-  ],
+  global_spend_cards: [],
   partner_property: [
     { id: "A-7001", ts: "2026-06-23 11:02", module: "Solicitors",     action: "Beneficiary added",         target: "Quinn Solicitors LLP",    status: "Success" },
     { id: "A-7002", ts: "2026-06-23 11:14", module: "Solicitors",     action: "Solicitor edited",          target: "Quinn Solicitors LLP",    status: "Success" },

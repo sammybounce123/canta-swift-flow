@@ -11,7 +11,7 @@ type Props = {
   description: string;
   customer: string;
   linkedId: string;
-  linkedKind: "trade-file" | "shipment" | "card" | "payment-case";
+  linkedKind: "trade-file" | "shipment" | "payment-case";
   insuredAmount: number;
   ccy: string;
   riskType: InsuranceRiskType;

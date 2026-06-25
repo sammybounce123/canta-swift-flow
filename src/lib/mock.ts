@@ -28,7 +28,7 @@ export const transactions = [
   { id: "TXN-948199", date: "2026-05-10 14:22", type: "Outgoing", desc: "Halliburton Energy · UK", amount: 92_400, ccy: "GBP", status: "Pending" },
   { id: "TXN-948188", date: "2026-05-10 11:08", type: "FX Conversion", desc: "EUR → USD", amount: 215_000, ccy: "EUR", status: "Completed" },
   { id: "TXN-948170", date: "2026-05-09 16:45", type: "Outgoing", desc: "Total Energies · Paris", amount: 380_000, ccy: "EUR", status: "Completed" },
-  { id: "TXN-948161", date: "2026-05-09 12:30", type: "Funding", desc: "Card · Visa **4421", amount: 50_000_000, ccy: "NGN", status: "Failed" },
+  { id: "TXN-948161", date: "2026-05-09 12:30", type: "Funding", desc: "Returned bank funding attempt", amount: 50_000_000, ccy: "NGN", status: "Failed" },
   { id: "TXN-948150", date: "2026-05-09 10:12", type: "Outgoing", desc: "Baker Hughes · Aberdeen", amount: 145_200, ccy: "GBP", status: "Completed" },
 ];
 

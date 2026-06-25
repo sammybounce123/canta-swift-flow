@@ -304,11 +304,6 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
     case "global_spend_cards":
       return [
         { to: "/welcome", label: "Choose Workspace", iconKey: "dashboard", group: "Overview", exact: true },
-        { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Activity" },
-        { to: "/wallets", label: "Wallet Funding", iconKey: "wallet", group: "Spend" },
-        { to: "/documents", label: "Receipts", iconKey: "file", group: "Activity" },
-        { to: "/support", label: "Support", iconKey: "users", group: "Help" },
-        Settings,
       ];
     case "partner_property": {
       // Lazy import to avoid SSR cycles; settings stored in localStorage.

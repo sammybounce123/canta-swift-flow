@@ -351,7 +351,7 @@ function DoneStep({ caseId, sol, amount }: { caseId: string; sol: string; amount
       </div>
       <div className="border-t pt-4 space-y-2 text-left max-w-md mx-auto">
         <div className="text-sm font-semibold flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> Activate your full Canta account</div>
-        <p className="text-sm text-muted-foreground">Use Canta for future international payments, travel cards and global transfers.</p>
+        <p className="text-sm text-muted-foreground">Use Canta for future international payments, treasury workflows and global transfers.</p>
         <div className="flex gap-2">
           <Button asChild className="flex-1"><Link to="/welcome" onClick={() => activateClientAccount(caseId)}>Activate Canta account</Link></Button>
           <Button asChild variant="outline" className="flex-1"><Link to="/">Done</Link></Button>

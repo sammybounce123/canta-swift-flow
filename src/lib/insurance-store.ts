@@ -4,8 +4,8 @@ export type InsuranceRiskType = "Cargo" | "Goods-in-transit" | "Freight liabilit
 export type InsuranceQuote = {
   id: string;
   customer: string;
-  linkedId: string;          // trade file / shipment / card / payment case id
-  linkedKind: "trade-file" | "shipment" | "card" | "payment-case";
+  linkedId: string;          // trade file / shipment / payment case id
+  linkedKind: "trade-file" | "shipment" | "payment-case";
   insuredAmount: number;
   ccy: string;
   riskType: InsuranceRiskType;

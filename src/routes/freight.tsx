@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { shipments, importers, freightInvoices, monthlyShipmentVolume, shippingLines, fmtMoney, type Shipment, type FreightInvoice } from "@/lib/mock";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
-import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import { StartHereCard } from "@/components/StartHereCard";
 import { Truck, Plus, MessageCircle, FileText, DollarSign, Users as UsersIcon, AlertTriangle, Ship, Eye, Upload, CheckCircle2, Clock, TrendingUp, BarChart3, Send, Download, UserPlus, Banknote } from "lucide-react";
