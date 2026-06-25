@@ -52,9 +52,6 @@ const SEED_BY_WS: Record<string, Convo[]> = {
   enterprise_treasury: [
     { id: "C-01", with: "Canta Support", kind: "Support", linked: "SUP-9101", last: "FX rate confirmation requested.", time: "45m ago", status: "Active" },
   ],
-  global_spend_cards: [
-    { id: "C-01", with: "Canta Support", kind: "Support", linked: "SUP-9202", last: "Card declined at merchant — investigating.", time: "10m ago", status: "Awaiting reply" },
-  ],
   partner_property: [
     { id: "C-01", with: "Quinn Solicitors", kind: "Payment", linked: "BC-2026-1001", last: "Solicitor confirmed receipt of funds.", time: "1h ago", status: "Resolved" },
   ],

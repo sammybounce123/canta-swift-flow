@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
-  Building2, Ship, Truck, Globe, Factory, CreditCard, Home,
+  Building2, Ship, Truck, Globe, Factory, Home,
   ArrowRight, CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/welcome")({
 const ICONS: Partial<Record<WorkspaceType, typeof Building2>> = {
   enterprise_treasury: Building2, importer_portal: Ship, freight_workspace: Truck,
   global_collections: Globe, supplier_dashboard: Factory,
-  global_spend_cards: CreditCard, partner_property: Home,
+  partner_property: Home,
 };
 const TONES: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "bg-primary/10 text-primary",
@@ -24,7 +24,6 @@ const TONES: Partial<Record<WorkspaceType, string>> = {
   freight_workspace: "bg-warning/15 text-warning",
   global_collections: "bg-success/10 text-success",
   supplier_dashboard: "bg-amber-500/15 text-amber-700",
-  global_spend_cards: "bg-destructive/10 text-destructive",
   partner_property: "bg-primary/10 text-primary",
 };
 const WHO_FOR: Partial<Record<WorkspaceType, string>> = {

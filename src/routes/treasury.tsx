@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { Calendar, Layers } from "lucide-react";
 import { useActions } from "@/components/ActionsProvider";
-import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import { StartHereCard } from "@/components/StartHereCard";
 import { ReadinessBar } from "@/components/ReadinessBar";
@@ -43,7 +42,6 @@ function Treasury() {
         secondary={[
           { label: "Add Beneficiary", to: "/beneficiaries" },
           { label: "View Transactions", to: "/transactions" },
-          { label: "Create Company Card", to: "/treasury/cards" },
         ]}
       />
       <div className="flex items-end justify-between flex-wrap gap-4">
@@ -116,60 +114,16 @@ function Treasury() {
         </Card>
       </div>
 
-      <WorkspaceCardsPanel
-        title="Company Cards"
-        subtitle="Staff, department, travel, procurement, ad-spend and project cards across the enterprise."
-        categories={["Staff", "Department", "Travel", "Procurement", "Ad Spend", "Project"]}
-        pendingApprovals={3}
-        receiptsMissing={5}
-        groupedLabel="department"
-        groupedSpend={[
-          { label: "Procurement", amount: 84_200 },
-          { label: "Sales", amount: 41_800 },
-          { label: "Operations", amount: 36_400 },
-          { label: "Marketing", amount: 28_900 },
-          { label: "Treasury", amount: 12_400 },
-        ]}
-        cards={[
-          { id: "T1", label: "CFO Travel",         holder: "Adaeze O.", last4: "4421", status: "Active", monthlySpend: 3850, limit: 8000,  category: "Travel",     linked: "Trip: Dubai Sourcing" },
-          { id: "T2", label: "Procurement Dept",   holder: "Tunde B.",  last4: "7782", status: "Active", monthlySpend: 12400, limit: 25000, category: "Procurement", linked: "Cost Center CC-100" },
-          { id: "T3", label: "Meta Ads — Brand",   holder: "Marketing", last4: "9012", status: "Active", monthlySpend: 5150,  limit: 10000, category: "Ad Spend",    linked: "Campaign: Brand-Q2" },
-          { id: "T4", label: "Lagos HQ Office",    holder: "Femi A.",   last4: "3318", status: "Frozen", monthlySpend: 1280,  limit: 5000,  category: "Staff" },
-          { id: "T5", label: "Project Atlantic",   holder: "Ops Team",  last4: "5567", status: "Active", monthlySpend: 6800,  limit: 15000, category: "Project",     linked: "Project: Atlantic" },
-          { id: "T6", label: "Sales Per-Diem",     holder: "Sales",     last4: "2204", status: "Active", monthlySpend: 2240,  limit: 6000,  category: "Staff" },
-        ]}
-      />
-
-      <Card className="p-5 shadow-card">
-        <div className="text-sm font-semibold">Spend by staff</div>
-        <div className="text-xs text-muted-foreground mb-4">Top cardholders this month · USD</div>
-        <div className="space-y-3">
-          {[
-            { name: "Tunde Bakare",   role: "Procurement Officer", amount: 12_400, limit: 25_000 },
-            { name: "Marketing Team", role: "Ad Spend",            amount: 5_150,  limit: 10_000 },
-            { name: "Ops Team",       role: "Project Atlantic",    amount: 6_800,  limit: 15_000 },
-            { name: "Adaeze Okonkwo", role: "CFO",                 amount: 3_850,  limit: 8_000 },
-            { name: "Sales Team",     role: "Per-Diem",            amount: 2_240,  limit: 6_000 },
-            { name: "Femi Adeyemi",   role: "Lagos HQ Office",     amount: 1_280,  limit: 5_000 },
-          ].map((s) => {
-            const pct = Math.round((s.amount / s.limit) * 100);
-            return (
-              <div key={s.name}>
-                <div className="flex items-center justify-between text-xs mb-1">
-                  <div>
-                    <span className="font-medium">{s.name}</span>
-                    <span className="text-muted-foreground"> · {s.role}</span>
-                  </div>
-                  <span className="tabular-nums text-muted-foreground">
-                    ${s.amount.toLocaleString()} / ${s.limit.toLocaleString()} ({pct}%)
-                  </span>
-                </div>
-                <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                  <div className={`h-full ${pct > 85 ? "bg-destructive" : pct > 60 ? "bg-warning" : "bg-success"}`} style={{ width: `${pct}%` }} />
-                </div>
-              </div>
-            );
-          })}
+      <Card className="p-4 shadow-card border-dashed bg-muted/20">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div className="text-xs uppercase tracking-widest text-muted-foreground">Secondary treasury control</div>
+            <div className="text-sm font-semibold mt-1">Company Cards</div>
+            <div className="text-xs text-muted-foreground mt-1 max-w-2xl">
+              Optional enterprise expense controls are shown only as a secondary treasury preview in this focused demo.
+            </div>
+          </div>
+          <Button variant="outline" size="sm" disabled>Not available in demo</Button>
         </div>
       </Card>
     </div>

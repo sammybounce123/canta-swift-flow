@@ -32,11 +32,11 @@ export const SEGMENTS: Segment[] = [
     shortLabel: "Enterprise",
     accountType: "business",
     customerSegment: "enterprise",
-    primaryUseCase: "FX, treasury, wallets, approvals, staff cards",
+    primaryUseCase: "FX, treasury, wallets, approvals",
     defaultRole: "Enterprise Owner",
-    defaultPermissions: ["view dashboard", "view wallet balances", "approve payment", "create FX conversion", "create staff card"],
+    defaultPermissions: ["view dashboard", "view wallet balances", "approve payment", "create FX conversion"],
     route: "/treasury",
-    welcome: "Manage FX, wallets, beneficiaries, approvals, cards, and global treasury.",
+    welcome: "Manage FX, wallets, beneficiaries, approvals, and global treasury.",
     tagline: "Multinationals, corporates, traders and large SMEs",
   },
   {
@@ -76,7 +76,7 @@ export const SEGMENTS: Segment[] = [
     defaultRole: "Merchant Owner",
     defaultPermissions: ["view dashboard", "create payment link", "view collections", "approve settlement"],
     route: "/collections",
-    welcome: "Collect locally from African customers, reconcile payments, settle globally, and manage staff cards.",
+    welcome: "Collect locally from African customers, reconcile payments, and settle globally.",
     tagline: "Universities, hospitals, airlines, travel, e-commerce",
   },
   {
@@ -107,16 +107,16 @@ export const SEGMENTS: Segment[] = [
   },
   {
     id: "global_spend_cards",
-    label: "Card User",
-    shortLabel: "Cards",
+    label: "Unavailable Demo Workspace",
+    shortLabel: "Unavailable",
     accountType: "individual",
-    customerSegment: "card_user",
-    primaryUseCase: "Travel, student, ads, personal global spend",
-    defaultRole: "Card Owner",
-    defaultPermissions: ["view dashboard", "create personal card", "view transactions", "upload receipt"],
-    route: "/cards",
-    welcome: "Create and manage purpose-built cards for travel, business, students, ads, and global spending.",
-    tagline: "Individuals & small businesses using cards globally",
+    customerSegment: "unavailable_demo_workspace",
+    primaryUseCase: "Feature not available in this focused demo",
+    defaultRole: "Viewer",
+    defaultPermissions: ["view dashboard"],
+    route: "/welcome",
+    welcome: "This feature is not available in this demo.",
+    tagline: "Unavailable in the focused trade and treasury demo",
   },
 ];
 
@@ -169,17 +169,17 @@ const ALL_ON: FeatureFlags = {
 export function defaultFlagsFor(workspace: WorkspaceType): FeatureFlags {
   switch (workspace) {
     case "enterprise_treasury":
-      return { ...ALL_OFF, treasury_module_enabled: true, cards_module_enabled: true, compliance_module_enabled: true };
+      return { ...ALL_OFF, treasury_module_enabled: true, compliance_module_enabled: true };
     case "importer_portal":
-      return { ...ALL_OFF, trade_module_enabled: true, cards_module_enabled: true };
+      return { ...ALL_OFF, trade_module_enabled: true };
     case "freight_workspace":
-      return { ...ALL_OFF, freight_module_enabled: true, cards_module_enabled: true };
+      return { ...ALL_OFF, freight_module_enabled: true };
     case "supplier_dashboard":
       return { ...ALL_OFF, supplier_module_enabled: true };
     case "global_collections":
-      return { ...ALL_OFF, collections_module_enabled: true, cards_module_enabled: true, compliance_module_enabled: true };
+      return { ...ALL_OFF, collections_module_enabled: true, compliance_module_enabled: true };
     case "global_spend_cards":
-      return { ...ALL_OFF, cards_module_enabled: true };
+      return { ...ALL_OFF };
     case "partner_property":
       return { ...ALL_OFF, compliance_module_enabled: true };
     case "canta_ops":
@@ -303,12 +303,10 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
 
     case "global_spend_cards":
       return [
-        { to: "/cards", label: "Cards Dashboard", iconKey: "dashboard", group: "Overview", exact: true },
-        { to: "/cards", label: "My Cards", iconKey: "card", group: "Spend" },
+        { to: "/welcome", label: "Choose Workspace", iconKey: "dashboard", group: "Overview", exact: true },
         { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Activity" },
         { to: "/wallets", label: "Wallet Funding", iconKey: "wallet", group: "Spend" },
         { to: "/documents", label: "Receipts", iconKey: "file", group: "Activity" },
-        { to: "/cards", label: "Spend Controls", iconKey: "shield", group: "Spend" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         Settings,
       ];
@@ -400,7 +398,7 @@ export function saveProfile(segment: Segment): Profile {
       supplier_dashboard: "Supplier",
       global_collections: "Global Merchant",
       partner_property: "Partner Property",
-      global_spend_cards: "Global Spend Cards",
+      global_spend_cards: "Enterprise Treasury",
       canta_ops: "Canta Ops",
     };
     const mode = WORKSPACE_TO_MODE[segment.id];

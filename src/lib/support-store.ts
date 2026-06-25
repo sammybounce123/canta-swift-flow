@@ -1,7 +1,7 @@
 export type TicketStatus = "Open" | "Waiting on Customer" | "Waiting on Canta" | "Escalated" | "Resolved" | "Closed";
 export const TICKET_STATUSES: TicketStatus[] = ["Open", "Waiting on Customer", "Waiting on Canta", "Escalated", "Resolved", "Closed"];
-export type IssueType = "Payment issue" | "Funding mismatch" | "KYC/KYB issue" | "Shipment issue" | "Card issue" | "Partner case issue" | "Payout issue" | "Technical issue" | "General enquiry";
-export const ISSUE_TYPES: IssueType[] = ["Payment issue", "Funding mismatch", "KYC/KYB issue", "Shipment issue", "Card issue", "Partner case issue", "Payout issue", "Technical issue", "General enquiry"];
+export type IssueType = "Payment issue" | "Funding mismatch" | "KYC/KYB issue" | "Shipment issue" | "Partner case issue" | "Payout issue" | "Technical issue" | "General enquiry";
+export const ISSUE_TYPES: IssueType[] = ["Payment issue", "Funding mismatch", "KYC/KYB issue", "Shipment issue", "Partner case issue", "Payout issue", "Technical issue", "General enquiry"];
 
 export type TicketMessage = { id: string; author: string; role: "customer" | "canta" | "partner"; body: string; at: string };
 export type SupportTicket = {
@@ -34,7 +34,6 @@ const SEED: SupportTicket[] = [
   { id: "T-002", ref: "SUP-9002", customer: "Lagos Med Clinic", organization: "Lagos Med Clinic", workspace: "Global Merchant", linkedRef: "INV-2034", priority: "Normal", status: "Open", assigned: "Canta Ops", issueType: "Funding mismatch", messages: [{ id: "m1", author: "Tope", role: "customer", body: "Payer sent ₦4,100,000 instead of ₦4,200,000.", at: "2026-06-04T14:00:00Z" }], createdAt: "2026-06-04", lastUpdate: "2026-06-04" },
   { id: "T-003", ref: "SUP-9003", customer: "Bayo Logistics Ltd", organization: "Bayo Logistics", workspace: "Freight", linkedRef: "SHP-10421", priority: "Low", status: "Resolved", assigned: "Canta Ops", issueType: "Shipment issue", messages: [], createdAt: "2026-06-02", lastUpdate: "2026-06-03" },
   { id: "T-004", ref: "SUP-9004", customer: "Sino Trade Co.", organization: "Sino Trade", workspace: "Supplier", linkedRef: "INV-2030", priority: "Urgent", status: "Escalated", assigned: "Compliance", issueType: "KYC/KYB issue", messages: [], createdAt: "2026-06-08", lastUpdate: "2026-06-09" },
-  { id: "T-005", ref: "SUP-9005", customer: "James Okoro", organization: "Global Spend Cards", workspace: "Global Spend Cards", linkedRef: "CARD-4481", priority: "Normal", status: "Waiting on Customer", assigned: "Canta Support", issueType: "Card issue", messages: [{ id: "m1", author: "Canta Support", role: "canta", body: "Please attach the merchant receipt so we can review the decline.", at: "2026-06-11T11:00:00Z" }], createdAt: "2026-06-11", lastUpdate: "2026-06-11" },
   { id: "T-006", ref: "SUP-9006", customer: "Adaeze Okonkwo", organization: "Enterprise Treasury", workspace: "Enterprise Treasury", linkedRef: "PAY-7782", priority: "High", status: "Open", assigned: "Canta Support", issueType: "Payment issue", messages: [{ id: "m1", author: "Adaeze", role: "customer", body: "A beneficiary payout needs a status check.", at: "2026-06-12T08:30:00Z" }], createdAt: "2026-06-12", lastUpdate: "2026-06-12" },
 ];
 function read(): SupportTicket[] {

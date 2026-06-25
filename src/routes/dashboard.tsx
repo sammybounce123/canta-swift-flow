@@ -31,7 +31,7 @@ export const Route = createFileRoute("/dashboard")({
         freight_workspace: "/freight",
         supplier_dashboard: "/suppliers",
         global_collections: "/collections",
-        global_spend_cards: "/cards",
+        global_spend_cards: "/welcome",
         partner_property: "/partner",
       };
       const to = p.workspace_type ? map[p.workspace_type] : undefined;

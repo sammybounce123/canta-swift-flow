@@ -26,7 +26,7 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
     { id: "fx",        name: "FX conversion report",   desc: "Conversions, rates locked, slippage" },
     { id: "ben",       name: "Beneficiary report",     desc: "Beneficiary KYB status and payout history" },
     { id: "appr",      name: "Approval report",        desc: "Approval chain, approvers, response times" },
-    { id: "cards",     name: "Card spend report",      desc: "By cardholder, category, project, cost center" },
+    { id: "expenses",  name: "Expense controls report", desc: "Optional employee expense controls by owner, category, project, and cost center" },
     { id: "comp",      name: "Compliance report",      desc: "Sanction checks, EDD, document expiry" },
   ],
   importer_portal: [
@@ -35,7 +35,6 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
     { id: "landed",    name: "Landed Cost",            desc: "Goods + freight + duty + FX by SKU" },
     { id: "sup",       name: "Suppliers",              desc: "Spend per supplier, on-time delivery, disputes" },
     { id: "payments",  name: "Payments",               desc: "Supplier deposits, escrow releases, duties and freight invoices" },
-    { id: "cards",     name: "Importer Card Spend",    desc: "Trade-file linked card spend and receipts" },
   ],
   freight_workspace: [
     { id: "vol",       name: "Shipment volume",        desc: "Shipments per lane, mode, month" },
@@ -51,7 +50,6 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
     { id: "recon",     name: "Reconciliation report",  desc: "Matched, unmatched, partial settlements" },
     { id: "settle",    name: "Settlement report",      desc: "Batches sent to merchant, T+ timing" },
     { id: "failed",    name: "Failed payments",        desc: "Decline reasons and retry success" },
-    { id: "staff",     name: "Staff cards report",     desc: "Spend by department and staff card" },
   ],
   supplier_dashboard: [
     { id: "inv",       name: "Invoice report",         desc: "Issued, paid, overdue invoices to buyers" },
@@ -67,11 +65,7 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
     { id: "mkt",       name: "Marketer performance",   desc: "Leads, conversions, revenue per marketer" },
     { id: "comm",      name: "Commission report",      desc: "Commissions earned, paid, pending" },
   ],
-  global_spend_cards: [
-    { id: "spend",     name: "Spend report",           desc: "Spend by card, category, merchant" },
-    { id: "txn",       name: "Transaction report",     desc: "All card transactions with receipts" },
-    { id: "fund",      name: "Wallet funding report",  desc: "Top-ups received and source" },
-  ],
+  global_spend_cards: [],
   canta_ops: [
     { id: "tickets",   name: "Support tickets report", desc: "Volume, SLAs, resolution times" },
     { id: "kyb",       name: "Verification report",    desc: "KYB throughput and approvals" },
@@ -87,7 +81,7 @@ const WORKSPACE_LABELS: Record<WorkspaceType, string> = {
   global_collections: "Global Collections / Merchant",
   supplier_dashboard: "Supplier Dashboard",
   partner_property: "Partner Property",
-  global_spend_cards: "Global Spend Cards",
+  global_spend_cards: "Enterprise Treasury",
   canta_ops: "Canta Ops",
 };
 
@@ -98,7 +92,7 @@ const REPORT_GROUP_LABELS: Record<WorkspaceType, string> = {
   global_collections: "Collection reports",
   supplier_dashboard: "Supplier reports",
   partner_property: "Partner reports",
-  global_spend_cards: "Card reports",
+  global_spend_cards: "Enterprise reports",
   canta_ops: "Importer reports",
 };
 
@@ -155,7 +149,7 @@ function ReportsPage() {
     global_collections:  { name: "Amaka Bello",    title: "Merchant Owner",  mode: "Global Collections Mode" },
     supplier_dashboard:  { name: "Li Wei",         title: "Supplier Admin",  mode: "Supplier Mode" },
     partner_property:    { name: "Sarah Adeyemi",  title: "Partner Admin",   mode: "Partner Property Mode" },
-    global_spend_cards:  { name: "James Okoro",    title: "Card Owner",      mode: "Global Spend Cards Mode" },
+    global_spend_cards:  { name: "Adaeze Okonkwo", title: "Treasury Admin",  mode: "Enterprise Treasury Mode" },
     canta_ops:           { name: "Tunde Bakare",   title: "Importer Owner",  mode: "Importer Mode" },
   };
   const identity = WS_IDENTITY[workspace];

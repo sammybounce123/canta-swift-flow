@@ -9,7 +9,6 @@ const MODE_TO_WORKSPACE: Record<Mode, WorkspaceType> = {
   "Freight Forwarder": "freight_workspace",
   "Supplier": "supplier_dashboard",
   "Global Merchant": "global_collections",
-  "Global Spend Cards": "global_spend_cards",
   "Partner Property": "partner_property",
   "Canta Ops": "canta_ops",
 };
@@ -20,7 +19,7 @@ const WORKSPACE_TO_MODE: Record<WorkspaceType, Mode> = {
   freight_workspace: "Freight Forwarder",
   supplier_dashboard: "Supplier",
   global_collections: "Global Merchant",
-  global_spend_cards: "Global Spend Cards",
+  global_spend_cards: "Enterprise Treasury",
   partner_property: "Partner Property",
   canta_ops: "Enterprise Treasury",
 };
@@ -34,7 +33,7 @@ const PROFILES: Record<WorkspaceType, { name: string; title: string; badge: stri
   global_collections:  { name: "Amaka Bello",    title: "Merchant Owner",  badge: "Global Collections Mode",  workspaceLabel: "Global Merchant" },
   supplier_dashboard:  { name: "Li Wei",         title: "Supplier Admin",  badge: "Supplier Mode",            workspaceLabel: "Supplier" },
   partner_property:    { name: "Sarah Adeyemi",  title: "Partner Admin",   badge: "Partner Property Mode",    workspaceLabel: "Partner Property" },
-  global_spend_cards:  { name: "James Okoro",    title: "Card Owner",      badge: "Global Spend Cards Mode",  workspaceLabel: "Global Spend Cards" },
+  global_spend_cards:  { name: "Adaeze Okonkwo", title: "Treasury Admin",  badge: "Enterprise Treasury Mode", workspaceLabel: "Enterprise Treasury" },
   canta_ops:           { name: "Adaeze Okonkwo", title: "Treasury Admin",  badge: "Enterprise Treasury Mode", workspaceLabel: "Enterprise Treasury" },
 };
 
@@ -44,14 +43,14 @@ function workspaceFromPath(pathname: string): WorkspaceType | null {
   if (pathname.startsWith("/importer") || pathname.startsWith("/trade-desk") || pathname.startsWith("/my-suppliers") || pathname.startsWith("/verified-suppliers") || pathname.startsWith("/landed-cost") || pathname.startsWith("/clearing-quotes")) return "importer_portal";
   if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
   if (pathname.startsWith("/suppliers") || pathname.startsWith("/buyers") || pathname.startsWith("/verified-buyers") || pathname.startsWith("/escrow")) return "supplier_dashboard";
-  if (pathname === "/cards" || pathname.startsWith("/cards/")) return "global_spend_cards";
+  if (pathname === "/cards" || pathname.startsWith("/cards/")) return null;
   if (pathname.startsWith("/treasury") || pathname.startsWith("/wallets") || pathname.startsWith("/fx") || pathname.startsWith("/beneficiaries")) return "enterprise_treasury";
   return null;
 }
 
 
 function isCustomerWorkspace(workspace?: WorkspaceType | null): workspace is WorkspaceType {
-  return Boolean(workspace && workspace !== "canta_ops");
+  return Boolean(workspace && workspace !== "canta_ops" && workspace !== "global_spend_cards");
 }
 
 export function saveActiveWorkspace(workspace: WorkspaceType) {

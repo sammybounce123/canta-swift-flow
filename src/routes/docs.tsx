@@ -14,7 +14,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
     h: "Workspaces",
     body: [
       "Users pick a workspace on first sign-in. The sidebar, dashboard and default landing route are driven by the selected profile.",
-      "Available profiles: Enterprise / Corporate Treasury (/treasury), Importer Portal (/importer), Freight Forwarder (/freight), Global Collections / Merchant (/collections), Supplier / Exporter — foreign suppliers in China, UAE, Turkey, India, Europe and other corridors selling to African buyers (/suppliers), Global Spend & Cards (/cards), and Partner Property — Baron & Cabot (/partner). The generic /dashboard route auto-redirects to each workspace's landing page.",
+      "Available profiles in this focused demo: Importer Trade Desk (/importer), Clearing Agent Portal (/freight), Enterprise Treasury (/treasury), and Partner Mode (/partner). The generic /dashboard route auto-redirects to the selected workspace's landing page.",
       "Switch workspace any time from the workspace switcher in the top bar.",
     ],
   },
@@ -52,24 +52,16 @@ const SECTIONS: { h: string; body: string[] }[] = [
     ],
   },
   {
-    h: "Cards (/cards, /treasury/cards, /importer/cards, /freight/cards)",
-    body: [
-      "Card purpose wizard (5 steps): purpose (Business / Travel / Trade / Student / Online Ads / Team / Personal / Shipment-Project) → user (Me / Staff / Student / Family / Team / Department) → linked entity (Project, Trade File, Shipment, Supplier, Property Case, Freight Route, Department, Customer, Wallet) → controls (daily / monthly / total / single-transaction limits, approval threshold, receipt rules, allowed/blocked categories) → review & issue.",
-      "Every card supports: freeze / unfreeze, top up from linked wallet, view transactions, upload receipts, export spend reports, and view spend by user / category / project / linked entity.",
-      "Workspace-aware: Treasury cards default to corporate categories; Importer cards default to Trade/Shipment links; Freight cards default to Route/Customer links; Global Spend covers everything else.",
-    ],
-  },
-  {
     h: "Importer Workspace",
     body: [
-      "Lands at /importer. Sidebar: Importer Dashboard, Trade Desk, Shipments, Verified Suppliers, My Suppliers, Documents, Landed Cost, Importer Cards, Payments, WhatsApp Updates, Reports, Support, Settings.",
-      "Importer actions: request quote from verified supplier, request supplier verification before payment, save verified supplier to My Suppliers, start trade file from a supplier profile, request escrow on a trade file, request landed cost estimate, link shipments and documents to a trade file, create importer cards linked to a trade file or shipment, send WhatsApp updates and invite freight forwarders to a trade file.",
+      "Lands at /importer. Sidebar: Importer Dashboard, Trade Desk, Shipments, Verified Suppliers, My Suppliers, Documents, Clearing Quotes, Payments, WhatsApp Updates, Reports, Support, Settings.",
+      "Importer actions: request quote from verified supplier, request supplier verification before payment, save verified supplier to My Suppliers, start a trade file from a supplier profile, request escrow on a trade file, request clearing quotes, link shipments and documents to a trade file, send WhatsApp updates and invite clearing agents to a trade file.",
     ],
   },
   {
     h: "Freight Workspace",
     body: [
-      "Lands at /freight. Operations board, /freight-invoices (Draft, Sent, Paid, Unpaid, Partially Paid, Overdue, Cancelled), /customers customer book, /freight/cards, goods-in-transit insurance panel.",
+      "Lands at /freight. Clearing Agent Portal with quote requests, bids, accepted jobs, customer messages, and goods-in-transit insurance panel.",
       "Freight actions: add importer customer, create shipment, update shipment status, assign shipment to staff (assignee, role, due date, note, status), create a customer tracking link, send single or bulk WhatsApp updates from 10+ templates (container loaded, vessel sailed, arrived at port, clearing started, cleared customs, out for delivery, delivered, delay notice, missing document reminder, payment reminder), create freight invoices and mark Paid / Unpaid / Overdue, download invoices, and offer goods-in-transit insurance.",
     ],
   },
@@ -84,7 +76,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
   {
     h: "Global Collections / Merchant Workspace",
     body: [
-      "Lands at /collections (not the generic /dashboard). Dashboard, Transactions tab, Payers, Payment Links, Reconciliation, Settlement Approvals, Reports, and Global Spend Cards.",
+      "Lands at /collections (not the generic /dashboard). Dashboard, Transactions tab, Payers, Payment Links, Reconciliation, Settlement Approvals, and Reports.",
       "Guided collection templates at /collections/new — each template creates an invoice + payment link + payer record + reconciliation reference + settlement batch entry.",
     ],
   },
@@ -175,7 +167,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
   {
     h: "Embedded insurance hooks",
     body: [
-      "Optional placeholders ready to wire to AXA Mansard, Leadway, Old Mutual or AIICO. Surfaces on Importer Trade Files (cargo / goods-in-transit), Freight workspace (goods-in-transit / freight liability), Travel cards (travel insurance), and Partner Property cases (property payment protection).",
+      "Optional placeholders ready to wire to AXA Mansard, Leadway, Old Mutual or AIICO. Surfaces on Importer Trade Files (cargo / goods-in-transit), Clearing Agent Portal jobs (goods-in-transit / freight liability), and Partner Property cases (property payment protection).",
       "Each hook stores customer, linked entity, insured amount, risk type, partner, quote status and policy status.",
     ],
   },
@@ -186,7 +178,6 @@ const SECTIONS: { h: string; body: string[] }[] = [
       "FX / Settlement / Payout: Wise Platform, Currencycloud, Airwallex, Nium, dLocal, Thunes.",
       "Shipment Tracking Aggregator: project44, Shipsgo, Searates, MarineTraffic.",
       "Direct Shipping Lines: Maersk Spot API, MSC, CMA CGM, Hapag-Lloyd, Cosco Shipping.",
-      "Card Issuing: Marqeta, Stripe Issuing, Lithic, Bridgecard, Sudo Africa.",
       "KYC / KYB: Smile ID, Onfido, Sumsub, Veriff, Dojah, Trulioo.",
       "Sanctions / PEP / AML: ComplyAdvantage, Refinitiv World-Check, Dow Jones Risk & Compliance.",
       "WhatsApp / Messaging: Twilio WhatsApp Business API, 360dialog, Meta Cloud API, Africa's Talking, Termii.",
@@ -203,7 +194,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
   {
     h: "Backend readiness data model (/data-model)",
     body: [
-      "Internal reference page covering 40+ core entities: organizations, users, roles, permissions, workspaces, feature_flags, wallets, transactions, beneficiaries, approvals, trade_files, shipments, suppliers, buyers, verified_suppliers, verified_buyers, invoices, payment_links, payers, reconciliation_records, settlement_batches, cards, card_transactions, freight_customers, freight_invoices, partner_leads, partner_cases, partner_marketers, partner_fx_quotes, partner_payment_links, partner_payouts, partner_solicitors, partner_commissions, documents, verification_records, audit_logs, integrations, webhook_logs, insurance_quotes, support_tickets.",
+      "Internal reference page covering core entities: organizations, users, roles, permissions, workspaces, feature_flags, wallets, transactions, beneficiaries, approvals, trade_files, shipments, suppliers, buyers, verified_suppliers, verified_buyers, invoices, payment_links, payers, reconciliation_records, settlement_batches, freight_customers, freight_invoices, partner_leads, partner_cases, partner_marketers, partner_fx_quotes, partner_payment_links, partner_payouts, partner_solicitors, partner_commissions, documents, verification_records, audit_logs, integrations, webhook_logs, insurance_quotes, support_tickets.",
       "Each entry documents purpose, key fields, modules, relationships, status fields and audit requirements.",
     ],
   },
@@ -211,7 +202,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
     h: "Support tickets (/support)",
     body: [
       "Workspace-aware ticketing. Statuses: Open, Waiting on Customer, Waiting on Canta, Escalated, Resolved, Closed.",
-      "Issue types: Payment, Funding mismatch, KYC/KYB, Shipment, Card, Partner case, Payout, Technical, General enquiry.",
+      "Issue types: Payment, Funding mismatch, KYC/KYB, Shipment, Partner case, Payout, Technical, General enquiry.",
       "Tickets link to a case / trade file / payment / shipment and capture priority, assigned user, messages and attachments.",
     ],
   },
@@ -263,8 +254,7 @@ function Docs() {
         <div>
           <p className="text-sm leading-relaxed text-muted-foreground">
             Canta is an enterprise cross-border payments, FX and trade platform for
-            corporates, importers, freight forwarders, suppliers, global merchants and
-            partner property firms.
+            corporates, importers, clearing agents and partner property firms.
           </p>
         </div>
         {SECTIONS.map((s) => (

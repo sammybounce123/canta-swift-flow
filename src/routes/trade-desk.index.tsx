@@ -15,7 +15,6 @@ import { TradeFileExplainer } from "@/components/TradeFileExplainer";
 import { FileText, Plus, Search, ArrowRight, Ship, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 
 
 export const Route = createFileRoute("/trade-desk/")({
@@ -171,31 +170,6 @@ function TradeDeskList() {
         </div>
       </Card>
 
-      <WorkspaceCardsPanel
-        title="Importer Cards"
-        subtitle="Cards linked to trade files, shipments and supplier work — keep every expense tied to the right shipment."
-        categories={[
-          "Trade file", "Shipment", "Supplier samples", "Inspection fees",
-          "Business travel", "Logistics tools", "Ad spend",
-        ]}
-        pendingApprovals={2}
-        receiptsMissing={4}
-        groupedLabel="trade file"
-        groupedSpend={[
-          { label: "TR-2031 · Guangzhou Q2",   amount: 18_400 },
-          { label: "TR-2042 · Yiwu Fashion",   amount: 9_120 },
-          { label: "TR-2055 · Dubai Spares",   amount: 5_200 },
-          { label: "TR-2068 · Shenzhen Mach.", amount: 7_640 },
-        ]}
-        cards={[
-          { id: "TD1", label: "Guangzhou Sourcing", holder: "Tunde B.",   last4: "6601", status: "Active", monthlySpend: 4200, limit: 8000,  category: "Supplier samples", linked: "Trade file TR-2031" },
-          { id: "TD2", label: "QC Inspections",     holder: "Aisha B.",   last4: "9912", status: "Active", monthlySpend: 1850, limit: 5000,  category: "Inspection fees", linked: "Trade file TR-2031" },
-          { id: "TD3", label: "Shipment SH-9012",   holder: "Ops Team",   last4: "4471", status: "Active", monthlySpend: 6200, limit: 12000, category: "Logistics tools", linked: "Shipment Shenzhen → Lagos" },
-          { id: "TD4", label: "Buyer Travel — Yiwu",holder: "Adaeze O.",  last4: "3326", status: "Active", monthlySpend: 2400, limit: 6000,  category: "Business travel", linked: "Trip: Yiwu" },
-          { id: "TD5", label: "Meta Ads — Store",   holder: "Marketing",  last4: "1158", status: "Active", monthlySpend: 3100, limit: 5000,  category: "Ad spend",        linked: "Campaign: ABC-Q2" },
-          { id: "TD6", label: "Freightos / SaaS",   holder: "Ops Team",   last4: "2204", status: "Frozen", monthlySpend: 480,  limit: 1500,  category: "Logistics tools" },
-        ]}
-      />
     </div>
   );
 }

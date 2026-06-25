@@ -1,34 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { WorkspaceCardsHub } from "@/components/WorkspaceCardsHub";
-import { ReadinessBar } from "@/components/ReadinessBar";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/treasury/cards")({
-  head: () => ({ meta: [{ title: "Company Cards — Canta" }] }),
+  head: () => ({ meta: [{ title: "Feature unavailable — Canta" }] }),
   component: () => (
-    <div className="space-y-6">
-      <ReadinessBar status="Requires Setup" cue="Card issuing requires KYB and activation by Canta." />
-      <WorkspaceCardsHub
-        workspaceKey="enterprise"
-        title="Company Cards"
-        subtitle="Issue cards to staff, departments and projects with approvals, receipt rules, and full spend reporting."
-        cardTypes={[
-          { key: "staff", label: "Staff Card", desc: "Per-employee company card" },
-          { key: "department", label: "Department Card", desc: "Shared spend for a team or unit" },
-          { key: "travel", label: "Travel Card", desc: "Trips, hotels, per-diem" },
-          { key: "procurement", label: "Procurement Card", desc: "Office and vendor purchases" },
-          { key: "project", label: "Project Card", desc: "Time-boxed initiative spend" },
-          { key: "ads", label: "Ad Spend Card", desc: "Meta, Google, TikTok campaigns" },
-        ]}
-        linkEntities={["Staff member", "Department", "Project", "Cost center"]}
-        spendDimensions={[
-          { key: "department", label: "Department" },
-          { key: "project", label: "Project" },
-          { key: "staff", label: "Staff" },
-        ]}
-        backTo={{ to: "/treasury", label: "Back to Enterprise Treasury" }}
-        cardHub={<Link to="/cards" className="text-xs text-accent hover:underline">Open shared card hub →</Link>}
-        enableExport
-      />
+    <div className="min-h-[60vh] grid place-items-center px-4">
+      <Card className="w-full max-w-lg p-8 text-center shadow-card">
+        <h1 className="text-2xl font-semibold">This feature is not available in this demo</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Enterprise Treasury is focused on balances, FX, approvals, beneficiaries, payouts, and reports.
+        </p>
+        <Button asChild className="mt-6">
+          <Link to="/treasury"><ArrowLeft className="h-4 w-4 mr-2" /> Back to Enterprise Treasury</Link>
+        </Button>
+      </Card>
     </div>
   ),
 });

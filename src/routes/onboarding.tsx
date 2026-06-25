@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Building2, Ship, Truck, Globe, Factory, CreditCard, Home,
+  Building2, Ship, Truck, Globe, Factory, Home,
   ArrowRight, CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
       { title: "Workspace Onboarding — Canta" },
-      { name: "description", content: "Choose your Canta workspace — Treasury, Importer, Freight, Collections, Supplier, Cards, or Property Partner." },
+      { name: "description", content: "Choose your Canta workspace — Treasury, Importer Trade Desk, Clearing Agent Portal, or Partner Mode." },
     ],
   }),
   component: OnboardingPicker,
@@ -25,7 +25,6 @@ const ICONS: Partial<Record<WorkspaceType, typeof Building2>> = {
   freight_workspace: Truck,
   global_collections: Globe,
   supplier_dashboard: Factory,
-  global_spend_cards: CreditCard,
   partner_property: Home,
 };
 const TONES: Partial<Record<WorkspaceType, string>> = {
@@ -34,7 +33,6 @@ const TONES: Partial<Record<WorkspaceType, string>> = {
   freight_workspace: "bg-warning/15 text-warning",
   global_collections: "bg-success/10 text-success",
   supplier_dashboard: "bg-amber-500/15 text-amber-700",
-  global_spend_cards: "bg-destructive/10 text-destructive",
   partner_property: "bg-primary/10 text-primary",
 };
 const WHO_FOR: Partial<Record<WorkspaceType, string>> = {
@@ -43,16 +41,13 @@ const WHO_FOR: Partial<Record<WorkspaceType, string>> = {
   freight_workspace: "Freight forwarders, clearing agents, logistics operators",
   supplier_dashboard: "Foreign suppliers & exporters selling to African buyers",
   global_collections: "Universities, hospitals, airlines, travel, e-commerce",
-  global_spend_cards: "Individuals & small businesses spending globally",
   partner_property: "Property partners like Baron & Cabot referring clients",
 };
 const DO_BULLETS: Partial<Record<WorkspaceType, string[]>> = {
-  enterprise_treasury: ["FX & multi-currency wallets", "Approvals & beneficiaries", "Company cards & compliance"],
+  enterprise_treasury: ["FX & multi-currency wallets", "Approvals & beneficiaries", "Treasury reports & compliance"],
   importer_portal: ["Track shipments & landed cost", "Manage suppliers & documents", "Pay in any currency"],
   freight_workspace: ["Run shipment pipeline", "Invoice customers & collect", "WhatsApp updates at scale"],
   supplier_dashboard: ["Invoice African buyers", "Confirm funds via escrow", "Receive global settlement"],
-  global_collections: ["Collect locally via links", "Reconcile and settle globally", "Manage staff cards"],
-  global_spend_cards: ["Create purpose-built cards", "Travel, students, ads", "Track every transaction"],
   partner_property: ["Refer property clients", "Track FX & solicitor payouts", "Download payout receipts"],
 };
 
@@ -60,11 +55,10 @@ const ROUTE_FOR: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "/treasury",
   importer_portal: "/importer",
   freight_workspace: "/freight",
-  global_collections: "/collections",
-  supplier_dashboard: "/suppliers",
-  global_spend_cards: "/cards",
   partner_property: "/partner",
 };
+
+const VISIBLE: WorkspaceType[] = ["importer_portal", "freight_workspace", "enterprise_treasury", "partner_property"];
 
 function OnboardingPicker() {
   const navigate = useNavigate();
@@ -103,7 +97,7 @@ function OnboardingPicker() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {SEGMENTS.map((s) => {
+          {SEGMENTS.filter((s) => VISIBLE.includes(s.id)).map((s) => {
             const Icon = ICONS[s.id] ?? Building2;
             const hot = hovered === s.id;
             return (
