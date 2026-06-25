@@ -167,7 +167,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
   {
     h: "Embedded insurance hooks",
     body: [
-      "Optional placeholders ready to wire to AXA Mansard, Leadway, Old Mutual or AIICO. Surfaces on Importer Trade Files (cargo / goods-in-transit), Freight workspace (goods-in-transit / freight liability), Travel cards (travel insurance), and Partner Property cases (property payment protection).",
+      "Optional placeholders ready to wire to AXA Mansard, Leadway, Old Mutual or AIICO. Surfaces on Importer Trade Files (cargo / goods-in-transit), Clearing Agent Portal jobs (goods-in-transit / freight liability), and Partner Property cases (property payment protection).",
       "Each hook stores customer, linked entity, insured amount, risk type, partner, quote status and policy status.",
     ],
   },
@@ -178,7 +178,6 @@ const SECTIONS: { h: string; body: string[] }[] = [
       "FX / Settlement / Payout: Wise Platform, Currencycloud, Airwallex, Nium, dLocal, Thunes.",
       "Shipment Tracking Aggregator: project44, Shipsgo, Searates, MarineTraffic.",
       "Direct Shipping Lines: Maersk Spot API, MSC, CMA CGM, Hapag-Lloyd, Cosco Shipping.",
-      "Card Issuing: Marqeta, Stripe Issuing, Lithic, Bridgecard, Sudo Africa.",
       "KYC / KYB: Smile ID, Onfido, Sumsub, Veriff, Dojah, Trulioo.",
       "Sanctions / PEP / AML: ComplyAdvantage, Refinitiv World-Check, Dow Jones Risk & Compliance.",
       "WhatsApp / Messaging: Twilio WhatsApp Business API, 360dialog, Meta Cloud API, Africa's Talking, Termii.",
@@ -195,7 +194,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
   {
     h: "Backend readiness data model (/data-model)",
     body: [
-      "Internal reference page covering 40+ core entities: organizations, users, roles, permissions, workspaces, feature_flags, wallets, transactions, beneficiaries, approvals, trade_files, shipments, suppliers, buyers, verified_suppliers, verified_buyers, invoices, payment_links, payers, reconciliation_records, settlement_batches, cards, card_transactions, freight_customers, freight_invoices, partner_leads, partner_cases, partner_marketers, partner_fx_quotes, partner_payment_links, partner_payouts, partner_solicitors, partner_commissions, documents, verification_records, audit_logs, integrations, webhook_logs, insurance_quotes, support_tickets.",
+      "Internal reference page covering core entities: organizations, users, roles, permissions, workspaces, feature_flags, wallets, transactions, beneficiaries, approvals, trade_files, shipments, suppliers, buyers, verified_suppliers, verified_buyers, invoices, payment_links, payers, reconciliation_records, settlement_batches, freight_customers, freight_invoices, partner_leads, partner_cases, partner_marketers, partner_fx_quotes, partner_payment_links, partner_payouts, partner_solicitors, partner_commissions, documents, verification_records, audit_logs, integrations, webhook_logs, insurance_quotes, support_tickets.",
       "Each entry documents purpose, key fields, modules, relationships, status fields and audit requirements.",
     ],
   },
@@ -203,7 +202,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
     h: "Support tickets (/support)",
     body: [
       "Workspace-aware ticketing. Statuses: Open, Waiting on Customer, Waiting on Canta, Escalated, Resolved, Closed.",
-      "Issue types: Payment, Funding mismatch, KYC/KYB, Shipment, Card, Partner case, Payout, Technical, General enquiry.",
+      "Issue types: Payment, Funding mismatch, KYC/KYB, Shipment, Partner case, Payout, Technical, General enquiry.",
       "Tickets link to a case / trade file / payment / shipment and capture priority, assigned user, messages and attachments.",
     ],
   },
@@ -255,8 +254,7 @@ function Docs() {
         <div>
           <p className="text-sm leading-relaxed text-muted-foreground">
             Canta is an enterprise cross-border payments, FX and trade platform for
-            corporates, importers, freight forwarders, suppliers, global merchants and
-            partner property firms.
+            corporates, importers, clearing agents and partner property firms.
           </p>
         </div>
         {SECTIONS.map((s) => (
