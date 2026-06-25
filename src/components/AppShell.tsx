@@ -2,7 +2,7 @@ import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   LayoutDashboard, Wallet, ArrowLeftRight, Receipt, Users, Building2,
   Sparkles, Shield, Settings, Bell, Search, ChevronDown, TrendingUp, TrendingDown,
-  UserCog, Check, Menu, FileText, Ship, Truck, Factory, Globe, CreditCard,
+  UserCog, Check, Menu, FileText, Ship, Truck, Factory, Globe,
   Brain, ShieldCheck, Plug, MessageCircle, CheckSquare, Crown, Calculator,
   Link as LinkIcon, BarChart3,
 } from "lucide-react";
@@ -24,7 +24,7 @@ const ICONS: Record<string, typeof LayoutDashboard> = {
   dashboard: LayoutDashboard, wallet: Wallet, fx: ArrowLeftRight, receipt: Receipt,
   users: Users, building: Building2, settings: Settings, team: Shield,
   trade: FileText, ship: Ship, freight: Truck, factory: Factory, globe: Globe,
-  card: CreditCard, brain: Brain, "shield-check": ShieldCheck, plug: Plug,
+  brain: Brain, "shield-check": ShieldCheck, plug: Plug,
   whatsapp: MessageCircle, check: CheckSquare, crown: Crown, calculator: Calculator,
   file: FileText, link: LinkIcon, chart: BarChart3, importer: Building2,
   shield: ShieldCheck, sparkles: Sparkles,
