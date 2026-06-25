@@ -30,30 +30,24 @@ const TONES: Partial<Record<WorkspaceType, string>> = {
 const WHO_FOR: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "Multinationals, corporates, traders and large SMEs",
   importer_portal: "Importers buying from China, UAE, Turkey, India",
-  freight_workspace: "Freight forwarders, clearing agents, logistics operators",
-  supplier_dashboard: "Foreign suppliers & exporters in China, UAE, Turkey, India, Europe and other corridors selling to African buyers",
-  global_collections: "Universities, hospitals, airlines, travel, e-commerce",
-  global_spend_cards: "Individuals & small businesses spending globally",
+  freight_workspace: "Verified clearing agents bidding for importer jobs",
   partner_property: "Property partners like Baron & Cabot referring clients",
 };
 const DO_BULLETS: Partial<Record<WorkspaceType, string[]>> = {
-  enterprise_treasury: ["FX & multi-currency wallets", "Approvals & beneficiaries", "Company cards & compliance"],
-  importer_portal: ["Track shipments & landed cost", "Manage suppliers & documents", "Pay in any currency"],
-  freight_workspace: ["Run shipment pipeline", "Invoice customers & collect", "WhatsApp updates at scale"],
-  supplier_dashboard: ["Invoice African buyers", "Confirm funds via escrow", "Receive global settlement"],
-  global_collections: ["Collect locally via links", "Reconcile and settle globally", "Manage staff cards"],
-  global_spend_cards: ["Create purpose-built cards", "Travel, students, ads", "Track every transaction"],
+  enterprise_treasury: ["FX & multi-currency balances", "Bulk payouts & approvals", "Beneficiaries & treasury reports"],
+  importer_portal: ["Send BL & track shipments", "Organize goods & documents", "Compare clearing agents & pay"],
+  freight_workspace: ["See importer quote requests", "Submit & manage bids", "Run accepted clearing jobs"],
   partner_property: ["Refer property clients", "Track FX & solicitor payouts", "Download payout receipts"],
 };
 const CTA: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "Enter Treasury",
-  importer_portal: "Enter Importer Portal",
-  freight_workspace: "Enter Freight Workspace",
-  supplier_dashboard: "Enter Supplier Dashboard",
-  global_collections: "Enter Global Collections",
-  global_spend_cards: "Enter Spend Cards",
-  partner_property: "Enter Partner Workspace",
+  importer_portal: "Enter Importer Trade Desk",
+  freight_workspace: "Enter Clearing Agent Portal",
+  partner_property: "Enter Partner Mode",
 };
+
+const VISIBLE: WorkspaceType[] = ["importer_portal", "freight_workspace", "enterprise_treasury", "partner_property"];
+
 
 function WelcomePage() {
   const navigate = useNavigate();
