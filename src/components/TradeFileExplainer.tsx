@@ -7,7 +7,7 @@ const STEPS = [
   { icon: Upload,   t: "Upload",   d: "Send invoice, BL, container number or supplier details." },
   { icon: FileText, t: "Trade File", d: "Canta organizes everything into one Trade File." },
   { icon: Ship,     t: "Track",    d: "Supplier, shipment, documents, landed cost and payments — in one place." },
-  { icon: Wallet,   t: "Act",      d: "Request quote, verify supplier, start escrow, freight update or card." },
+  { icon: Wallet,   t: "Act",      d: "Request quote, verify supplier, request clearing bids, track shipment updates, and manage payments." },
   { icon: Bell,     t: "Stay ahead", d: "Reminders before goods arrive and clearing starts." },
 ];
 
