@@ -237,7 +237,7 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
       <DropdownMenuTrigger asChild>
         <button className="flex items-center gap-2 px-2 sm:px-3 py-1.5 rounded-lg border border-border bg-card hover:bg-secondary text-sm font-medium min-w-0">
           <div className="h-6 w-6 rounded bg-gradient-accent text-sidebar-primary-foreground grid place-items-center text-[10px] font-bold flex-shrink-0">{current.tag}</div>
-          <span className="hidden sm:inline truncate max-w-[140px] md:max-w-none">{current.id} Mode</span>
+          <span className="hidden sm:inline truncate max-w-[160px] md:max-w-none">{MODE_DISPLAY_LABEL[current.id]} Mode</span>
           <ChevronDown className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
         </button>
       </DropdownMenuTrigger>
