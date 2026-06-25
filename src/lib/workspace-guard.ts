@@ -9,7 +9,6 @@ const MODE_TO_WORKSPACE: Record<Mode, WorkspaceType> = {
   "Freight Forwarder": "freight_workspace",
   "Supplier": "supplier_dashboard",
   "Global Merchant": "global_collections",
-  "Global Spend Cards": "global_spend_cards",
   "Partner Property": "partner_property",
   "Canta Ops": "canta_ops",
 };
@@ -20,7 +19,7 @@ const WORKSPACE_TO_MODE: Record<WorkspaceType, Mode> = {
   freight_workspace: "Freight Forwarder",
   supplier_dashboard: "Supplier",
   global_collections: "Global Merchant",
-  global_spend_cards: "Global Spend Cards",
+  global_spend_cards: "Enterprise Treasury",
   partner_property: "Partner Property",
   canta_ops: "Enterprise Treasury",
 };
@@ -34,7 +33,7 @@ const PROFILES: Record<WorkspaceType, { name: string; title: string; badge: stri
   global_collections:  { name: "Amaka Bello",    title: "Merchant Owner",  badge: "Global Collections Mode",  workspaceLabel: "Global Merchant" },
   supplier_dashboard:  { name: "Li Wei",         title: "Supplier Admin",  badge: "Supplier Mode",            workspaceLabel: "Supplier" },
   partner_property:    { name: "Sarah Adeyemi",  title: "Partner Admin",   badge: "Partner Property Mode",    workspaceLabel: "Partner Property" },
-  global_spend_cards:  { name: "James Okoro",    title: "Card Owner",      badge: "Global Spend Cards Mode",  workspaceLabel: "Global Spend Cards" },
+  global_spend_cards:  { name: "Adaeze Okonkwo", title: "Treasury Admin",  badge: "Enterprise Treasury Mode", workspaceLabel: "Enterprise Treasury" },
   canta_ops:           { name: "Adaeze Okonkwo", title: "Treasury Admin",  badge: "Enterprise Treasury Mode", workspaceLabel: "Enterprise Treasury" },
 };
 

@@ -76,7 +76,6 @@ const MODE_TO_WORKSPACE: Record<Mode, import("@/lib/profile").WorkspaceType> = {
   "Freight Forwarder": "freight_workspace",
   "Supplier": "supplier_dashboard",
   "Global Merchant": "global_collections",
-  "Global Spend Cards": "global_spend_cards",
   "Partner Property": "partner_property",
   "Canta Ops": "canta_ops",
 };
@@ -87,7 +86,7 @@ const WORKSPACE_TO_MODE: Record<import("@/lib/profile").WorkspaceType, Mode> = {
   freight_workspace: "Freight Forwarder",
   supplier_dashboard: "Supplier",
   global_collections: "Global Merchant",
-  global_spend_cards: "Global Spend Cards",
+  global_spend_cards: "Enterprise Treasury",
   partner_property: "Partner Property",
   // canta_ops is internal-only and never surfaced as a customer mode; if a
   // legacy profile points here, fall back to Enterprise Treasury.
@@ -103,7 +102,7 @@ const WORKSPACE_PROFILES: Record<import("@/lib/profile").WorkspaceType, Workspac
   global_collections:  { name: "Amaka Bello",    initials: "AB", title: "Merchant Owner",          badge: "Global Collections Mode" },
   supplier_dashboard:  { name: "Li Wei",         initials: "LW", title: "Supplier Admin",          badge: "Supplier Mode" },
   partner_property:    { name: "Sarah Adeyemi",  initials: "SA", title: "Partner Admin",           badge: "Partner Property Mode" },
-  global_spend_cards:  { name: "James Okoro",    initials: "JO", title: "Card Owner",              badge: "Global Spend Cards Mode" },
+  global_spend_cards:  { name: "Adaeze Okonkwo", initials: "AO", title: "Treasury Admin",           badge: "Enterprise Treasury Mode" },
   canta_ops:           { name: "Ezekiel Oni",    initials: "EO", title: "Canta Operations Admin", badge: "Canta Ops Mode" },
 };
 
@@ -227,7 +226,6 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
     "Freight Forwarder": "/freight",
     "Supplier": "/suppliers",
     "Global Merchant": "/collections",
-    "Global Spend Cards": "/welcome",
     "Partner Property": "/partner",
     "Canta Ops": "/whatsapp",
   };

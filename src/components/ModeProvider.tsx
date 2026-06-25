@@ -6,7 +6,6 @@ export type Mode =
   | "Freight Forwarder"
   | "Supplier"
   | "Global Merchant"
-  | "Global Spend Cards"
   | "Partner Property"
   | "Canta Ops";
 
@@ -24,7 +23,6 @@ export const MODE_DISPLAY_LABEL: Record<Mode, string> = {
   "Freight Forwarder": "Clearing Agent",
   "Supplier": "Supplier",
   "Global Merchant": "Global Merchant",
-  "Global Spend Cards": "Global Spend Cards",
   "Partner Property": "Partner",
   "Canta Ops": "Canta Ops",
 };
