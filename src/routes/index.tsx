@@ -4,10 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { setActiveMode, type Mode } from "@/components/ModeProvider";
 import {
-  ArrowRight, Zap, Shield, Globe2, Sparkles, TrendingUp, CheckCircle2,
-  Building2, Lock, Quote, Wallet, Ship, CreditCard, Brain, FileText,
-  MessageCircle, Truck, Factory, Users, GraduationCap, Plane, Briefcase,
-  ShieldCheck, ScanLine, Receipt, Languages, Home,
+  ArrowRight, Zap, Shield, Sparkles, TrendingUp, CheckCircle2,
+  Building2, Lock, Quote, Ship, Brain, FileText,
+  MessageCircle, Truck, Briefcase, Home,
+  ShieldCheck, ScanLine, Receipt, Languages,
 } from "lucide-react";
 
 // Set workspace on click so the destination renders its correct shell, sidebar
@@ -17,65 +17,22 @@ const pickWorkspace = (m: Mode) => () => setActiveMode(m);
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Canta — Move Money. Move Goods. Collect Globally. Spend Globally." },
-      { name: "description", content: "Canta is the financial and trade operating system for African businesses moving money, goods, collections, and global spend. FX, trade shipments, supplier payments, local collections, freight, global cards, and compliance — one platform." },
-      { property: "og:title", content: "Canta — The Financial & Trade Operating System for Africa" },
-      { property: "og:description", content: "Manage FX, trade shipments, supplier payments, local collections, freight workflows, global cards, and compliance from one operating system." },
+      { title: "Canta — Trade & Treasury Operating System" },
+      { name: "description", content: "Canta helps importers, enterprises, clearing agents, and partners manage trade files, FX, supplier payments, clearing quotes, documents, and payouts from one trusted workspace." },
+      { property: "og:title", content: "Canta — Trade & Treasury Operating System" },
+      { property: "og:description", content: "One trusted workspace for trade files, FX, supplier payments, clearing quotes, documents, and payouts." },
     ],
   }),
   component: Landing,
 });
 
-const pillars = [
-  {
-    id: "move-money",
-    tag: "Move Money",
-    icon: Wallet,
-    headline: "Treasury, FX, wallets, beneficiaries and settlements — orchestrated.",
-    description: "Manage treasury, FX conversion, wallets, beneficiaries, approvals, and global settlements.",
-    features: ["Multi-currency wallets", "Real-time FX", "Beneficiaries", "Transaction approvals", "Settlement tracking", "Audit-ready records"],
-    cta: { label: "Explore Treasury Platform", to: "/welcome" },
-    accent: "from-primary to-primary-glow",
-  },
-  {
-    id: "move-goods",
-    tag: "Move Goods",
-    icon: Ship,
-    headline: "From pro-forma to port — a full trade workspace.",
-    description: "Track shipments, organize documents, manage suppliers, calculate landed cost, and prepare for arrival.",
-    features: ["Trade Desk", "Shipment timelines", "Document vault", "Freight forwarder workspace", "Landed cost calculator", "WhatsApp updates", "Clearing readiness"],
-    cta: { label: "Start with Canta Trade Desk", to: "/welcome" },
-    accent: "from-accent to-primary",
-  },
-  {
-    id: "collect-globally",
-    tag: "Collect Globally",
-    icon: Globe2,
-    headline: "Local African collections. Global settlement.",
-    description: "Help global businesses collect locally from African customers and settle globally.",
-    features: ["NGN local collections", "Payment links", "Invoice references", "Reconciliation", "USD / GBP / EUR / RMB / AED settlement", "Merchant reports"],
-    cta: { label: "Open Global Collections", to: "/welcome" },
-    accent: "from-success to-accent",
-  },
-  {
-    id: "spend-globally",
-    tag: "Spend Globally",
-    icon: CreditCard,
-    headline: "Purpose-built global cards for every African business need.",
-    description: "Purpose-built global cards for business, travel, import expenses, students, teams, and ad spend.",
-    features: ["Travel cards", "Team cards", "Importer cards", "Student cards", "Ad spend cards", "Limits and approvals", "Receipt tracking"],
-    cta: { label: "Create Global Spend Card", to: "/welcome" },
-    accent: "from-warning to-accent",
-  },
-] as const;
-
 const aiFeatures = [
-  { icon: ScanLine, t: "Document extraction", d: "AI parses BLs, invoices, packing lists and receipts in seconds." },
-  { icon: TrendingUp, t: "Deal insights", d: "Spot which shipments, suppliers and payments need attention next." },
-  { icon: Brain, t: "AI assistant", d: "Helps your team extract documents, summarize trade conversations, draft replies, and track next steps." },
+  { icon: ScanLine, t: "Document extraction", d: "AI parses BLs, invoices and packing lists in seconds." },
+  { icon: TrendingUp, t: "Trade file insights", d: "Spot which shipments, suppliers and payments need attention next." },
+  { icon: Brain, t: "AI assistant", d: "Summarize trade conversations, draft replies, and track next steps." },
   { icon: Receipt, t: "Landed cost estimates", d: "Forecast duty, freight, clearing and FX before the goods ship." },
-  { icon: Factory, t: "Supplier matching", d: "Match importers to verified Chinese, Turkish and UAE suppliers." },
-  { icon: Languages, t: "WhatsApp onboarding", d: "Onboard non-tech importers conversationally — no app required." },
+  { icon: Languages, t: "WhatsApp onboarding", d: "Onboard importers conversationally — no app required." },
+  { icon: ShieldCheck, t: "Clearing quote intelligence", d: "Compare bids from verified clearing agents side-by-side." },
 ];
 
 const trust = [
@@ -89,13 +46,9 @@ const trust = [
 
 const segments = [
   { icon: Briefcase, t: "Importers" },
-  { icon: Truck, t: "Freight Forwarders" },
-  { icon: Factory, t: "Suppliers" },
-  { icon: Globe2, t: "Global Merchants" },
+  { icon: Truck, t: "Clearing Agents" },
   { icon: Building2, t: "Enterprises" },
-  { icon: GraduationCap, t: "Students" },
-  { icon: Plane, t: "Travelers" },
-  { icon: Users, t: "SMEs & Teams" },
+  { icon: Home, t: "Partners" },
 ];
 
 function Landing() {
@@ -109,7 +62,7 @@ function Landing() {
             <div className="font-semibold tracking-tight">Canta</div>
           </Link>
           <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
-            <a href="#pillars" className="hover:text-foreground">Platform</a>
+            <a href="#workspaces" className="hover:text-foreground">Workspaces</a>
             <a href="#ai" className="hover:text-foreground">AI</a>
             <a href="#trust" className="hover:text-foreground">Trust</a>
             <a href="#segments" className="hover:text-foreground">Who it's for</a>
@@ -131,42 +84,34 @@ function Landing() {
 
         <div className="max-w-7xl mx-auto px-6 pt-20 pb-24 lg:pt-28 lg:pb-32 text-primary-foreground relative">
           <Badge className="bg-white/10 text-primary-foreground border border-white/20 hover:bg-white/15">
-            <Sparkles className="h-3 w-3 mr-1" /> The financial & trade operating system for Africa
+            <Sparkles className="h-3 w-3 mr-1" /> A focused trade & treasury platform
           </Badge>
           <h1 className="mt-6 text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05] max-w-5xl">
-            Move money, move goods, collect globally, and{" "}
-            <span className="text-accent">spend globally</span> — from one trusted Canta workspace.
+            One trusted workspace for{" "}
+            <span className="text-accent">trade, treasury, and clearing</span>.
           </h1>
           <p className="mt-6 max-w-3xl text-lg text-primary-foreground/80">
-            Canta helps African businesses manage FX, supplier payments, shipments, local
-            collections, global cards, and compliance across one operating system.
+            Canta helps importers, enterprises, clearing agents, and partners manage trade files,
+            FX, supplier payments, clearing quotes, documents, and payouts from one trusted workspace.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="bg-[#25D366] text-white hover:bg-[#1FB855] hover:shadow-lg hover:shadow-[#25D366]/30 transition h-12 px-6 font-semibold">
-              <a href={buildWhatsAppUrl("sendInvoice")} target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="h-4 w-4 mr-1.5" /> Send Invoice on WhatsApp
-              </a>
-            </Button>
             <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold">
+              <Link to="/importer" onClick={pickWorkspace("Importer")}>Start with Importer Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
+            </Button>
+            <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
+              <Link to="/treasury" onClick={pickWorkspace("Enterprise Treasury")}>Explore Enterprise Treasury</Link>
+            </Button>
+            <Button asChild size="lg" className="bg-[#25D366] text-white hover:bg-[#1FB855] hover:shadow-lg hover:shadow-[#25D366]/30 transition h-12 px-6 font-semibold">
               <a href={buildWhatsAppUrl("trackShipment")} target="_blank" rel="noopener noreferrer">
-                <Ship className="h-4 w-4 mr-1.5" /> Track My Shipment
+                <MessageCircle className="h-4 w-4 mr-1.5" /> Track on WhatsApp
               </a>
-            </Button>
-            <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-              <Link to="/trade-desk" onClick={pickWorkspace("Importer")}>Start with Canta Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
-            </Button>
-            <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-              <Link to="/treasury" onClick={pickWorkspace("Enterprise Treasury")}>Explore Treasury Platform</Link>
-            </Button>
-            <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-              <Link to="/cards" onClick={pickWorkspace("Global Spend Cards")}>Create Global Spend Card</Link>
             </Button>
           </div>
 
           <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl">
             {[
-              { v: "1 platform", l: "Money, goods, collections, cards" },
-              { v: "30+", l: "Currencies & corridors" },
+              { v: "1 platform", l: "Trade, treasury & clearing" },
+              { v: "4", l: "Focused workspaces" },
               { v: "<30s", l: "Cross-border settlement" },
               { v: "24/7", l: "Trade & treasury support" },
             ].map((s) => (
@@ -182,30 +127,30 @@ function Landing() {
       {/* Logo strip */}
       <section className="border-y border-border bg-secondary/30">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
-          <div className="text-xs uppercase tracking-widest text-muted-foreground mr-4">Powering African trade & treasury for</div>
-          {["Importers", "Freight Forwarders", "Suppliers", "Global Merchants", "Enterprises", "Universities"].map((n) => (
+          <div className="text-xs uppercase tracking-widest text-muted-foreground mr-4">Built for</div>
+          {["Importers", "Clearing Agents", "Enterprises", "Partners"].map((n) => (
             <div key={n} className="text-sm font-semibold text-muted-foreground/80 tracking-tight">{n}</div>
           ))}
         </div>
       </section>
 
-      {/* What do you want to do with Canta? */}
-      <section id="do" className="max-w-7xl mx-auto px-6 py-24">
+      {/* Workspaces */}
+      <section id="workspaces" className="max-w-7xl mx-auto px-6 py-24">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <div className="text-xs uppercase tracking-widest text-accent-foreground/80 font-semibold">Pick your workspace</div>
           <h2 className="text-3xl md:text-5xl font-semibold tracking-tight mt-3">
-            What do you want to do with Canta?
+            Four focused workspaces. One platform.
           </h2>
           <p className="text-muted-foreground mt-4">
-            Choose how you'll use Canta. Each workspace comes with its own dashboard, navigation, and tools.
+            Each workspace comes with its own dashboard, navigation, and tools — purpose-built for the role.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {([
-            { icon: Ship,        tag: "Importer Trade Desk",          desc: "Send your BL. Track your shipment. Organize goods and documents. Compare clearing agents. Pay safely.", cta: "Enter Importer Trade Desk", to: "/importer",   mode: "Importer" as Mode,            tone: "bg-accent/15 text-accent" },
-            { icon: Truck,       tag: "Clearing Agent Portal",        desc: "Verified clearing agents: see importer quote requests, submit bids, and run accepted jobs.",         cta: "Enter Clearing Agent Portal", to: "/freight",  mode: "Freight Forwarder" as Mode,   tone: "bg-warning/15 text-warning" },
-            { icon: Building2,   tag: "Enterprise Treasury",          desc: "Multi-currency balances, FX, bulk payouts, approvals, beneficiaries, and treasury reports.",         cta: "Enter Treasury",             to: "/treasury",   mode: "Enterprise Treasury" as Mode, tone: "bg-primary/10 text-primary" },
-            { icon: Home,        tag: "Partner Mode",                 desc: "Property and company partners referring clients to Canta. Track referrals, payments and commission.", cta: "Enter Partner Mode",         to: "/partner",    mode: "Partner Property" as Mode,    tone: "bg-primary/10 text-primary" },
+            { icon: Ship,      tag: "Importer Trade Desk",   desc: "Send your BL. Track your shipment. Organize goods and documents. Compare clearing agents. Pay safely.", cta: "Enter Importer Trade Desk", to: "/importer",  mode: "Importer" as Mode,            tone: "bg-accent/15 text-accent" },
+            { icon: Truck,     tag: "Clearing Agent Portal", desc: "Verified clearing agents: see importer quote requests, submit bids, and run accepted jobs.",          cta: "Enter Clearing Agent Portal", to: "/freight",   mode: "Freight Forwarder" as Mode,   tone: "bg-warning/15 text-warning" },
+            { icon: Building2, tag: "Enterprise Treasury",   desc: "Multi-currency balances, FX, bulk payouts, approvals, beneficiaries, and treasury reports.",          cta: "Enter Treasury",              to: "/treasury",  mode: "Enterprise Treasury" as Mode, tone: "bg-primary/10 text-primary" },
+            { icon: Home,      tag: "Partner Mode",          desc: "Property and company partners referring clients to Canta. Track referrals, payments and commission.",  cta: "Enter Partner Mode",          to: "/partner",   mode: "Partner Property" as Mode,    tone: "bg-primary/10 text-primary" },
           ] as const).map((c) => {
             const Icon = c.icon;
             return (
@@ -224,47 +169,6 @@ function Landing() {
         </div>
       </section>
 
-      {/* Four product pillars */}
-      <section id="pillars" className="max-w-7xl mx-auto px-6 py-24">
-        <div className="text-center max-w-2xl mx-auto">
-          <div className="text-xs uppercase tracking-widest text-accent-foreground/80 font-semibold">The Canta Platform</div>
-          <h2 className="text-3xl md:text-5xl font-semibold tracking-tight mt-3">
-            Four products. One operating system.
-          </h2>
-          <p className="text-muted-foreground mt-4">
-            Each pillar replaces a category of bank portals, brokers, spreadsheets and WhatsApp threads
-            that African businesses use today.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-14">
-          {pillars.map((p) => {
-            const Icon = p.icon;
-            return (
-              <div key={p.id} className="group relative p-8 rounded-3xl border border-border bg-card hover:shadow-elevated transition overflow-hidden">
-                <div className={`absolute -top-24 -right-24 h-56 w-56 rounded-full bg-gradient-to-br ${p.accent} opacity-10 blur-3xl group-hover:opacity-20 transition`} />
-                <div className="flex items-center gap-3">
-                  <div className={`h-11 w-11 rounded-xl bg-gradient-to-br ${p.accent} grid place-items-center text-primary-foreground shadow-glow`}>
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div className="text-xs uppercase tracking-widest font-semibold text-accent-foreground/80">{p.tag}</div>
-                </div>
-                <div className="mt-5 text-xl md:text-2xl font-semibold tracking-tight leading-snug">{p.headline}</div>
-                <p className="text-sm text-muted-foreground mt-2">{p.description}</p>
-                <div className="mt-5 flex flex-wrap gap-1.5">
-                  {p.features.map((f) => (
-                    <Badge key={f} variant="outline" className="text-[11px] border-border bg-secondary/40 font-normal">{f}</Badge>
-                  ))}
-                </div>
-                <Button asChild variant="ghost" className="mt-6 px-0 hover:bg-transparent hover:text-accent text-accent-foreground/90 font-semibold">
-                  <Link to={p.cta.to}>{p.cta.label} <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
-                </Button>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
       {/* AI section */}
       <section id="ai" className="bg-secondary/40 border-y border-border">
         <div className="max-w-7xl mx-auto px-6 py-24">
@@ -274,10 +178,10 @@ function Landing() {
                 <Sparkles className="h-3 w-3 mr-1" /> Canta AI
               </Badge>
               <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mt-4">
-                AI-powered trade and growth intelligence.
+                AI-powered trade intelligence.
               </h2>
               <p className="text-muted-foreground mt-4">
-                Embedded across every module — so your team works on outcomes, not paperwork.
+                Embedded across every workspace — so your team works on outcomes, not paperwork.
               </p>
             </div>
             <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -303,7 +207,7 @@ function Landing() {
         <div className="text-center max-w-2xl mx-auto mb-12">
           <div className="text-xs uppercase tracking-widest text-accent-foreground/80 font-semibold">Trust & Compliance</div>
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mt-3">
-            Built for regulated global trade and payments.
+            Built for regulated trade and payments.
           </h2>
           <p className="text-muted-foreground mt-4">
             Every action — every approval, document and payment — is auditable, reviewable and policy-controlled.
@@ -330,7 +234,7 @@ function Landing() {
           <div className="text-center max-w-2xl mx-auto mb-12">
             <div className="text-xs uppercase tracking-widest text-accent-foreground/80 font-semibold">Who Canta serves</div>
             <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mt-3">
-              One operating system. Every kind of African business.
+              Built for importers, clearing agents, enterprises, and partners.
             </h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -354,8 +258,8 @@ function Landing() {
         <div className="rounded-3xl border border-border p-10 md:p-14 bg-card">
           <Quote className="h-8 w-8 text-accent" />
           <p className="mt-5 text-2xl md:text-3xl font-medium tracking-tight leading-snug max-w-4xl">
-            "Canta replaced four tools — our FX broker, freight tracker, supplier WhatsApp chaos
-            and bank portal — with one workspace. Our trade cycle dropped from weeks to days."
+            "Canta replaced our FX broker, freight tracker and supplier WhatsApp chaos with one
+            workspace. Our trade cycle dropped from weeks to days."
           </p>
           <div className="mt-6 text-sm text-muted-foreground">
             COO · West African Importer Group
@@ -370,26 +274,26 @@ function Landing() {
           <div className="absolute -left-20 -bottom-20 h-72 w-72 rounded-full bg-primary-glow/30 blur-3xl" />
           <div className="relative max-w-3xl">
             <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">
-              Move money. Move goods. Collect globally. Spend globally.
+              One trusted workspace. Trade files. Treasury. Clearing.
             </h2>
             <p className="text-primary-foreground/75 mt-4">
-              Step into a fully-loaded Canta workspace and feel the entire operating system —
-              from trade files to FX, from collections to global cards.
+              Step into a Canta workspace and feel the platform — from trade files to FX,
+              from clearing quotes to payouts.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold">
-                <Link to="/trade-desk" onClick={pickWorkspace("Importer")}>Start with Canta Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
+                <Link to="/importer" onClick={pickWorkspace("Importer")}>Start with Importer Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
               </Button>
               <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-                <Link to="/treasury" onClick={pickWorkspace("Enterprise Treasury")}>Explore Treasury Platform</Link>
+                <Link to="/treasury" onClick={pickWorkspace("Enterprise Treasury")}>Explore Enterprise Treasury</Link>
               </Button>
               <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-                <Link to="/cards" onClick={pickWorkspace("Global Spend Cards")}>Create Global Spend Card</Link>
+                <Link to="/welcome">All Workspaces</Link>
               </Button>
             </div>
             <div className="mt-8 flex items-center gap-2 text-xs text-primary-foreground/70">
               <MessageCircle className="h-3.5 w-3.5" />
-              Prefer WhatsApp? Send your invoice, BL, container number, or shipment details and Canta will guide you from there.
+              Prefer WhatsApp? Send your BL, container number, or shipment details and Canta will guide you from there.
             </div>
           </div>
         </div>
@@ -397,7 +301,7 @@ function Landing() {
 
       <footer className="border-t border-border">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-wrap items-center justify-between gap-4 text-xs text-muted-foreground">
-          <div>© {new Date().getFullYear()} Canta Financial Technologies. The financial & trade operating system for African businesses.</div>
+          <div>© {new Date().getFullYear()} Canta Financial Technologies. The trade & treasury operating system.</div>
           <div className="flex gap-5">
             <a href="#" className="hover:text-foreground">Privacy</a>
             <a href="#" className="hover:text-foreground">Terms</a>
