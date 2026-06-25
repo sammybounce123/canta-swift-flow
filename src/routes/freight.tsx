@@ -35,7 +35,7 @@ const DOC_TYPES = [
 ];
 
 function Freight() {
-  const [tab, setTab] = useState("overview");
+  const [tab, setTab] = useState("quote-requests");
   const [createOpen, setCreateOpen] = useState(false);
   const [waCustomer, setWaCustomer] = useState<typeof importers[number] | null>(null);
   const [waShipment, setWaShipment] = useState<Shipment | null>(null);
