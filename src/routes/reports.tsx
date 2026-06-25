@@ -65,11 +65,7 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
     { id: "mkt",       name: "Marketer performance",   desc: "Leads, conversions, revenue per marketer" },
     { id: "comm",      name: "Commission report",      desc: "Commissions earned, paid, pending" },
   ],
-  global_spend_cards: [
-    { id: "spend",     name: "Spend report",           desc: "Spend by card, category, merchant" },
-    { id: "txn",       name: "Transaction report",     desc: "All card transactions with receipts" },
-    { id: "fund",      name: "Wallet funding report",  desc: "Top-ups received and source" },
-  ],
+  global_spend_cards: [],
   canta_ops: [
     { id: "tickets",   name: "Support tickets report", desc: "Volume, SLAs, resolution times" },
     { id: "kyb",       name: "Verification report",    desc: "KYB throughput and approvals" },
@@ -85,7 +81,7 @@ const WORKSPACE_LABELS: Record<WorkspaceType, string> = {
   global_collections: "Global Collections / Merchant",
   supplier_dashboard: "Supplier Dashboard",
   partner_property: "Partner Property",
-  global_spend_cards: "Global Spend Cards",
+  global_spend_cards: "Enterprise Treasury",
   canta_ops: "Canta Ops",
 };
 
@@ -96,7 +92,7 @@ const REPORT_GROUP_LABELS: Record<WorkspaceType, string> = {
   global_collections: "Collection reports",
   supplier_dashboard: "Supplier reports",
   partner_property: "Partner reports",
-  global_spend_cards: "Card reports",
+  global_spend_cards: "Enterprise reports",
   canta_ops: "Importer reports",
 };
 
@@ -153,7 +149,7 @@ function ReportsPage() {
     global_collections:  { name: "Amaka Bello",    title: "Merchant Owner",  mode: "Global Collections Mode" },
     supplier_dashboard:  { name: "Li Wei",         title: "Supplier Admin",  mode: "Supplier Mode" },
     partner_property:    { name: "Sarah Adeyemi",  title: "Partner Admin",   mode: "Partner Property Mode" },
-    global_spend_cards:  { name: "James Okoro",    title: "Card Owner",      mode: "Global Spend Cards Mode" },
+    global_spend_cards:  { name: "Adaeze Okonkwo", title: "Treasury Admin",  mode: "Enterprise Treasury Mode" },
     canta_ops:           { name: "Tunde Bakare",   title: "Importer Owner",  mode: "Importer Mode" },
   };
   const identity = WS_IDENTITY[workspace];
