@@ -225,13 +225,11 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       return [
         D,
         { to: "/importer", label: "Importer Dashboard", iconKey: "importer", group: "My Workspace" },
-        { to: "/trade-desk", label: "Trade Desk", iconKey: "trade", group: "Move Goods" },
+        { to: "/trade-desk", label: "Trade Files", iconKey: "trade", group: "Move Goods" },
         { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Move Goods" },
-        { to: "/verified-suppliers", label: "Verified Suppliers", iconKey: "shield-check", group: "Trade Network" },
-        { to: "/my-suppliers", label: "My Suppliers", iconKey: "factory", group: "Trade Network" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Trade Ops" },
+        { to: "/clearing-quotes", label: "Clearing Quotes", iconKey: "shield-check", group: "Trade Ops" },
         { to: "/landed-cost", label: "Landed Cost", iconKey: "calculator", group: "Trade Ops" },
-        { to: "/importer/cards", label: "Importer Cards", iconKey: "card", group: "Money" },
         { to: "/payments", label: "Payments", iconKey: "receipt", group: "Money" },
         { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
@@ -241,18 +239,16 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
     case "freight_workspace":
       return [
         D,
-        { to: "/freight", label: "Freight Workspace", iconKey: "freight", group: "My Workspace" },
-        { to: "/customers", label: "Customers", iconKey: "users", group: "Operations" },
-        { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Operations" },
+        { to: "/freight", label: "Clearing Agent Dashboard", iconKey: "freight", group: "My Workspace" },
+        { to: "/freight", label: "Available Quote Requests", iconKey: "sparkles", group: "Jobs" },
+        { to: "/freight", label: "My Bids", iconKey: "receipt", group: "Jobs" },
+        { to: "/freight", label: "Accepted Jobs", iconKey: "check", group: "Jobs" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
-        { to: "/freight-invoices", label: "Freight Invoices", iconKey: "receipt", group: "Money" },
-        // Cards intentionally removed from Freight Forwarder mode.
-        { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
-        { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        { to: "/whatsapp", label: "Messages", iconKey: "whatsapp", group: "Updates" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
-        { to: "/audit-logs", label: "Activity Log", iconKey: "shield", group: "Governance" },
-        Team, Settings,
+        Settings,
       ];
+
     case "supplier_dashboard":
       return [
         D,
