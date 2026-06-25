@@ -22,7 +22,7 @@ import { Switch } from "@/components/ui/switch";
 import { ShieldCheck, Lock as LockIcon } from "lucide-react";
 
 export const Route = createFileRoute("/freight")({
-  head: () => ({ meta: [{ title: "Freight Forwarder Workspace — Canta" }] }),
+  head: () => ({ meta: [{ title: "Clearing Agent Portal — Canta" }] }),
   component: Freight,
 });
 
@@ -83,60 +83,34 @@ function Freight() {
 
   return (
     <div className="space-y-6">
-      <ReadinessBar status="Demo Preview" cue="Tracking depends on the accuracy of BL, container, shipment, VIN, or AWB details." />
+      <ReadinessBar status="Demo Preview" cue="Verified clearing agents see importer quote requests and run accepted jobs." />
       <WorkspaceWelcome workspace="freight_workspace" />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Freight Forwarder Workspace</h1>
-          <p className="text-sm text-muted-foreground mt-1">What shipments need your attention today?</p>
-        </div>
-        <div className="flex gap-2">
-          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-            <DialogTrigger asChild><Button className="bg-primary"><Plus className="h-4 w-4 mr-1.5" /> Create Shipment</Button></DialogTrigger>
-            <CreateShipmentDialog onClose={() => setCreateOpen(false)} />
-          </Dialog>
+          <h1 className="text-2xl font-semibold">Clearing Agent Portal</h1>
+          <p className="text-sm text-muted-foreground mt-1">Review importer quote requests, submit bids, and run accepted clearing jobs.</p>
         </div>
       </div>
 
       <StartHereCard
-        title="Add Customer / Create Shipment"
-        description="Create a shipment record, link documents, and send tracking updates to your customers."
-        primary={{ label: "Create Shipment", onClick: () => setCreateOpen(true) }}
+        title="Bid on Clearing Quote Requests"
+        description="Browse importer quote requests, submit competitive bids, and run accepted jobs from one place."
+        primary={{ label: "View Quote Requests", onClick: () => setTab("quote-requests") }}
         secondary={[
-          { label: "Add Customer", to: "/customers" },
-          { label: "Send WhatsApp Update", to: "/whatsapp" },
-          { label: "Create Freight Invoice", to: "/freight-invoices" },
+          { label: "My Bids", onClick: () => setTab("my-bids") },
+          { label: "Accepted Jobs", onClick: () => setTab("pipeline") },
+          { label: "Messages", onClick: () => setTab("whatsapp") },
         ]}
       />
 
-
-      {/* KPI grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {kpis.map((k) => (
-          <Card key={k.l} className="p-4 shadow-card">
-            <div className="flex items-center justify-between">
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{k.l}</div>
-              <k.icon className="h-3.5 w-3.5 text-muted-foreground" />
-            </div>
-            <div className={`text-2xl font-semibold tabular-nums mt-2 ${k.tone}`}>{k.v}</div>
-          </Card>
-        ))}
-      </div>
-
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList aria-label="Freight sections" className="flex h-auto w-full flex-wrap items-center justify-start gap-2 rounded-lg border border-border bg-muted/60 p-2">
+        <TabsList aria-label="Clearing Agent Portal sections" className="flex h-auto w-full flex-wrap items-center justify-start gap-2 rounded-lg border border-border bg-muted/60 p-2">
           {[
-            ["overview", "Overview"],
-            ["customers", "Customers"],
-            ["pipeline", "Shipment Pipeline"],
-            ["arriving", "Arriving Shipments"],
             ["quote-requests", "Available Quote Requests"],
             ["my-bids", "My Bids"],
-            ["documents", "Documents"],
-            ["invoices", "Invoices"],
-            ["insurance", "Insurance"],
-            ["whatsapp", "WhatsApp Updates"],
-            ["reports", "Reports"],
+            ["pipeline", "Accepted Jobs"],
+            ["documents", "Documents Requested"],
+            ["whatsapp", "Messages"],
           ].map(([v, l]) => (
             <TabsTrigger
               key={v}
@@ -218,62 +192,7 @@ function Freight() {
         </TabsContent>
       </Tabs>
 
-      {/* Cards panel */}
-      <WorkspaceCardsPanel
-        title="Freight Cards"
-        subtitle="Cards for operations staff, port expenses, warehouse, customer support and branch routes."
-        categories={["Operations", "Port expense", "Travel", "Warehouse", "Customer support", "Branch/Route"]}
-        pendingApprovals={1}
-        receiptsMissing={4}
-        groupedLabel="branch / route"
-        groupedSpend={[
-          { label: "Apapa Port",   amount: 14_200 },
-          { label: "Tin Can",      amount: 11_800 },
-          { label: "Tema, Ghana",  amount: 6_400 },
-          { label: "Dubai Hub",    amount: 3_900 },
-        ]}
-        cards={[
-          { id: "F1", label: "Apapa Port Ops",     holder: "Femi A.",  last4: "5510", status: "Active", monthlySpend: 5400, limit: 12000, category: "Port expense" },
-          { id: "F2", label: "Warehouse Lagos",    holder: "Warehouse",last4: "3382", status: "Active", monthlySpend: 1820, limit: 5000,  category: "Warehouse" },
-          { id: "F3", label: "Customer Support",   holder: "Support",  last4: "7741", status: "Active", monthlySpend: 480,  limit: 2000,  category: "Customer support" },
-          { id: "F4", label: "Shipment SH-9012",   holder: "Ops Team", last4: "1124", status: "Active", monthlySpend: 3300, limit: 8000,  category: "Operations", linked: "Shenzhen → Lagos" },
-          { id: "F5", label: "Dubai Hub Travel",   holder: "Adaeze O.",last4: "9920", status: "Active", monthlySpend: 1750, limit: 4000,  category: "Travel" },
-          { id: "F6", label: "Tin Can Clearing",   holder: "Clearing", last4: "6603", status: "Frozen", monthlySpend: 920,  limit: 3000,  category: "Port expense" },
-        ]}
-      />
 
-      <Card className="p-5 shadow-card">
-        <div className="text-sm font-semibold">Spend by staff</div>
-        <div className="text-xs text-muted-foreground mb-4">Top freight cardholders this month · USD</div>
-        <div className="space-y-3">
-          {[
-            { name: "Femi Adeyemi",  role: "Operations Manager · Apapa",  amount: 5_400, limit: 12_000 },
-            { name: "Ops Team",      role: "Shipment SH-9012",             amount: 3_300, limit: 8_000 },
-            { name: "Warehouse",     role: "Lagos Warehouse",              amount: 1_820, limit: 5_000 },
-            { name: "Adaeze O.",     role: "Dubai Hub Travel",             amount: 1_750, limit: 4_000 },
-            { name: "Clearing Agent",role: "Tin Can clearing",             amount: 920,   limit: 3_000 },
-            { name: "Support",       role: "Customer Support",             amount: 480,   limit: 2_000 },
-          ].map((s) => {
-            const pct = Math.round((s.amount / s.limit) * 100);
-            return (
-              <div key={s.name}>
-                <div className="flex items-center justify-between text-xs mb-1">
-                  <div>
-                    <span className="font-medium">{s.name}</span>
-                    <span className="text-muted-foreground"> · {s.role}</span>
-                  </div>
-                  <span className="tabular-nums text-muted-foreground">
-                    ${s.amount.toLocaleString()} / ${s.limit.toLocaleString()} ({pct}%)
-                  </span>
-                </div>
-                <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                  <div className={`h-full ${pct > 85 ? "bg-destructive" : pct > 60 ? "bg-warning" : "bg-success"}`} style={{ width: `${pct}%` }} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </Card>
 
 
       {/* WhatsApp compose modal */}
