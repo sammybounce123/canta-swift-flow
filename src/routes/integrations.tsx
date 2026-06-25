@@ -97,7 +97,7 @@ function IntegrationsPage() {
               {Array.from({ length: 12 }).map((_, i) => (
                 <div key={i} className="flex justify-between border-b py-1.5">
                   <span>2026-06-15 {String(11 - Math.floor(i / 2)).padStart(2, "0")}:{String((i * 7) % 60).padStart(2, "0")}</span>
-                  <span>{["payment.received", "shipment.updated", "card.transaction", "kyc.completed"][i % 4]}</span>
+                  <span>{["payment.received", "shipment.updated", "settlement.approved", "kyc.completed"][i % 4]}</span>
                   <span className={i % 6 === 0 ? "text-destructive" : "text-success"}>{i % 6 === 0 ? "500" : "200"}</span>
                 </div>
               ))}

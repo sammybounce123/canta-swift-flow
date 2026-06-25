@@ -14,7 +14,7 @@ import {
 import { leads as baseLeads, fmtMoney } from "@/lib/mock";
 import {
   Brain, Sparkles, MessageCircle, FileSearch, Calculator, Target, Users, Flame,
-  TrendingUp, Clock, CheckCircle2, Ship, Truck, Building2, CreditCard, Landmark,
+  TrendingUp, Clock, CheckCircle2, Ship, Truck, Building2, Landmark,
   ArrowRight, Send, Upload, Bot, Wand2, MapPin, Phone, Mail, ChevronRight, Search,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -25,18 +25,18 @@ export const Route = createFileRoute("/ai-growth")({
 });
 
 // ---------- Lead categories ----------
-type Category = "Importers" | "Freight Forwarders" | "Suppliers" | "Global Merchants" | "Card Prospects" | "Institutional Partners";
+type Category = "Importers" | "Freight Forwarders" | "Suppliers" | "Global Merchants" | "Treasury Prospects" | "Institutional Partners";
 const CATEGORIES: { l: Category; i: any; tone: string }[] = [
   { l: "Importers",              i: Ship,       tone: "bg-primary/10 text-primary" },
   { l: "Freight Forwarders",     i: Truck,      tone: "bg-accent/15 text-accent" },
   { l: "Suppliers",              i: Building2,  tone: "bg-warning/10 text-warning" },
   { l: "Global Merchants",       i: TrendingUp, tone: "bg-success/10 text-success" },
-  { l: "Card Prospects",         i: CreditCard, tone: "bg-destructive/10 text-destructive" },
+  { l: "Treasury Prospects",     i: Landmark,   tone: "bg-destructive/10 text-destructive" },
   { l: "Institutional Partners", i: Landmark,   tone: "bg-muted text-foreground" },
 ];
 
 type Stage = "Hot Lead" | "Warm Lead" | "Cold Lead" | "Not Ready";
-type RecProduct = "Trade Desk" | "Global Collections" | "Cards" | "Supplier Settlement" | "Freight Workspace";
+type RecProduct = "Trade Desk" | "Global Collections" | "Enterprise Treasury" | "Supplier Settlement" | "Freight Workspace";
 
 type Lead = {
   id: string;
@@ -64,9 +64,9 @@ const seedLeads: Lead[] = [
   { id: "LD-404", business: "Pan-African University",  contact: "Dr. Helen Otu",  phone: "+44 20 7946 0815",  email: "bursar@pau.edu",         category: "Global Merchants",   market: "London HQ",                 corridor: "GB ↔ Africa", volume: 410_000, source: "Partnership", status: "Hot Lead",  agent: "Tomiwa L.",  score: 88, painPoint: "Tuition collections from 4 African markets",         recommended: "Global Collections",  followUp: "2026-06-09" },
   { id: "LD-405", business: "Royal Dubai Motors",      contact: "Khalid R.",      phone: "+971 50 119 8842",  email: "sales@royaldxbmotors.ae",category: "Suppliers",          market: "Deira Auto Market",         corridor: "AE ↔ NG", volume: 60_000,  source: "Trade Fair",    status: "Cold Lead", agent: "Fatima M.",  score: 67, painPoint: "Buyers default on auction balances",                recommended: "Supplier Settlement", followUp: "2026-06-15" },
   { id: "LD-406", business: "Balogun Trade Hub",       contact: "Mama Risi",      phone: "+234 803 442 7765", email: "balogun@traders.ng",     category: "Importers",          market: "Lagos · Balogun",           corridor: "NG ↔ CN", volume: 320_000, source: "Field Sales",   status: "Hot Lead",  agent: "Chinedu E.", score: 90, painPoint: "Cash-based supplier payments to Yiwu",              recommended: "Trade Desk",          followUp: "2026-06-08" },
-  { id: "LD-407", business: "Spark Media Africa",      contact: "Tomi Bello",     phone: "+234 805 220 9988", email: "tomi@sparkmedia.africa", category: "Card Prospects",     market: "Lagos · VI",                corridor: "NG ↔ Global", volume: 48_000, source: "Inbound Web", status: "Warm Lead", agent: "Adaeze O.",  score: 73, painPoint: "Meta ads cards declining mid-campaign",             recommended: "Cards",               followUp: "2026-06-12" },
+  { id: "LD-407", business: "Spark Media Africa",      contact: "Tomi Bello",     phone: "+234 805 220 9988", email: "tomi@sparkmedia.africa", category: "Treasury Prospects", market: "Lagos · VI",                corridor: "NG ↔ Global", volume: 48_000, source: "Inbound Web", status: "Warm Lead", agent: "Adaeze O.",  score: 73, painPoint: "Needs cleaner approvals for recurring international payments", recommended: "Enterprise Treasury", followUp: "2026-06-12" },
   { id: "LD-408", business: "Coastal Estates",         contact: "Bayo Coker",     phone: "+234 802 770 4421", email: "info@coastal.ng",        category: "Global Merchants",   market: "Lagos · Lekki",             corridor: "NG ↔ Diaspora", volume: 220_000, source: "Inbound Web", status: "Warm Lead", agent: "Tomiwa L.",  score: 79, painPoint: "Diaspora rent collection in FX",                    recommended: "Global Collections",  followUp: "2026-06-13" },
-  { id: "LD-409", business: "Federal Polytechnic Co-op",contact: "Mr. Adekunle",  phone: "+234 803 119 6500", email: "coop@fedpoly.ng",        category: "Institutional Partners", market: "Ibadan", corridor: "NG",   volume: 90_000,  source: "Referral",      status: "Not Ready", agent: "Chinedu E.", score: 41, painPoint: "Procurement cycle just closed",                     recommended: "Cards",               followUp: "2026-07-02" },
+  { id: "LD-409", business: "Federal Polytechnic Co-op",contact: "Mr. Adekunle",  phone: "+234 803 119 6500", email: "coop@fedpoly.ng",        category: "Institutional Partners", market: "Ibadan", corridor: "NG",   volume: 90_000,  source: "Referral",      status: "Not Ready", agent: "Chinedu E.", score: 41, painPoint: "Procurement cycle just closed",                     recommended: "Enterprise Treasury", followUp: "2026-07-02" },
 ];
 
 // Map base mock leads in too (already in mock.ts)
@@ -185,7 +185,7 @@ function LeadScoring() {
     { l: "Pain-point clarity",      v: 85 },
     { l: "Documents shared",        v: 70 },
     { l: "Repeat shipment potential",v: 90 },
-    { l: "Likely card spend",       v: 58 },
+    { l: "Working-capital urgency", v: 58 },
     { l: "Likely payment volume",   v: 87 },
   ];
   const total = Math.round(factors.reduce((s,f) => s + f.v, 0) / factors.length);

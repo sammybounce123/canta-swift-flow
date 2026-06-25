@@ -120,7 +120,6 @@ const GROUPS: Group[] = [
       { as: "an admin", want: "FX / Settlement / Payout options including Wise Platform, Currencycloud, Airwallex, Nium, dLocal and Thunes", so: "global payout is plug-and-play" },
       { as: "an admin", want: "Shipment Tracking via project44, Shipsgo, Searates and MarineTraffic", so: "I aggregate carrier data" },
       { as: "an admin", want: "Direct Shipping Line integrations for Maersk Spot, MSC, CMA CGM, Hapag-Lloyd and Cosco", so: "I book and track at source" },
-      { as: "an admin", want: "Card Issuing via Marqeta, Stripe Issuing, Lithic, Bridgecard or Sudo Africa", so: "I pick the right issuer per region" },
       { as: "an admin", want: "KYC/KYB via Smile ID, Onfido, Sumsub, Veriff, Dojah or Trulioo", so: "I verify customers globally" },
       { as: "an admin", want: "AML/PEP via ComplyAdvantage, Refinitiv World-Check or Dow Jones Risk & Compliance", so: "sanctions screening is institutional grade" },
       { as: "an admin", want: "WhatsApp via Twilio, 360dialog, Meta Cloud API, Africa's Talking or Termii", so: "messaging is reliable per corridor" },

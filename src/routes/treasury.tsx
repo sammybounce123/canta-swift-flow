@@ -114,13 +114,13 @@ function Treasury() {
         </Card>
       </div>
 
-      <Card className="p-4 shadow-card border-dashed bg-muted/20">
+      <Card className="p-4 shadow-card border-dashed bg-muted/20 opacity-80">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="text-xs uppercase tracking-widest text-muted-foreground">Secondary treasury control</div>
-            <div className="text-sm font-semibold mt-1">Company Cards</div>
+            <div className="text-sm font-semibold mt-1">Company expense controls</div>
             <div className="text-xs text-muted-foreground mt-1 max-w-2xl">
-              Optional enterprise expense controls are shown only as a secondary treasury preview in this focused demo.
+              Optional enterprise expense controls are secondary and not available in this focused demo.
             </div>
           </div>
           <Button variant="outline" size="sm" disabled>Not available in demo</Button>

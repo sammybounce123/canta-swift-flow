@@ -14,7 +14,6 @@ import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogDescription,
 } from "@/components/ui/dialog";
 import { collections, fmtMoney } from "@/lib/mock";
-import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import { StartHereCard } from "@/components/StartHereCard";
 import {
@@ -546,29 +545,6 @@ function Collections() {
           </table>
         </div>
       </Card>
-
-      <WorkspaceCardsPanel
-        title="Merchant Staff Cards"
-        subtitle="Cards for regional offices, admissions reps, marketing, events and staff travel."
-        categories={["Staff expense", "Regional office", "Marketing", "Admissions rep", "Travel", "Events"]}
-        pendingApprovals={2}
-        receiptsMissing={6}
-        groupedLabel="region"
-        groupedSpend={[
-          { label: "Lagos",    amount: 9_800 },
-          { label: "Accra",    amount: 6_200 },
-          { label: "Nairobi",  amount: 4_100 },
-          { label: "London",   amount: 12_400 },
-        ]}
-        cards={[
-          { id: "C1", label: "London Admissions",   holder: "Aisha B.",  last4: "8821", status: "Active", monthlySpend: 4400, limit: 8000,  category: "Admissions rep" },
-          { id: "C2", label: "Accra Office",        holder: "Regional",  last4: "5512", status: "Active", monthlySpend: 2100, limit: 5000,  category: "Regional office" },
-          { id: "C3", label: "Marketing Events",    holder: "Marketing", last4: "3309", status: "Active", monthlySpend: 3800, limit: 10000, category: "Events" },
-          { id: "C4", label: "Staff Travel",        holder: "HR Team",   last4: "1144", status: "Active", monthlySpend: 1900, limit: 5000,  category: "Travel" },
-          { id: "C5", label: "Nairobi Field Ops",   holder: "Regional",  last4: "7702", status: "Frozen", monthlySpend: 620,  limit: 2000,  category: "Regional office" },
-          { id: "C6", label: "Meta Ads — Recruit",  holder: "Marketing", last4: "9905", status: "Active", monthlySpend: 2700, limit: 6000,  category: "Marketing" },
-        ]}
-      />
 
       <Card className="p-5 shadow-card">
         <div className="text-sm font-semibold">Spend by department</div>

@@ -177,7 +177,7 @@ function ReportsPage() {
             <Select value={workspace} onValueChange={(v) => setWorkspace(v as WorkspaceType)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                {(Object.keys(WORKSPACE_LABELS) as WorkspaceType[]).filter((w) => w !== "canta_ops").map((w) => (
+                {(Object.keys(WORKSPACE_LABELS) as WorkspaceType[]).filter((w) => w !== "canta_ops" && w !== "global_spend_cards").map((w) => (
                   <SelectItem key={w} value={w}>{WORKSPACE_LABELS[w]}</SelectItem>
                 ))}
               </SelectContent>

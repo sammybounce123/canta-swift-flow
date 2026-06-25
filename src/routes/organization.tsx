@@ -55,14 +55,14 @@ const seedUsers = [
   { id: "U4", name: "Chiamaka Eze",   email: "chiamaka@nigerdelta.ng", role: "Compliance Admin",   branch: "Abuja Office",  dept: "Compliance",   status: "Active"  as const, lastSeen: "Yesterday" },
   { id: "U5", name: "Ibrahim Lawal",  email: "ibrahim@nigerdelta.ng",  role: "Auditor",            branch: "Lagos HQ",      dept: "Finance",      status: "Active"  as const, lastSeen: "3 days ago" },
   { id: "U6", name: "Aisha Bello",    email: "aisha@nigerdelta.ng",    role: "Procurement Officer",branch: "Dubai Desk",    dept: "Procurement",  status: "Active"  as const, lastSeen: "1 day ago" },
-  { id: "U7", name: "James Okafor",   email: "james@nigerdelta.ng",    role: "Cardholder",         branch: "Lagos HQ",      dept: "Sales",        status: "Pending" as const, lastSeen: "Never (invited)" },
+  { id: "U7", name: "James Okafor",   email: "james@nigerdelta.ng",    role: "Operations Staff",   branch: "Lagos HQ",      dept: "Sales",        status: "Pending" as const, lastSeen: "Never (invited)" },
   { id: "U8", name: "Ngozi Okeke",    email: "ngozi@nigerdelta.ng",    role: "Accountant",         branch: "Port Harcourt", dept: "Finance",      status: "Deactivated" as const, lastSeen: "30 days ago" },
 ];
 
 const costCenters = [
   { id: "CC-100", name: "Asia Sourcing Q2",       owner: "Procurement", budget: 250_000, used: 162_000 },
   { id: "CC-200", name: "Dubai Travel",           owner: "Sales",       budget: 40_000,  used: 18_400 },
-  { id: "CC-300", name: "Ad Spend — Brand Q2",    owner: "Marketing",   budget: 80_000,  used: 51_200 },
+  { id: "CC-300", name: "Digital Marketing — Brand Q2", owner: "Marketing", budget: 80_000, used: 51_200 },
   { id: "CC-400", name: "Port Operations",        owner: "Logistics",   budget: 120_000, used: 96_800 },
 ];
 
@@ -77,7 +77,7 @@ const ROLE_GROUPS = [
     roles: [
       "Enterprise Owner", "Treasury Manager", "Finance Officer",
       "Payment Initiator", "Payment Approver", "Compliance Officer",
-      "Accountant", "Auditor", "Staff Cardholder", "Viewer",
+      "Accountant", "Auditor", "Viewer",
     ],
   },
   {
@@ -85,7 +85,7 @@ const ROLE_GROUPS = [
     roles: [
       "Importer Owner", "Procurement Officer", "Logistics Manager",
       "Finance Officer", "Accountant", "Sales Manager",
-      "Staff Cardholder", "Viewer",
+      "Viewer",
     ],
   },
   {
@@ -93,7 +93,7 @@ const ROLE_GROUPS = [
     roles: [
       "Freight Owner", "Freight Admin", "Operations Manager", "Operations Staff",
       "Warehouse Staff", "Clearing Agent", "Customer Support",
-      "Finance Officer", "Staff Cardholder", "Viewer",
+      "Finance Officer", "Viewer",
     ],
   },
   {
@@ -102,7 +102,7 @@ const ROLE_GROUPS = [
       "Merchant Owner", "Merchant Admin", "Collections Manager",
       "Reconciliation Officer", "Settlement Approver",
       "Support Agent", "Regional Staff",
-      "Finance Officer", "Staff Cardholder", "Viewer",
+      "Finance Officer", "Viewer",
     ],
   },
   {
@@ -113,22 +113,11 @@ const ROLE_GROUPS = [
     ],
   },
   {
-    label: "Cards",
-    roles: ["Card Admin", "Cardholder", "Card Approver", "Spend Auditor"],
-  },
-  {
-    label: "Standalone Card User",
-    roles: [
-      "Card Owner", "Cardholder", "Parent / Sponsor", "Student Cardholder",
-      "Business Cardholder", "Card Approver", "Spend Auditor",
-    ],
-  },
-  {
     label: "Canta Internal",
     roles: [
       "Canta Super Admin", "Canta Trade Officer", "Canta Compliance Officer",
       "Canta Treasury Officer", "Canta Sales Agent", "Canta Support Agent",
-      "Canta Card Operations", "Canta Collections Officer",
+      "Canta Collections Officer",
       "Canta Freight Operations", "Canta Auditor",
     ],
   },
@@ -140,16 +129,7 @@ const PERMISSIONS = [
     items: [
       "view dashboard", "manage users", "manage roles", "manage departments",
       "view wallets", "create payments", "approve payments",
-      "create cards", "approve card requests",
       "view compliance pack", "export reports", "manage API keys", "view audit trail",
-    ],
-  },
-  {
-    group: "Cards & Spend",
-    items: [
-      "create card", "fund card", "freeze card",
-      "view card details", "view masked card details only",
-      "set card limits", "approve card requests", "assign cards to staff",
     ],
   },
   {
@@ -172,8 +152,7 @@ const PERMISSIONS = [
       "view wallet balances", "create FX conversion", "approve FX conversion",
       "create beneficiary", "approve beneficiary",
       "initiate payment", "approve payment",
-      "create staff card", "approve staff card", "fund staff card", "freeze staff card",
-      "view card spend", "require receipts",
+      "require receipts",
       "view compliance reports", "export transaction reports", "manage enterprise users",
     ],
   },
@@ -186,9 +165,7 @@ const PERMISSIONS = [
       "manage suppliers", "request supplier verification",
       "view landed cost", "edit landed cost assumptions",
       "approve supplier payment", "approve escrow release",
-      "create importer card", "assign card to staff",
-      "link card to trade file", "link card to shipment",
-      "view card spend", "export landed cost report",
+      "export landed cost report",
       "send WhatsApp update", "manage importer sub-users",
     ],
   },
@@ -200,9 +177,7 @@ const PERMISSIONS = [
       "send WhatsApp update",
       "create freight invoice", "mark invoice as paid", "view outstanding invoices",
       "manage clearing status", "manage warehouse status",
-      "create staff card", "create port expense card",
-      "assign card to staff", "link card to shipment",
-      "approve card spend", "require receipts",
+      "require receipts",
       "view route reports", "view customer reports",
       "manage freight sub-users",
     ],
@@ -214,9 +189,7 @@ const PERMISSIONS = [
       "view payers", "manage payer references",
       "view collections", "approve settlement", "view settlement reports",
       "manage reconciliation", "export collection reports",
-      "create staff card", "assign card to regional staff",
-      "create marketing card", "create travel card",
-      "approve card spend", "view staff spend",
+      "view staff spend",
       "manage merchant sub-users",
     ],
   },
@@ -233,21 +206,13 @@ const PERMISSIONS = [
     ],
   },
   {
-    group: "Standalone Card User",
-    items: [
-      "create personal card", "request card", "fund card", "freeze card",
-      "view transactions", "upload receipt", "set budget",
-      "request top-up", "approve top-up", "view spend reports",
-    ],
-  },
-  {
     group: "Canta Internal",
     items: [
       "view all customers", "create trade file for customer", "edit trade file",
       "assign customer to sales agent", "review WhatsApp conversations",
       "extract documents", "approve KYB", "flag transaction",
       "approve settlement", "process payout", "review supplier verification",
-      "manage card operations", "freeze card", "manage integrations",
+      "manage integrations",
       "view audit trail", "export reports",
       "impersonate customer view for support", "assign support tickets",
     ],
@@ -263,36 +228,31 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   Owner: PERMISSIONS.flatMap((g) => g.items),
   Admin: PERMISSIONS.flatMap((g) => g.items).filter((p) => p !== "manage API keys"),
   "Finance Admin": ["view dashboard", "view wallets", "create payments", "approve payments", "approve supplier payments", "approve FX conversions", "manage beneficiaries", "approve collections settlement", "export reports", "view audit trail"],
-  "Compliance Admin": ["view dashboard", "view compliance pack", "approve payments", "approve supplier payments", "export reports", "view audit trail", "view card details"],
-  "Operations Admin": ["view dashboard", "manage departments", "create trade files", "edit trade files", "upload documents", "send WhatsApp updates", "view landed cost", "create cards"],
+  "Compliance Admin": ["view dashboard", "view compliance pack", "approve payments", "approve supplier payments", "export reports", "view audit trail"],
+  "Operations Admin": ["view dashboard", "manage departments", "create trade files", "edit trade files", "upload documents", "send WhatsApp updates", "view landed cost"],
   Viewer: ["view dashboard", "view wallets", "view landed cost", "view compliance pack"],
-  "Card Admin": ["view dashboard", "create cards", "create card", "fund card", "freeze card", "set card limits", "assign cards to staff", "view card details", "approve card requests"],
-  Cardholder: ["view dashboard", "view masked card details only"],
-  "Card Approver": ["view dashboard", "approve card requests", "view card details"],
-  "Spend Auditor": ["view dashboard", "view card details", "export reports", "view audit trail"],
 
   // Enterprise role templates
   "Enterprise Owner": PERMISSIONS.flatMap((g) => g.items),
-  "Treasury Manager": ["view dashboard", "view wallet balances", "view wallets", "create FX conversion", "approve FX conversion", "create beneficiary", "approve beneficiary", "initiate payment", "approve payment", "fund staff card", "view card spend", "export transaction reports", "view audit trail"],
-  "Finance Officer": ["view dashboard", "view wallet balances", "create FX conversion", "create beneficiary", "initiate payment", "view card spend", "require receipts", "export transaction reports"],
+  "Treasury Manager": ["view dashboard", "view wallet balances", "view wallets", "create FX conversion", "approve FX conversion", "create beneficiary", "approve beneficiary", "initiate payment", "approve payment", "export transaction reports", "view audit trail"],
+  "Finance Officer": ["view dashboard", "view wallet balances", "create FX conversion", "create beneficiary", "initiate payment", "require receipts", "export transaction reports"],
   "Payment Initiator": ["view dashboard", "view wallet balances", "create beneficiary", "initiate payment"],
   "Payment Approver": ["view dashboard", "view wallet balances", "approve payment", "approve beneficiary", "approve FX conversion", "view audit trail"],
   "Compliance Officer": ["view dashboard", "view compliance reports", "view compliance pack", "approve beneficiary", "approve payment", "export transaction reports", "view audit trail"],
-  Accountant: ["view dashboard", "view wallet balances", "view card spend", "require receipts", "export transaction reports"],
-  Auditor: ["view dashboard", "view wallet balances", "view card spend", "view compliance reports", "view audit trail", "export transaction reports"],
-  "Staff Cardholder": ["view dashboard", "view masked card details only", "view card spend"],
+  Accountant: ["view dashboard", "view wallet balances", "require receipts", "export transaction reports"],
+  Auditor: ["view dashboard", "view wallet balances", "view compliance reports", "view audit trail", "export transaction reports"],
 
   // Importer role templates
   "Importer Owner": PERMISSIONS.flatMap((g) => g.items),
-  "Procurement Officer": ["view dashboard", "create trade file", "edit trade file", "view trade file", "upload documents", "manage suppliers", "request supplier verification", "view landed cost", "send WhatsApp update", "create importer card", "link card to trade file", "view card spend"],
-  "Logistics Manager": ["view dashboard", "view trade file", "create shipment", "edit shipment", "view shipment", "upload documents", "view landed cost", "send WhatsApp update", "link card to shipment", "view card spend"],
-  "Sales Manager": ["view dashboard", "view trade file", "view shipment", "manage suppliers", "view card spend", "send WhatsApp update"],
+  "Procurement Officer": ["view dashboard", "create trade file", "edit trade file", "view trade file", "upload documents", "manage suppliers", "request supplier verification", "view landed cost", "send WhatsApp update"],
+  "Logistics Manager": ["view dashboard", "view trade file", "create shipment", "edit shipment", "view shipment", "upload documents", "view landed cost", "send WhatsApp update"],
+  "Sales Manager": ["view dashboard", "view trade file", "view shipment", "manage suppliers", "send WhatsApp update"],
 
   // Freight role templates
   "Freight Owner": PERMISSIONS.flatMap((g) => g.items),
   "Freight Admin": PERMISSIONS.flatMap((g) => g.items).filter((p) => p !== "manage API keys"),
-  "Operations Manager": ["view dashboard", "create customer", "edit customer", "create shipment", "update shipment status", "upload documents", "send WhatsApp update", "manage clearing status", "manage warehouse status", "view route reports", "view customer reports", "create staff card", "assign card to staff", "link card to shipment", "approve card spend"],
-  "Operations Staff": ["view dashboard", "create shipment", "update shipment status", "upload documents", "send WhatsApp update", "view card spend"],
+  "Operations Manager": ["view dashboard", "create customer", "edit customer", "create shipment", "update shipment status", "upload documents", "send WhatsApp update", "manage clearing status", "manage warehouse status", "view route reports", "view customer reports", "require receipts"],
+  "Operations Staff": ["view dashboard", "create shipment", "update shipment status", "upload documents", "send WhatsApp update"],
   "Warehouse Staff": ["view dashboard", "update shipment status", "manage warehouse status", "upload documents"],
   "Clearing Agent": ["view dashboard", "update shipment status", "manage clearing status", "upload documents", "send WhatsApp update"],
   "Customer Support": ["view dashboard", "view shipment", "send WhatsApp update", "view outstanding invoices", "create freight invoice"],
@@ -304,7 +264,7 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   "Reconciliation Officer": ["view dashboard", "view collections", "manage reconciliation", "view settlement reports", "export collection reports", "view audit trail"],
   "Settlement Approver": ["view dashboard", "view collections", "approve settlement", "view settlement reports", "view audit trail"],
   "Support Agent": ["view dashboard", "view payers", "view collections", "send WhatsApp update"],
-  "Regional Staff": ["view dashboard", "view payers", "view masked card details only", "view staff spend"],
+  "Regional Staff": ["view dashboard", "view payers", "view staff spend"],
 
   // Supplier / Exporter role templates
   "Supplier Owner": PERMISSIONS.flatMap((g) => g.items),
@@ -314,12 +274,6 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   "Sales Representative": ["view dashboard", "create buyer record", "view buyer verification status", "create invoice", "view payment status"],
   "Settlement Manager": ["view dashboard", "view settlement status", "download settlement receipt", "request escrow release", "manage escrow milestones", "export settlement reports", "view funds secured"],
 
-  // Standalone Card User role templates
-  "Card Owner": ["view dashboard", "create personal card", "request card", "fund card", "freeze card", "view transactions", "upload receipt", "set budget", "request top-up", "approve top-up", "view spend reports", "view masked card details only"],
-  "Parent / Sponsor": ["view dashboard", "fund card", "freeze card", "view transactions", "set budget", "approve top-up", "view spend reports"],
-  "Student Cardholder": ["view dashboard", "view masked card details only", "view transactions", "upload receipt", "request top-up"],
-  "Business Cardholder": ["view dashboard", "view masked card details only", "view transactions", "upload receipt", "request top-up", "view spend reports"],
-
   // Canta Internal role templates
   "Canta Super Admin": PERMISSIONS.flatMap((g) => g.items),
   "Canta Trade Officer": ["view dashboard", "view all customers", "create trade file for customer", "edit trade file", "upload documents", "view trade file", "send WhatsApp update", "review supplier verification", "view audit trail"],
@@ -327,7 +281,6 @@ const ROLE_TEMPLATES: Record<string, string[]> = {
   "Canta Treasury Officer": ["view dashboard", "view all customers", "approve settlement", "process payout", "approve FX conversion", "view wallet balances", "view audit trail", "export transaction reports"],
   "Canta Sales Agent": ["view dashboard", "view all customers", "assign customer to sales agent", "review WhatsApp conversations", "create trade file for customer", "send WhatsApp update"],
   "Canta Support Agent": ["view dashboard", "view all customers", "review WhatsApp conversations", "impersonate customer view for support", "assign support tickets", "send WhatsApp update"],
-  "Canta Card Operations": ["view dashboard", "view all customers", "manage card operations", "freeze card", "view card details", "view card spend", "approve card requests"],
   "Canta Collections Officer": ["view dashboard", "view all customers", "view collections", "approve settlement", "manage reconciliation", "view settlement reports", "export collection reports"],
   "Canta Freight Operations": ["view dashboard", "view all customers", "update shipment status", "manage clearing status", "manage warehouse status", "view route reports", "send WhatsApp update"],
   "Canta Auditor": ["view dashboard", "view all customers", "view audit trail", "view compliance pack", "view compliance reports", "export reports", "export transaction reports"],
@@ -345,7 +298,7 @@ function OrganizationPage() {
           <h1 className="text-2xl font-semibold mt-1">Organization Settings</h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-3xl">
             Company → Branches → Departments → Teams → Users → Roles & Permissions.
-            Cards, wallets, trade files and collections all attach to this hierarchy.
+            Wallets, trade files, approvals and collections all attach to this hierarchy.
           </p>
         </div>
         <div className="flex gap-2">
@@ -399,7 +352,7 @@ function OrganizationPage() {
         <TabsContent value="branches" className="mt-4">
           <SimpleSection
             title="Branches"
-            description="Cards, cost centers and approvals can be scoped to a branch."
+            description="Cost centers and approvals can be scoped to a branch."
             addLabel="Add branch"
             onAdd={() => toast.success("Branch creation flow opened")}
             columns={["Branch", "Country", "Manager", "Staff"]}
@@ -517,8 +470,6 @@ function OrganizationPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {[
-                { name: "Card creation",         threshold: "Always",         chain: "Manager → Finance Admin" },
-                { name: "Card spend above $2k",  threshold: "USD 2,000",      chain: "Cardholder → Approver" },
                 { name: "Supplier payment",      threshold: "USD 50,000",     chain: "Finance → Treasury → Compliance" },
                 { name: "FX conversion",         threshold: "USD 250,000",    chain: "Treasury → Owner" },
                 { name: "Trade file creation",   threshold: "Always",         chain: "Procurement → Logistics" },
@@ -729,7 +680,7 @@ function InviteUserDialog() {
           </div>
           <div className="col-span-2">
             <Label>Role</Label>
-            <Select defaultValue="Cardholder">
+            <Select defaultValue="Operations Staff">
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 {ROLE_GROUPS.flatMap((g) => g.roles).map((r) => (
@@ -740,7 +691,7 @@ function InviteUserDialog() {
           </div>
           <div className="col-span-2 p-3 rounded-lg bg-secondary/40 border border-border text-xs">
             <div className="flex items-center gap-1.5 font-medium mb-1">
-              <CheckCircle2 className="h-3.5 w-3.5 text-success" /> Approval required for spend over $500 by default.
+              <CheckCircle2 className="h-3.5 w-3.5 text-success" /> Approval required for high-value payments by default.
             </div>
             <div className="text-muted-foreground">You can fine-tune permissions after the user accepts.</div>
           </div>
@@ -762,9 +713,8 @@ function PermissionsMatrix() {
     "Freight Owner", "Freight Admin", "Operations Manager", "Operations Staff", "Warehouse Staff", "Clearing Agent", "Customer Support",
     "Merchant Owner", "Merchant Admin", "Collections Manager", "Reconciliation Officer", "Settlement Approver", "Support Agent", "Regional Staff",
     "Supplier Owner", "Supplier Admin", "Supplier Finance", "Supplier Operations", "Sales Representative", "Settlement Manager",
-    "Card Owner", "Parent / Sponsor", "Student Cardholder", "Business Cardholder",
-    "Canta Super Admin", "Canta Trade Officer", "Canta Compliance Officer", "Canta Treasury Officer", "Canta Sales Agent", "Canta Support Agent", "Canta Card Operations", "Canta Collections Officer", "Canta Freight Operations", "Canta Auditor",
-    "Finance Officer", "Accountant", "Auditor", "Staff Cardholder", "Viewer",
+    "Canta Super Admin", "Canta Trade Officer", "Canta Compliance Officer", "Canta Treasury Officer", "Canta Sales Agent", "Canta Support Agent", "Canta Collections Officer", "Canta Freight Operations", "Canta Auditor",
+    "Finance Officer", "Accountant", "Auditor", "Viewer",
   ];
   return (
     <Card className="p-5 shadow-card overflow-x-auto">

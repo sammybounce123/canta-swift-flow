@@ -20,7 +20,7 @@ const ENTITIES: Entity[] = [
   { name: "workspaces", purpose: "Per-org workspace (Treasury, Importer, etc.)", keyFields: ["id", "type", "org_id"], modules: ["All"], relationships: ["organizations"] },
   { name: "feature_flags", purpose: "Per-org/per-workspace toggles", keyFields: ["key", "value", "scope"], modules: ["Settings"], relationships: ["organizations"] },
   { name: "wallets", purpose: "Multi-currency balances", keyFields: ["id", "org_id", "ccy", "balance"], modules: ["Treasury"], relationships: ["organizations", "transactions"], audit: true },
-  { name: "transactions", purpose: "Single ledger of all money movement", keyFields: ["id", "type", "amount", "ccy", "status"], modules: ["Treasury", "Collections", "Cards", "Partner"], relationships: ["wallets", "beneficiaries"], statusFields: ["status"], audit: true },
+  { name: "transactions", purpose: "Single ledger of all money movement", keyFields: ["id", "type", "amount", "ccy", "status"], modules: ["Treasury", "Collections", "Partner"], relationships: ["wallets", "beneficiaries"], statusFields: ["status"], audit: true },
   { name: "beneficiaries", purpose: "Saved global recipients", keyFields: ["id", "name", "ccy", "bank_details"], modules: ["Treasury"], relationships: ["transactions"], statusFields: ["verification_status"], audit: true },
   { name: "approvals", purpose: "Maker–checker queue", keyFields: ["id", "entity_ref", "status", "approver"], modules: ["Governance"], relationships: ["transactions"], statusFields: ["status"], audit: true },
   { name: "trade_files", purpose: "Importer trade workspace", keyFields: ["id", "supplier_id", "incoterm", "status"], modules: ["Importer"], relationships: ["shipments", "suppliers", "documents"], statusFields: ["status"], audit: true },
@@ -34,8 +34,6 @@ const ENTITIES: Entity[] = [
   { name: "payers", purpose: "Anyone funding an invoice/link", keyFields: ["id", "name", "country", "kyc_level"], modules: ["Collections"], relationships: ["invoices"], statusFields: ["kyc_level"] },
   { name: "reconciliation_records", purpose: "Funds-in matched to invoices", keyFields: ["id", "amount", "matched", "diff"], modules: ["Collections"], relationships: ["invoices", "transactions"], statusFields: ["status"] },
   { name: "settlement_batches", purpose: "Outbound settlement batches", keyFields: ["id", "ccy", "amount", "expected_at"], modules: ["Collections", "Supplier"], relationships: ["transactions"], statusFields: ["status"], audit: true },
-  { name: "cards", purpose: "Issued cards (staff/dept/project/travel)", keyFields: ["id", "type", "limit", "linked_ref"], modules: ["Cards", "Treasury", "Importer", "Freight"], relationships: ["card_transactions"], statusFields: ["status"], audit: true },
-  { name: "card_transactions", purpose: "Authorizations & captures", keyFields: ["id", "card_id", "amount", "merchant"], modules: ["Cards"], relationships: ["cards"], statusFields: ["status"] },
   { name: "freight_customers", purpose: "Forwarder's customer book", keyFields: ["id", "name", "contact"], modules: ["Freight"], relationships: ["freight_invoices", "shipments"] },
   { name: "freight_invoices", purpose: "Port expenses & freight charges", keyFields: ["id", "customer_id", "amount"], modules: ["Freight"], relationships: ["shipments"], statusFields: ["status"] },
   { name: "partner_leads", purpose: "Property referral leads", keyFields: ["id", "client", "marketer_id"], modules: ["Partner Property"], relationships: ["partner_cases"], statusFields: ["status"] },
@@ -51,7 +49,7 @@ const ENTITIES: Entity[] = [
   { name: "audit_logs", purpose: "Immutable event log", keyFields: ["id", "actor", "action", "entity", "at"], modules: ["All"], relationships: ["organizations"], audit: true },
   { name: "integrations", purpose: "Connected external providers", keyFields: ["id", "provider", "env", "status"], modules: ["Integrations"], relationships: ["webhook_logs"], statusFields: ["status"], audit: true },
   { name: "webhook_logs", purpose: "Inbound/outbound webhook delivery", keyFields: ["id", "integration_id", "status", "payload"], modules: ["Integrations"], relationships: ["integrations"], statusFields: ["status"], audit: true },
-  { name: "insurance_quotes", purpose: "Embedded insurance hooks", keyFields: ["id", "linked_ref", "partner", "amount"], modules: ["Insurance", "Importer", "Freight", "Cards", "Partner Property"], relationships: ["trade_files", "shipments", "cards", "partner_cases"], statusFields: ["quote_status", "policy_status"] },
+  { name: "insurance_quotes", purpose: "Embedded insurance hooks", keyFields: ["id", "linked_ref", "partner", "amount"], modules: ["Insurance", "Importer", "Freight", "Partner Property"], relationships: ["trade_files", "shipments", "partner_cases"], statusFields: ["quote_status", "policy_status"] },
   { name: "support_tickets", purpose: "Customer & partner tickets", keyFields: ["id", "ref", "customer", "status"], modules: ["Support"], relationships: ["organizations"], statusFields: ["status"], audit: true },
 ];
 

@@ -43,14 +43,14 @@ const seed: Request[] = [
   { id: "APR-9820", type: "Escrow release", requester: "Tunde Bakare", amount: 92_500, currency: "USD", customer: "Shenzhen LED Ltd", riskScore: 28, tradeFile: "TF-2410", documents: ["BL Final", "Inspection Report"], status: "Pending", submitted: "Jun 8, 08:40", due: "Jun 8, 17:00", overdue: true, comments: [] },
   { id: "APR-9818", type: "New beneficiary", requester: "Femi Adeyemi", customer: "Yiwu Fashion Trading", riskScore: 35, documents: ["KYB Pack", "Bank Confirmation"], status: "Pending", submitted: "Jun 7, 16:20", due: "Jun 9, 12:00", comments: [] },
   { id: "APR-9815", type: "High-value FX conversion", requester: "Tunde Bakare", amount: 2_400_000, currency: "USD", riskScore: 18, documents: ["Rate Quote"], status: "Pending", submitted: "Jun 8, 07:55", due: "Jun 8, 14:00", overdue: true, comments: [] },
-  { id: "APR-9814", type: "Card creation", requester: "Chiamaka Eze", customer: "Marketing Team · Lagos", riskScore: 12, documents: ["Card Policy Ack"], status: "Pending", submitted: "Jun 8, 11:02", due: "Jun 10, 17:00", comments: [] },
+  { id: "APR-9814", type: "Expense policy update", requester: "Chiamaka Eze", customer: "Marketing Team · Lagos", riskScore: 12, documents: ["Expense Policy Ack"], status: "Pending", submitted: "Jun 8, 11:02", due: "Jun 10, 17:00", comments: [] },
   { id: "APR-9810", type: "Freight invoice approval", requester: "Ibrahim Lawal", amount: 18_400, currency: "USD", customer: "Maersk Lagos", riskScore: 22, tradeFile: "TF-2401", documents: ["Freight Invoice", "Arrival Notice"], status: "Pending", submitted: "Jun 7, 14:11", due: "Jun 9, 17:00", comments: [] },
   { id: "APR-9805", type: "Global collection settlement", requester: "Merchant Admin", amount: 412_000, currency: "USD", customer: "Pan-African University", riskScore: 31, documents: ["Reconciliation Report"], status: "Pending", submitted: "Jun 8, 06:30", due: "Jun 9, 17:00", comments: [] },
   { id: "APR-9802", type: "Document approval", requester: "Procurement Officer", customer: "TF-2392 · Auto Parts", riskScore: 14, tradeFile: "TF-2392", documents: ["Revised Invoice", "HS Code Update"], status: "Pending", submitted: "Jun 7, 18:05", due: "Jun 9, 17:00", comments: [] },
   { id: "APR-9800", type: "Compliance approval", requester: "Canta Trade Officer", customer: "New Importer · Lagos Hardware", riskScore: 78, documents: ["CAC", "MEMART", "UBO Form"], status: "Pending", submitted: "Jun 8, 09:50", due: "Jun 9, 17:00", comments: [{ who: "Compliance Bot", when: "Jun 8, 09:52", note: "PEP screening flag — enhanced DD recommended." }] },
   { id: "APR-9795", type: "Trade finance request", requester: "Importer Owner", amount: 350_000, currency: "USD", customer: "Lagos Hardware Imports", riskScore: 55, tradeFile: "TF-2388", documents: ["Financials FY25", "Trade History"], status: "Pending", submitted: "Jun 8, 10:14", due: "Jun 11, 17:00", comments: [] },
   { id: "APR-9790", type: "Supplier payment", requester: "Adaeze Okonkwo", amount: 62_000, currency: "USD", customer: "Dubai Auto Spares LLC", riskScore: 24, tradeFile: "TF-2380", documents: ["Invoice"], status: "Approved", submitted: "Jun 7, 11:30", due: "Jun 8, 17:00", comments: [] },
-  { id: "APR-9788", type: "Card creation", requester: "Femi Adeyemi", customer: "Online Ads · Q3", riskScore: 9, documents: [], status: "Approved", submitted: "Jun 7, 10:00", due: "Jun 8, 17:00", comments: [] },
+  { id: "APR-9788", type: "Marketing budget approval", requester: "Femi Adeyemi", customer: "Online Ads · Q3", riskScore: 9, documents: [], status: "Approved", submitted: "Jun 7, 10:00", due: "Jun 8, 17:00", comments: [] },
   { id: "APR-9784", type: "New beneficiary", requester: "Procurement Officer", customer: "Suspicious Holdings Ltd", riskScore: 82, documents: ["KYB Pack"], status: "Rejected", submitted: "Jun 7, 09:00", due: "Jun 8, 17:00", comments: [{ who: "Chiamaka Eze", when: "Jun 7, 14:20", note: "Failed adverse media screening." }] },
 ];
 
@@ -59,7 +59,7 @@ const workflowDefs = [
   { type: "New beneficiary", steps: ["Compliance KYB", "Treasury approval"] },
   { type: "Escrow release", steps: ["Document review", "Treasury approval"] },
   { type: "Freight invoice approval", steps: ["Operations check", "Finance approval"] },
-  { type: "Card creation", steps: ["Admin approval", "Compliance check"] },
+  { type: "Expense policy update", steps: ["Admin approval", "Finance check"] },
   { type: "High-value FX conversion", steps: ["Treasury", "Owner sign-off"] },
   { type: "Global collection settlement", steps: ["Reconciliation", "Finance"] },
   { type: "Document approval", steps: ["Trade Officer", "Compliance"] },
@@ -116,7 +116,7 @@ function Approvals() {
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Approvals</h1>
-          <p className="text-sm text-muted-foreground mt-1">Cross-product approval workflows for trade, payments, escrow, cards, FX and compliance.</p>
+          <p className="text-sm text-muted-foreground mt-1">Cross-product approval workflows for trade, payments, escrow, FX and compliance.</p>
         </div>
         <Button className="bg-primary" onClick={() => toast.success("Workflow rules opened")}>
           <ShieldCheck className="h-4 w-4 mr-1.5" /> Configure Workflows

@@ -2,12 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { fmtMoney } from "@/lib/mock";
 import { toast } from "sonner";
-import { CheckSquare, CheckCircle2, Download, CreditCard, Plane, GraduationCap, Megaphone, Calendar, Briefcase, MapPin } from "lucide-react";
+import { CheckSquare, CheckCircle2, Download } from "lucide-react";
 import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/reconciliation")({
@@ -110,14 +109,11 @@ function ReconciliationPage() {
           <TabsTrigger value="unmatched">Unmatched</TabsTrigger>
           <TabsTrigger value="exceptions">Exceptions</TabsTrigger>
           <TabsTrigger value="settlements">Settlement Approvals</TabsTrigger>
-          <TabsTrigger value="staffcards">Staff Cards</TabsTrigger>
         </TabsList>
 
         <TabsContent value={tab} className="mt-4">
           {tab === "settlements" ? (
             <SettlementApprovals settlements={settlements} onApprove={approve} onReject={reject} />
-          ) : tab === "staffcards" ? (
-            <MerchantStaffCards />
           ) : (
             <ReconTable items={filtered} onMatch={manualMatch} onClarify={requestClarification} onReview={markReviewed} />
           )}
@@ -222,42 +218,3 @@ function SettlementApprovals({ settlements, onApprove, onReject }: { settlements
   );
 }
 
-function MerchantStaffCards() {
-  const cards = [
-    { l: "Admissions Team",  holder: "Admissions", last4: "1124", limit: 5000, monthly: 1800, icon: GraduationCap, cat: "Admissions" },
-    { l: "Regional Staff — Abuja", holder: "Regional Office", last4: "2298", limit: 3000, monthly: 940, icon: MapPin, cat: "Regional" },
-    { l: "Marketing Card",   holder: "Marketing",  last4: "3392", limit: 4000, monthly: 2200, icon: Megaphone, cat: "Marketing" },
-    { l: "Travel Card",      holder: "International Travel", last4: "5510", limit: 8000, monthly: 3600, icon: Plane, cat: "Travel" },
-    { l: "Events Card",      holder: "Events",     last4: "6677", limit: 3500, monthly: 1400, icon: Calendar, cat: "Events" },
-    { l: "Operations Card",  holder: "Operations", last4: "8842", limit: 2500, monthly: 1100, icon: Briefcase, cat: "Operations" },
-  ];
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {cards.map((c) => (
-        <Card key={c.l} className="p-5 shadow-card">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-primary/10 grid place-items-center"><c.icon className="h-5 w-5 text-primary" /></div>
-              <div>
-                <div className="font-semibold text-sm">{c.l}</div>
-                <div className="text-xs text-muted-foreground">{c.holder} · •••• {c.last4}</div>
-              </div>
-            </div>
-            <Badge variant="outline" className="text-[10px] border-success/30 text-success">Active</Badge>
-          </div>
-          <div className="mt-4 flex items-center justify-between text-xs">
-            <span className="text-muted-foreground">Monthly spend</span>
-            <span className="tabular-nums font-semibold">{fmtMoney(c.monthly, "USD")} / {fmtMoney(c.limit, "USD")}</span>
-          </div>
-          <div className="mt-2 h-1.5 rounded-full bg-secondary overflow-hidden">
-            <div className="h-full bg-primary" style={{ width: `${Math.min(100, (c.monthly / c.limit) * 100)}%` }} />
-          </div>
-          <div className="mt-3 flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => toast.success(`${c.l} frozen`)}>Freeze</Button>
-            <Button size="sm" variant="ghost" onClick={() => toast.success("Limits updated")}><CreditCard className="h-3.5 w-3.5 mr-1" /> Manage</Button>
-          </div>
-        </Card>
-      ))}
-    </div>
-  );
-}

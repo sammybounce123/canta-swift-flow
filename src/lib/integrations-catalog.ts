@@ -1,12 +1,12 @@
 export type IntegrationCategory =
   | "Payment Collection" | "FX / Settlement / Payout" | "Shipment Tracking Aggregator"
-  | "Direct Shipping Lines" | "Card Issuing" | "KYC / KYB" | "Sanctions / PEP / AML"
+  | "Direct Shipping Lines" | "KYC / KYB" | "Sanctions / PEP / AML"
   | "WhatsApp / Messaging" | "OCR / Document Extraction" | "AI / Automation"
   | "Maps / Address Verification" | "CRM / Support" | "Accounting / ERP" | "Webhooks";
 
 export const CATEGORY_ORDER: IntegrationCategory[] = [
   "Payment Collection", "FX / Settlement / Payout", "Shipment Tracking Aggregator",
-  "Direct Shipping Lines", "Card Issuing", "KYC / KYB", "Sanctions / PEP / AML",
+  "Direct Shipping Lines", "KYC / KYB", "Sanctions / PEP / AML",
   "WhatsApp / Messaging", "OCR / Document Extraction", "AI / Automation",
   "Maps / Address Verification", "CRM / Support", "Accounting / ERP", "Webhooks",
 ];
@@ -52,7 +52,6 @@ export const PROVIDERS: Provider[] = [
   ...seed("FX / Settlement / Payout", ["Banking Partner", "Liquidity Provider", "Stablecoin Rails", "RMB Settlement"], ["Treasury", "FX", "Partner Payouts"]),
   ...seed("Shipment Tracking Aggregator", ["Vizion", "Shipsgo", "SeaRates", "GoComet", "JSONCargo"], ["Importer", "Freight"]),
   ...seed("Direct Shipping Lines", ["Maersk", "MSC", "CMA CGM", "Hapag-Lloyd", "COSCO"], ["Importer", "Freight"]),
-  ...seed("Card Issuing", ["Marqeta", "Paymentology", "Thredd", "i2c", "Galileo", "Stripe Issuing", "Local Issuer Partner"], ["Cards", "Treasury", "Importer"]),
   ...seed("KYC / KYB", ["Smile ID", "Sumsub", "Youverify", "Dojah", "Prembly"], ["Verification Center", "Onboarding"]),
   ...seed("Sanctions / PEP / AML", ["ComplyAdvantage", "Refinitiv", "Dow Jones", "Chainalysis"], ["Compliance", "Verification Center"]),
   ...seed("WhatsApp / Messaging", ["WhatsApp Cloud API", "Twilio", "Termii", "Africa's Talking", "Resend", "SendGrid"], ["Freight", "Notifications", "Partner Property"]),
