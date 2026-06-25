@@ -9,7 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import { useRole, ALL_ROLES, type Role } from "@/components/RoleProvider";
 import { loadProfile, getSidebarForWorkspace, defaultFlagsFor, type SidebarItem } from "@/lib/profile";
-import { useMode, ALL_MODES, type Mode } from "@/components/ModeProvider";
+import { useMode, ALL_MODES, MODE_DISPLAY_LABEL, type Mode } from "@/components/ModeProvider";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { PARTNER_ROLES, PARTNER_ORG, MARKETERS, setActivePartnerUser } from "@/lib/partner";
 import { getSavedCustomerWorkspace, saveActiveWorkspace } from "@/lib/workspace-guard";
