@@ -107,16 +107,16 @@ export const SEGMENTS: Segment[] = [
   },
   {
     id: "global_spend_cards",
-    label: "Card User",
-    shortLabel: "Cards",
+    label: "Unavailable Demo Workspace",
+    shortLabel: "Unavailable",
     accountType: "individual",
-    customerSegment: "card_user",
-    primaryUseCase: "Travel, student, ads, personal global spend",
-    defaultRole: "Card Owner",
-    defaultPermissions: ["view dashboard", "create personal card", "view transactions", "upload receipt"],
+    customerSegment: "unavailable_demo_workspace",
+    primaryUseCase: "Feature not available in this focused demo",
+    defaultRole: "Viewer",
+    defaultPermissions: ["view dashboard"],
     route: "/welcome",
-    welcome: "Create and manage purpose-built cards for travel, business, students, ads, and global spending.",
-    tagline: "Individuals & small businesses using cards globally",
+    welcome: "This feature is not available in this demo.",
+    tagline: "Unavailable in the focused trade and treasury demo",
   },
 ];
 
@@ -398,7 +398,7 @@ export function saveProfile(segment: Segment): Profile {
       supplier_dashboard: "Supplier",
       global_collections: "Global Merchant",
       partner_property: "Partner Property",
-      global_spend_cards: "Global Spend Cards",
+      global_spend_cards: "Enterprise Treasury",
       canta_ops: "Canta Ops",
     };
     const mode = WORKSPACE_TO_MODE[segment.id];
