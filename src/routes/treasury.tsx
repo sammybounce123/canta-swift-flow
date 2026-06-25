@@ -43,7 +43,6 @@ function Treasury() {
         secondary={[
           { label: "Add Beneficiary", to: "/beneficiaries" },
           { label: "View Transactions", to: "/transactions" },
-          { label: "Create Company Card", to: "/treasury/cards" },
         ]}
       />
       <div className="flex items-end justify-between flex-wrap gap-4">
@@ -118,7 +117,7 @@ function Treasury() {
 
       <WorkspaceCardsPanel
         title="Company Cards"
-        subtitle="Staff, department, travel, procurement, ad-spend and project cards across the enterprise."
+        subtitle="Optional company spend controls for treasury teams that already use card-based expenses."
         categories={["Staff", "Department", "Travel", "Procurement", "Ad Spend", "Project"]}
         pendingApprovals={3}
         receiptsMissing={5}

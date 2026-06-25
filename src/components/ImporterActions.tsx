@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import {
   MessageSquare, FilePlus, BadgeCheck, Lock, Calculator, Ship,
-  Paperclip, CreditCard, LinkIcon, Truck, MessageCircle, Bookmark, Copy,
+  Paperclip, LinkIcon, Truck, MessageCircle, Bookmark, Copy,
 } from "lucide-react";
 import { toast } from "sonner";
 import { openWhatsApp, buildWhatsAppUrl } from "@/lib/whatsapp";
@@ -39,7 +39,6 @@ type Variant = "toolbar" | "supplier" | "tradefile";
 
 const LS = {
   savedSuppliers: "canta:importer:savedSuppliers",
-  cards: "canta:importer:cards",
   quotes: "canta:importer:quotes",
   verifications: "canta:importer:verifications",
   forwarderInvites: "canta:importer:forwarderInvites",
@@ -67,7 +66,7 @@ export function ImporterActions({
   className?: string;
 }) {
   const navigate = useNavigate();
-  const [open, setOpen] = useState<null | "quote" | "verify" | "escrow" | "landed" | "linkShipment" | "linkDocs" | "card" | "share" | "forwarder" | "whatsapp">(null);
+  const [open, setOpen] = useState<null | "quote" | "verify" | "escrow" | "landed" | "linkShipment" | "linkDocs" | "share" | "forwarder" | "whatsapp">(null);
 
   // Local form state per dialog
   const [quote, setQuote] = useState({ supplier: ctx.supplier ?? "", goods: "", qty: "", target: "", incoterm: "FOB", notes: "" });
@@ -76,7 +75,6 @@ export function ImporterActions({
   const [landed, setLanded] = useState({ goodsCost: ctx.invoiceAmount?.toString() ?? "", currency: ctx.currency ?? "USD", freight: "", clearing: "", destination: ctx.destination ?? "", sellingPrice: "" });
   const [linkShip, setLinkShip] = useState({ shipmentRef: ctx.shipmentId ?? "", tradeFile: ctx.tradeFileId ?? "" });
   const [linkDocs, setLinkDocs] = useState({ tradeFile: ctx.tradeFileId ?? "", docTypes: [] as string[], notes: "" });
-  const [card, setCard] = useState({ label: "", limit: "5000", linkKind: ctx.tradeFileId ? "Trade file" : "Shipment", linked: ctx.tradeFileId ?? ctx.shipmentId ?? "" });
   const [forwarder, setForwarder] = useState({ name: "", email: "", tradeFile: ctx.tradeFileId ?? "" });
   const [waMsg, setWaMsg] = useState(`Hi Canta, please send a status update on ${ctx.tradeFileId ?? ctx.shipmentId ?? "my shipment"}.`);
 
@@ -133,12 +131,6 @@ export function ImporterActions({
     toast.success("Documents linked to trade file");
     setOpen(null);
   };
-  const submitCard = () => {
-    if (!card.label || !card.limit) return toast.error("Card label and limit required");
-    push(LS.cards, { ...card, last4: String(1000 + Math.floor(Math.random() * 8999)) });
-    toast.success(`Card "${card.label}" issued — linked to ${card.linked || card.linkKind}`);
-    setOpen(null);
-  };
   const submitForwarder = () => {
     if (!forwarder.email || !forwarder.tradeFile) return toast.error("Forwarder email and trade file required");
     push(LS.forwarderInvites, forwarder);
@@ -174,7 +166,6 @@ export function ImporterActions({
     { label: "Estimate Landed Cost",   icon: Calculator,    onClick: () => setOpen("landed"),        show: true },
     { label: "Link Shipment",          icon: Ship,          onClick: () => setOpen("linkShipment"),  show: variant !== "supplier" },
     { label: "Link Documents",         icon: Paperclip,     onClick: () => setOpen("linkDocs"),      show: variant === "tradefile" },
-    { label: "Create Importer Card",   icon: CreditCard,    onClick: () => setOpen("card"),          show: variant !== "supplier" },
     { label: "Share Tracking Link",    icon: LinkIcon,      onClick: () => setOpen("share"),         show: !!ctx.shipmentId || variant === "tradefile" },
     { label: "Invite Freight Forwarder", icon: Truck,       onClick: () => setOpen("forwarder"),     show: variant !== "supplier" },
     { label: "Send WhatsApp Update",   icon: MessageCircle, onClick: () => setOpen("whatsapp"),      show: true },
@@ -309,30 +300,6 @@ export function ImporterActions({
             <div><Label className="text-xs">Notes</Label><Textarea value={linkDocs.notes} onChange={(e) => setLinkDocs({ ...linkDocs, notes: e.target.value })} /></div>
           </div>
           <DialogFooter><Button variant="outline" onClick={() => setOpen(null)}>Cancel</Button><Button onClick={submitLinkDocs}>Attach</Button></DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Card */}
-      <Dialog open={open === "card"} onOpenChange={(o) => !o && setOpen(null)}>
-        <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>Create Importer Card</DialogTitle><DialogDescription>Issue a card linked to this trade file or shipment.</DialogDescription></DialogHeader>
-          <div className="grid gap-3">
-            <div><Label className="text-xs">Card label</Label><Input value={card.label} onChange={(e) => setCard({ ...card, label: e.target.value })} placeholder="Guangzhou sourcing" /></div>
-            <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-xs">Link to</Label>
-                <Select value={card.linkKind} onValueChange={(v) => setCard({ ...card, linkKind: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{["Trade file","Shipment","Supplier","Project"].map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-              <div><Label className="text-xs">Reference</Label><Input value={card.linked} onChange={(e) => setCard({ ...card, linked: e.target.value })} placeholder="TR-2031" /></div>
-            </div>
-            <div><Label className="text-xs">Monthly limit (USD)</Label><Input value={card.limit} onChange={(e) => setCard({ ...card, limit: e.target.value })} /></div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => { navigate({ to: "/importer/cards" }); setOpen(null); }}>Open Cards</Button>
-            <Button onClick={submitCard}>Issue Card</Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 

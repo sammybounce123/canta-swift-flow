@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { WorkspaceCardsHub } from "@/components/WorkspaceCardsHub";
 import { ReadinessBar } from "@/components/ReadinessBar";
 
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/treasury/cards")({
       <WorkspaceCardsHub
         workspaceKey="enterprise"
         title="Company Cards"
-        subtitle="Issue cards to staff, departments and projects with approvals, receipt rules, and full spend reporting."
+        subtitle="Optional treasury spend controls for staff, departments and projects."
         cardTypes={[
           { key: "staff", label: "Staff Card", desc: "Per-employee company card" },
           { key: "department", label: "Department Card", desc: "Shared spend for a team or unit" },
@@ -26,7 +26,6 @@ export const Route = createFileRoute("/treasury/cards")({
           { key: "staff", label: "Staff" },
         ]}
         backTo={{ to: "/treasury", label: "Back to Enterprise Treasury" }}
-        cardHub={<Link to="/cards" className="text-xs text-accent hover:underline">Open shared card hub →</Link>}
         enableExport
       />
     </div>

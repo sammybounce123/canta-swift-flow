@@ -26,7 +26,7 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
     { id: "fx",        name: "FX conversion report",   desc: "Conversions, rates locked, slippage" },
     { id: "ben",       name: "Beneficiary report",     desc: "Beneficiary KYB status and payout history" },
     { id: "appr",      name: "Approval report",        desc: "Approval chain, approvers, response times" },
-    { id: "cards",     name: "Card spend report",      desc: "By cardholder, category, project, cost center" },
+    { id: "expenses",  name: "Expense controls report", desc: "Optional employee expense controls by owner, category, project, and cost center" },
     { id: "comp",      name: "Compliance report",      desc: "Sanction checks, EDD, document expiry" },
   ],
   importer_portal: [
@@ -35,7 +35,6 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
     { id: "landed",    name: "Landed Cost",            desc: "Goods + freight + duty + FX by SKU" },
     { id: "sup",       name: "Suppliers",              desc: "Spend per supplier, on-time delivery, disputes" },
     { id: "payments",  name: "Payments",               desc: "Supplier deposits, escrow releases, duties and freight invoices" },
-    { id: "cards",     name: "Importer Card Spend",    desc: "Trade-file linked card spend and receipts" },
   ],
   freight_workspace: [
     { id: "vol",       name: "Shipment volume",        desc: "Shipments per lane, mode, month" },
@@ -51,7 +50,6 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
     { id: "recon",     name: "Reconciliation report",  desc: "Matched, unmatched, partial settlements" },
     { id: "settle",    name: "Settlement report",      desc: "Batches sent to merchant, T+ timing" },
     { id: "failed",    name: "Failed payments",        desc: "Decline reasons and retry success" },
-    { id: "staff",     name: "Staff cards report",     desc: "Spend by department and staff card" },
   ],
   supplier_dashboard: [
     { id: "inv",       name: "Invoice report",         desc: "Issued, paid, overdue invoices to buyers" },

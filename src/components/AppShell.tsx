@@ -121,9 +121,8 @@ function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceT
   if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
   if (pathname.startsWith("/suppliers") || pathname.startsWith("/buyers") ||
       pathname.startsWith("/verified-buyers") || pathname.startsWith("/escrow")) return "supplier_dashboard";
-  if (pathname === "/cards" || pathname.startsWith("/cards/") ||
-      pathname.startsWith("/receipts") || pathname.startsWith("/spend-controls") ||
-      pathname.startsWith("/wallet-funding")) return "global_spend_cards";
+  if (pathname.startsWith("/receipts") || pathname.startsWith("/spend-controls") ||
+      pathname.startsWith("/wallet-funding")) return null;
   if (pathname.startsWith("/treasury") || pathname.startsWith("/wallets") ||
       pathname.startsWith("/fx") || pathname.startsWith("/beneficiaries")) return "enterprise_treasury";
   // /whatsapp, /support, /reports, /compliance, /approvals, /audit-logs,
@@ -158,7 +157,7 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
         <div className="h-9 w-9 rounded-xl bg-gradient-accent grid place-items-center text-sidebar-primary-foreground font-bold shadow-glow">C</div>
         <div>
           <div className="font-semibold tracking-tight">Canta</div>
-          <div className="text-[10px] uppercase tracking-widest text-sidebar-foreground/60">Trade · Treasury · Spend</div>
+          <div className="text-[10px] uppercase tracking-widest text-sidebar-foreground/60">Trade · Treasury</div>
         </div>
       </Link>
 
@@ -228,7 +227,7 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
     "Freight Forwarder": "/freight",
     "Supplier": "/suppliers",
     "Global Merchant": "/collections",
-    "Global Spend Cards": "/cards",
+    "Global Spend Cards": "/welcome",
     "Partner Property": "/partner",
     "Canta Ops": "/whatsapp",
   };

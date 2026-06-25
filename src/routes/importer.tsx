@@ -8,7 +8,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Textarea } from "@/components/ui/textarea";
 import { shipments, suppliers, freightInvoices, fmtMoney, type Shipment } from "@/lib/mock";
 import { buildWhatsAppUrl, type WhatsAppTemplateKey } from "@/lib/whatsapp";
-import { WorkspaceCardsPanel } from "@/components/CardsPanel";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import { ImporterActions } from "@/components/ImporterActions";
 import { StartHereCard } from "@/components/StartHereCard";

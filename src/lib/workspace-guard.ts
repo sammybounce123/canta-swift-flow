@@ -44,14 +44,14 @@ function workspaceFromPath(pathname: string): WorkspaceType | null {
   if (pathname.startsWith("/importer") || pathname.startsWith("/trade-desk") || pathname.startsWith("/my-suppliers") || pathname.startsWith("/verified-suppliers") || pathname.startsWith("/landed-cost") || pathname.startsWith("/clearing-quotes")) return "importer_portal";
   if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
   if (pathname.startsWith("/suppliers") || pathname.startsWith("/buyers") || pathname.startsWith("/verified-buyers") || pathname.startsWith("/escrow")) return "supplier_dashboard";
-  if (pathname === "/cards" || pathname.startsWith("/cards/")) return "global_spend_cards";
+  if (pathname === "/cards" || pathname.startsWith("/cards/")) return null;
   if (pathname.startsWith("/treasury") || pathname.startsWith("/wallets") || pathname.startsWith("/fx") || pathname.startsWith("/beneficiaries")) return "enterprise_treasury";
   return null;
 }
 
 
 function isCustomerWorkspace(workspace?: WorkspaceType | null): workspace is WorkspaceType {
-  return Boolean(workspace && workspace !== "canta_ops");
+  return Boolean(workspace && workspace !== "canta_ops" && workspace !== "global_spend_cards");
 }
 
 export function saveActiveWorkspace(workspace: WorkspaceType) {

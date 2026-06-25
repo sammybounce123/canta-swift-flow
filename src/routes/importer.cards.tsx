@@ -1,31 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { WorkspaceCardsHub } from "@/components/WorkspaceCardsHub";
-import { ReadinessBar } from "@/components/ReadinessBar";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/importer/cards")({
-  head: () => ({ meta: [{ title: "Importer Cards — Canta" }] }),
+  head: () => ({ meta: [{ title: "Feature unavailable — Canta" }] }),
   component: () => (
-    <div className="space-y-6">
-      <ReadinessBar status="Requires Setup" cue="Card issuing requires KYB and activation by Canta." />
-      <WorkspaceCardsHub
-        workspaceKey="importer"
-        title="Cards for your import business"
-        subtitle="Pay for goods, inspections, samples and shipping with cards that track every spend to the right trade file or shipment."
-        cardTypes={[
-          { key: "buying", label: "Buying Card", desc: "Pay suppliers and place orders" },
-          { key: "inspection", label: "Inspection Card", desc: "Pay for QC checks, lab tests and factory visits" },
-          { key: "samples", label: "Samples Card", desc: "Order product samples before bulk orders" },
-          { key: "shipping", label: "Shipping & Clearing Card", desc: "Pay freight, customs and clearing fees" },
-        ]}
-        linkEntities={["Trade file", "Shipment", "Supplier", "Cost center"]}
-        spendDimensions={[
-          { key: "trade-file", label: "Trade file" },
-          { key: "shipment", label: "Shipment" },
-          { key: "supplier", label: "Supplier" },
-        ]}
-        backTo={{ to: "/importer", label: "Back to Importer Workspace" }}
-        cardHub={<Link to="/cards" className="text-xs text-accent hover:underline">See all cards →</Link>}
-      />
+    <div className="min-h-[60vh] grid place-items-center px-4">
+      <Card className="w-full max-w-lg p-8 text-center shadow-card">
+        <h1 className="text-2xl font-semibold">This feature is not available in this demo</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Importer Trade Desk is focused on trade files, documents, shipments, clearing quotes, and payments.
+        </p>
+        <Button asChild className="mt-6">
+          <Link to="/importer"><ArrowLeft className="h-4 w-4 mr-2" /> Back to Importer Trade Desk</Link>
+        </Button>
+      </Card>
     </div>
   ),
 });

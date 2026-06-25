@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,7 +6,7 @@ import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import {
-  CreditCard, Plus, Snowflake, Flame, Receipt, Clock, ArrowRight, TrendingUp,
+  CreditCard, Snowflake, Flame, Receipt, Clock, TrendingUp,
   MoreHorizontal, Eye, Upload, Settings, Download,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -61,9 +60,6 @@ export function WorkspaceCardsPanel(p: WorkspaceCardsPanelProps) {
             <div className="text-xs text-muted-foreground">{p.subtitle}</div>
           </div>
         </div>
-        <Link to="/cards">
-          <Button size="sm" className="bg-primary"><Plus className="h-3.5 w-3.5 mr-1.5" /> Create card</Button>
-        </Link>
       </div>
 
       {/* Mini KPIs */}
@@ -105,8 +101,13 @@ export function WorkspaceCardsPanel(p: WorkspaceCardsPanelProps) {
                 <div className="mt-2 text-[10px] text-muted-foreground truncate">↳ {c.linked}</div>
               )}
               <div className="mt-2 flex items-center gap-1">
-                <Button asChild size="sm" variant="ghost" className="h-7 px-2 text-[11px]">
-                  <Link to="/cards"><Eye className="h-3 w-3 mr-1" /> View</Link>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-7 px-2 text-[11px]"
+                  onClick={() => toast.info("Company card details are secondary in this demo.")}
+                >
+                  <Eye className="h-3 w-3 mr-1" /> View
                 </Button>
                 <Button
                   size="sm"
@@ -114,7 +115,6 @@ export function WorkspaceCardsPanel(p: WorkspaceCardsPanelProps) {
                   className="h-7 px-2 text-[11px]"
                   onClick={() => {
                     toast.success(c.status === "Frozen" ? "Card unfrozen successfully." : "Card frozen successfully.");
-                    if (typeof window !== "undefined") window.location.assign("/cards");
                   }}
                 >
                   {c.status === "Frozen"
@@ -149,7 +149,7 @@ export function WorkspaceCardsPanel(p: WorkspaceCardsPanelProps) {
         })}
         {p.cards.length === 0 && (
           <div className="col-span-full p-6 text-center text-xs text-muted-foreground rounded-xl border border-dashed border-border">
-            No cards yet. <Link to="/cards" className="text-accent">Create the first card →</Link>
+            Company card setup is not available in this demo.
           </div>
         )}
       </div>
@@ -176,11 +176,8 @@ export function WorkspaceCardsPanel(p: WorkspaceCardsPanelProps) {
 
       <div className="mt-5 flex items-center justify-between border-t border-border pt-3">
         <div className="text-[11px] text-muted-foreground flex items-center gap-1.5">
-          <Clock className="h-3 w-3" /> Cards are a shared capability across every Canta workspace.
+          <Clock className="h-3 w-3" /> Company cards are optional enterprise spend controls in this demo.
         </div>
-        <Link to="/cards" className="text-xs font-medium text-accent inline-flex items-center gap-1 hover:underline">
-          Open card hub <ArrowRight className="h-3 w-3" />
-        </Link>
       </div>
     </Card>
   );
