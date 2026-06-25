@@ -195,28 +195,6 @@ export const shipmentMilestones = [
   "Customs clearance", "Released", "Delivered",
 ];
 
-// ---------- Cards ----------
-export type Card = {
-  id: string;
-  label: string;
-  type: "Business" | "Travel" | "Importer" | "Student" | "Ad Spend" | "Team";
-  last4: string;
-  balance: number;
-  monthlySpend: number;
-  limit: number;
-  status: "Active" | "Frozen" | "Expired";
-  holder: string;
-};
-
-export const cards: Card[] = [
-  { id: "CRD-001", label: "Treasury Ops Card", type: "Business", last4: "4421", balance: 18_400, monthlySpend: 12_320, limit: 50_000, status: "Active", holder: "Adaeze Okonkwo" },
-  { id: "CRD-002", label: "Lagos→Dubai Sourcing Trip", type: "Travel", last4: "8810", balance: 4_200, monthlySpend: 3_870, limit: 6_000, status: "Active", holder: "Tunde Bakare" },
-  { id: "CRD-003", label: "Trade Expenses · Guangzhou Q2", type: "Importer", last4: "9921", balance: 7_800, monthlySpend: 5_400, limit: 20_000, status: "Active", holder: "Ops Team" },
-  { id: "CRD-004", label: "Meta Ads — Brand", type: "Ad Spend", last4: "3145", balance: 1_900, monthlySpend: 8_700, limit: 10_000, status: "Active", holder: "Growth Team" },
-  { id: "CRD-005", label: "Student Allowance · Aisha", type: "Student", last4: "2210", balance: 920, monthlySpend: 1_100, limit: 1_500, status: "Active", holder: "Aisha Bello" },
-  { id: "CRD-006", label: "Sales Team Card", type: "Team", last4: "7782", balance: 6_400, monthlySpend: 4_120, limit: 15_000, status: "Frozen", holder: "Sales Team" },
-];
-
 // ---------- AI Growth ----------
 export const leads = [
   { id: "L-401", name: "Mega Plaza Imports", segment: "Importer", country: "Nigeria", score: 92, value: 280_000, stage: "Hot", note: "Imports electronics monthly from Shenzhen." },
@@ -249,8 +227,6 @@ export const integrations = [
   { name: "SMS Gateway", category: "Messaging", connected: true, desc: "Transactional SMS alerts." },
   { name: "Smile Identity", category: "Compliance", connected: true, desc: "KYC, KYB, ID verification." },
   { name: "ComplyAdvantage", category: "Compliance", connected: false, desc: "Sanctions & PEP screening." },
-  { name: "Marqeta", category: "Cards", connected: true, desc: "Card issuing platform." },
-  { name: "Apple Pay", category: "Cards", connected: false, desc: "Mobile wallet readiness." },
   { name: "Cloudflare R2", category: "Storage", connected: true, desc: "Document storage." },
   { name: "QuickBooks", category: "Accounting", connected: false, desc: "Sync ledger & invoices." },
   { name: "Xero", category: "Accounting", connected: false, desc: "Two-way ledger sync." },
