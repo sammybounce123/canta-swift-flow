@@ -300,9 +300,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         Team, Settings,
       ];
 
-        { to: "/support", label: "Support", iconKey: "users", group: "Help" },
-        Team, Settings,
-      ];
+
     case "global_spend_cards":
       return [
         { to: "/cards", label: "Cards Dashboard", iconKey: "dashboard", group: "Overview", exact: true },
