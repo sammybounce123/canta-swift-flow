@@ -99,7 +99,7 @@ type WorkspaceProfile = { name: string; initials: string; title: string; badge: 
 const WORKSPACE_PROFILES: Record<import("@/lib/profile").WorkspaceType, WorkspaceProfile> = {
   enterprise_treasury: { name: "Adaeze Okonkwo", initials: "AO", title: "Treasury Admin",          badge: "Enterprise Treasury Mode" },
   importer_portal:     { name: "Tunde Bakare",   initials: "TB", title: "Importer Owner",          badge: "Importer Mode" },
-  freight_workspace:   { name: "Chinedu Okafor", initials: "CO", title: "Freight Owner",           badge: "Freight Workspace Mode" },
+  freight_workspace:   { name: "Chinedu Okafor", initials: "CO", title: "Clearing Agent",          badge: "Clearing Agent Portal Mode" },
   global_collections:  { name: "Amaka Bello",    initials: "AB", title: "Merchant Owner",          badge: "Global Collections Mode" },
   supplier_dashboard:  { name: "Li Wei",         initials: "LW", title: "Supplier Admin",          badge: "Supplier Mode" },
   partner_property:    { name: "Sarah Adeyemi",  initials: "SA", title: "Partner Admin",           badge: "Partner Property Mode" },
