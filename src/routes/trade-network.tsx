@@ -27,9 +27,7 @@ function TradeNetworkPage() {
     { to: "/documents", label: "Trade Documents", desc: "BLs, packing lists, certificates of origin.", icon: FileText },
   ];
 
-  const importerTiles = [
-    { to: "/verified-suppliers", label: "Verified Suppliers", desc: "Screened suppliers across China, Turkey, UAE, India.", icon: ShieldCheck, count: SUPPLIERS.length },
-    { to: "/my-suppliers", label: "My Suppliers", desc: "Your private supplier list and trade history.", icon: Factory },
+  const tiles = isSupplier ? supplierTiles : importerTiles;
     { to: "/trade-desk", label: "Trade Files & Quotes", desc: "Quote requests, POs and supplier invoices.", icon: FileText },
     { to: "/verification-center", label: "Supplier Verification", desc: "Ask Canta to verify any supplier you trade with.", icon: ShieldCheck },
     { to: "/payments", label: "Supplier Payments", desc: "Pay suppliers via FX, escrow or stablecoin.", icon: Banknote },
