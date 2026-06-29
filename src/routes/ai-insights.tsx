@@ -37,8 +37,9 @@ function AIInsights() {
             <Badge className="bg-accent text-accent-foreground hover:bg-accent">Buy Signal</Badge>
             <div className="mt-4 text-3xl font-semibold">Buy USD now</div>
             <p className="text-sm text-primary-foreground/70 mt-2 leading-relaxed">
-              NGN expected to weaken ~1.2% over the next 48 hours driven by oil revenue cycles
-              and import demand. Locking USD now optimises corporate cash positions.
+              NGN expected to weaken ~1.2% over the next 48 hours driven by import demand
+              and corporate FX flows. Locking USD now optimises corporate cash positions.
+
             </p>
             <div className="mt-5 flex items-center gap-3">
               <div>
@@ -77,7 +78,7 @@ function AIInsights() {
         {[
           { t: "EUR/NGN", desc: "Wait 24-48 hours", c: 72, dir: "wait", icon: TrendingDown },
           { t: "GBP/NGN", desc: "Hold position", c: 65, dir: "hold", icon: TrendingUp },
-          { t: "Oil receipts (USD)", desc: "Convert in tranches", c: 81, dir: "tranche", icon: TrendingUp },
+          { t: "USD receipts", desc: "Convert in tranches", c: 81, dir: "tranche", icon: TrendingUp },
         ].map((s) => (
           <Card key={s.t} className="p-5 shadow-card">
             <div className="flex items-center justify-between">

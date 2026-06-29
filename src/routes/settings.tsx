@@ -43,13 +43,14 @@ function Settings() {
             <div className="text-sm font-semibold">Company Details</div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <Field label="Legal name" value="Niger Delta Exploration Ltd" />
+            <Field label="Legal name" value="Lagos Trade Holdings Ltd" />
             <Field label="Registration No." value="RC 1284502" />
-            <Field label="Industry" value="Oil & Gas — Upstream" />
+            <Field label="Industry" value="Trade, Logistics & Customs" />
             <Field label="Country" value="Nigeria" />
             <Field label="Tax ID (TIN)" value="01927384-0001" />
-            <Field label="Primary contact" value="adaeze@ndexploration.ng" />
+            <Field label="Primary contact" value="admin@lagostrade.ng" />
           </div>
+
         </Card>
 
         <Card className="p-6 shadow-card">

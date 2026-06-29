@@ -332,14 +332,15 @@ function OrganizationPage() {
         <TabsContent value="profile" className="mt-4">
           <Card className="p-6 shadow-card">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Field label="Legal name" value="Niger Delta Exploration Ltd" />
-              <Field label="Trading name" value="ND Exploration" />
+              <Field label="Legal name" value="Lagos Trade Holdings Ltd" />
+              <Field label="Trading name" value="Lagos Trade" />
               <Field label="Registration No." value="RC 1284502" />
               <Field label="Country of incorporation" value="Nigeria" />
-              <Field label="Industry" value="Oil & Gas — Upstream" />
+              <Field label="Industry" value="Trade, Logistics & Customs" />
               <Field label="Tax ID (TIN)" value="01927384-0001" />
-              <Field label="Primary contact" value="adaeze@nigerdelta.ng" />
+              <Field label="Primary contact" value="admin@lagostrade.ng" />
               <Field label="Workspace tier" value="Enterprise" />
+
             </div>
             <div className="mt-4 flex gap-2">
               <Button variant="outline" onClick={() => toast.success("Profile saved")}>Save changes</Button>

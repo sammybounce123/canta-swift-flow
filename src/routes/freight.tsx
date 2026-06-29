@@ -47,22 +47,26 @@ function Freight() {
       const now = Date.now();
       return eta >= now && eta - now <= 7 * 86400000;
     }).length;
-    const outstanding = freightInvoices.filter((i) => i.status !== "Paid").reduce((a, b) => a + b.amount, 0);
+    // Clearing agents bill and settle in Naira only.
+    const NGN_PER_USD = 1612;
+    const outstanding = freightInvoices.filter((i) => i.status !== "Paid").reduce((a, b) => a + b.amount, 0) * NGN_PER_USD;
     const monthlyVol = monthlyShipmentVolume[monthlyShipmentVolume.length - 1].count;
-    const monthlyRev = monthlyShipmentVolume[monthlyShipmentVolume.length - 1].revenue;
-    return { active, delayed, arrivingWeek, outstanding, monthlyVol, monthlyRev };
+    const monthlyRev = monthlyShipmentVolume[monthlyShipmentVolume.length - 1].revenue * NGN_PER_USD;
+    const walletBalance = 84_250_000; // NGN
+    return { active, delayed, arrivingWeek, outstanding, monthlyVol, monthlyRev, walletBalance };
   }, []);
 
   const kpis = [
-    { l: "Active shipments", v: String(stats.active), icon: Truck, tone: "" },
+    { l: "Naira wallet balance", v: fmtMoney(stats.walletBalance, "NGN"), icon: Banknote, tone: "text-success" },
+    { l: "Active clearing jobs", v: String(stats.active), icon: Truck, tone: "" },
     { l: "Arriving this week", v: String(stats.arrivingWeek), icon: Clock, tone: "" },
     { l: "Delayed shipments", v: String(stats.delayed), icon: AlertTriangle, tone: "text-destructive" },
-    { l: "Customers", v: String(importers.length), icon: UsersIcon, tone: "" },
+    { l: "Importer customers", v: String(importers.length), icon: UsersIcon, tone: "" },
     { l: "Pending documents", v: "7", icon: FileText, tone: "text-amber-600" },
-    { l: "Outstanding invoices", v: fmtMoney(stats.outstanding, "USD"), icon: DollarSign, tone: "text-destructive" },
-    { l: "Monthly shipment volume", v: String(stats.monthlyVol), icon: Ship, tone: "" },
-    { l: "Monthly revenue", v: fmtMoney(stats.monthlyRev, "USD"), icon: TrendingUp, tone: "text-success" },
+    { l: "Outstanding invoices", v: fmtMoney(stats.outstanding, "NGN"), icon: DollarSign, tone: "text-destructive" },
+    { l: "Monthly revenue", v: fmtMoney(stats.monthlyRev, "NGN"), icon: TrendingUp, tone: "text-success" },
   ];
+
 
   // What needs attention today
   const needsAttention = useMemo(() => {
