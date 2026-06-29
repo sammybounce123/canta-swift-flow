@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
-  Building2, Ship, Truck, Globe, Factory, Home,
+  Building2, Ship, Factory, Home,
   ArrowRight, CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -14,28 +14,25 @@ export const Route = createFileRoute("/welcome")({
 });
 
 const ICONS: Partial<Record<WorkspaceType, typeof Building2>> = {
-  enterprise_treasury: Building2, importer_portal: Ship, freight_workspace: Truck,
-  global_collections: Globe, supplier_dashboard: Factory,
+  enterprise_treasury: Building2, importer_portal: Ship, supplier_dashboard: Factory,
   partner_property: Home,
 };
 const TONES: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "bg-primary/10 text-primary",
   importer_portal: "bg-accent/15 text-accent",
-  freight_workspace: "bg-warning/15 text-warning",
-  global_collections: "bg-success/10 text-success",
   supplier_dashboard: "bg-amber-500/15 text-amber-700",
   partner_property: "bg-primary/10 text-primary",
 };
 const WHO_FOR: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "Multinationals, corporates, traders and large SMEs",
   importer_portal: "Importers buying from China, UAE, Turkey, India",
-  supplier_dashboard: "Foreign suppliers invoicing Nigerian buyers in NGN, settling in RMB",
+  supplier_dashboard: "Chinese suppliers receiving RMB settlement after Nigerian buyers pay NGN locally through Canta",
   partner_property: "Property partners like Baron & Cabot referring clients",
 };
 const DO_BULLETS: Partial<Record<WorkspaceType, string[]>> = {
   enterprise_treasury: ["FX & multi-currency balances", "Bulk payouts & approvals", "Beneficiaries & treasury reports"],
   importer_portal: ["Send BL & track shipments", "Organize goods & documents", "Compare clearing agents & pay"],
-  supplier_dashboard: ["Send payment requests to Nigerian buyers", "Upload invoices & documents", "Track RMB settlement after NGN payment"],
+  supplier_dashboard: ["Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta", "Upload invoices & documents", "Track RMB settlement receipts"],
   partner_property: ["Refer property clients", "Track FX & solicitor payouts", "Download payout receipts"],
 };
 const CTA: Partial<Record<WorkspaceType, string>> = {
@@ -59,8 +56,8 @@ function WelcomePage() {
   const choose = (id: WorkspaceType) => {
     const segment = SEGMENTS.find((s) => s.id === id)!;
     saveProfile(segment);
-    toast.success(`Workspace set: ${segment.shortLabel}`, { description: "Let's complete a quick onboarding." });
-    setTimeout(() => navigate({ to: "/onboarding" }), 350);
+    toast.success(`Workspace set: ${segment.shortLabel}`);
+    setTimeout(() => navigate({ to: (ROUTE_OVERRIDE[id] ?? segment.route) as never }), 250);
   };
 
   return (
@@ -89,8 +86,8 @@ function WelcomePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {SEGMENTS.filter((s) => VISIBLE.includes(s.id)).map((s) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          {VISIBLE.map((id) => SEGMENTS.find((segment) => segment.id === id)!).map((s) => {
             const Icon = ICONS[s.id] ?? Building2;
             const hot = hovered === s.id;
             return (

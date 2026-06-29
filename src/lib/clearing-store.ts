@@ -110,7 +110,7 @@ function write<T>(key: string, value: T) {
 const SEED_REQUESTS: ClearingRequest[] = [
   {
     id: "CQR-2031",
-    tradeFileId: "TR-2031",
+    tradeFileId: "TF-2026-0214",
     blNumber: "MAEU-447120",
     containerNumber: "MSKU-9912034",
     portOfArrival: "Apapa, Lagos",
@@ -137,7 +137,7 @@ const SEED_REQUESTS: ClearingRequest[] = [
   },
   {
     id: "CQR-2030",
-    tradeFileId: "TR-2030",
+    tradeFileId: "TF-2026-0218",
     blNumber: "CMAU-228814",
     portOfArrival: "Tin Can, Lagos",
     goodsCategory: "Industrial Machinery",
@@ -220,7 +220,7 @@ const SEED_BIDS: ClearingBid[] = [
 ];
 
 const LS_SEED_VERSION = "canta:clearing:seedVersion";
-const SEED_VERSION = "2";
+const SEED_VERSION = "4";
 
 function ensureSeed() {
   if (typeof window === "undefined") return;
@@ -234,7 +234,7 @@ function ensureSeed() {
 export function getRequests(): ClearingRequest[] {
   ensureSeed();
   const stored = read<ClearingRequest[] | null>(LS_REQUESTS, null);
-  if (stored && stored.length) return stored;
+  if (stored && stored.length && stored.some((r) => r.id === "CQR-2031" && r.selectedBidId === "BID-7703")) return stored;
   write(LS_REQUESTS, SEED_REQUESTS);
   return SEED_REQUESTS;
 }
@@ -249,7 +249,7 @@ export function saveRequests(rs: ClearingRequest[]) {
 export function getBids(): ClearingBid[] {
   ensureSeed();
   const stored = read<ClearingBid[] | null>(LS_BIDS, null);
-  if (stored && stored.length) return stored;
+  if (stored && stored.length && stored.filter((b) => b.requestId === "CQR-2031").length >= 3) return stored;
   write(LS_BIDS, SEED_BIDS);
   return SEED_BIDS;
 }

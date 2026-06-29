@@ -29,7 +29,7 @@ export const Route = createFileRoute("/dashboard")({
         enterprise_treasury: "/treasury",
         importer_portal: "/importer",
         freight_workspace: "/freight",
-        supplier_dashboard: "/suppliers",
+        supplier_dashboard: "/supplier-portal",
         global_collections: "/collections",
         global_spend_cards: "/welcome",
         partner_property: "/partner",
@@ -70,7 +70,7 @@ function Dashboard() {
             <div className="text-sm font-semibold truncate">{mode} Mode</div>
             <div className="text-xs text-muted-foreground">
               {mode === "Importer" ? "Track shipments, documents, suppliers and landed cost."
-              : mode === "Freight Forwarder" ? "Manage operations, customers and invoices."
+              : mode === "Freight Forwarder" ? "Invite-only clearing job workspace."
               : mode === "Supplier" ? "Issue invoices, escrow & global settlement."
               : mode === "Global Merchant" ? "Collect locally, settle globally."
               : "Move money, FX, wallets and settlements at enterprise scale."}
@@ -80,7 +80,7 @@ function Dashboard() {
         <div className="flex flex-wrap gap-2">
           {mode === "Importer" && <Button asChild size="sm" variant="outline"><Link to="/importer">Open Importer Portal</Link></Button>}
           {mode === "Freight Forwarder" && <Button asChild size="sm" variant="outline"><Link to="/freight">Open Workspace</Link></Button>}
-          {mode === "Supplier" && <Button asChild size="sm" variant="outline"><Link to="/suppliers">Open Suppliers</Link></Button>}
+          {mode === "Supplier" && <Button asChild size="sm" variant="outline"><Link to="/supplier-portal">Open Supplier Portal</Link></Button>}
           {mode === "Global Merchant" && <Button asChild size="sm" variant="outline"><Link to="/collections">Open Collections</Link></Button>}
           {mode === "Importer" && <Button asChild size="sm" variant="ghost"><Link to="/trade-desk">Trade Desk</Link></Button>}
         </div>

@@ -13,7 +13,7 @@ export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
       { title: "Workspace Onboarding — Canta" },
-      { name: "description", content: "Choose your Canta workspace — Treasury, Importer Trade Desk, Clearing Agent Portal, or Partner Mode." },
+      { name: "description", content: "Choose your Canta workspace — Importer Trade Desk, Supplier Portal, Enterprise Treasury, or Partner Mode." },
     ],
   }),
   component: OnboardingPicker,

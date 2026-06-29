@@ -98,10 +98,10 @@ type WorkspaceProfile = { name: string; initials: string; title: string; badge: 
 const WORKSPACE_PROFILES: Record<import("@/lib/profile").WorkspaceType, WorkspaceProfile> = {
   enterprise_treasury: { name: "Adaeze Okonkwo", initials: "AO", title: "Treasury Admin",          badge: "Enterprise Treasury Mode" },
   importer_portal:     { name: "Tunde Bakare",   initials: "TB", title: "Importer Owner",          badge: "Importer Mode" },
-  freight_workspace:   { name: "Chinedu Okafor", initials: "CO", title: "Clearing Agent",          badge: "Clearing Agent Portal Mode" },
+  freight_workspace:   { name: "Chinedu Okafor", initials: "CO", title: "Clearing Agent",          badge: "Invite-only Clearing Agent Mode" },
   global_collections:  { name: "Amaka Bello",    initials: "AB", title: "Merchant Owner",          badge: "Global Collections Mode" },
   supplier_dashboard:  { name: "Li Wei",         initials: "LW", title: "Supplier Admin",          badge: "Supplier Mode" },
-  partner_property:    { name: "Sarah Adeyemi",  initials: "SA", title: "Partner Admin",           badge: "Partner Property Mode" },
+  partner_property:    { name: "Charlotte Baron", initials: "CB", title: "Partner Admin",           badge: "Partner Mode" },
   global_spend_cards:  { name: "Adaeze Okonkwo", initials: "AO", title: "Treasury Admin",           badge: "Enterprise Treasury Mode" },
   canta_ops:           { name: "Ezekiel Oni",    initials: "EO", title: "Canta Operations Admin", badge: "Canta Ops Mode" },
 };
@@ -225,7 +225,7 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
     "Enterprise Treasury": "/treasury",
     "Importer": "/importer",
     "Freight Forwarder": "/freight",
-    "Supplier": "/suppliers",
+    "Supplier": "/supplier-portal",
     "Global Merchant": "/collections",
     "Partner Property": "/partner",
     "Canta Ops": "/whatsapp",
@@ -373,7 +373,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     <>
                       <DropdownMenuLabel className="flex items-center gap-2"><UserCog className="h-3.5 w-3.5" /> Switch role (demo)</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      {ALL_ROLES.map((r: Role) => (
+                      {activeWorkspace === "supplier_dashboard" ? (
+                        <div className="px-2 py-1.5 text-xs text-muted-foreground">{wsProfile.name} · {wsProfile.title}</div>
+                      ) : ALL_ROLES.map((r: Role) => (
                         <DropdownMenuItem key={r} onClick={() => { setRole(r); toast.success(`Viewing as ${r}`); }} className="flex items-center justify-between">
                           <span>{r}</span>
                           {role === r && <Check className="h-4 w-4 text-accent" />}

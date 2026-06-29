@@ -104,7 +104,7 @@ function SupplierPortal() {
           <Badge variant="outline" className="gap-1"><Factory className="h-3 w-3" /> Supplier Portal · Invite-only access</Badge>
           <h1 className="text-2xl font-semibold tracking-tight mt-2">Welcome, Guangzhou Tech Factory</h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            Receive payment requests from Nigerian buyers. Buyers pay locally in NGN through Canta; you receive RMB settlement through approved payout rails.
+            Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -150,6 +150,7 @@ function SupplierPortal() {
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="messages">Messages</TabsTrigger>
           <TabsTrigger value="verification">Verification</TabsTrigger>
+          <TabsTrigger value="support">Support</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-4 space-y-4">
@@ -248,6 +249,17 @@ function SupplierPortal() {
                 Submit for review
               </Button>
             )}
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="support" className="mt-4">
+          <Card className="p-4 space-y-3 text-sm">
+            <div className="font-semibold">Supplier support</div>
+            <div className="text-muted-foreground">Get help with buyer payment requests, invoice documents, verification, and RMB settlement receipts.</div>
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" variant="outline">Open support ticket</Button>
+              <Button size="sm" variant="outline">Message Canta</Button>
+            </div>
           </Card>
         </TabsContent>
       </Tabs>

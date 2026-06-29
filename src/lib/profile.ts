@@ -28,8 +28,8 @@ export type Segment = {
 export const SEGMENTS: Segment[] = [
   {
     id: "enterprise_treasury",
-    label: "Enterprise / Corporate",
-    shortLabel: "Enterprise",
+    label: "Enterprise Treasury",
+    shortLabel: "Enterprise Treasury",
     accountType: "business",
     customerSegment: "enterprise",
     primaryUseCase: "FX, treasury, wallets, approvals",
@@ -41,8 +41,8 @@ export const SEGMENTS: Segment[] = [
   },
   {
     id: "importer_portal",
-    label: "Importer",
-    shortLabel: "Importer",
+    label: "Importer Trade Desk",
+    shortLabel: "Importer Trade Desk",
     accountType: "business",
     customerSegment: "importer",
     primaryUseCase: "Trade files, shipments, suppliers, landed cost",
@@ -54,7 +54,7 @@ export const SEGMENTS: Segment[] = [
   },
   {
     id: "freight_workspace",
-    label: "Clearing Agent Portal",
+    label: "Invite-only Clearing Agent",
     shortLabel: "Clearing Agent",
     accountType: "business",
     customerSegment: "clearing_agent",
@@ -62,8 +62,8 @@ export const SEGMENTS: Segment[] = [
     defaultRole: "Clearing Agent",
     defaultPermissions: ["view dashboard", "view quote requests", "submit bid", "update clearing job"],
     route: "/freight",
-    welcome: "See importer quote requests, submit bids, manage accepted jobs, and post clearing status updates.",
-    tagline: "Verified clearing agents bidding for importer jobs",
+    welcome: "Hidden workspace for approved clearing agents invited to quote requests or assigned jobs.",
+    tagline: "Invite-only clearing access for verified agents",
   },
 
   {
@@ -81,21 +81,21 @@ export const SEGMENTS: Segment[] = [
   },
   {
     id: "supplier_dashboard",
-    label: "Supplier / Exporter",
-    shortLabel: "Supplier",
+    label: "Supplier Portal",
+    shortLabel: "Supplier Portal",
     accountType: "business",
     customerSegment: "supplier",
-    primaryUseCase: "Foreign suppliers selling into Africa — invoice African buyers, escrow, global settlement",
+    primaryUseCase: "Chinese suppliers receiving RMB settlement after Nigerian buyers pay NGN locally through Canta",
     defaultRole: "Supplier Owner",
     defaultPermissions: ["view dashboard", "create buyer record", "create invoice", "view settlement status"],
     route: "/supplier-portal",
-    welcome: "For foreign and global suppliers/exporters selling to African buyers. Invoice buyers, confirm funds via escrow, and receive global settlement.",
-    tagline: "Foreign suppliers & exporters in China, UAE, Turkey, India, Europe and other corridors selling to African buyers",
+    welcome: "Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta.",
+    tagline: "Chinese suppliers receiving RMB settlement after Nigerian buyer payments",
   },
   {
     id: "partner_property",
-    label: "Property Partner",
-    shortLabel: "Baron & Cabot",
+    label: "Partner Mode",
+    shortLabel: "Partner Mode",
     accountType: "business",
     customerSegment: "partner_property",
     primaryUseCase: "Refer clients for FX & solicitor payouts",
@@ -228,7 +228,6 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/trade-desk", label: "Trade Files", iconKey: "trade", group: "Move Goods" },
         { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Move Goods" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Trade Ops" },
-        { to: "/clearing-quotes", label: "Clearing Quotes", iconKey: "shield-check", group: "Trade Ops" },
         { to: "/landed-cost", label: "Landed Cost", iconKey: "calculator", group: "Trade Ops" },
         { to: "/payments", label: "Payments", iconKey: "receipt", group: "Money" },
         { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
@@ -239,7 +238,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
     case "freight_workspace":
       return [
         D,
-        { to: "/freight", label: "Clearing Agent Dashboard", iconKey: "freight", group: "My Workspace" },
+        { to: "/freight", label: "Assigned Clearing Jobs", iconKey: "freight", group: "My Workspace" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
         { to: "/whatsapp", label: "Messages", iconKey: "whatsapp", group: "Updates" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
@@ -250,15 +249,15 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
     case "supplier_dashboard":
       return [
         D,
-        { to: "/suppliers", label: "Supplier Dashboard", iconKey: "factory", group: "My Workspace" },
-        { to: "/suppliers/profile", label: "Supplier Profile", iconKey: "building", group: "My Workspace" },
-        { to: "/suppliers/kyb", label: "KYB / Verification", iconKey: "shield-check", group: "My Workspace" },
-        { to: "/verified-buyers", label: "Verified Buyers", iconKey: "shield-check", group: "Trade Network" },
-        { to: "/buyers", label: "Buyers", iconKey: "users", group: "Trade Network" },
-        { to: "/invoices", label: "Invoices", iconKey: "receipt", group: "Money" },
-        { to: "/escrow", label: "Escrow", iconKey: "shield", group: "Money" },
-        { to: "/collections", label: "Settlements", iconKey: "globe", group: "Money" },
+        { to: "/supplier-portal", label: "Overview", iconKey: "factory", group: "Supplier Portal", exact: true },
+        { to: "/supplier-portal", label: "Nigerian Buyers", iconKey: "users", group: "Supplier Portal" },
+        { to: "/supplier-portal", label: "Payment Requests", iconKey: "receipt", group: "Supplier Portal" },
+        { to: "/invoices", label: "Invoices", iconKey: "receipt", group: "Supplier Portal" },
+        { to: "/supplier-portal", label: "RMB Settlement", iconKey: "globe", group: "Supplier Portal" },
+        { to: "/supplier-portal", label: "Trade Files", iconKey: "trade", group: "Operations" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
+        { to: "/whatsapp", label: "Messages", iconKey: "whatsapp", group: "Operations" },
+        { to: "/supplier-portal", label: "Verification", iconKey: "shield-check", group: "Workspace" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         Team, Settings,
@@ -396,6 +395,9 @@ export function saveProfile(segment: Segment): Profile {
     };
     const mode = WORKSPACE_TO_MODE[segment.id];
     if (mode) {
+      if (segment.id !== "canta_ops" && segment.id !== "global_spend_cards") {
+        window.localStorage.setItem("canta:active_workspace", segment.id);
+      }
       window.localStorage.setItem("canta:mode", mode);
       window.dispatchEvent(new CustomEvent("canta:mode-change", { detail: mode }));
     }

@@ -102,7 +102,7 @@ function ImporterPortal() {
         secondary={[
           { label: "Upload Invoice or BL", to: "/trade-desk" },
           { label: "Track Shipment", to: "/shipments" },
-          { label: "Request Clearing Quotes", to: "/clearing-quotes" },
+          { label: "Open Trade Files", to: "/trade-desk" },
         ]}
       />
 
