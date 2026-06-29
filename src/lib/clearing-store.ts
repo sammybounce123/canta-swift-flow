@@ -219,7 +219,20 @@ const SEED_BIDS: ClearingBid[] = [
   },
 ];
 
+const LS_SEED_VERSION = "canta:clearing:seedVersion";
+const SEED_VERSION = "2";
+
+function ensureSeed() {
+  if (typeof window === "undefined") return;
+  if (window.localStorage.getItem(LS_SEED_VERSION) !== SEED_VERSION) {
+    write(LS_REQUESTS, SEED_REQUESTS);
+    write(LS_BIDS, SEED_BIDS);
+    window.localStorage.setItem(LS_SEED_VERSION, SEED_VERSION);
+  }
+}
+
 export function getRequests(): ClearingRequest[] {
+  ensureSeed();
   const stored = read<ClearingRequest[] | null>(LS_REQUESTS, null);
   if (stored && stored.length) return stored;
   write(LS_REQUESTS, SEED_REQUESTS);
@@ -228,11 +241,13 @@ export function getRequests(): ClearingRequest[] {
 export function loadDemoData() {
   write(LS_REQUESTS, SEED_REQUESTS);
   write(LS_BIDS, SEED_BIDS);
+  if (typeof window !== "undefined") window.localStorage.setItem(LS_SEED_VERSION, SEED_VERSION);
 }
 export function saveRequests(rs: ClearingRequest[]) {
   write(LS_REQUESTS, rs);
 }
 export function getBids(): ClearingBid[] {
+  ensureSeed();
   const stored = read<ClearingBid[] | null>(LS_BIDS, null);
   if (stored && stored.length) return stored;
   write(LS_BIDS, SEED_BIDS);
