@@ -124,11 +124,7 @@ function TradeFileDetail() {
       </Card>
 
       <Tabs defaultValue="overview" className="space-y-5">
-        <TabsList
-          aria-label="Trade file sections"
-          className="!flex !h-auto w-full !flex-wrap items-center justify-start !gap-2 rounded-lg border border-border bg-muted/60 p-2"
-          style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}
-        >
+        <TabsList aria-label="Trade file sections">
           {[
             ["overview", "Overview"],
             ["timeline", "Shipment Timeline"],
@@ -140,13 +136,7 @@ function TradeFileDetail() {
             ["whatsapp", "WhatsApp History"],
             ["activity", "Activity Log"],
           ].map(([v, label]) => (
-            <TabsTrigger
-              key={v}
-              value={v}
-              className="m-0.5 h-auto flex-none whitespace-normal rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-            >
-              {label}
-            </TabsTrigger>
+            <TabsTrigger key={v} value={v}>{label}</TabsTrigger>
           ))}
         </TabsList>
 

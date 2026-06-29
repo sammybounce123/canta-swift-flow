@@ -130,14 +130,14 @@ function ImporterPortal() {
 
 
       <Tabs defaultValue="shipments">
-        <TabsList aria-label="Importer dashboard sections" className="flex h-auto w-full flex-wrap items-center justify-start gap-2 rounded-lg border border-border bg-muted/60 p-2">
-          <TabsTrigger value="shipments" className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">My Shipments</TabsTrigger>
-          <TabsTrigger value="documents" className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">My Documents</TabsTrigger>
-          <TabsTrigger value="suppliers" className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">My Suppliers</TabsTrigger>
-          <TabsTrigger value="landed" className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">My Landed Cost</TabsTrigger>
-          <TabsTrigger value="payments" className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">My Payments</TabsTrigger>
-          <TabsTrigger value="alerts" className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Alerts</TabsTrigger>
-          <TabsTrigger value="assistant" className="h-auto rounded-md border border-border bg-background/80 px-3 py-2 text-sm hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Ask Canta</TabsTrigger>
+        <TabsList aria-label="Importer dashboard sections">
+          <TabsTrigger value="shipments">My Shipments</TabsTrigger>
+          <TabsTrigger value="documents">My Documents</TabsTrigger>
+          <TabsTrigger value="suppliers">My Suppliers</TabsTrigger>
+          <TabsTrigger value="landed">My Landed Cost</TabsTrigger>
+          <TabsTrigger value="payments">My Payments</TabsTrigger>
+          <TabsTrigger value="alerts">Alerts</TabsTrigger>
+          <TabsTrigger value="assistant">Ask Canta</TabsTrigger>
         </TabsList>
 
         <TabsContent value="shipments" className="mt-6">
