@@ -177,24 +177,34 @@ function ClearingQuotesPage() {
   );
 }
 
-function EmptyRequests({ onCreate, onSeed }: { onCreate: () => void; onSeed: () => void }) {
+function EmptyRequests({ onCreate, onSeed, scopedToFile, onClearFilter }: { onCreate: () => void; onSeed: () => void; scopedToFile?: string; onClearFilter?: () => void }) {
+  const scoped = !!scopedToFile;
   return (
     <Card className="p-10 text-center shadow-card">
       <Inbox className="h-6 w-6 text-muted-foreground mx-auto mb-2" />
-      <div className="text-base font-semibold">No clearing quotes yet</div>
+      <div className="text-base font-semibold">
+        {scoped ? `No clearing quotes for ${scopedToFile} yet` : "No clearing quotes yet"}
+      </div>
       <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
-        Request quotes from verified clearing agents to compare fee, timeline, service scope, and rating before choosing who handles your clearing.
+        {scoped
+          ? "Request quotes from verified clearing agents for this trade file, or view all your existing clearing quote requests."
+          : "Request quotes from verified clearing agents to compare fee, timeline, service scope, and rating before choosing who handles your clearing."}
       </p>
       <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">
         <Button onClick={onCreate}>
           <Send className="h-4 w-4 mr-1.5" /> Request Clearing Quotes
         </Button>
-        <Button variant="outline" onClick={onSeed}>Load demo data</Button>
+        {scoped && onClearFilter ? (
+          <Button variant="outline" onClick={onClearFilter}>View all quote requests</Button>
+        ) : (
+          <Button variant="outline" onClick={onSeed}>Reload demo data</Button>
+        )}
       </div>
       <p className="text-[11px] text-muted-foreground mt-3">Demo data shows a sample request, three agent bids, accept-bid confirmation, and the clearing workflow tracker.</p>
     </Card>
   );
 }
+
 
 function RequestDetail({
   request,
