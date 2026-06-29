@@ -61,8 +61,8 @@ function TradeNetworkPage() {
                 <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary grid place-items-center">
                   <t.icon className="h-5 w-5" />
                 </div>
-                {"count" in t && t.count !== undefined && (
-                  <Badge variant="secondary" className="text-[10px]">{t.count} listed</Badge>
+                {"count" in t && typeof (t as { count?: number }).count === "number" && (
+                  <Badge variant="secondary" className="text-[10px]">{(t as { count: number }).count} listed</Badge>
                 )}
               </div>
               <div className="mt-3 font-semibold">{t.label}</div>
