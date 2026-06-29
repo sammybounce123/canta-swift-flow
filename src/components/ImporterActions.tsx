@@ -14,6 +14,7 @@ import {
 import {
   MessageSquare, FilePlus, BadgeCheck, Lock, Calculator, Ship,
   Paperclip, LinkIcon, Truck, MessageCircle, Bookmark, Copy,
+  UserPlus, Mail, Send, Eye,
 } from "lucide-react";
 import { toast } from "sonner";
 import { openWhatsApp, buildWhatsAppUrl } from "@/lib/whatsapp";
