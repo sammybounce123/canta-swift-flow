@@ -77,7 +77,7 @@ function AIInsights() {
         {[
           { t: "EUR/NGN", desc: "Wait 24-48 hours", c: 72, dir: "wait", icon: TrendingDown },
           { t: "GBP/NGN", desc: "Hold position", c: 65, dir: "hold", icon: TrendingUp },
-          { t: "Oil receipts (USD)", desc: "Convert in tranches", c: 81, dir: "tranche", icon: TrendingUp },
+          { t: "USD receipts", desc: "Convert in tranches", c: 81, dir: "tranche", icon: TrendingUp },
         ].map((s) => (
           <Card key={s.t} className="p-5 shadow-card">
             <div className="flex items-center justify-between">
