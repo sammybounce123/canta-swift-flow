@@ -124,11 +124,11 @@ function WhatsAppCustomer() {
 
 
       <Tabs defaultValue="all" className="space-y-3">
-        <TabsList className="flex h-auto w-full flex-wrap items-stretch justify-start gap-2 rounded-none bg-transparent p-0">
-          <TabsTrigger className="border border-border bg-card px-3 py-2 whitespace-normal data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none" value="all">My WhatsApp Updates</TabsTrigger>
-          <TabsTrigger className="border border-border bg-card px-3 py-2 whitespace-normal data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none" value="ship">Shipment Conversations</TabsTrigger>
-          <TabsTrigger className="border border-border bg-card px-3 py-2 whitespace-normal data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none" value="trade">Trade File Conversations</TabsTrigger>
-          <TabsTrigger className="border border-border bg-card px-3 py-2 whitespace-normal data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none" value="docs">Missing Document Requests</TabsTrigger>
+        <TabsList>
+          <TabsTrigger value="all">My WhatsApp Updates</TabsTrigger>
+          <TabsTrigger value="ship">Shipment Conversations</TabsTrigger>
+          <TabsTrigger value="trade">Trade File Conversations</TabsTrigger>
+          <TabsTrigger value="docs">Missing Document Requests</TabsTrigger>
         </TabsList>
 
         {(["all", "ship", "trade", "docs"] as const).map((tab) => {
