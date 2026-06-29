@@ -34,6 +34,42 @@ const WORKSPACE_BY_MODE: Partial<Record<Mode, string>> = {
   "Partner Property": "partner_property",
 };
 
+function normalizeMode(value?: string | null): Mode | null {
+  switch ((value ?? "").trim()) {
+    case "Enterprise Treasury":
+    case "Enterprise Treasury Mode":
+    case "Enterprise":
+      return "Enterprise Treasury";
+    case "Importer":
+    case "Importer Mode":
+    case "Importer Trade Desk":
+    case "Importer Trade Desk Mode":
+      return "Importer";
+    case "Freight Forwarder":
+    case "Clearing Agent":
+    case "Clearing Agent Mode":
+      return "Freight Forwarder";
+    case "Supplier":
+    case "Supplier Mode":
+    case "Supplier Portal":
+    case "Supplier Portal Mode":
+    case "Chinese Supplier Portal":
+      return "Supplier";
+    case "Global Merchant":
+    case "Global Merchant Mode":
+      return "Global Merchant";
+    case "Partner Property":
+    case "Partner":
+    case "Partner Mode":
+      return "Partner Property";
+    case "Canta Ops":
+    case "Canta Ops Mode":
+      return "Canta Ops";
+    default:
+      return null;
+  }
+}
+
 function persistMode(mode: Mode) {
   const workspace = WORKSPACE_BY_MODE[mode];
   if (workspace) window.localStorage.setItem("canta:active_workspace", workspace);
@@ -55,8 +91,12 @@ export function ModeProvider({ children }: { children: ReactNode }) {
   const [mode, setModeState] = useState<Mode>("Enterprise Treasury");
   useEffect(() => {
     const sync = () => {
-      const saved = typeof window !== "undefined" ? (localStorage.getItem("canta:mode") as Mode | null) : null;
-      if (saved && ALL_MODES.find((m) => m.id === saved)) setModeState(saved);
+      const rawSaved = typeof window !== "undefined" ? localStorage.getItem("canta:mode") : null;
+      const saved = normalizeMode(rawSaved);
+      if (saved && ALL_MODES.find((m) => m.id === saved)) {
+        if (rawSaved !== saved) persistMode(saved);
+        setModeState(saved);
+      }
     };
     sync();
     window.addEventListener("canta:mode-change", sync);
