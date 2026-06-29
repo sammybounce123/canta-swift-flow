@@ -18,9 +18,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Canta — Trade & Treasury Operating System" },
-      { name: "description", content: "Canta helps importers, suppliers, enterprises, and partners manage trade files, supplier payments, FX, RMB settlement, documents, clearing quotes, and treasury workflows from one trusted workspace." },
+      { name: "description", content: "Canta helps importers, suppliers, enterprises, and partners manage trade files, supplier payments, FX, RMB settlement, documents, and treasury workflows from one trusted workspace." },
       { property: "og:title", content: "Canta — Trade & Treasury Operating System" },
-      { property: "og:description", content: "One trusted workspace for trade files, supplier payments, FX, RMB settlement, documents, clearing quotes, and treasury workflows." },
+      { property: "og:description", content: "One trusted workspace for trade files, supplier payments, FX, RMB settlement, documents, and treasury workflows." },
     ],
   }),
   component: Landing,
