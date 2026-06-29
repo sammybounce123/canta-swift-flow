@@ -27,7 +27,7 @@ const ActionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant={variant}
       size={size}
       className={cn(
-        "min-h-11 w-full min-w-0 justify-start whitespace-normal rounded-md px-3 py-2.5 text-left leading-snug hover:border-primary/40 focus-visible:ring-2 focus-visible:ring-ring [&_svg]:shrink-0 [&>span]:min-w-0 [&>span]:whitespace-normal [&>span]:break-words",
+        "min-h-11 w-full min-w-0 shrink-0 justify-start whitespace-normal break-words rounded-md px-3 py-2.5 text-left leading-snug hover:border-primary/40 hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring [&_svg]:shrink-0 [&>span]:min-w-0 [&>span]:whitespace-normal [&>span]:break-words",
         className,
       )}
       data-canta-action-button="true"
@@ -37,4 +37,19 @@ const ActionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 ActionButton.displayName = "ActionButton";
 
-export { ActionGroup, ActionButton };
+const ButtonGroup = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & { label?: string }
+>(({ className, label = "Button actions", ...props }, ref) => (
+  <div
+    ref={ref}
+    role="group"
+    aria-label={label}
+    data-canta-button-group="true"
+    className={cn("flex w-full min-w-0 flex-wrap items-center gap-2", className)}
+    {...props}
+  />
+));
+ButtonGroup.displayName = "ButtonGroup";
+
+export { ActionGroup, ActionButton, ButtonGroup };

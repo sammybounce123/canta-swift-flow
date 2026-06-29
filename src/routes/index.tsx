@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
       { title: "Canta — Trade & Treasury Operating System" },
       { name: "description", content: "Canta helps importers, suppliers, enterprises, and partners manage trade files, supplier payments, FX, RMB settlement, documents, and treasury workflows from one trusted workspace." },
       { property: "og:title", content: "Canta — Trade & Treasury Operating System" },
-      { property: "og:description", content: "One trusted workspace for trade files, supplier payments, FX, RMB settlement, documents, and treasury workflows." },
+      { property: "og:description", content: "Canta helps importers, suppliers, enterprises, and partners manage trade files, supplier payments, FX, RMB settlement, documents, and treasury workflows from one trusted workspace." },
     ],
   }),
   component: Landing,
@@ -92,7 +92,7 @@ function Landing() {
           </h1>
           <p className="mt-6 max-w-3xl mx-auto text-lg text-primary-foreground/80">
             Canta helps importers, suppliers, enterprises, and partners manage trade files,
-            supplier payments, RMB settlement, FX, documents, and payouts from one trusted workspace.
+            supplier payments, FX, RMB settlement, documents, and treasury workflows from one trusted workspace.
           </p>
           <div className="mt-10 flex flex-wrap gap-3 justify-center">
             <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold">
@@ -147,7 +147,7 @@ function Landing() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {([
-            { icon: Ship,      tag: "Importer Trade Desk",   desc: "Send your BL. Track your shipment. Organize goods and documents. Compare clearing agent bids inside each Trade File. Pay safely.", cta: "Enter Importer Trade Desk", to: "/importer",         mode: "Importer" as Mode,            tone: "bg-accent/15 text-accent" },
+            { icon: Ship,      tag: "Importer Trade Desk",   desc: "Send your BL, track shipments, organize documents, and pay suppliers safely. Compare clearing agent bids inside each Trade File.", cta: "Enter Importer Trade Desk", to: "/importer",         mode: "Importer" as Mode,            tone: "bg-accent/15 text-accent" },
             { icon: Factory,   tag: "Supplier Portal",       desc: "Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta. Suppliers can send payment requests, upload invoices, and track settlement receipts.", cta: "Enter Supplier Portal",     to: "/supplier-portal",  mode: "Supplier" as Mode,            tone: "bg-amber-500/15 text-amber-700" },
             { icon: Building2, tag: "Enterprise Treasury",   desc: "Multi-currency balances, FX, bulk payouts, approvals, beneficiaries, and treasury reports.",          cta: "Enter Treasury",              to: "/treasury",         mode: "Enterprise Treasury" as Mode, tone: "bg-primary/10 text-primary" },
             { icon: Home,      tag: "Partner Mode",          desc: "Property and company partners referring clients to Canta. Track referrals, payments and commission.",  cta: "Enter Partner Mode",          to: "/partner",          mode: "Partner Property" as Mode,    tone: "bg-primary/10 text-primary" },

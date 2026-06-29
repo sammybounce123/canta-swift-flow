@@ -220,13 +220,24 @@ const SEED_BIDS: ClearingBid[] = [
 ];
 
 const LS_SEED_VERSION = "canta:clearing:seedVersion";
-const SEED_VERSION = "4";
+const SEED_VERSION = "5";
+
+const SEED_REQUEST_IDS = new Set(SEED_REQUESTS.map((r) => r.id));
+const SEED_BID_IDS = new Set(SEED_BIDS.map((b) => b.id));
+
+function withDefaultDemoRequests(current: ClearingRequest[] = []) {
+  return [...SEED_REQUESTS, ...current.filter((r) => !SEED_REQUEST_IDS.has(r.id))];
+}
+
+function withDefaultDemoBids(current: ClearingBid[] = []) {
+  return [...SEED_BIDS, ...current.filter((b) => !SEED_BID_IDS.has(b.id))];
+}
 
 function ensureSeed() {
   if (typeof window === "undefined") return;
   if (window.localStorage.getItem(LS_SEED_VERSION) !== SEED_VERSION) {
-    write(LS_REQUESTS, SEED_REQUESTS);
-    write(LS_BIDS, SEED_BIDS);
+    write(LS_REQUESTS, withDefaultDemoRequests(read<ClearingRequest[]>(LS_REQUESTS, [])));
+    write(LS_BIDS, withDefaultDemoBids(read<ClearingBid[]>(LS_BIDS, [])));
     window.localStorage.setItem(LS_SEED_VERSION, SEED_VERSION);
   }
 }
@@ -234,13 +245,14 @@ function ensureSeed() {
 export function getRequests(): ClearingRequest[] {
   ensureSeed();
   const stored = read<ClearingRequest[] | null>(LS_REQUESTS, null);
-  if (stored && stored.length && stored.some((r) => r.id === "CQR-2031" && r.selectedBidId === "BID-7703")) return stored;
-  write(LS_REQUESTS, SEED_REQUESTS);
-  return SEED_REQUESTS;
+  const normalized = withDefaultDemoRequests(stored ?? []);
+  const demoReady = normalized[0]?.id === "CQR-2031" && normalized[0]?.selectedBidId === "BID-7703" && normalized[0]?.workflow.length >= 4;
+  if (!stored || !demoReady || stored[0]?.id !== "CQR-2031") write(LS_REQUESTS, normalized);
+  return normalized;
 }
 export function loadDemoData() {
-  write(LS_REQUESTS, SEED_REQUESTS);
-  write(LS_BIDS, SEED_BIDS);
+  write(LS_REQUESTS, withDefaultDemoRequests(read<ClearingRequest[]>(LS_REQUESTS, [])));
+  write(LS_BIDS, withDefaultDemoBids(read<ClearingBid[]>(LS_BIDS, [])));
   if (typeof window !== "undefined") window.localStorage.setItem(LS_SEED_VERSION, SEED_VERSION);
 }
 export function saveRequests(rs: ClearingRequest[]) {
@@ -249,9 +261,11 @@ export function saveRequests(rs: ClearingRequest[]) {
 export function getBids(): ClearingBid[] {
   ensureSeed();
   const stored = read<ClearingBid[] | null>(LS_BIDS, null);
-  if (stored && stored.length && stored.filter((b) => b.requestId === "CQR-2031").length >= 3) return stored;
-  write(LS_BIDS, SEED_BIDS);
-  return SEED_BIDS;
+  const normalized = withDefaultDemoBids(stored ?? []);
+  const demoBids = normalized.filter((b) => b.requestId === "CQR-2031");
+  const demoReady = demoBids.length >= 3 && demoBids.some((b) => b.id === "BID-7703" && b.status === "Accepted");
+  if (!stored || !demoReady || stored[0]?.requestId !== "CQR-2031") write(LS_BIDS, normalized);
+  return normalized;
 }
 export function saveBids(bs: ClearingBid[]) {
   write(LS_BIDS, bs);
@@ -365,4 +379,4 @@ export const SERVICE_SCOPES: ServiceScope[] = [
 ];
 
 export const CLEARING_DISCLAIMER =
-  "Canta connects importers with verified clearing agents. Clearing fees, timelines, duty estimates, and service delivery are provided by the clearing agent. Importers should review bids carefully before accepting.";
+  "Canta connects importers with verified clearing agents. Clearing fees, timelines, duty estimates, and service delivery are provided by the clearing agent.";
