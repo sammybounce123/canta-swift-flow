@@ -29,23 +29,27 @@ const TONES: Partial<Record<WorkspaceType, string>> = {
 const WHO_FOR: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "Multinationals, corporates, traders and large SMEs",
   importer_portal: "Importers buying from China, UAE, Turkey, India",
-  freight_workspace: "Verified clearing agents bidding for importer jobs",
+  supplier_dashboard: "Foreign suppliers invoicing Nigerian buyers in NGN, settling in RMB",
   partner_property: "Property partners like Baron & Cabot referring clients",
 };
 const DO_BULLETS: Partial<Record<WorkspaceType, string[]>> = {
   enterprise_treasury: ["FX & multi-currency balances", "Bulk payouts & approvals", "Beneficiaries & treasury reports"],
   importer_portal: ["Send BL & track shipments", "Organize goods & documents", "Compare clearing agents & pay"],
-  freight_workspace: ["See importer quote requests", "Submit & manage bids", "Run accepted clearing jobs"],
+  supplier_dashboard: ["Send payment requests to Nigerian buyers", "Upload invoices & documents", "Track RMB settlement after NGN payment"],
   partner_property: ["Refer property clients", "Track FX & solicitor payouts", "Download payout receipts"],
 };
 const CTA: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "Enter Treasury",
   importer_portal: "Enter Importer Trade Desk",
-  freight_workspace: "Enter Clearing Agent Portal",
+  supplier_dashboard: "Enter Supplier Portal",
   partner_property: "Enter Partner Mode",
 };
 
-const VISIBLE: WorkspaceType[] = ["importer_portal", "freight_workspace", "enterprise_treasury", "partner_property"];
+const VISIBLE: WorkspaceType[] = ["importer_portal", "supplier_dashboard", "enterprise_treasury", "partner_property"];
+
+const ROUTE_OVERRIDE: Partial<Record<WorkspaceType, string>> = {
+  supplier_dashboard: "/supplier-portal",
+};
 
 
 function WelcomePage() {
