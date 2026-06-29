@@ -38,7 +38,8 @@ function AIInsights() {
             <div className="mt-4 text-3xl font-semibold">Buy USD now</div>
             <p className="text-sm text-primary-foreground/70 mt-2 leading-relaxed">
               NGN expected to weaken ~1.2% over the next 48 hours driven by import demand
-              and import demand. Locking USD now optimises corporate cash positions.
+              and corporate FX flows. Locking USD now optimises corporate cash positions.
+
             </p>
             <div className="mt-5 flex items-center gap-3">
               <div>
