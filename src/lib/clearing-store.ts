@@ -174,7 +174,7 @@ const SEED_BIDS: ClearingBid[] = [
     terms: "50% upfront, 50% on release. Demurrage billed at cost.",
     notes: "Strong on Apapa. Can drop at Ikeja warehouse.",
     expiresAt: new Date(Date.now() + 72 * 3600_000).toISOString(),
-    status: "Submitted",
+    status: "Not Selected",
     portCoverage: "Apapa, Tin Can",
   },
   {
