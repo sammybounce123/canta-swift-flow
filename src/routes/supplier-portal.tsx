@@ -150,6 +150,7 @@ function SupplierPortal() {
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="messages">Messages</TabsTrigger>
           <TabsTrigger value="verification">Verification</TabsTrigger>
+          <TabsTrigger value="support">Support</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-4 space-y-4">
@@ -248,6 +249,17 @@ function SupplierPortal() {
                 Submit for review
               </Button>
             )}
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="support" className="mt-4">
+          <Card className="p-4 space-y-3 text-sm">
+            <div className="font-semibold">Supplier support</div>
+            <div className="text-muted-foreground">Get help with buyer payment requests, invoice documents, verification, and RMB settlement receipts.</div>
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" variant="outline">Open support ticket</Button>
+              <Button size="sm" variant="outline">Message Canta</Button>
+            </div>
           </Card>
         </TabsContent>
       </Tabs>

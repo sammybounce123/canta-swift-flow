@@ -30,7 +30,7 @@ const aiFeatures = [
   { icon: ScanLine, t: "Document extraction", d: "AI parses BLs, invoices and packing lists in seconds." },
   { icon: TrendingUp, t: "Trade file insights", d: "Spot which shipments, suppliers and payments need attention next." },
   { icon: Brain, t: "AI assistant", d: "Summarize trade conversations, draft replies, and track next steps." },
-  { icon: Receipt, t: "Landed cost estimates", d: "Forecast duty, freight, clearing and FX before the goods ship." },
+      { icon: Receipt, t: "Landed cost estimates", d: "Forecast duty, freight, agent quote inputs and FX before goods ship." },
   { icon: Languages, t: "WhatsApp onboarding", d: "Onboard importers conversationally — no app required." },
   { icon: ShieldCheck, t: "Clearing quote intelligence", d: "Compare bids from verified clearing agents side-by-side." },
 ];
@@ -88,11 +88,11 @@ function Landing() {
           </Badge>
           <h1 className="mt-6 text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05] max-w-5xl mx-auto">
             One trusted workspace for{" "}
-            <span className="text-accent">trade, treasury, and clearing</span>.
+            <span className="text-accent">trade, supplier settlement, and treasury</span>.
           </h1>
           <p className="mt-6 max-w-3xl mx-auto text-lg text-primary-foreground/80">
-            Canta helps importers, enterprises, clearing agents, and partners manage trade files,
-            FX, supplier payments, clearing quotes, documents, and payouts from one trusted workspace.
+            Canta helps importers, suppliers, enterprises, and partners manage trade files,
+            supplier payments, RMB settlement, FX, documents, and payouts from one trusted workspace.
           </p>
           <div className="mt-10 flex flex-wrap gap-3 justify-center">
             <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold">
@@ -110,10 +110,10 @@ function Landing() {
 
           <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto w-full">
             {[
-              { v: "1 platform", l: "Trade, treasury & clearing" },
+              { v: "1 platform", l: "Trade, settlement & treasury" },
               { v: "4", l: "Focused workspaces" },
-              { v: "<30s", l: "Cross-border settlement" },
-              { v: "24/7", l: "Trade & treasury support" },
+              { v: "NGN → RMB", l: "Supplier settlement flow" },
+              { v: "24/7", l: "Trade & settlement support" },
             ].map((s) => (
               <div key={s.l}>
                 <div className="text-2xl md:text-3xl font-semibold tabular-nums">{s.v}</div>
@@ -148,7 +148,7 @@ function Landing() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {([
             { icon: Ship,      tag: "Importer Trade Desk",   desc: "Send your BL. Track your shipment. Organize goods and documents. Compare clearing agent bids inside each Trade File. Pay safely.", cta: "Enter Importer Trade Desk", to: "/importer",         mode: "Importer" as Mode,            tone: "bg-accent/15 text-accent" },
-            { icon: Factory,   tag: "Supplier Portal",       desc: "Suppliers can send payment requests to Nigerian buyers, upload invoices, and track RMB settlement after NGN payment is received through Canta.", cta: "Enter Supplier Portal",     to: "/supplier-portal",  mode: "Supplier" as Mode,            tone: "bg-amber-500/15 text-amber-700" },
+            { icon: Factory,   tag: "Supplier Portal",       desc: "Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta. Suppliers can send payment requests, upload invoices, and track settlement receipts.", cta: "Enter Supplier Portal",     to: "/supplier-portal",  mode: "Supplier" as Mode,            tone: "bg-amber-500/15 text-amber-700" },
             { icon: Building2, tag: "Enterprise Treasury",   desc: "Multi-currency balances, FX, bulk payouts, approvals, beneficiaries, and treasury reports.",          cta: "Enter Treasury",              to: "/treasury",         mode: "Enterprise Treasury" as Mode, tone: "bg-primary/10 text-primary" },
             { icon: Home,      tag: "Partner Mode",          desc: "Property and company partners referring clients to Canta. Track referrals, payments and commission.",  cta: "Enter Partner Mode",          to: "/partner",          mode: "Partner Property" as Mode,    tone: "bg-primary/10 text-primary" },
           ] as const).map((c) => {
@@ -233,8 +233,8 @@ function Landing() {
         <div className="max-w-7xl mx-auto px-6 py-24">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <div className="text-xs uppercase tracking-widest text-accent-foreground/80 font-semibold">Who Canta serves</div>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mt-3">
-              Built for importers, clearing agents, enterprises, and partners.
+              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mt-3">
+              Built for importers, suppliers, enterprises, and partners.
             </h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -274,11 +274,11 @@ function Landing() {
           <div className="absolute -left-20 -bottom-20 h-72 w-72 rounded-full bg-primary-glow/30 blur-3xl" />
           <div className="relative max-w-3xl">
             <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">
-              One trusted workspace. Trade files. Treasury. Clearing.
+              One trusted workspace. Trade files. Supplier settlement. Treasury.
             </h2>
             <p className="text-primary-foreground/75 mt-4">
               Step into a Canta workspace and feel the platform — from trade files to FX,
-              from clearing quotes to payouts.
+              from supplier settlement to payouts.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold">

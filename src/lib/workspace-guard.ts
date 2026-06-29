@@ -29,10 +29,10 @@ const ACTIVE_WORKSPACE_KEY = "canta:active_workspace";
 const PROFILES: Record<WorkspaceType, { name: string; title: string; badge: string; workspaceLabel: string }> = {
   enterprise_treasury: { name: "Adaeze Okonkwo", title: "Treasury Admin",  badge: "Enterprise Treasury Mode", workspaceLabel: "Enterprise Treasury" },
   importer_portal:     { name: "Tunde Bakare",   title: "Importer Owner",  badge: "Importer Mode",            workspaceLabel: "Importer" },
-  freight_workspace:   { name: "Chinedu Okafor", title: "Clearing Agent",  badge: "Clearing Agent Portal Mode", workspaceLabel: "Clearing Agent" },
+  freight_workspace:   { name: "Chinedu Okafor", title: "Clearing Agent",  badge: "Invite-only Clearing Agent Mode", workspaceLabel: "Clearing Agent" },
   global_collections:  { name: "Amaka Bello",    title: "Merchant Owner",  badge: "Global Collections Mode",  workspaceLabel: "Global Merchant" },
   supplier_dashboard:  { name: "Li Wei",         title: "Supplier Admin",  badge: "Supplier Mode",            workspaceLabel: "Supplier" },
-  partner_property:    { name: "Sarah Adeyemi",  title: "Partner Admin",   badge: "Partner Property Mode",    workspaceLabel: "Partner Property" },
+  partner_property:    { name: "Charlotte Baron", title: "Partner Admin",   badge: "Partner Mode",             workspaceLabel: "Partner Mode" },
   global_spend_cards:  { name: "Adaeze Okonkwo", title: "Treasury Admin",  badge: "Enterprise Treasury Mode", workspaceLabel: "Enterprise Treasury" },
   canta_ops:           { name: "Adaeze Okonkwo", title: "Treasury Admin",  badge: "Enterprise Treasury Mode", workspaceLabel: "Enterprise Treasury" },
 };
@@ -64,11 +64,25 @@ export function saveActiveWorkspace(workspace: WorkspaceType) {
 export function getSavedCustomerWorkspace(): WorkspaceType | null {
   if (typeof window === "undefined") return null;
   const savedWorkspace = window.localStorage.getItem(ACTIVE_WORKSPACE_KEY) as WorkspaceType | null;
-  if (isCustomerWorkspace(savedWorkspace)) return savedWorkspace;
-
   const savedMode = window.localStorage.getItem("canta:mode") as Mode | null;
   const savedModeWorkspace = savedMode ? MODE_TO_WORKSPACE[savedMode] : null;
-  if (isCustomerWorkspace(savedModeWorkspace)) return savedModeWorkspace;
+
+  // Trust the explicit active mode and repair any stale workspace key so shared
+  // routes (/reports, /support, /whatsapp) do not leak another workspace's identity.
+  if (savedModeWorkspace && savedWorkspace !== savedModeWorkspace && isCustomerWorkspace(savedModeWorkspace)) {
+    window.localStorage.setItem(ACTIVE_WORKSPACE_KEY, savedModeWorkspace);
+    return savedModeWorkspace;
+  }
+
+  if (isCustomerWorkspace(savedWorkspace)) {
+    window.localStorage.setItem("canta:mode", WORKSPACE_TO_MODE[savedWorkspace]);
+    return savedWorkspace;
+  }
+
+  if (isCustomerWorkspace(savedModeWorkspace)) {
+    window.localStorage.setItem(ACTIVE_WORKSPACE_KEY, savedModeWorkspace);
+    return savedModeWorkspace;
+  }
 
   const profileWorkspace = loadProfile()?.workspace_type;
   if (isCustomerWorkspace(profileWorkspace)) return profileWorkspace;

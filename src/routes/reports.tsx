@@ -54,8 +54,8 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
   supplier_dashboard: [
     { id: "inv",       name: "Invoice report",         desc: "Issued, paid, overdue invoices to buyers" },
     { id: "buyer",     name: "Buyer report",           desc: "Repeat buyers, country mix, payment behavior" },
-    { id: "escrow",    name: "Escrow report",          desc: "Held, released, disputed escrow funds" },
-    { id: "settle",    name: "Settlement report",      desc: "Global settlement batches received" },
+    { id: "settle",    name: "RMB settlement report",  desc: "NGN received, rate locked, RMB processing, paid out, receipts" },
+    { id: "docs",      name: "Document report",        desc: "Invoices, packing lists, verification documents and settlement receipts" },
   ],
   partner_property: [
     { id: "cases",     name: "Client payment case",    desc: "Cases by status, value, marketer" },
@@ -76,11 +76,11 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
 
 const WORKSPACE_LABELS: Record<WorkspaceType, string> = {
   enterprise_treasury: "Enterprise Treasury",
-  importer_portal: "Importer Portal",
-  freight_workspace: "Freight Workspace",
+  importer_portal: "Importer Trade Desk",
+  freight_workspace: "Invite-only Clearing Agent",
   global_collections: "Global Collections / Merchant",
-  supplier_dashboard: "Supplier Dashboard",
-  partner_property: "Partner Property",
+  supplier_dashboard: "Supplier Portal",
+  partner_property: "Partner Mode",
   global_spend_cards: "Enterprise Treasury",
   canta_ops: "Canta Ops",
 };
@@ -88,10 +88,10 @@ const WORKSPACE_LABELS: Record<WorkspaceType, string> = {
 const REPORT_GROUP_LABELS: Record<WorkspaceType, string> = {
   enterprise_treasury: "Enterprise reports",
   importer_portal: "Importer reports",
-  freight_workspace: "Freight reports",
+    freight_workspace: "Clearing agent job reports",
   global_collections: "Collection reports",
   supplier_dashboard: "Supplier reports",
-  partner_property: "Partner reports",
+    partner_property: "Partner Mode reports",
   global_spend_cards: "Enterprise reports",
   canta_ops: "Importer reports",
 };
@@ -145,10 +145,10 @@ function ReportsPage() {
   const WS_IDENTITY: Record<WorkspaceType, { name: string; title: string; mode: string }> = {
     enterprise_treasury: { name: "Adaeze Okonkwo", title: "Treasury Admin",  mode: "Enterprise Treasury Mode" },
     importer_portal:     { name: "Tunde Bakare",   title: "Importer Owner",  mode: "Importer Mode" },
-    freight_workspace:   { name: "Chinedu Okafor", title: "Freight Owner",   mode: "Freight Workspace Mode" },
+    freight_workspace:   { name: "Chinedu Okafor", title: "Clearing Agent",  mode: "Invite-only Clearing Agent Mode" },
     global_collections:  { name: "Amaka Bello",    title: "Merchant Owner",  mode: "Global Collections Mode" },
     supplier_dashboard:  { name: "Li Wei",         title: "Supplier Admin",  mode: "Supplier Mode" },
-    partner_property:    { name: "Sarah Adeyemi",  title: "Partner Admin",   mode: "Partner Property Mode" },
+    partner_property:    { name: "Charlotte Baron", title: "Partner Admin",  mode: "Partner Mode" },
     global_spend_cards:  { name: "Adaeze Okonkwo", title: "Treasury Admin",  mode: "Enterprise Treasury Mode" },
     canta_ops:           { name: "Tunde Bakare",   title: "Importer Owner",  mode: "Importer Mode" },
   };

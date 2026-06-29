@@ -168,7 +168,7 @@ export function ImporterActions({
     { label: "Link Shipment",          icon: Ship,          onClick: () => setOpen("linkShipment"),  show: variant !== "supplier" },
     { label: "Link Documents",         icon: Paperclip,     onClick: () => setOpen("linkDocs"),      show: variant === "tradefile" },
     { label: "Share Tracking Link",    icon: LinkIcon,      onClick: () => setOpen("share"),         show: !!ctx.shipmentId || variant === "tradefile" },
-    { label: "Invite Freight Forwarder", icon: Truck,       onClick: () => setOpen("forwarder"),     show: variant !== "supplier" },
+    { label: "Invite Clearing Agent", icon: Truck,       onClick: () => setOpen("forwarder"),     show: variant !== "supplier" },
     { label: "Add Supplier",              icon: UserPlus,    onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Opening Supplier Portal — add a Chinese supplier"); }, show: true },
     { label: "Invite Supplier",           icon: Mail,        onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Invite supplier from the Supplier Portal"); }, show: true },
     { label: "Link Supplier Payment Request", icon: Send,    onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Send a payment request to a Chinese supplier"); }, show: variant === "tradefile" || variant === "toolbar" },
@@ -326,7 +326,7 @@ export function ImporterActions({
       {/* Forwarder */}
       <Dialog open={open === "forwarder"} onOpenChange={(o) => !o && setOpen(null)}>
         <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>Invite Freight Forwarder</DialogTitle><DialogDescription>Bring a forwarder onto this trade file. They'll get a Canta collaborator invite by email.</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>Invite Clearing Agent</DialogTitle><DialogDescription>Invite an approved clearing agent to a quote request or assigned clearing job.</DialogDescription></DialogHeader>
           <div className="grid gap-3">
             <div><Label className="text-xs">Company / contact name</Label><Input value={forwarder.name} onChange={(e) => setForwarder({ ...forwarder, name: e.target.value })} /></div>
             <div><Label className="text-xs">Email</Label><Input type="email" value={forwarder.email} onChange={(e) => setForwarder({ ...forwarder, email: e.target.value })} placeholder="ops@dragonfreight.com" /></div>

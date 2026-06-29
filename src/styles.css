@@ -176,6 +176,51 @@
   .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
 }
 
+@layer components {
+  [data-canta-tabs-list="true"],
+  [role="tablist"] {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem !important;
+    height: auto !important;
+    min-width: 0;
+  }
+
+  [data-canta-tabs-trigger="true"],
+  [role="tab"] {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    white-space: normal !important;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  [data-canta-action-group="true"] {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    gap: 0.5rem !important;
+    width: 100%;
+    min-width: 0;
+  }
+
+  [data-canta-action-button="true"] {
+    display: inline-flex !important;
+    width: 100%;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    white-space: normal !important;
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+}
+
 @keyframes flash-up {
   0% { background-color: oklch(0.72 0.17 160 / 0.3); }
   100% { background-color: transparent; }

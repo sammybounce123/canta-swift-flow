@@ -107,6 +107,20 @@ function TradeFileDetail() {
             </Button>
           </div>
         </div>
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-3 text-xs">
+          <Field label="Supplier name" value={file.supplier} />
+          <Field label="Invoice amount" value={fmtMoney(file.invoiceValue, file.ccy)} />
+          <Field label="NGN equivalent" value={`₦${Math.round(file.invoiceValue * 1612).toLocaleString()}`} />
+          <Field label="Payment status" value="Awaiting NGN Payment" />
+          <Field label="RMB settlement" value="RMB Processing" />
+          <Field label="Verification" value="Supplier verified" />
+        </div>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-background/70 p-3">
+          <div className="text-xs text-muted-foreground">
+            Documents uploaded: Supplier invoice, packing list, proforma invoice · Status path: Invoice Received → Awaiting NGN Payment → NGN Paid → RMB Processing → RMB Paid to Supplier → Receipt Available
+          </div>
+          <Button size="sm" onClick={() => toast.success("Supplier payment initiated for NGN collection")}>Pay Supplier</Button>
+        </div>
       </Card>
 
       <Tabs defaultValue="overview" className="space-y-5">

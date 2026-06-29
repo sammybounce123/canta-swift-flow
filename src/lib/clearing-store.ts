@@ -110,7 +110,7 @@ function write<T>(key: string, value: T) {
 const SEED_REQUESTS: ClearingRequest[] = [
   {
     id: "CQR-2031",
-    tradeFileId: "TR-2031",
+    tradeFileId: "TF-2026-0214",
     blNumber: "MAEU-447120",
     containerNumber: "MSKU-9912034",
     portOfArrival: "Apapa, Lagos",
@@ -137,7 +137,7 @@ const SEED_REQUESTS: ClearingRequest[] = [
   },
   {
     id: "CQR-2030",
-    tradeFileId: "TR-2030",
+    tradeFileId: "TF-2026-0218",
     blNumber: "CMAU-228814",
     portOfArrival: "Tin Can, Lagos",
     goodsCategory: "Industrial Machinery",
@@ -220,7 +220,7 @@ const SEED_BIDS: ClearingBid[] = [
 ];
 
 const LS_SEED_VERSION = "canta:clearing:seedVersion";
-const SEED_VERSION = "2";
+const SEED_VERSION = "3";
 
 function ensureSeed() {
   if (typeof window === "undefined") return;

@@ -14,7 +14,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
     h: "Workspaces",
     body: [
       "Users pick a workspace on first sign-in. The sidebar, dashboard and default landing route are driven by the selected profile.",
-      "Available profiles in this focused demo: Importer Trade Desk (/importer), Clearing Agent Portal (/freight), Enterprise Treasury (/treasury), and Partner Mode (/partner). The generic /dashboard route auto-redirects to the selected workspace's landing page.",
+      "Available profiles in this focused demo: Importer Trade Desk (/importer), Supplier Portal (/supplier-portal), Enterprise Treasury (/treasury), and Partner Mode (/partner). Clearing agents access hidden invite-only quote and job links from Importer Trade Files.",
       "Switch workspace any time from the workspace switcher in the top bar.",
     ],
   },
@@ -61,12 +61,12 @@ const SECTIONS: { h: string; body: string[] }[] = [
   {
     h: "Freight Workspace",
     body: [
-      "Lands at /freight. Clearing Agent Portal with quote requests, bids, accepted jobs, customer messages, and goods-in-transit insurance panel.",
+      "Invite-only clearing job workspace for approved agents. Quote requests, bids, accepted jobs, documents, and messages are accessed from hidden invite or assignment links.",
       "Freight actions: add importer customer, create shipment, update shipment status, assign shipment to staff (assignee, role, due date, note, status), create a customer tracking link, send single or bulk WhatsApp updates from 10+ templates (container loaded, vessel sailed, arrived at port, clearing started, cleared customs, out for delivery, delivered, delay notice, missing document reminder, payment reminder), create freight invoices and mark Paid / Unpaid / Overdue, download invoices, and offer goods-in-transit insurance.",
     ],
   },
   {
-    h: "Supplier / Exporter Workspace",
+    h: "Supplier Portal",
     body: [
       "For foreign and global suppliers/exporters selling to African buyers — especially suppliers in China, UAE, Turkey, India, Europe and other trade corridors. Lands at /suppliers.",
       "Sidebar: Supplier Dashboard, Verified Buyers, Buyers, Invoices, Escrow, Settlements, Documents, Reports, Support, Settings.",
@@ -167,7 +167,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
   {
     h: "Embedded insurance hooks",
     body: [
-      "Optional placeholders ready to wire to AXA Mansard, Leadway, Old Mutual or AIICO. Surfaces on Importer Trade Files (cargo / goods-in-transit), Clearing Agent Portal jobs (goods-in-transit / freight liability), and Partner Property cases (property payment protection).",
+      "Optional placeholders ready to wire to AXA Mansard, Leadway, Old Mutual or AIICO. Surfaces on Importer Trade Files, invite-only clearing jobs, and Partner Mode cases.",
       "Each hook stores customer, linked entity, insured amount, risk type, partner, quote status and policy status.",
     ],
   },

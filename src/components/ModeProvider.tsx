@@ -14,7 +14,6 @@ export const ALL_MODES: { id: Mode; tag: string; desc: string }[] = [
   { id: "Supplier", tag: "SP", desc: "NGN buyer payment, RMB settlement" },
   { id: "Enterprise Treasury", tag: "ET", desc: "FX, balances, payouts, approvals" },
   { id: "Partner Property", tag: "PP", desc: "Property partner client referrals" },
-  { id: "Freight Forwarder", tag: "CA", desc: "Clearing agent (invite-only)" },
 ];
 
 /** Display label override — "Freight Forwarder" mode id renders as "Clearing Agent". */
@@ -22,11 +21,24 @@ export const MODE_DISPLAY_LABEL: Record<Mode, string> = {
   "Enterprise Treasury": "Enterprise Treasury",
   "Importer": "Importer Trade Desk",
   "Freight Forwarder": "Clearing Agent",
-  "Supplier": "Supplier",
+  "Supplier": "Supplier Portal",
   "Global Merchant": "Global Merchant",
   "Partner Property": "Partner",
   "Canta Ops": "Canta Ops",
 };
+
+const WORKSPACE_BY_MODE: Partial<Record<Mode, string>> = {
+  "Enterprise Treasury": "enterprise_treasury",
+  Importer: "importer_portal",
+  Supplier: "supplier_dashboard",
+  "Partner Property": "partner_property",
+};
+
+function persistMode(mode: Mode) {
+  const workspace = WORKSPACE_BY_MODE[mode];
+  if (workspace) window.localStorage.setItem("canta:active_workspace", workspace);
+  window.localStorage.setItem("canta:mode", mode);
+}
 
 
 type Ctx = { mode: Mode; setMode: (m: Mode) => void };
@@ -35,7 +47,7 @@ const ModeCtx = createContext<Ctx | null>(null);
 /** Imperatively set the active workspace mode from anywhere (homepage CTAs, etc.). */
 export function setActiveMode(mode: Mode) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem("canta:mode", mode);
+  persistMode(mode);
   window.dispatchEvent(new Event("canta:mode-change"));
 }
 
@@ -55,7 +67,7 @@ export function ModeProvider({ children }: { children: ReactNode }) {
   const setMode = (m: Mode) => {
     setModeState(m);
     if (typeof window !== "undefined") {
-      localStorage.setItem("canta:mode", m);
+      persistMode(m);
       window.dispatchEvent(new Event("canta:mode-change"));
     }
   };

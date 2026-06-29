@@ -533,7 +533,7 @@ function RequestForm({
         </DialogHeader>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Field label="Trade file"><Input value={f.tradeFileId} onChange={(e) => setF({ ...f, tradeFileId: e.target.value })} placeholder="TR-2031" /></Field>
+          <Field label="Trade file"><Input value={f.tradeFileId} onChange={(e) => setF({ ...f, tradeFileId: e.target.value })} placeholder="TF-2026-0214" /></Field>
           <Field label="Port of arrival *"><Input value={f.portOfArrival} onChange={(e) => setF({ ...f, portOfArrival: e.target.value })} /></Field>
           <Field label="BL number"><Input value={f.blNumber} onChange={(e) => setF({ ...f, blNumber: e.target.value })} /></Field>
           <Field label="Container number"><Input value={f.containerNumber} onChange={(e) => setF({ ...f, containerNumber: e.target.value })} /></Field>
