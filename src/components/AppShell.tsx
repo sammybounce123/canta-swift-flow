@@ -309,19 +309,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Menu className="h-5 w-5" />
             </button>
 
-            <ModeSwitcher displayMode={displayMode} />
+            {activeWorkspace !== "freight_workspace" && <ModeSwitcher displayMode={displayMode} />}
 
 
             <div className="hidden lg:flex items-center gap-2 flex-1 max-w-md ml-2">
               <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <input className="w-full pl-9 pr-3 py-2 text-sm bg-secondary/60 border border-transparent focus:border-ring focus:outline-none rounded-lg" placeholder="Search shipments, suppliers, trade files…" />
+                <input className="w-full pl-9 pr-3 py-2 text-sm bg-secondary/60 border border-transparent focus:border-ring focus:outline-none rounded-lg" placeholder={activeWorkspace === "freight_workspace" ? "Search quote requests, jobs, importers…" : "Search shipments, suppliers, trade files…"} />
               </div>
             </div>
 
             <div className="ml-auto flex items-center gap-2 sm:gap-3">
-              <FxTicker />
+              {activeWorkspace !== "freight_workspace" && <FxTicker />}
               <button className="relative h-9 w-9 grid place-items-center rounded-lg hover:bg-secondary flex-shrink-0">
+
                 <Bell className="h-4 w-4" />
                 <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive" />
               </button>
