@@ -27,14 +27,15 @@ function TradeNetworkPage() {
     { to: "/documents", label: "Trade Documents", desc: "BLs, packing lists, certificates of origin.", icon: FileText },
   ];
 
-  const tiles = isSupplier ? supplierTiles : importerTiles;
+  const importerTiles = [
+    { to: "/my-suppliers", label: "My Suppliers", desc: "Your private supplier list and trade history.", icon: Factory },
     { to: "/trade-desk", label: "Trade Files & Quotes", desc: "Quote requests, POs and supplier invoices.", icon: FileText },
     { to: "/verification-center", label: "Supplier Verification", desc: "Ask Canta to verify any supplier you trade with.", icon: ShieldCheck },
     { to: "/payments", label: "Supplier Payments", desc: "Pay suppliers via FX, escrow or stablecoin.", icon: Banknote },
     { to: "/shipments", label: "Shipments", desc: "Track containers, ETAs and arrival readiness.", icon: Globe },
   ];
 
-  const tiles = isSupplier ? supplierTiles : isImporter ? importerTiles : [...importerTiles, ...supplierTiles];
+  const tiles = isSupplier ? supplierTiles : isImporter ? importerTiles : importerTiles;
 
   return (
     <div className="space-y-6">
