@@ -6,7 +6,7 @@ import { setActiveMode, type Mode } from "@/components/ModeProvider";
 import {
   ArrowRight, Zap, Shield, Sparkles, TrendingUp, CheckCircle2,
   Building2, Lock, Quote, Ship, Brain, FileText,
-  MessageCircle, Truck, Briefcase, Home,
+  MessageCircle, Factory, Briefcase, Home,
   ShieldCheck, ScanLine, Receipt, Languages,
 } from "lucide-react";
 
@@ -18,9 +18,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Canta — Trade & Treasury Operating System" },
-      { name: "description", content: "Canta helps importers, enterprises, clearing agents, and partners manage trade files, FX, supplier payments, clearing quotes, documents, and payouts from one trusted workspace." },
+      { name: "description", content: "Canta helps importers, suppliers, enterprises, and partners manage trade files, supplier payments, FX, RMB settlement, documents, clearing quotes, and treasury workflows from one trusted workspace." },
       { property: "og:title", content: "Canta — Trade & Treasury Operating System" },
-      { property: "og:description", content: "One trusted workspace for trade files, FX, supplier payments, clearing quotes, documents, and payouts." },
+      { property: "og:description", content: "One trusted workspace for trade files, supplier payments, FX, RMB settlement, documents, clearing quotes, and treasury workflows." },
     ],
   }),
   component: Landing,
@@ -46,7 +46,7 @@ const trust = [
 
 const segments = [
   { icon: Briefcase, t: "Importers" },
-  { icon: Truck, t: "Clearing Agents" },
+  { icon: Factory, t: "Suppliers" },
   { icon: Building2, t: "Enterprises" },
   { icon: Home, t: "Partners" },
 ];
@@ -128,7 +128,7 @@ function Landing() {
       <section className="border-y border-border bg-secondary/30">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
           <div className="text-xs uppercase tracking-widest text-muted-foreground mr-4">Built for</div>
-          {["Importers", "Clearing Agents", "Enterprises", "Partners"].map((n) => (
+          {["Importers", "Suppliers", "Enterprises", "Partners"].map((n) => (
             <div key={n} className="text-sm font-semibold text-muted-foreground/80 tracking-tight">{n}</div>
           ))}
         </div>
@@ -147,10 +147,10 @@ function Landing() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {([
-            { icon: Ship,      tag: "Importer Trade Desk",   desc: "Send your BL. Track your shipment. Organize goods and documents. Compare clearing agents. Pay safely.", cta: "Enter Importer Trade Desk", to: "/importer",  mode: "Importer" as Mode,            tone: "bg-accent/15 text-accent" },
-            { icon: Truck,     tag: "Clearing Agent Portal", desc: "Verified clearing agents: see importer quote requests, submit bids, and run accepted jobs.",          cta: "Enter Clearing Agent Portal", to: "/freight",   mode: "Freight Forwarder" as Mode,   tone: "bg-warning/15 text-warning" },
-            { icon: Building2, tag: "Enterprise Treasury",   desc: "Multi-currency balances, FX, bulk payouts, approvals, beneficiaries, and treasury reports.",          cta: "Enter Treasury",              to: "/treasury",  mode: "Enterprise Treasury" as Mode, tone: "bg-primary/10 text-primary" },
-            { icon: Home,      tag: "Partner Mode",          desc: "Property and company partners referring clients to Canta. Track referrals, payments and commission.",  cta: "Enter Partner Mode",          to: "/partner",   mode: "Partner Property" as Mode,    tone: "bg-primary/10 text-primary" },
+            { icon: Ship,      tag: "Importer Trade Desk",   desc: "Send your BL. Track your shipment. Organize goods and documents. Compare clearing agent bids inside each Trade File. Pay safely.", cta: "Enter Importer Trade Desk", to: "/importer",         mode: "Importer" as Mode,            tone: "bg-accent/15 text-accent" },
+            { icon: Factory,   tag: "Supplier Portal",       desc: "Suppliers can send payment requests to Nigerian buyers, upload invoices, and track RMB settlement after NGN payment is received through Canta.", cta: "Enter Supplier Portal",     to: "/supplier-portal",  mode: "Supplier" as Mode,            tone: "bg-amber-500/15 text-amber-700" },
+            { icon: Building2, tag: "Enterprise Treasury",   desc: "Multi-currency balances, FX, bulk payouts, approvals, beneficiaries, and treasury reports.",          cta: "Enter Treasury",              to: "/treasury",         mode: "Enterprise Treasury" as Mode, tone: "bg-primary/10 text-primary" },
+            { icon: Home,      tag: "Partner Mode",          desc: "Property and company partners referring clients to Canta. Track referrals, payments and commission.",  cta: "Enter Partner Mode",          to: "/partner",          mode: "Partner Property" as Mode,    tone: "bg-primary/10 text-primary" },
           ] as const).map((c) => {
             const Icon = c.icon;
             return (

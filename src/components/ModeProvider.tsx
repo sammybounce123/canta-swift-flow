@@ -11,9 +11,10 @@ export type Mode =
 
 export const ALL_MODES: { id: Mode; tag: string; desc: string }[] = [
   { id: "Importer", tag: "IM", desc: "BL, shipments, clearing, landed cost" },
-  { id: "Freight Forwarder", tag: "CA", desc: "Clearing Agent Portal" },
+  { id: "Supplier", tag: "SP", desc: "NGN buyer payment, RMB settlement" },
   { id: "Enterprise Treasury", tag: "ET", desc: "FX, balances, payouts, approvals" },
   { id: "Partner Property", tag: "PP", desc: "Property partner client referrals" },
+  { id: "Freight Forwarder", tag: "CA", desc: "Clearing agent (invite-only)" },
 ];
 
 /** Display label override — "Freight Forwarder" mode id renders as "Clearing Agent". */
