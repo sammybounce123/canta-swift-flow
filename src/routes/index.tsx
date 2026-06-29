@@ -46,7 +46,7 @@ const trust = [
 
 const segments = [
   { icon: Briefcase, t: "Importers" },
-  { icon: Truck, t: "Clearing Agents" },
+  { icon: Factory, t: "Suppliers" },
   { icon: Building2, t: "Enterprises" },
   { icon: Home, t: "Partners" },
 ];
