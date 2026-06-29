@@ -67,8 +67,16 @@ export function getSavedCustomerWorkspace(): WorkspaceType | null {
   const savedMode = window.localStorage.getItem("canta:mode") as Mode | null;
   const savedModeWorkspace = savedMode ? MODE_TO_WORKSPACE[savedMode] : null;
 
-  // Trust the explicit active mode and repair any stale workspace key so shared
-  // routes (/reports, /support, /whatsapp) do not leak another workspace's identity.
+  // Repair mismatches between the active workspace key and legacy mode key.
+  // Prefer the non-Enterprise value when one side is stale so shared routes do
+  // not leak Enterprise identity after a user has selected Importer/Supplier/Partner.
+  if (isCustomerWorkspace(savedWorkspace) && isCustomerWorkspace(savedModeWorkspace) && savedWorkspace !== savedModeWorkspace) {
+    const repaired = savedWorkspace === "enterprise_treasury" ? savedModeWorkspace : savedWorkspace;
+    window.localStorage.setItem(ACTIVE_WORKSPACE_KEY, repaired);
+    window.localStorage.setItem("canta:mode", WORKSPACE_TO_MODE[repaired]);
+    return repaired;
+  }
+
   if (savedModeWorkspace && savedWorkspace !== savedModeWorkspace && isCustomerWorkspace(savedModeWorkspace)) {
     window.localStorage.setItem(ACTIVE_WORKSPACE_KEY, savedModeWorkspace);
     return savedModeWorkspace;
