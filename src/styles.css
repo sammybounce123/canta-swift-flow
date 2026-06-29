@@ -207,7 +207,7 @@
   [data-canta-action-group="true"],
   [data-canta-button-group="true"] {
     display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)) !important;
     gap: 0.5rem !important;
     width: 100%;
     min-width: 0;
@@ -230,6 +230,12 @@
     white-space: normal !important;
     text-align: left;
     overflow-wrap: anywhere;
+  }
+
+  :is(.flex, .inline-flex):has(> [data-canta-button="true"]),
+  :is(.flex, .inline-flex):has(> a[data-canta-button="true"]) {
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 }
 
