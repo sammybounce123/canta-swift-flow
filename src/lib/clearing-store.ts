@@ -214,7 +214,7 @@ const SEED_BIDS: ClearingBid[] = [
     terms: "30% upfront, milestones at PAAR, release, and delivery.",
     notes: "Premium service, top rated. Includes inspection support.",
     expiresAt: new Date(Date.now() + 96 * 3600_000).toISOString(),
-    status: "Submitted",
+    status: "Accepted",
     portCoverage: "Apapa, Tin Can, Onne, Port Harcourt",
   },
 ];
