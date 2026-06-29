@@ -88,7 +88,7 @@ export const SEGMENTS: Segment[] = [
     primaryUseCase: "Foreign suppliers selling into Africa — invoice African buyers, escrow, global settlement",
     defaultRole: "Supplier Owner",
     defaultPermissions: ["view dashboard", "create buyer record", "create invoice", "view settlement status"],
-    route: "/suppliers",
+    route: "/supplier-portal",
     welcome: "For foreign and global suppliers/exporters selling to African buyers. Invoice buyers, confirm funds via escrow, and receive global settlement.",
     tagline: "Foreign suppliers & exporters in China, UAE, Turkey, India, Europe and other corridors selling to African buyers",
   },
