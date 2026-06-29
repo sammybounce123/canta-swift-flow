@@ -139,6 +139,17 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
   const userProfile = loadProfile();
   const pathWorkspace = workspaceFromPath(pathname);
   const workspace = pathWorkspace ?? getSavedCustomerWorkspace() ?? MODE_TO_WORKSPACE[mode] ?? userProfile?.workspace_type ?? "enterprise_treasury";
+  // Persist the active workspace whenever the user lands on any workspace-scoped
+  // route (direct URL visit, refresh, or link click). Without this, shared
+  // routes like /reports, /support and /whatsapp silently fall back to
+  // Enterprise Treasury when the user never clicked a sidebar link.
+  useEffect(() => {
+    if (pathWorkspace) {
+      saveActiveWorkspace(pathWorkspace);
+      const nextMode = WORKSPACE_TO_MODE[pathWorkspace];
+      if (nextMode && nextMode !== mode) setMode(nextMode);
+    }
+  }, [pathWorkspace, mode, setMode]);
   const flags = userProfile?.feature_flags ?? defaultFlagsFor(workspace);
   const items: SidebarItem[] = getSidebarForWorkspace(workspace, flags);
   const groups: string[] = Array.from(new Set(items.map((n) => n.group)));
