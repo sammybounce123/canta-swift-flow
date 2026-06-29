@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { useMode, type Mode } from "@/components/ModeProvider";
 import { loadProfile, type WorkspaceType } from "@/lib/profile";
@@ -115,9 +115,29 @@ export function useActiveWorkspace() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const modeWorkspace = MODE_TO_WORKSPACE[mode];
   const pathWorkspace = workspaceFromPath(pathname);
+
+  const resolveWorkspace = () =>
+    pathWorkspace ??
+    getSavedCustomerWorkspace() ??
+    (isCustomerWorkspace(modeWorkspace) ? modeWorkspace : "enterprise_treasury");
+
+  const [workspace, setWorkspace] = useState<WorkspaceType>(resolveWorkspace);
+
   useEffect(() => {
     if (pathWorkspace) saveActiveWorkspace(pathWorkspace);
-  }, [pathWorkspace]);
-  const ws = pathWorkspace ?? getSavedCustomerWorkspace() ?? (isCustomerWorkspace(modeWorkspace) ? modeWorkspace : "enterprise_treasury");
-  return { workspace: ws, ...PROFILES[ws] };
+    setWorkspace(resolveWorkspace());
+  }, [pathWorkspace, mode]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const syncWorkspace = () => setWorkspace(resolveWorkspace());
+    window.addEventListener("canta:mode-change", syncWorkspace);
+    window.addEventListener("storage", syncWorkspace);
+    return () => {
+      window.removeEventListener("canta:mode-change", syncWorkspace);
+      window.removeEventListener("storage", syncWorkspace);
+    };
+  }, [pathWorkspace, mode]);
+
+  return { workspace, ...PROFILES[workspace] };
 }

@@ -40,9 +40,9 @@ export const Route = createFileRoute("/clearing-quotes")({
 function ClearingQuotesPage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
-  const [requests, setRequests] = useState<ClearingRequest[]>([]);
+  const [requests, setRequests] = useState<ClearingRequest[]>(() => getRequests());
   const [formOpen, setFormOpen] = useState(false);
-  const [activeReqId, setActiveReqId] = useState<string | null>(search.request ?? null);
+  const [activeReqId, setActiveReqId] = useState<string | null>(() => search.request ?? getRequests()[0]?.id ?? null);
   const [acceptBidState, setAcceptBidState] = useState<{ requestId: string; bid: ClearingBid } | null>(null);
   const [tick, setTick] = useState(0);
 
@@ -99,7 +99,7 @@ function ClearingQuotesPage() {
         <EmptyRequests
           scopedToFile={search.file}
           onCreate={() => setFormOpen(true)}
-          onSeed={() => { loadDemoData(); setTick((t) => t + 1); toast.success("Demo data loaded"); }}
+          onSeed={() => { loadDemoData(); const seeded = getRequests(); setRequests(seeded); setActiveReqId(seeded[0]?.id ?? null); setTick((t) => t + 1); toast.success("Demo data loaded"); }}
           onClearFilter={() => navigate({ to: "/clearing-quotes" })}
         />
 

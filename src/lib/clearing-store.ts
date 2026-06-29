@@ -220,7 +220,7 @@ const SEED_BIDS: ClearingBid[] = [
 ];
 
 const LS_SEED_VERSION = "canta:clearing:seedVersion";
-const SEED_VERSION = "4";
+const SEED_VERSION = "5";
 
 function ensureSeed() {
   if (typeof window === "undefined") return;
@@ -365,4 +365,4 @@ export const SERVICE_SCOPES: ServiceScope[] = [
 ];
 
 export const CLEARING_DISCLAIMER =
-  "Canta connects importers with verified clearing agents. Clearing fees, timelines, duty estimates, and service delivery are provided by the clearing agent. Importers should review bids carefully before accepting.";
+  "Canta connects importers with verified clearing agents. Clearing fees, timelines, duty estimates, and service delivery are provided by the clearing agent.";
