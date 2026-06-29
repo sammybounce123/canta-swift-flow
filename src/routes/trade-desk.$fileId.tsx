@@ -528,22 +528,41 @@ function LandedCost({ value }: { value: number }) {
 }
 
 function ClearingQuotesTab({ fileId }: { fileId: string }) {
+  const actions: { label: string; icon: typeof Shield; description: string }[] = [
+    { label: "Request Clearing Quotes",   icon: Send,         description: "Send a new quote request to verified clearing agents." },
+    { label: "Compare Clearing Agent Bids", icon: Calculator, description: "Review fee, timeline, scope, and rating side by side." },
+    { label: "Select Clearing Agent",     icon: CheckCircle2, description: "Accept a bid and assign clearing to the chosen agent." },
+    { label: "Track Clearing Workflow",   icon: Activity,     description: "Monitor documents, clearing, cleared, and delivery stages." },
+  ];
   return (
     <Card className="p-6 shadow-card">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <div className="text-sm font-semibold flex items-center gap-2"><Shield className="h-4 w-4 text-primary" /> Clearing Agent Marketplace</div>
           <p className="text-xs text-muted-foreground mt-1 max-w-xl">
-            Get quotes from verified clearing agents and compare fee, timeline, service scope, and rating before choosing who handles your clearing.
+            Clearing for this trade file is handled inside the marketplace. Use the actions below to request, compare, select, and track.
           </p>
         </div>
-        <Link
-          to="/clearing-quotes"
-          search={{ file: fileId, request: undefined }}
-          className="inline-flex items-center gap-1.5 rounded-md bg-primary text-primary-foreground px-3 py-2 text-sm font-medium hover:bg-primary/90"
-        >
-          Request Clearing Quotes
-        </Link>
+      </div>
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {actions.map((a) => (
+          <Button
+            key={a.label}
+            asChild
+            variant="outline"
+            className="h-auto min-h-16 justify-start whitespace-normal break-words text-left px-4 py-3"
+          >
+            <Link to="/clearing-quotes" search={{ file: fileId, request: undefined }}>
+              <span className="flex items-start gap-3 w-full">
+                <a.icon className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                <span className="flex flex-col gap-0.5 min-w-0">
+                  <span className="text-sm font-semibold leading-tight">{a.label}</span>
+                  <span className="text-[11px] text-muted-foreground leading-snug">{a.description}</span>
+                </span>
+              </span>
+            </Link>
+          </Button>
+        ))}
       </div>
       <div className="mt-4 rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-muted-foreground">
         Canta connects importers with verified clearing agents. Clearing fees, timelines, duty estimates, and service delivery are provided by the clearing agent. Importers should review bids carefully before accepting.
