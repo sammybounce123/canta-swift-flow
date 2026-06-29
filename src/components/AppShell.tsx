@@ -113,8 +113,9 @@ function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceT
   if (pathname.startsWith("/collections") || pathname.startsWith("/payment-links") ||
       pathname.startsWith("/payers") || pathname.startsWith("/reconciliation") ||
       pathname.startsWith("/merchant")) return "global_collections";
+  if (pathname.startsWith("/supplier-portal")) return "supplier_dashboard";
   if (pathname.startsWith("/importer") || pathname.startsWith("/trade-desk") ||
-      pathname.startsWith("/my-suppliers") || pathname.startsWith("/verified-suppliers") ||
+      pathname.startsWith("/my-suppliers") ||
       pathname.startsWith("/landed-cost") || pathname.startsWith("/clearing-quotes")) return "importer_portal";
 
   if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
