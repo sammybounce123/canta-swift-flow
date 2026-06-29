@@ -362,6 +362,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         </DropdownMenuItem>
                       ))}
                     </>
+                  ) : activeWorkspace === "freight_workspace" ? (
+                    <>
+                      <DropdownMenuLabel className="flex items-center gap-2"><UserCog className="h-3.5 w-3.5" /> Clearing Agent</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <div className="px-2 py-1.5 text-xs text-muted-foreground">{wsProfile.name} · {wsProfile.title}</div>
+                    </>
                   ) : (
                     <>
                       <DropdownMenuLabel className="flex items-center gap-2"><UserCog className="h-3.5 w-3.5" /> Switch role (demo)</DropdownMenuLabel>
@@ -374,6 +380,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       ))}
                     </>
                   )}
+
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => toast.success("Signed out")}>Sign out</DropdownMenuItem>
                 </DropdownMenuContent>
