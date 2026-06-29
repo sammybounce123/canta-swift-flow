@@ -121,12 +121,37 @@ const SEED_REQUESTS: ClearingRequest[] = [
     packages: "240 cartons",
     weight: "3,200 kg",
     cbm: "32",
-    serviceRequired: "Clearing + delivery",
+    serviceRequired: "Full logistics support",
     preferredTimeline: "Within 7 days of arrival",
     notes: "Need PAAR support and warehouse drop in Ikeja.",
     documents: ["Supplier invoice", "Packing list", "Bill of lading", "Form M"],
-    status: "Bids Received",
+    status: "In Workflow",
     createdAt: new Date(Date.now() - 36 * 3600_000).toISOString(),
+    selectedBidId: "BID-7703",
+    workflow: [
+      { status: "Agent Selected", at: new Date(Date.now() - 30 * 3600_000).toISOString(), actor: "Importer", note: "Importer accepted Harbour Trust Logistics bid and authorised clearing." },
+      { status: "Documents Requested", at: new Date(Date.now() - 28 * 3600_000).toISOString(), actor: "Agent", note: "Form M, PAAR, SONCAP, and insurance certificate requested." },
+      { status: "Documents Submitted", at: new Date(Date.now() - 24 * 3600_000).toISOString(), actor: "Importer" },
+      { status: "Clearing Started", at: new Date(Date.now() - 18 * 3600_000).toISOString(), actor: "Agent", note: "Filing lodged at Apapa command." },
+    ],
+  },
+  {
+    id: "CQR-2030",
+    tradeFileId: "TR-2030",
+    blNumber: "CMAU-228814",
+    portOfArrival: "Tin Can, Lagos",
+    goodsCategory: "Industrial Machinery",
+    goodsDescription: "1 x 40HC packaging line + spares",
+    invoiceValue: 92500,
+    currency: "USD",
+    packages: "1 x 40HC",
+    weight: "11,400 kg",
+    cbm: "58",
+    serviceRequired: "Clearing only",
+    preferredTimeline: "Standard",
+    documents: ["Supplier invoice", "Packing list", "Bill of lading"],
+    status: "Bids Received",
+    createdAt: new Date(Date.now() - 10 * 3600_000).toISOString(),
     workflow: [],
   },
 ];
@@ -149,7 +174,7 @@ const SEED_BIDS: ClearingBid[] = [
     terms: "50% upfront, 50% on release. Demurrage billed at cost.",
     notes: "Strong on Apapa. Can drop at Ikeja warehouse.",
     expiresAt: new Date(Date.now() + 72 * 3600_000).toISOString(),
-    status: "Submitted",
+    status: "Not Selected",
     portCoverage: "Apapa, Tin Can",
   },
   {
@@ -169,7 +194,7 @@ const SEED_BIDS: ClearingBid[] = [
     terms: "Full payment on PAAR issuance.",
     notes: "Lowest fee. Delivery not included.",
     expiresAt: new Date(Date.now() + 48 * 3600_000).toISOString(),
-    status: "Submitted",
+    status: "Not Selected",
     portCoverage: "Apapa, Tin Can, Onne",
   },
   {
@@ -189,12 +214,25 @@ const SEED_BIDS: ClearingBid[] = [
     terms: "30% upfront, milestones at PAAR, release, and delivery.",
     notes: "Premium service, top rated. Includes inspection support.",
     expiresAt: new Date(Date.now() + 96 * 3600_000).toISOString(),
-    status: "Submitted",
+    status: "Accepted",
     portCoverage: "Apapa, Tin Can, Onne, Port Harcourt",
   },
 ];
 
+const LS_SEED_VERSION = "canta:clearing:seedVersion";
+const SEED_VERSION = "2";
+
+function ensureSeed() {
+  if (typeof window === "undefined") return;
+  if (window.localStorage.getItem(LS_SEED_VERSION) !== SEED_VERSION) {
+    write(LS_REQUESTS, SEED_REQUESTS);
+    write(LS_BIDS, SEED_BIDS);
+    window.localStorage.setItem(LS_SEED_VERSION, SEED_VERSION);
+  }
+}
+
 export function getRequests(): ClearingRequest[] {
+  ensureSeed();
   const stored = read<ClearingRequest[] | null>(LS_REQUESTS, null);
   if (stored && stored.length) return stored;
   write(LS_REQUESTS, SEED_REQUESTS);
@@ -203,11 +241,13 @@ export function getRequests(): ClearingRequest[] {
 export function loadDemoData() {
   write(LS_REQUESTS, SEED_REQUESTS);
   write(LS_BIDS, SEED_BIDS);
+  if (typeof window !== "undefined") window.localStorage.setItem(LS_SEED_VERSION, SEED_VERSION);
 }
 export function saveRequests(rs: ClearingRequest[]) {
   write(LS_REQUESTS, rs);
 }
 export function getBids(): ClearingBid[] {
+  ensureSeed();
   const stored = read<ClearingBid[] | null>(LS_BIDS, null);
   if (stored && stored.length) return stored;
   write(LS_BIDS, SEED_BIDS);
