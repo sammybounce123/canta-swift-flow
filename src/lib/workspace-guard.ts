@@ -26,6 +26,57 @@ const WORKSPACE_TO_MODE: Record<WorkspaceType, Mode> = {
 
 const ACTIVE_WORKSPACE_KEY = "canta:active_workspace";
 
+const VALID_CUSTOMER_WORKSPACES = new Set<WorkspaceType>([
+  "enterprise_treasury",
+  "importer_portal",
+  "freight_workspace",
+  "supplier_dashboard",
+  "global_collections",
+  "partner_property",
+]);
+
+function normalizeMode(value?: string | null): Mode | null {
+  switch ((value ?? "").trim()) {
+    case "Enterprise Treasury":
+    case "Enterprise Treasury Mode":
+    case "Enterprise":
+      return "Enterprise Treasury";
+    case "Importer":
+    case "Importer Mode":
+    case "Importer Trade Desk":
+    case "Importer Trade Desk Mode":
+      return "Importer";
+    case "Freight Forwarder":
+    case "Clearing Agent":
+    case "Clearing Agent Mode":
+      return "Freight Forwarder";
+    case "Supplier":
+    case "Supplier Mode":
+    case "Supplier Portal":
+    case "Supplier Portal Mode":
+    case "Chinese Supplier Portal":
+      return "Supplier";
+    case "Global Merchant":
+    case "Global Merchant Mode":
+      return "Global Merchant";
+    case "Partner Property":
+    case "Partner":
+    case "Partner Mode":
+      return "Partner Property";
+    case "Canta Ops":
+    case "Canta Ops Mode":
+      return "Canta Ops";
+    default:
+      return null;
+  }
+}
+
+function normalizeWorkspace(value?: string | null): WorkspaceType | null {
+  if (VALID_CUSTOMER_WORKSPACES.has(value as WorkspaceType)) return value as WorkspaceType;
+  const mode = normalizeMode(value);
+  return mode ? MODE_TO_WORKSPACE[mode] : null;
+}
+
 const PROFILES: Record<WorkspaceType, { name: string; title: string; badge: string; workspaceLabel: string }> = {
   enterprise_treasury: { name: "Adaeze Okonkwo", title: "Treasury Admin",  badge: "Enterprise Treasury Mode", workspaceLabel: "Enterprise Treasury" },
   importer_portal:     { name: "Tunde Bakare",   title: "Importer Owner",  badge: "Importer Mode",            workspaceLabel: "Importer" },
@@ -51,7 +102,7 @@ function workspaceFromPath(pathname: string): WorkspaceType | null {
 
 
 function isCustomerWorkspace(workspace?: WorkspaceType | null): workspace is WorkspaceType {
-  return Boolean(workspace && workspace !== "canta_ops" && workspace !== "global_spend_cards");
+  return VALID_CUSTOMER_WORKSPACES.has(workspace as WorkspaceType);
 }
 
 export function saveActiveWorkspace(workspace: WorkspaceType) {
@@ -63,9 +114,18 @@ export function saveActiveWorkspace(workspace: WorkspaceType) {
 
 export function getSavedCustomerWorkspace(): WorkspaceType | null {
   if (typeof window === "undefined") return null;
-  const savedWorkspace = window.localStorage.getItem(ACTIVE_WORKSPACE_KEY) as WorkspaceType | null;
-  const savedMode = window.localStorage.getItem("canta:mode") as Mode | null;
+  const rawWorkspace = window.localStorage.getItem(ACTIVE_WORKSPACE_KEY);
+  const rawMode = window.localStorage.getItem("canta:mode");
+  const savedWorkspace = normalizeWorkspace(rawWorkspace);
+  const savedMode = normalizeMode(rawMode);
   const savedModeWorkspace = savedMode ? MODE_TO_WORKSPACE[savedMode] : null;
+
+  if (savedMode && rawMode !== savedMode) {
+    window.localStorage.setItem("canta:mode", savedMode);
+  }
+  if (savedWorkspace && rawWorkspace !== savedWorkspace) {
+    window.localStorage.setItem(ACTIVE_WORKSPACE_KEY, savedWorkspace);
+  }
 
   // Repair mismatches between the active workspace key and legacy mode key.
   // Prefer the non-Enterprise value when one side is stale so shared routes do
