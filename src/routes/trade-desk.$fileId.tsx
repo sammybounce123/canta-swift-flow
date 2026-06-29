@@ -9,7 +9,7 @@ import { tradeFiles, shipmentMilestones, fmtMoney } from "@/lib/mock";
 import {
   ArrowLeft, FileText, FileCheck2, Calculator, Activity, Clock, CheckCircle2,
   AlertTriangle, Upload, Ship, MapPin, Building2, Factory, Truck, Calendar, Sparkles,
-  Shield, MessageCircle,
+  Shield, MessageCircle, Send,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
