@@ -6,7 +6,7 @@ import { setActiveMode, type Mode } from "@/components/ModeProvider";
 import {
   ArrowRight, Zap, Shield, Sparkles, TrendingUp, CheckCircle2,
   Building2, Lock, Quote, Ship, Brain, FileText,
-  MessageCircle, Truck, Briefcase, Home,
+  MessageCircle, Factory, Briefcase, Home,
   ShieldCheck, ScanLine, Receipt, Languages,
 } from "lucide-react";
 
