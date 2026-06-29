@@ -194,7 +194,7 @@ const SEED_BIDS: ClearingBid[] = [
     terms: "Full payment on PAAR issuance.",
     notes: "Lowest fee. Delivery not included.",
     expiresAt: new Date(Date.now() + 48 * 3600_000).toISOString(),
-    status: "Submitted",
+    status: "Not Selected",
     portCoverage: "Apapa, Tin Can, Onne",
   },
   {
