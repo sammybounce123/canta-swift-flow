@@ -104,7 +104,7 @@ function SupplierPortal() {
           <Badge variant="outline" className="gap-1"><Factory className="h-3 w-3" /> Supplier Portal · Invite-only access</Badge>
           <h1 className="text-2xl font-semibold tracking-tight mt-2">Welcome, Guangzhou Tech Factory</h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            Receive payment requests from Nigerian buyers. Buyers pay locally in NGN through Canta; you receive RMB settlement through approved payout rails.
+            Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

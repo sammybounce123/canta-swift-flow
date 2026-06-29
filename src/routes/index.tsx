@@ -32,7 +32,7 @@ const aiFeatures = [
   { icon: Brain, t: "AI assistant", d: "Summarize trade conversations, draft replies, and track next steps." },
       { icon: Receipt, t: "Landed cost estimates", d: "Forecast duty, freight, agent quote inputs and FX before goods ship." },
   { icon: Languages, t: "WhatsApp onboarding", d: "Onboard importers conversationally — no app required." },
-  { icon: ShieldCheck, t: "Clearing quote intelligence", d: "Compare bids from verified clearing agents side-by-side." },
+  { icon: ShieldCheck, t: "Supplier settlement intelligence", d: "Track NGN buyer payments, RMB settlement status, documents, and receipts." },
 ];
 
 const trust = [
@@ -258,7 +258,7 @@ function Landing() {
         <div className="rounded-3xl border border-border p-10 md:p-14 bg-card">
           <Quote className="h-8 w-8 text-accent" />
           <p className="mt-5 text-2xl md:text-3xl font-medium tracking-tight leading-snug max-w-4xl">
-            "Canta replaced our FX broker, freight tracker and supplier WhatsApp chaos with one
+            "Canta replaced our FX broker, trade file tracker and supplier WhatsApp chaos with one
             workspace. Our trade cycle dropped from weeks to days."
           </p>
           <div className="mt-6 text-sm text-muted-foreground">

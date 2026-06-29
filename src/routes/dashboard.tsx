@@ -29,7 +29,7 @@ export const Route = createFileRoute("/dashboard")({
         enterprise_treasury: "/treasury",
         importer_portal: "/importer",
         freight_workspace: "/freight",
-        supplier_dashboard: "/suppliers",
+        supplier_dashboard: "/supplier-portal",
         global_collections: "/collections",
         global_spend_cards: "/welcome",
         partner_property: "/partner",
