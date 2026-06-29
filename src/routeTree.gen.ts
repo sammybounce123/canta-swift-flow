@@ -23,6 +23,7 @@ import { Route as TradeDeskRouteImport } from './routes/trade-desk'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as SuppliersRouteImport } from './routes/suppliers'
+import { Route as SupplierPortalRouteImport } from './routes/supplier-portal'
 import { Route as ShipmentsRouteImport } from './routes/shipments'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReportsRouteImport } from './routes/reports'
@@ -160,6 +161,11 @@ const SupportRoute = SupportRouteImport.update({
 const SuppliersRoute = SuppliersRouteImport.update({
   id: '/suppliers',
   path: '/suppliers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupplierPortalRoute = SupplierPortalRouteImport.update({
+  id: '/supplier-portal',
+  path: '/supplier-portal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShipmentsRoute = ShipmentsRouteImport.update({
@@ -540,6 +546,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
+  '/supplier-portal': typeof SupplierPortalRoute
   '/suppliers': typeof SuppliersRouteWithChildren
   '/support': typeof SupportRoute
   '/team': typeof TeamRoute
@@ -623,6 +630,7 @@ export interface FileRoutesByTo {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
+  '/supplier-portal': typeof SupplierPortalRoute
   '/suppliers': typeof SuppliersRouteWithChildren
   '/support': typeof SupportRoute
   '/team': typeof TeamRoute
@@ -706,6 +714,7 @@ export interface FileRoutesById {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
+  '/supplier-portal': typeof SupplierPortalRoute
   '/suppliers': typeof SuppliersRouteWithChildren
   '/support': typeof SupportRoute
   '/team': typeof TeamRoute
@@ -792,6 +801,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/shipments'
+    | '/supplier-portal'
     | '/suppliers'
     | '/support'
     | '/team'
@@ -875,6 +885,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/shipments'
+    | '/supplier-portal'
     | '/suppliers'
     | '/support'
     | '/team'
@@ -957,6 +968,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/shipments'
+    | '/supplier-portal'
     | '/suppliers'
     | '/support'
     | '/team'
@@ -1042,6 +1054,7 @@ export interface RootRouteChildren {
   ReportsRoute: typeof ReportsRoute
   SettingsRoute: typeof SettingsRoute
   ShipmentsRoute: typeof ShipmentsRoute
+  SupplierPortalRoute: typeof SupplierPortalRoute
   SuppliersRoute: typeof SuppliersRouteWithChildren
   SupportRoute: typeof SupportRoute
   TeamRoute: typeof TeamRoute
@@ -1162,6 +1175,13 @@ declare module '@tanstack/react-router' {
       path: '/suppliers'
       fullPath: '/suppliers'
       preLoaderRoute: typeof SuppliersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/supplier-portal': {
+      id: '/supplier-portal'
+      path: '/supplier-portal'
+      fullPath: '/supplier-portal'
+      preLoaderRoute: typeof SupplierPortalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shipments': {
@@ -1810,6 +1830,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReportsRoute: ReportsRoute,
   SettingsRoute: SettingsRoute,
   ShipmentsRoute: ShipmentsRoute,
+  SupplierPortalRoute: SupplierPortalRoute,
   SuppliersRoute: SuppliersRouteWithChildren,
   SupportRoute: SupportRoute,
   TeamRoute: TeamRoute,

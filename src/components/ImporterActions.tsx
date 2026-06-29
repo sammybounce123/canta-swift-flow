@@ -14,6 +14,7 @@ import {
 import {
   MessageSquare, FilePlus, BadgeCheck, Lock, Calculator, Ship,
   Paperclip, LinkIcon, Truck, MessageCircle, Bookmark, Copy,
+  UserPlus, Mail, Send, Eye,
 } from "lucide-react";
 import { toast } from "sonner";
 import { openWhatsApp, buildWhatsAppUrl } from "@/lib/whatsapp";
@@ -168,7 +169,11 @@ export function ImporterActions({
     { label: "Link Documents",         icon: Paperclip,     onClick: () => setOpen("linkDocs"),      show: variant === "tradefile" },
     { label: "Share Tracking Link",    icon: LinkIcon,      onClick: () => setOpen("share"),         show: !!ctx.shipmentId || variant === "tradefile" },
     { label: "Invite Freight Forwarder", icon: Truck,       onClick: () => setOpen("forwarder"),     show: variant !== "supplier" },
-    { label: "Send WhatsApp Update",   icon: MessageCircle, onClick: () => setOpen("whatsapp"),      show: true },
+    { label: "Add Supplier",              icon: UserPlus,    onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Opening Supplier Portal — add a Chinese supplier"); }, show: true },
+    { label: "Invite Supplier",           icon: Mail,        onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Invite supplier from the Supplier Portal"); }, show: true },
+    { label: "Link Supplier Payment Request", icon: Send,    onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Send a payment request to a Chinese supplier"); }, show: variant === "tradefile" || variant === "toolbar" },
+    { label: "View Supplier Payment Status", icon: Eye,      onClick: () => { navigate({ to: "/supplier-portal" }); }, show: true },
+    { label: "Send WhatsApp Update",      icon: MessageCircle, onClick: () => setOpen("whatsapp"),    show: true },
   ];
 
   return (

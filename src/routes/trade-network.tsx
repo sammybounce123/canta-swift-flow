@@ -28,7 +28,6 @@ function TradeNetworkPage() {
   ];
 
   const importerTiles = [
-    { to: "/verified-suppliers", label: "Verified Suppliers", desc: "Screened suppliers across China, Turkey, UAE, India.", icon: ShieldCheck, count: SUPPLIERS.length },
     { to: "/my-suppliers", label: "My Suppliers", desc: "Your private supplier list and trade history.", icon: Factory },
     { to: "/trade-desk", label: "Trade Files & Quotes", desc: "Quote requests, POs and supplier invoices.", icon: FileText },
     { to: "/verification-center", label: "Supplier Verification", desc: "Ask Canta to verify any supplier you trade with.", icon: ShieldCheck },
@@ -36,7 +35,7 @@ function TradeNetworkPage() {
     { to: "/shipments", label: "Shipments", desc: "Track containers, ETAs and arrival readiness.", icon: Globe },
   ];
 
-  const tiles = isSupplier ? supplierTiles : isImporter ? importerTiles : [...importerTiles, ...supplierTiles];
+  const tiles = isSupplier ? supplierTiles : isImporter ? importerTiles : importerTiles;
 
   return (
     <div className="space-y-6">
@@ -62,8 +61,8 @@ function TradeNetworkPage() {
                 <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary grid place-items-center">
                   <t.icon className="h-5 w-5" />
                 </div>
-                {"count" in t && t.count !== undefined && (
-                  <Badge variant="secondary" className="text-[10px]">{t.count} listed</Badge>
+                {"count" in t && typeof (t as { count?: number }).count === "number" && (
+                  <Badge variant="secondary" className="text-[10px]">{(t as { count: number }).count} listed</Badge>
                 )}
               </div>
               <div className="mt-3 font-semibold">{t.label}</div>
