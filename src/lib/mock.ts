@@ -51,11 +51,12 @@ export const beneficiaries = [
 ];
 
 export const team = [
-  { name: "Adaeze Okafor", email: "adaeze@ndexploration.ng", role: "Admin", status: "Active" },
-  { name: "Kunle Adebayo", email: "kunle@ndexploration.ng", role: "Treasury", status: "Active" },
-  { name: "Fatima Musa", email: "fatima@ndexploration.ng", role: "Finance", status: "Active" },
-  { name: "Chinedu Eze", email: "chinedu@ndexploration.ng", role: "Compliance", status: "Pending" },
-  { name: "Tomiwa Lawal", email: "tomiwa@ndexploration.ng", role: "Viewer", status: "Active" },
+  { name: "Adaeze Okafor", email: "adaeze@lagostrade.ng", role: "Admin", status: "Active" },
+  { name: "Kunle Adebayo", email: "kunle@lagostrade.ng", role: "Treasury", status: "Active" },
+  { name: "Fatima Musa", email: "fatima@lagostrade.ng", role: "Finance", status: "Active" },
+  { name: "Chinedu Eze", email: "chinedu@lagostrade.ng", role: "Compliance", status: "Pending" },
+  { name: "Tomiwa Lawal", email: "tomiwa@lagostrade.ng", role: "Viewer", status: "Active" },
+
 ];
 
 export const fxHistory = [
