@@ -95,7 +95,7 @@ function SupplierPortal() {
   return (
     <div className="space-y-6">
       <ReadinessBar
-        status={verified ? "Verified Supplier" : "Verification Pending"}
+        status="Demo Preview"
         cue="Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta."
       />
 
