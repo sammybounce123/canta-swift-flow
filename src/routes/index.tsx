@@ -128,7 +128,7 @@ function Landing() {
       <section className="border-y border-border bg-secondary/30">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
           <div className="text-xs uppercase tracking-widest text-muted-foreground mr-4">Built for</div>
-          {["Importers", "Clearing Agents", "Enterprises", "Partners"].map((n) => (
+          {["Importers", "Suppliers", "Enterprises", "Partners"].map((n) => (
             <div key={n} className="text-sm font-semibold text-muted-foreground/80 tracking-tight">{n}</div>
           ))}
         </div>
