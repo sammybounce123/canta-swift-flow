@@ -203,7 +203,7 @@ function SupplierPortal() {
       </div>
 
       <section className="space-y-4">
-        <div role="tablist" aria-label="Supplier Portal sections" className="flex w-full min-w-0 flex-wrap items-center justify-start gap-2 rounded-lg border border-border bg-muted/60 p-2 text-muted-foreground">
+        <div role="tablist" aria-label="Supplier Portal sections" className="flex w-full min-w-0 flex-wrap items-stretch justify-start gap-3">
           {SUPPLIER_TABS.map((item) => {
             const active = tab === item.value;
             return (
@@ -213,7 +213,7 @@ function SupplierPortal() {
                 role="tab"
                 aria-selected={active}
                 data-state={active ? "active" : "inactive"}
-                className={`inline-flex min-h-10 max-w-full flex-none shrink-0 items-center justify-center whitespace-normal break-words rounded-md border px-3 py-2 text-center text-sm font-medium leading-snug transition-all hover:border-primary/50 hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${active ? "border-primary bg-primary text-primary-foreground shadow-sm" : "border-border bg-background/80"}`}
+                className={`inline-flex min-h-11 max-w-full flex-none shrink-0 items-center justify-center whitespace-normal break-words rounded-lg border-2 px-4 py-2.5 text-center text-sm font-semibold leading-snug shadow-sm transition-all hover:border-primary/60 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${active ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"}`}
                 onClick={() => selectTab(item.value)}
               >
                 {item.label}
