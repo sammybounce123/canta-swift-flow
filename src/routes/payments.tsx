@@ -15,7 +15,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Receipt, Plus, Search, Filter, Download, ArrowRight, CheckCircle2,
-  Clock, AlertCircle, Building2, Truck, FileText, Wallet, Link as LinkIcon,
+  Clock, AlertCircle, Building2, Truck, FileText, Wallet,
 } from "lucide-react";
 import { fmtMoney } from "@/lib/mock";
 import { toast } from "sonner";
