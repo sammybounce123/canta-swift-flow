@@ -113,16 +113,21 @@ const BUYERS: Buyer[] = [
 ];
 
 const TIMELINE_STEPS = [
-  "Payment Request Sent",
+  "Payment Request Created",
+  "FX Quote Generated",
+  "NGN Payment Details Sent",
   "Buyer Viewed",
-  "NGN Awaiting Payment",
+  "Awaiting NGN Payment",
   "NGN Received",
-  "Rate Locked",
   "Compliance Review",
-  "RMB Settlement Processing",
-  "RMB Paid Out",
+  "FX Processing",
+  "RMB/USD Payout Initiated",
+  "Supplier Paid",
   "Settlement Receipt Available",
 ];
+
+const COMPLIANCE_DISCLAIMER =
+  "FX quotes, settlement amounts, and payout timelines are subject to payment confirmation, compliance review, FX availability, partner rails, and applicable regulations.";
 
 // --- Component ---------------------------------------------------------------
 
