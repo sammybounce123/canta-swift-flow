@@ -44,7 +44,7 @@ const TabsTrigger = React.forwardRef<
     ref={ref}
     data-canta-tabs-trigger="true"
     className={cn(
-      "!inline-flex min-h-10 max-w-full flex-none shrink-0 select-none items-center justify-center gap-1.5 whitespace-normal break-words rounded-md border border-border bg-background/80 px-3 py-2 text-center text-sm font-medium leading-snug ring-offset-background transition-all hover:border-primary/40 hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm",
+      "!inline-flex min-h-10 max-w-full flex-none shrink-0 select-none items-center justify-center gap-1.5 whitespace-normal break-words rounded-md border border-border bg-background/80 px-3 py-2 text-center text-sm font-medium leading-snug ring-offset-background transition-all hover:border-primary/50 hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm",
       className,
     )}
     {...props}

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ActionButton, ActionGroup } from "@/components/ui/action-group";
+import { ActionButton, ActionGroup, ButtonGroup } from "@/components/ui/action-group";
 import {
   MessageCircle, Send, Upload, Bell, FileText, Ship, DollarSign,
   LifeBuoy, Paperclip, Plus, FilePlus2, Link2,
@@ -98,14 +98,14 @@ function WhatsAppCustomer() {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <ButtonGroup label="WhatsApp header actions" className="w-auto justify-start sm:justify-end">
           <Button size="sm" variant="outline" onClick={() => openWhatsApp("general")}>
             <MessageCircle className="h-4 w-4 mr-1.5" /> Message Canta
           </Button>
           <Button size="sm" onClick={() => toast.success("Opening new conversation…")}>
             <Plus className="h-4 w-4 mr-1.5" /> New conversation
           </Button>
-        </div>
+        </ButtonGroup>
       </div>
 
       {/* Quick customer-facing actions */}
