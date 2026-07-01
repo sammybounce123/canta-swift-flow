@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 export type StartHereAction = {
   label: string;
   to?: string;
+  search?: Record<string, unknown>;
   href?: string;
   onClick?: () => void;
   icon?: ReactNode;
@@ -33,7 +34,7 @@ export function StartHereCard({
       asChild={!!(primary.to || primary.href)}
     >
       {primary.to ? (
-        <Link to={primary.to} className="inline-flex items-center gap-2">
+        <Link to={primary.to} search={(primary.search ?? undefined) as never} className="inline-flex items-center gap-2">
           <Sparkles className="h-4 w-4 shrink-0" />
           <span>{primary.label}</span>
           <ArrowRight className="h-4 w-4 shrink-0" />
@@ -70,7 +71,7 @@ export function StartHereCard({
           {secondary.map((s, i) => (
             <Button key={i} size="sm" variant="outline" onClick={s.onClick} asChild={!!(s.to || s.href)}>
               {s.to ? (
-                <Link to={s.to}>{s.icon}{s.icon && " "}{s.label}</Link>
+                <Link to={s.to} search={(s.search ?? undefined) as never}>{s.icon}{s.icon && " "}{s.label}</Link>
               ) : s.href ? (
                 <a href={s.href} target="_blank" rel="noopener noreferrer">{s.icon}{s.icon && " "}{s.label}</a>
               ) : (

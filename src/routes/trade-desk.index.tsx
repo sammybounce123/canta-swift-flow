@@ -19,6 +19,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/trade-desk/")({
   head: () => ({ meta: [{ title: "Trade Desk — Canta" }] }),
+  validateSearch: (s: Record<string, unknown>) => ({ new: s.new === "1" || s.new === true || s.new === "true" }),
   component: TradeDeskList,
 });
 
@@ -34,12 +35,20 @@ function readDraftTradeFiles(): typeof tradeFiles {
 }
 
 function TradeDeskList() {
+  const search = Route.useSearch();
+  const navigate = useNavigate();
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<(typeof STATUS_FILTERS)[number]>("All");
   const [draftOpen, setDraftOpen] = useState(false);
   const [drafts, setDrafts] = useState<typeof tradeFiles>([]);
 
   useEffect(() => { setDrafts(readDraftTradeFiles()); }, [draftOpen]);
+  useEffect(() => {
+    if (search.new) {
+      setDraftOpen(true);
+      navigate({ to: "/trade-desk", search: {} as never, replace: true });
+    }
+  }, [search.new, navigate]);
 
   const allFiles = useMemo(() => [...drafts, ...tradeFiles], [drafts]);
 

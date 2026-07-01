@@ -130,7 +130,7 @@ function CaseDetail() {
 
       {tab === "Documents" && <DocumentsTab caseId={c.id} docs={c.documents} actor={actor} />}
 
-      {tab === "FX Quote" && <FxQuoteTab caseId={c.id} quote={activeQuote} quotes={c.quotes} amount={c.amountGBP} actor={actor} />}
+      {tab === "FX Quote" && <FxQuoteTab caseId={c.id} quote={activeQuote} quotes={c.quotes} amount={c.amountGBP} actor={actor} paymentLink={c.paymentLink} clientName={c.clientName} clientEmail={c.clientEmail} />}
 
       {tab === "Payment Link" && <PaymentLinkTab c={c} actor={actor} />}
 
@@ -248,7 +248,7 @@ function DocumentsTab({ caseId, docs, actor }: any) {
   );
 }
 
-function FxQuoteTab({ caseId, quote, quotes, amount, actor }: { caseId: string; quote?: FxQuote; quotes: FxQuote[]; amount: number; actor: any }) {
+function FxQuoteTab({ caseId, quote, quotes, amount, actor, paymentLink, clientName, clientEmail }: { caseId: string; quote?: FxQuote; quotes: FxQuote[]; amount: number; actor: any; paymentLink?: any; clientName?: string; clientEmail?: string }) {
   const [validity, setValidity] = useState<FxQuote["validity"]>("1h");
   const [amountInput, setAmountInput] = useState(String(amount));
   const [rateInput, setRateInput] = useState("2050");
@@ -263,7 +263,13 @@ function FxQuoteTab({ caseId, quote, quotes, amount, actor }: { caseId: string; 
     if (!gbp) { toast.error("Enter GBP amount"); return; }
     if (!rate) { toast.error("Enter FX rate"); return; }
     const q = generateQuote(caseId, validity, actor, { amountGBP: gbp, rate });
-    if (q) toast.success(`FX quote ${q.reference} generated — now create the payment link`);
+    if (q) {
+      // Auto-generate the client payment link alongside the FX quote so partners have
+      // a single artefact to send to their client.
+      const link = generatePaymentLink(caseId, actor);
+      if (link) toast.success(`FX quote ${q.reference} + payment link ready to send`);
+      else toast.success(`FX quote ${q.reference} generated`);
+    }
   };
 
   return (
@@ -331,14 +337,38 @@ function FxQuoteTab({ caseId, quote, quotes, amount, actor }: { caseId: string; 
             <Row label="Expires" value={new Date(quote.expiresAt).toLocaleString()} />
           </dl>
           <div className="flex flex-wrap gap-2 pt-2 border-t">
+            <Button size="sm" variant="outline" disabled={expired || !paymentLink} onClick={() => {
+              if (!paymentLink || typeof window === "undefined") return;
+              const full = window.location.origin + paymentLink.url;
+              navigator.clipboard?.writeText(full);
+              toast.success("Payment link copied — paste it to your client");
+            }}>
+              <LinkIcon className="h-4 w-4 mr-1.5" /> Copy payment link
+            </Button>
+            <Button size="sm" variant="outline" disabled={expired || !paymentLink} onClick={() => {
+              if (!paymentLink || typeof window === "undefined") return;
+              const full = window.location.origin + paymentLink.url;
+              const body = encodeURIComponent(`Hi ${clientName ?? "there"},\n\nYour FX quote ${quote.reference} is ready.\nGBP: ${formatGBP(quote.gbpAmount)}\nRate: 1 GBP = ₦${quote.rate.toLocaleString()}\nNGN total: ₦${quote.ngnTotal.toLocaleString()}\nExpires: ${new Date(quote.expiresAt).toLocaleString()}\n\nPay here: ${full}`);
+              window.open(`mailto:${clientEmail ?? ""}?subject=${encodeURIComponent("Your FX quote from Baron & Cabot × Canta")}&body=${body}`, "_blank");
+            }}>
+              Email quote to client
+            </Button>
+            <Button size="sm" variant="outline" disabled={expired || !paymentLink} onClick={() => {
+              if (!paymentLink || typeof window === "undefined") return;
+              const full = window.location.origin + paymentLink.url;
+              const msg = encodeURIComponent(`Your FX quote ${quote.reference}: ₦${quote.ngnTotal.toLocaleString()} at 1 GBP = ₦${quote.rate.toLocaleString()}. Pay here: ${full}`);
+              window.open(`https://wa.me/?text=${msg}`, "_blank", "noopener,noreferrer");
+            }}>
+              Send on WhatsApp
+            </Button>
             <Button size="sm" disabled={expired} onClick={() => {
-              const link = generatePaymentLink(caseId, actor);
+              const link = paymentLink ?? generatePaymentLink(caseId, actor);
               if (link) {
-                toast.success("Payment link generated");
+                toast.success(paymentLink ? "Opening payment link" : "Payment link generated");
                 if (typeof window !== "undefined") window.open(link.url, "_blank", "noopener,noreferrer");
               }
             }}>
-              <LinkIcon className="h-4 w-4 mr-1.5" /> Create payment link from this quote
+              <LinkIcon className="h-4 w-4 mr-1.5" /> {paymentLink ? "Preview payment page" : "Create payment link"}
             </Button>
           </div>
         </Card>
