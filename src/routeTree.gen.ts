@@ -65,12 +65,25 @@ import { Route as AiDocumentExtractionRouteImport } from './routes/ai-document-e
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TradeDeskIndexRouteImport } from './routes/trade-desk.index'
 import { Route as TrackIndexRouteImport } from './routes/track.index'
+import { Route as SupplierPortalIndexRouteImport } from './routes/supplier-portal.index'
 import { Route as PartnerIndexRouteImport } from './routes/partner.index'
 import { Route as TreasuryCardsRouteImport } from './routes/treasury.cards'
 import { Route as TradeDeskFileIdRouteImport } from './routes/trade-desk.$fileId'
 import { Route as TrackIdRouteImport } from './routes/track.$id'
 import { Route as SuppliersProfileRouteImport } from './routes/suppliers.profile'
 import { Route as SuppliersKybRouteImport } from './routes/suppliers.kyb'
+import { Route as SupplierPortalVerificationRouteImport } from './routes/supplier-portal.verification'
+import { Route as SupplierPortalTradeFilesRouteImport } from './routes/supplier-portal.trade-files'
+import { Route as SupplierPortalSupportRouteImport } from './routes/supplier-portal.support'
+import { Route as SupplierPortalSettlementRouteImport } from './routes/supplier-portal.settlement'
+import { Route as SupplierPortalRequestsRouteImport } from './routes/supplier-portal.requests'
+import { Route as SupplierPortalPayoutAccountsRouteImport } from './routes/supplier-portal.payout-accounts'
+import { Route as SupplierPortalNgnDetailsRouteImport } from './routes/supplier-portal.ngn-details'
+import { Route as SupplierPortalMessagesRouteImport } from './routes/supplier-portal.messages'
+import { Route as SupplierPortalInvoicesRouteImport } from './routes/supplier-portal.invoices'
+import { Route as SupplierPortalFxQuotesRouteImport } from './routes/supplier-portal.fx-quotes'
+import { Route as SupplierPortalDocumentsRouteImport } from './routes/supplier-portal.documents'
+import { Route as SupplierPortalBuyersRouteImport } from './routes/supplier-portal.buyers'
 import { Route as PayLinkIdRouteImport } from './routes/pay.$linkId'
 import { Route as PartnerTeamRouteImport } from './routes/partner.team'
 import { Route as PartnerSolicitorsRouteImport } from './routes/partner.solicitors'
@@ -376,6 +389,11 @@ const TrackIndexRoute = TrackIndexRouteImport.update({
   path: '/track/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SupplierPortalIndexRoute = SupplierPortalIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SupplierPortalRoute,
+} as any)
 const PartnerIndexRoute = PartnerIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -405,6 +423,71 @@ const SuppliersKybRoute = SuppliersKybRouteImport.update({
   id: '/kyb',
   path: '/kyb',
   getParentRoute: () => SuppliersRoute,
+} as any)
+const SupplierPortalVerificationRoute =
+  SupplierPortalVerificationRouteImport.update({
+    id: '/verification',
+    path: '/verification',
+    getParentRoute: () => SupplierPortalRoute,
+  } as any)
+const SupplierPortalTradeFilesRoute =
+  SupplierPortalTradeFilesRouteImport.update({
+    id: '/trade-files',
+    path: '/trade-files',
+    getParentRoute: () => SupplierPortalRoute,
+  } as any)
+const SupplierPortalSupportRoute = SupplierPortalSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => SupplierPortalRoute,
+} as any)
+const SupplierPortalSettlementRoute =
+  SupplierPortalSettlementRouteImport.update({
+    id: '/settlement',
+    path: '/settlement',
+    getParentRoute: () => SupplierPortalRoute,
+  } as any)
+const SupplierPortalRequestsRoute = SupplierPortalRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
+  getParentRoute: () => SupplierPortalRoute,
+} as any)
+const SupplierPortalPayoutAccountsRoute =
+  SupplierPortalPayoutAccountsRouteImport.update({
+    id: '/payout-accounts',
+    path: '/payout-accounts',
+    getParentRoute: () => SupplierPortalRoute,
+  } as any)
+const SupplierPortalNgnDetailsRoute =
+  SupplierPortalNgnDetailsRouteImport.update({
+    id: '/ngn-details',
+    path: '/ngn-details',
+    getParentRoute: () => SupplierPortalRoute,
+  } as any)
+const SupplierPortalMessagesRoute = SupplierPortalMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => SupplierPortalRoute,
+} as any)
+const SupplierPortalInvoicesRoute = SupplierPortalInvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
+  getParentRoute: () => SupplierPortalRoute,
+} as any)
+const SupplierPortalFxQuotesRoute = SupplierPortalFxQuotesRouteImport.update({
+  id: '/fx-quotes',
+  path: '/fx-quotes',
+  getParentRoute: () => SupplierPortalRoute,
+} as any)
+const SupplierPortalDocumentsRoute = SupplierPortalDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => SupplierPortalRoute,
+} as any)
+const SupplierPortalBuyersRoute = SupplierPortalBuyersRouteImport.update({
+  id: '/buyers',
+  path: '/buyers',
+  getParentRoute: () => SupplierPortalRoute,
 } as any)
 const PayLinkIdRoute = PayLinkIdRouteImport.update({
   id: '/pay/$linkId',
@@ -566,7 +649,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
-  '/supplier-portal': typeof SupplierPortalRoute
+  '/supplier-portal': typeof SupplierPortalRouteWithChildren
   '/suppliers': typeof SuppliersRouteWithChildren
   '/support': typeof SupportRoute
   '/team': typeof TeamRoute
@@ -604,12 +687,25 @@ export interface FileRoutesByFullPath {
   '/partner/solicitors': typeof PartnerSolicitorsRoute
   '/partner/team': typeof PartnerTeamRoute
   '/pay/$linkId': typeof PayLinkIdRoute
+  '/supplier-portal/buyers': typeof SupplierPortalBuyersRoute
+  '/supplier-portal/documents': typeof SupplierPortalDocumentsRoute
+  '/supplier-portal/fx-quotes': typeof SupplierPortalFxQuotesRoute
+  '/supplier-portal/invoices': typeof SupplierPortalInvoicesRoute
+  '/supplier-portal/messages': typeof SupplierPortalMessagesRoute
+  '/supplier-portal/ngn-details': typeof SupplierPortalNgnDetailsRoute
+  '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
+  '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
+  '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
+  '/supplier-portal/support': typeof SupplierPortalSupportRoute
+  '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
+  '/supplier-portal/verification': typeof SupplierPortalVerificationRoute
   '/suppliers/kyb': typeof SuppliersKybRoute
   '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/treasury/cards': typeof TreasuryCardsRoute
   '/partner/': typeof PartnerIndexRoute
+  '/supplier-portal/': typeof SupplierPortalIndexRoute
   '/track/': typeof TrackIndexRoute
   '/trade-desk/': typeof TradeDeskIndexRoute
   '/partner/cases/$caseId': typeof PartnerCasesCaseIdRoute
@@ -653,7 +749,6 @@ export interface FileRoutesByTo {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
-  '/supplier-portal': typeof SupplierPortalRoute
   '/suppliers': typeof SuppliersRouteWithChildren
   '/support': typeof SupportRoute
   '/team': typeof TeamRoute
@@ -689,12 +784,25 @@ export interface FileRoutesByTo {
   '/partner/solicitors': typeof PartnerSolicitorsRoute
   '/partner/team': typeof PartnerTeamRoute
   '/pay/$linkId': typeof PayLinkIdRoute
+  '/supplier-portal/buyers': typeof SupplierPortalBuyersRoute
+  '/supplier-portal/documents': typeof SupplierPortalDocumentsRoute
+  '/supplier-portal/fx-quotes': typeof SupplierPortalFxQuotesRoute
+  '/supplier-portal/invoices': typeof SupplierPortalInvoicesRoute
+  '/supplier-portal/messages': typeof SupplierPortalMessagesRoute
+  '/supplier-portal/ngn-details': typeof SupplierPortalNgnDetailsRoute
+  '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
+  '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
+  '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
+  '/supplier-portal/support': typeof SupplierPortalSupportRoute
+  '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
+  '/supplier-portal/verification': typeof SupplierPortalVerificationRoute
   '/suppliers/kyb': typeof SuppliersKybRoute
   '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/treasury/cards': typeof TreasuryCardsRoute
   '/partner': typeof PartnerIndexRoute
+  '/supplier-portal': typeof SupplierPortalIndexRoute
   '/track': typeof TrackIndexRoute
   '/trade-desk': typeof TradeDeskIndexRoute
   '/partner/cases/$caseId': typeof PartnerCasesCaseIdRoute
@@ -740,7 +848,7 @@ export interface FileRoutesById {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
-  '/supplier-portal': typeof SupplierPortalRoute
+  '/supplier-portal': typeof SupplierPortalRouteWithChildren
   '/suppliers': typeof SuppliersRouteWithChildren
   '/support': typeof SupportRoute
   '/team': typeof TeamRoute
@@ -778,12 +886,25 @@ export interface FileRoutesById {
   '/partner/solicitors': typeof PartnerSolicitorsRoute
   '/partner/team': typeof PartnerTeamRoute
   '/pay/$linkId': typeof PayLinkIdRoute
+  '/supplier-portal/buyers': typeof SupplierPortalBuyersRoute
+  '/supplier-portal/documents': typeof SupplierPortalDocumentsRoute
+  '/supplier-portal/fx-quotes': typeof SupplierPortalFxQuotesRoute
+  '/supplier-portal/invoices': typeof SupplierPortalInvoicesRoute
+  '/supplier-portal/messages': typeof SupplierPortalMessagesRoute
+  '/supplier-portal/ngn-details': typeof SupplierPortalNgnDetailsRoute
+  '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
+  '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
+  '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
+  '/supplier-portal/support': typeof SupplierPortalSupportRoute
+  '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
+  '/supplier-portal/verification': typeof SupplierPortalVerificationRoute
   '/suppliers/kyb': typeof SuppliersKybRoute
   '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/treasury/cards': typeof TreasuryCardsRoute
   '/partner/': typeof PartnerIndexRoute
+  '/supplier-portal/': typeof SupplierPortalIndexRoute
   '/track/': typeof TrackIndexRoute
   '/trade-desk/': typeof TradeDeskIndexRoute
   '/partner/cases/$caseId': typeof PartnerCasesCaseIdRoute
@@ -868,12 +989,25 @@ export interface FileRouteTypes {
     | '/partner/solicitors'
     | '/partner/team'
     | '/pay/$linkId'
+    | '/supplier-portal/buyers'
+    | '/supplier-portal/documents'
+    | '/supplier-portal/fx-quotes'
+    | '/supplier-portal/invoices'
+    | '/supplier-portal/messages'
+    | '/supplier-portal/ngn-details'
+    | '/supplier-portal/payout-accounts'
+    | '/supplier-portal/requests'
+    | '/supplier-portal/settlement'
+    | '/supplier-portal/support'
+    | '/supplier-portal/trade-files'
+    | '/supplier-portal/verification'
     | '/suppliers/kyb'
     | '/suppliers/profile'
     | '/track/$id'
     | '/trade-desk/$fileId'
     | '/treasury/cards'
     | '/partner/'
+    | '/supplier-portal/'
     | '/track/'
     | '/trade-desk/'
     | '/partner/cases/$caseId'
@@ -917,7 +1051,6 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/shipments'
-    | '/supplier-portal'
     | '/suppliers'
     | '/support'
     | '/team'
@@ -953,12 +1086,25 @@ export interface FileRouteTypes {
     | '/partner/solicitors'
     | '/partner/team'
     | '/pay/$linkId'
+    | '/supplier-portal/buyers'
+    | '/supplier-portal/documents'
+    | '/supplier-portal/fx-quotes'
+    | '/supplier-portal/invoices'
+    | '/supplier-portal/messages'
+    | '/supplier-portal/ngn-details'
+    | '/supplier-portal/payout-accounts'
+    | '/supplier-portal/requests'
+    | '/supplier-portal/settlement'
+    | '/supplier-portal/support'
+    | '/supplier-portal/trade-files'
+    | '/supplier-portal/verification'
     | '/suppliers/kyb'
     | '/suppliers/profile'
     | '/track/$id'
     | '/trade-desk/$fileId'
     | '/treasury/cards'
     | '/partner'
+    | '/supplier-portal'
     | '/track'
     | '/trade-desk'
     | '/partner/cases/$caseId'
@@ -1041,12 +1187,25 @@ export interface FileRouteTypes {
     | '/partner/solicitors'
     | '/partner/team'
     | '/pay/$linkId'
+    | '/supplier-portal/buyers'
+    | '/supplier-portal/documents'
+    | '/supplier-portal/fx-quotes'
+    | '/supplier-portal/invoices'
+    | '/supplier-portal/messages'
+    | '/supplier-portal/ngn-details'
+    | '/supplier-portal/payout-accounts'
+    | '/supplier-portal/requests'
+    | '/supplier-portal/settlement'
+    | '/supplier-portal/support'
+    | '/supplier-portal/trade-files'
+    | '/supplier-portal/verification'
     | '/suppliers/kyb'
     | '/suppliers/profile'
     | '/track/$id'
     | '/trade-desk/$fileId'
     | '/treasury/cards'
     | '/partner/'
+    | '/supplier-portal/'
     | '/track/'
     | '/trade-desk/'
     | '/partner/cases/$caseId'
@@ -1092,7 +1251,7 @@ export interface RootRouteChildren {
   ReportsRoute: typeof ReportsRoute
   SettingsRoute: typeof SettingsRoute
   ShipmentsRoute: typeof ShipmentsRoute
-  SupplierPortalRoute: typeof SupplierPortalRoute
+  SupplierPortalRoute: typeof SupplierPortalRouteWithChildren
   SuppliersRoute: typeof SuppliersRouteWithChildren
   SupportRoute: typeof SupportRoute
   TeamRoute: typeof TeamRoute
@@ -1510,6 +1669,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrackIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/supplier-portal/': {
+      id: '/supplier-portal/'
+      path: '/'
+      fullPath: '/supplier-portal/'
+      preLoaderRoute: typeof SupplierPortalIndexRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
     '/partner/': {
       id: '/partner/'
       path: '/'
@@ -1551,6 +1717,90 @@ declare module '@tanstack/react-router' {
       fullPath: '/suppliers/kyb'
       preLoaderRoute: typeof SuppliersKybRouteImport
       parentRoute: typeof SuppliersRoute
+    }
+    '/supplier-portal/verification': {
+      id: '/supplier-portal/verification'
+      path: '/verification'
+      fullPath: '/supplier-portal/verification'
+      preLoaderRoute: typeof SupplierPortalVerificationRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/trade-files': {
+      id: '/supplier-portal/trade-files'
+      path: '/trade-files'
+      fullPath: '/supplier-portal/trade-files'
+      preLoaderRoute: typeof SupplierPortalTradeFilesRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/support': {
+      id: '/supplier-portal/support'
+      path: '/support'
+      fullPath: '/supplier-portal/support'
+      preLoaderRoute: typeof SupplierPortalSupportRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/settlement': {
+      id: '/supplier-portal/settlement'
+      path: '/settlement'
+      fullPath: '/supplier-portal/settlement'
+      preLoaderRoute: typeof SupplierPortalSettlementRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/requests': {
+      id: '/supplier-portal/requests'
+      path: '/requests'
+      fullPath: '/supplier-portal/requests'
+      preLoaderRoute: typeof SupplierPortalRequestsRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/payout-accounts': {
+      id: '/supplier-portal/payout-accounts'
+      path: '/payout-accounts'
+      fullPath: '/supplier-portal/payout-accounts'
+      preLoaderRoute: typeof SupplierPortalPayoutAccountsRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/ngn-details': {
+      id: '/supplier-portal/ngn-details'
+      path: '/ngn-details'
+      fullPath: '/supplier-portal/ngn-details'
+      preLoaderRoute: typeof SupplierPortalNgnDetailsRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/messages': {
+      id: '/supplier-portal/messages'
+      path: '/messages'
+      fullPath: '/supplier-portal/messages'
+      preLoaderRoute: typeof SupplierPortalMessagesRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/invoices': {
+      id: '/supplier-portal/invoices'
+      path: '/invoices'
+      fullPath: '/supplier-portal/invoices'
+      preLoaderRoute: typeof SupplierPortalInvoicesRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/fx-quotes': {
+      id: '/supplier-portal/fx-quotes'
+      path: '/fx-quotes'
+      fullPath: '/supplier-portal/fx-quotes'
+      preLoaderRoute: typeof SupplierPortalFxQuotesRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/documents': {
+      id: '/supplier-portal/documents'
+      path: '/documents'
+      fullPath: '/supplier-portal/documents'
+      preLoaderRoute: typeof SupplierPortalDocumentsRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/buyers': {
+      id: '/supplier-portal/buyers'
+      path: '/buyers'
+      fullPath: '/supplier-portal/buyers'
+      preLoaderRoute: typeof SupplierPortalBuyersRouteImport
+      parentRoute: typeof SupplierPortalRoute
     }
     '/pay/$linkId': {
       id: '/pay/$linkId'
@@ -1813,6 +2063,42 @@ const PartnerRouteChildren: PartnerRouteChildren = {
 const PartnerRouteWithChildren =
   PartnerRoute._addFileChildren(PartnerRouteChildren)
 
+interface SupplierPortalRouteChildren {
+  SupplierPortalBuyersRoute: typeof SupplierPortalBuyersRoute
+  SupplierPortalDocumentsRoute: typeof SupplierPortalDocumentsRoute
+  SupplierPortalFxQuotesRoute: typeof SupplierPortalFxQuotesRoute
+  SupplierPortalInvoicesRoute: typeof SupplierPortalInvoicesRoute
+  SupplierPortalMessagesRoute: typeof SupplierPortalMessagesRoute
+  SupplierPortalNgnDetailsRoute: typeof SupplierPortalNgnDetailsRoute
+  SupplierPortalPayoutAccountsRoute: typeof SupplierPortalPayoutAccountsRoute
+  SupplierPortalRequestsRoute: typeof SupplierPortalRequestsRoute
+  SupplierPortalSettlementRoute: typeof SupplierPortalSettlementRoute
+  SupplierPortalSupportRoute: typeof SupplierPortalSupportRoute
+  SupplierPortalTradeFilesRoute: typeof SupplierPortalTradeFilesRoute
+  SupplierPortalVerificationRoute: typeof SupplierPortalVerificationRoute
+  SupplierPortalIndexRoute: typeof SupplierPortalIndexRoute
+}
+
+const SupplierPortalRouteChildren: SupplierPortalRouteChildren = {
+  SupplierPortalBuyersRoute: SupplierPortalBuyersRoute,
+  SupplierPortalDocumentsRoute: SupplierPortalDocumentsRoute,
+  SupplierPortalFxQuotesRoute: SupplierPortalFxQuotesRoute,
+  SupplierPortalInvoicesRoute: SupplierPortalInvoicesRoute,
+  SupplierPortalMessagesRoute: SupplierPortalMessagesRoute,
+  SupplierPortalNgnDetailsRoute: SupplierPortalNgnDetailsRoute,
+  SupplierPortalPayoutAccountsRoute: SupplierPortalPayoutAccountsRoute,
+  SupplierPortalRequestsRoute: SupplierPortalRequestsRoute,
+  SupplierPortalSettlementRoute: SupplierPortalSettlementRoute,
+  SupplierPortalSupportRoute: SupplierPortalSupportRoute,
+  SupplierPortalTradeFilesRoute: SupplierPortalTradeFilesRoute,
+  SupplierPortalVerificationRoute: SupplierPortalVerificationRoute,
+  SupplierPortalIndexRoute: SupplierPortalIndexRoute,
+}
+
+const SupplierPortalRouteWithChildren = SupplierPortalRoute._addFileChildren(
+  SupplierPortalRouteChildren,
+)
+
 interface SuppliersRouteChildren {
   SuppliersKybRoute: typeof SuppliersKybRoute
   SuppliersProfileRoute: typeof SuppliersProfileRoute
@@ -1892,7 +2178,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReportsRoute: ReportsRoute,
   SettingsRoute: SettingsRoute,
   ShipmentsRoute: ShipmentsRoute,
-  SupplierPortalRoute: SupplierPortalRoute,
+  SupplierPortalRoute: SupplierPortalRouteWithChildren,
   SuppliersRoute: SuppliersRouteWithChildren,
   SupportRoute: SupportRoute,
   TeamRoute: TeamRoute,
