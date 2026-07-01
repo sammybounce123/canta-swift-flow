@@ -139,6 +139,89 @@ function SupplierPortal() {
   const [search] = useState("");
   const [invite, setInvite] = useState<null | "buyer" | "request">(null);
 
+  // --- FX Quote state ---
+  type FxQuoteStatus = "Draft" | "Quote Generated" | "Rate Locked" | "Sent to Buyer" | "Expired" | "Buyer Paid" | "Processing Settlement" | "Settled" | "Cancelled";
+  type FxQuote = {
+    id: string; invoiceNumber: string; buyer: string;
+    invoiceAmount: number; invoiceCurrency: "RMB" | "USD";
+    settlementCurrency: "RMB" | "USD"; rate: number; ngnTotal: number;
+    fee: number; estReceivable: number; payoutAccount: string;
+    expiresAt: number; lockedUntil?: number; status: FxQuoteStatus;
+    sentAt?: number;
+  };
+  const buildQuote = (r: Request, seq: number, statusOverride?: FxQuoteStatus): FxQuote => {
+    const settlementCurrency: "RMB" | "USD" = seq % 2 === 0 ? "RMB" : "USD";
+    const jitter = (Math.random() - 0.5) * 0.6;
+    const rate = +(r.rate + jitter).toFixed(2);
+    const ngnTotal = Math.round(r.amountRmb * rate);
+    const estReceivable = settlementCurrency === "RMB" ? r.amountRmb : Math.round(r.amountRmb / 7.2);
+    return {
+      id: `FXQ-${3100 + seq}`, invoiceNumber: r.invoiceNumber, buyer: r.buyer,
+      invoiceAmount: r.amountRmb, invoiceCurrency: r.invoiceCurrency,
+      settlementCurrency, rate, ngnTotal, fee: r.fee, estReceivable,
+      payoutAccount: settlementCurrency === "RMB" ? "ICBC ****4821" : "Bank of China ****9012",
+      expiresAt: Date.now() + 15 * 60 * 1000,
+      status: statusOverride ?? "Quote Generated",
+    };
+  };
+  const [fxQuotes, setFxQuotes] = useState<FxQuote[]>(() => {
+    const seeded: FxQuoteStatus[] = ["Quote Generated", "Rate Locked", "Buyer Paid", "Processing Settlement"];
+    return REQUESTS.slice(0, 4).map((r, i) => {
+      const q = buildQuote(r, i, seeded[i]);
+      if (q.status === "Rate Locked") q.lockedUntil = q.expiresAt;
+      return q;
+    });
+  });
+  const [selectedQuoteId, setSelectedQuoteId] = useState<string | null>(null);
+  const [, setNowTick] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setNowTick((n) => n + 1), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const activeQuote = fxQuotes.find((q) => q.id === selectedQuoteId) ?? fxQuotes.find((q) => q.status === "Quote Generated") ?? fxQuotes[0];
+
+  const handleGenerateQuote = () => {
+    const nextIndex = fxQuotes.length;
+    const source = REQUESTS[nextIndex % REQUESTS.length];
+    const quote = buildQuote(source, nextIndex);
+    setFxQuotes((prev) => [quote, ...prev]);
+    setSelectedQuoteId(quote.id);
+    toast.success(`FX quote ${quote.id} generated · Rate ${quote.rate} · Expires in 15m`);
+  };
+  const handleLockQuote = () => {
+    if (!activeQuote) return toast.error("No quote to lock");
+    if (activeQuote.status === "Rate Locked") return toast.info(`${activeQuote.id} already locked`);
+    setFxQuotes((prev) => prev.map((q) => q.id === activeQuote.id
+      ? { ...q, status: "Rate Locked", lockedUntil: Date.now() + 15 * 60 * 1000, expiresAt: Date.now() + 15 * 60 * 1000 }
+      : q));
+    toast.success(`${activeQuote.id} locked at ${activeQuote.rate} for 15 minutes`);
+  };
+  const handleSendQuote = () => {
+    if (!activeQuote) return toast.error("No quote to send");
+    setFxQuotes((prev) => prev.map((q) => q.id === activeQuote.id
+      ? { ...q, status: q.status === "Rate Locked" ? "Rate Locked" : "Sent to Buyer", sentAt: Date.now() }
+      : q));
+    toast.success(`${activeQuote.id} sent to ${activeQuote.buyer}`);
+    selectTab("ngn-details");
+  };
+  const handleRefreshQuote = () => {
+    if (!activeQuote) return toast.error("No quote to refresh");
+    if (activeQuote.status === "Rate Locked") return toast.error("Locked quote cannot be refreshed — unlock or generate a new quote");
+    const jitter = (Math.random() - 0.5) * 0.8;
+    const newRate = +(activeQuote.rate + jitter).toFixed(2);
+    const newNgn = Math.round(activeQuote.invoiceAmount * newRate);
+    setFxQuotes((prev) => prev.map((q) => q.id === activeQuote.id
+      ? { ...q, rate: newRate, ngnTotal: newNgn, expiresAt: Date.now() + 15 * 60 * 1000, status: "Quote Generated" }
+      : q));
+    toast.success(`${activeQuote.id} refreshed · New rate ${newRate}`);
+  };
+  const formatCountdown = (ts: number) => {
+    const ms = Math.max(0, ts - Date.now());
+    const m = Math.floor(ms / 60000); const s = Math.floor((ms % 60000) / 1000);
+    return ms === 0 ? "Expired" : `${m}m ${s.toString().padStart(2, "0")}s`;
+  };
+  const activeQuoteCount = fxQuotes.filter((q) => q.status === "Quote Generated" || q.status === "Rate Locked" || q.status === "Sent to Buyer").length;
+
   useEffect(() => {
     setTab(routeTab);
   }, [routeTab]);
@@ -205,7 +288,7 @@ function SupplierPortal() {
       )}
 
       <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-3">
-        <KPI label="Active FX Quotes" value="3" icon={Receipt} />
+        <KPI label="Active FX Quotes" value={String(activeQuoteCount)} icon={Receipt} />
         <KPI label="Quotes Awaiting Buyer Payment" value={String(totals.pending)} icon={Clock} />
         <KPI label="NGN Received Awaiting Settlement" value={`₦${(totals.ngnHeld / 1_000_000).toFixed(1)}M`} icon={Wallet} />
         <KPI label="RMB Settlement Pending" value="¥42,300" icon={Landmark} />
@@ -413,13 +496,27 @@ function SupplierPortal() {
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div>
                 <div className="text-sm font-semibold">FX Quotes</div>
-                <div className="text-xs text-muted-foreground">Generate a quote to see estimated RMB/USD you receive and the NGN amount your buyer pays.</div>
+                <div className="text-xs text-muted-foreground">
+                  {activeQuote
+                    ? <>Active: <span className="font-mono">{activeQuote.id}</span> · {activeQuote.buyer} · Rate {activeQuote.rate} · {activeQuote.status}</>
+                    : "Generate a quote to see estimated RMB/USD you receive and the NGN amount your buyer pays."}
+                </div>
               </div>
               <ButtonGroup label="FX quote actions">
-                <Button size="sm" onClick={() => toast.success("FX quote generated")}><Receipt className="h-4 w-4 mr-2" /> Generate FX Quote</Button>
-                <Button size="sm" variant="outline" onClick={() => toast.success("Rate locked for 15 minutes")}><Lock className="h-4 w-4 mr-2" /> Lock Quote</Button>
-                <Button size="sm" variant="outline" onClick={() => selectTab("ngn-details")}><ArrowRight className="h-4 w-4 mr-2" /> Send Quote to Buyer</Button>
-                <Button size="sm" variant="outline" onClick={() => toast.success("Quote refreshed")}><Clock className="h-4 w-4 mr-2" /> Refresh Quote</Button>
+                <Button size="sm" onClick={handleGenerateQuote}>
+                  <Receipt className="h-4 w-4 mr-2" /> Generate FX Quote
+                </Button>
+                <Button size="sm" variant="outline" onClick={handleLockQuote}
+                  disabled={!activeQuote || activeQuote.status === "Rate Locked"}>
+                  <Lock className="h-4 w-4 mr-2" /> Lock Quote
+                </Button>
+                <Button size="sm" variant="outline" onClick={handleSendQuote} disabled={!activeQuote}>
+                  <ArrowRight className="h-4 w-4 mr-2" /> Send Quote to Buyer
+                </Button>
+                <Button size="sm" variant="outline" onClick={handleRefreshQuote}
+                  disabled={!activeQuote || activeQuote.status === "Rate Locked"}>
+                  <Clock className="h-4 w-4 mr-2" /> Refresh Quote
+                </Button>
               </ButtonGroup>
             </div>
           </Card>
@@ -432,7 +529,7 @@ function SupplierPortal() {
                     <th className="text-left py-2 px-3">Quote #</th>
                     <th className="text-left py-2 px-3">Invoice</th>
                     <th className="text-right py-2 px-3">Invoice amt</th>
-                    <th className="text-left py-2 px-3">Buyer pays</th>
+                    <th className="text-left py-2 px-3">Buyer pays (NGN)</th>
                     <th className="text-right py-2 px-3">Est. receivable</th>
                     <th className="text-right py-2 px-3">Rate</th>
                     <th className="text-right py-2 px-3">Canta fee</th>
@@ -440,35 +537,60 @@ function SupplierPortal() {
                     <th className="text-left py-2 px-3">Payout acct</th>
                     <th className="text-left py-2 px-3">Expires</th>
                     <th className="text-left py-2 px-3">Status</th>
+                    <th className="text-right py-2 px-3"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {REQUESTS.slice(0, 4).map((r, i) => {
-                    const status = ["Quote Generated","Rate Locked","Buyer Paid","Processing Settlement"][i] ?? "Draft";
-                    const settle = i % 2 === 0 ? "RMB" : "USD";
+                  {fxQuotes.map((q) => {
+                    const isActive = activeQuote?.id === q.id;
+                    const expired = q.status !== "Rate Locked" && Date.now() > q.expiresAt;
+                    const shownStatus: FxQuoteStatus = expired && (q.status === "Quote Generated" || q.status === "Sent to Buyer") ? "Expired" : q.status;
                     return (
-                      <tr key={r.id} className="border-t">
-                        <td className="py-2 px-3 font-mono text-xs">FXQ-{3100 + i}</td>
-                        <td className="py-2 px-3 font-mono text-xs">{r.invoiceNumber}</td>
-                        <td className="py-2 px-3 text-right tabular-nums">¥{r.amountRmb.toLocaleString()} <span className="text-[10px] text-muted-foreground">{r.invoiceCurrency}</span></td>
-                        <td className="py-2 px-3 tabular-nums">₦{r.amountNgn.toLocaleString()} <span className="text-[10px] text-muted-foreground">NGN</span></td>
-                        <td className="py-2 px-3 text-right tabular-nums">{settle === "RMB" ? `¥${r.amountRmb.toLocaleString()}` : `$${Math.round(r.amountRmb / 7.2).toLocaleString()}`}</td>
-                        <td className="py-2 px-3 text-right tabular-nums text-xs">{r.rate.toFixed(2)}</td>
-                        <td className="py-2 px-3 text-right tabular-nums text-xs">₦{r.fee.toLocaleString()}</td>
-                        <td className="py-2 px-3 text-xs">{settle}</td>
-                        <td className="py-2 px-3 text-xs">{settle === "RMB" ? "ICBC ****4821" : "Bank of China ****9012"}</td>
-                        <td className="py-2 px-3 text-xs">14m 32s</td>
-                        <td className="py-2 px-3"><Badge className="bg-primary/10 text-primary">{status}</Badge></td>
+                      <tr key={q.id} className={`border-t cursor-pointer ${isActive ? "bg-primary/5" : "hover:bg-muted/40"}`}
+                        onClick={() => setSelectedQuoteId(q.id)}>
+                        <td className="py-2 px-3 font-mono text-xs">{q.id}</td>
+                        <td className="py-2 px-3 font-mono text-xs">{q.invoiceNumber}</td>
+                        <td className="py-2 px-3 text-right tabular-nums">¥{q.invoiceAmount.toLocaleString()} <span className="text-[10px] text-muted-foreground">{q.invoiceCurrency}</span></td>
+                        <td className="py-2 px-3 tabular-nums">₦{q.ngnTotal.toLocaleString()}</td>
+                        <td className="py-2 px-3 text-right tabular-nums">
+                          {q.settlementCurrency === "RMB" ? `¥${q.estReceivable.toLocaleString()}` : `$${q.estReceivable.toLocaleString()}`}
+                        </td>
+                        <td className="py-2 px-3 text-right tabular-nums text-xs">{q.rate.toFixed(2)}</td>
+                        <td className="py-2 px-3 text-right tabular-nums text-xs">₦{q.fee.toLocaleString()}</td>
+                        <td className="py-2 px-3 text-xs">{q.settlementCurrency}</td>
+                        <td className="py-2 px-3 text-xs">{q.payoutAccount}</td>
+                        <td className="py-2 px-3 text-xs tabular-nums">
+                          {q.status === "Rate Locked" && <Lock className="h-3 w-3 inline mr-1" />}
+                          {formatCountdown(q.expiresAt)}
+                        </td>
+                        <td className="py-2 px-3">
+                          <Badge className={
+                            shownStatus === "Expired" ? "bg-destructive/10 text-destructive" :
+                            shownStatus === "Rate Locked" ? "bg-emerald-100 text-emerald-800" :
+                            shownStatus === "Sent to Buyer" ? "bg-blue-100 text-blue-800" :
+                            "bg-primary/10 text-primary"
+                          }>{shownStatus}</Badge>
+                        </td>
+                        <td className="py-2 px-3 text-right">
+                          {!isActive && (
+                            <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setSelectedQuoteId(q.id); }}>
+                              Select
+                            </Button>
+                          )}
+                        </td>
                       </tr>
                     );
                   })}
+                  {fxQuotes.length === 0 && (
+                    <tr><td colSpan={12} className="py-8 text-center text-muted-foreground text-sm">No FX quotes yet — click Generate FX Quote.</td></tr>
+                  )}
                 </tbody>
               </table>
             </div>
           </Card>
 
           <Card className="p-3 text-xs text-muted-foreground">
-            Quote statuses: Draft · Quote Generated · Rate Locked · Expired · Buyer Paid · Processing Settlement · Settled · Cancelled
+            Quote statuses: Draft · Quote Generated · Rate Locked · Sent to Buyer · Expired · Buyer Paid · Processing Settlement · Settled · Cancelled
           </Card>
           <Card className="p-3 text-[11px] text-muted-foreground italic border-l-4 border-primary/40">{COMPLIANCE_DISCLAIMER}</Card>
         </div>
