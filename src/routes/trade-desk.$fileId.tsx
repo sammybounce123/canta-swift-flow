@@ -326,21 +326,35 @@ function TradeFileActions({
   supplier: string;
   onNavigate: ReturnType<typeof useNavigate>;
 }) {
-  const supplierPortal = () => onNavigate({ to: "/supplier-portal" });
-  const clearingQuotes = () => onNavigate({ to: "/clearing-quotes", search: { file: fileId, request: undefined } });
+  const go = (to: string, msg?: string) => {
+    onNavigate({ to });
+    if (msg) toast.message(msg);
+  };
   const actions = [
-    { label: "Request Clearing Quotes", icon: Send, onClick: clearingQuotes },
-    { label: "Compare Clearing Agent Bids", icon: Calculator, onClick: clearingQuotes },
-    { label: "Select Clearing Agent", icon: CheckCircle2, onClick: clearingQuotes },
-    { label: "Track Clearing Workflow", icon: Activity, onClick: clearingQuotes },
-    { label: "Add Supplier", icon: UserPlus, onClick: () => { supplierPortal(); toast.message(`Opening Supplier Portal to add ${supplier}`); } },
-    { label: "Invite Supplier", icon: Mail, onClick: () => { supplierPortal(); toast.message(`Invite ${supplier} from the Supplier Portal`); } },
-    { label: "Link Supplier Payment Request", icon: LinkIcon, onClick: () => { supplierPortal(); toast.message("Link a supplier payment request to this trade file"); } },
-    { label: "View Supplier Payment Status", icon: Eye, onClick: () => { supplierPortal(); toast.message("Opening supplier payment status"); } },
-    { label: "Open Supplier Portal Preview", icon: Building2, onClick: supplierPortal },
-    { label: "View Supplier RMB Settlement", icon: Banknote, onClick: () => { supplierPortal(); toast.message("Opening RMB settlement details"); } },
-    { label: "Pay Supplier", icon: FileCheck2, onClick: () => toast.success("Supplier payment initiated for NGN collection") },
-    { label: "Send WhatsApp Update", icon: MessageCircle, onClick: () => toast.success("WhatsApp update requested") },
+    { label: "Request Clearing Quotes", icon: Send,
+      onClick: () => onNavigate({ to: "/clearing-quotes", search: { file: fileId, request: undefined, view: "request" } as never }) },
+    { label: "Compare Clearing Agent Bids", icon: Calculator,
+      onClick: () => onNavigate({ to: "/clearing-quotes", search: { file: fileId, view: "compare" } as never }) },
+    { label: "Select Clearing Agent", icon: CheckCircle2,
+      onClick: () => onNavigate({ to: "/clearing-quotes", search: { file: fileId, view: "select" } as never }) },
+    { label: "Track Clearing Workflow", icon: Activity,
+      onClick: () => onNavigate({ to: "/clearing-quotes", search: { file: fileId, view: "track" } as never }) },
+    { label: "Add Supplier", icon: UserPlus,
+      onClick: () => go("/suppliers", `Add ${supplier} to your supplier directory`) },
+    { label: "Invite Supplier", icon: Mail,
+      onClick: () => go("/my-suppliers", `Invite ${supplier} to the Supplier Portal`) },
+    { label: "Link Supplier Payment Request", icon: LinkIcon,
+      onClick: () => go("/payments", `Link a supplier payment request to ${fileId}`) },
+    { label: "View Supplier Payment Status", icon: Eye,
+      onClick: () => go("/payments", "Opening supplier payment status") },
+    { label: "Open Supplier Portal Preview", icon: Building2,
+      onClick: () => onNavigate({ to: "/supplier-portal" }) },
+    { label: "View Supplier RMB Settlement", icon: Banknote,
+      onClick: () => go("/supplier-portal", "Opening RMB settlement details") },
+    { label: "Pay Supplier", icon: FileCheck2,
+      onClick: () => { onNavigate({ to: "/payments" }); toast.success(`Supplier payment initiated for ${fileId}`); } },
+    { label: "Send WhatsApp Update", icon: MessageCircle,
+      onClick: () => { onNavigate({ to: "/whatsapp" }); toast.success("Draft WhatsApp update ready"); } },
   ];
 
   return (
@@ -357,6 +371,7 @@ function TradeFileActions({
     </ActionGroup>
   );
 }
+
 
 function Field({ icon, label, value, highlight }: { icon?: React.ReactNode; label: string; value: string; highlight?: boolean }) {
   return (
