@@ -96,11 +96,11 @@ function ImporterPortal() {
       </div>
 
       <StartHereCard
-        title="Create Trade File"
-        description="Upload your invoice, BL, container number, or supplier details to organize your import transaction."
-        primary={{ label: "Create Trade File", to: "/trade-desk" }}
+        title="Create your first Trade File"
+        description="A Trade File is one folder per import transaction — supplier, invoice, BL, shipment, clearing bids and payments in one place. Start by uploading an invoice, BL, container number, or supplier details."
+        primary={{ label: "Create Trade File", to: "/trade-desk", search: { new: "1" } }}
         secondary={[
-          { label: "Upload Invoice or BL", to: "/trade-desk" },
+          { label: "Upload Invoice or BL", to: "/trade-desk", search: { new: "1" } },
           { label: "Track Shipment", to: "/shipments" },
           { label: "Open Trade Files", to: "/trade-desk" },
         ]}

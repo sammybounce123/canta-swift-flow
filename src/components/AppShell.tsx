@@ -203,6 +203,14 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
     "Partner Property": "/partner",
     "Canta Ops": "/whatsapp",
   };
+  // Scope which modes appear in the switcher based on current workspace.
+  // Importer / Supplier / Partner users must not see Enterprise Treasury.
+  const scopedModes = (() => {
+    if (displayMode === "Importer") return ALL_MODES.filter((m) => m.id !== "Enterprise Treasury");
+    if (displayMode === "Supplier") return ALL_MODES.filter((m) => m.id === "Supplier");
+    if (displayMode === "Partner Property") return ALL_MODES.filter((m) => m.id === "Partner Property");
+    return ALL_MODES;
+  })();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -215,7 +223,7 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
       <DropdownMenuContent align="start" className="w-72">
         <DropdownMenuLabel>Switch workspace mode</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {ALL_MODES.map((m) => (
+        {scopedModes.map((m) => (
           <DropdownMenuItem key={m.id} onClick={() => { setMode(m.id); const home = MODE_HOME[m.id]; navigate({ to: home as never }); toast.success(`${MODE_DISPLAY_LABEL[m.id]} mode`); }} className="flex items-start gap-3 py-2">
             <div className="h-7 w-7 rounded bg-secondary text-foreground grid place-items-center text-[10px] font-bold flex-shrink-0">{m.tag}</div>
             <div className="flex-1 min-w-0">
@@ -308,12 +316,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {activeWorkspace !== "freight_workspace" && <ModeSwitcher displayMode={displayMode} />}
 
 
-            <div className="hidden lg:flex items-center gap-2 flex-1 max-w-md ml-2">
-              <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <input className="w-full pl-9 pr-3 py-2 text-sm bg-secondary/60 border border-transparent focus:border-ring focus:outline-none rounded-lg" placeholder={activeWorkspace === "freight_workspace" ? "Search quote requests, jobs, importers…" : "Search shipments, suppliers, trade files…"} />
+            {!isPartner && (
+              <div className="hidden lg:flex items-center gap-2 flex-1 max-w-md ml-2">
+                <div className="relative w-full">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <input className="w-full pl-9 pr-3 py-2 text-sm bg-secondary/60 border border-transparent focus:border-ring focus:outline-none rounded-lg" placeholder={activeWorkspace === "freight_workspace" ? "Search quote requests, jobs, importers…" : activeWorkspace === "supplier_dashboard" ? "Search buyers, payment requests, invoices…" : "Search shipments, suppliers, trade files…"} />
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="ml-auto flex items-center gap-2 sm:gap-3">
               {activeWorkspace !== "freight_workspace" && <FxTicker />}
