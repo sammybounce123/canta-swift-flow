@@ -204,14 +204,22 @@ function SupplierPortal() {
         </Card>
       )}
 
-      <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
-        <KPI label="Pending Payment Requests" value={String(totals.pending)} icon={Clock} />
-        <KPI label="NGN Received Awaiting RMB Settlement" value={`₦${(totals.ngnHeld / 1_000_000).toFixed(1)}M`} icon={Wallet} />
-        <KPI label="RMB Paid This Month" value={`¥${totals.rmbPaid.toLocaleString()}`} icon={CheckCircle2} />
+      <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-3">
+        <KPI label="Active FX Quotes" value="3" icon={Receipt} />
+        <KPI label="Quotes Awaiting Buyer Payment" value={String(totals.pending)} icon={Clock} />
+        <KPI label="NGN Received Awaiting Settlement" value={`₦${(totals.ngnHeld / 1_000_000).toFixed(1)}M`} icon={Wallet} />
+        <KPI label="RMB Settlement Pending" value="¥42,300" icon={Landmark} />
+        <KPI label="USD Settlement Pending" value="$0" icon={Landmark} />
+        <KPI label="Settled This Month" value={`¥${totals.rmbPaid.toLocaleString()}`} icon={CheckCircle2} />
         <KPI label="Active Nigerian Buyers" value={String(totals.buyers)} icon={Users} />
+        <KPI label="Payout Accounts Verified" value="1 of 2" icon={ShieldCheck} />
         <KPI label="Documents Required" value="2" icon={FileText} />
         <KPI label="Verification Status" value={verified ? "Verified" : "Pending"} icon={ShieldCheck} />
       </div>
+
+      <Card className="p-3 text-[11px] text-muted-foreground italic border-l-4 border-primary/40">
+        {COMPLIANCE_DISCLAIMER}
+      </Card>
 
       <section className="space-y-4">
         <div role="tablist" aria-label="Supplier Portal sections" className="flex w-full min-w-0 flex-wrap items-stretch justify-start gap-3">
