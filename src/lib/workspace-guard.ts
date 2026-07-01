@@ -184,7 +184,6 @@ export function resolveActiveWorkspace(pathname: string, mode: Mode): WorkspaceT
   const modeWorkspace = MODE_TO_WORKSPACE[mode];
   const savedWorkspace = getSavedCustomerWorkspace();
   if (isSharedWorkspacePath(pathname)) {
-    if (isCustomerWorkspace(modeWorkspace) && modeWorkspace !== "enterprise_treasury") return modeWorkspace;
     if (savedWorkspace) return savedWorkspace;
     return isCustomerWorkspace(modeWorkspace) ? modeWorkspace : null;
   }
