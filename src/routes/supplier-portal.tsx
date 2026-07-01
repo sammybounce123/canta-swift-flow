@@ -165,6 +165,9 @@ function SupplierPortal() {
             <div className="text-sm font-semibold mb-3">Most recent payment request</div>
             <SettlementTimeline currentIndex={5} />
           </Card>
+          <Card className="p-4 text-xs text-muted-foreground">
+            You only see your own buyers, invoices, payment requests, documents, Trade Files, messages and settlement status. Other suppliers, importer landed cost, clearing agent bids and unrelated Trade Files are hidden.
+          </Card>
           <RequestsTable rows={filtered.slice(0, 3)} compact />
         </TabsContent>
 
@@ -185,22 +188,39 @@ function SupplierPortal() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="requests" className="mt-4">
+        <TabsContent value="requests" className="mt-4 space-y-3">
+          <ButtonGroup label="Payment request actions">
+            <Button size="sm" onClick={() => setInvite("request")}><Receipt className="h-4 w-4 mr-2" /> Create payment request</Button>
+            <Button size="sm" variant="outline" onClick={() => toast.success("Buyer payment status refreshed")}><Clock className="h-4 w-4 mr-2" /> View buyer payment status</Button>
+          </ButtonGroup>
           <RequestsTable rows={filtered} />
         </TabsContent>
 
-        <TabsContent value="invoices" className="mt-4">
-          <Card className="p-4 text-sm text-muted-foreground">Invoices linked to each payment request. Click a request to view its invoice.</Card>
+        <TabsContent value="invoices" className="mt-4 space-y-3">
+          <Card className="p-4 space-y-3">
+            <div className="text-sm font-semibold">Invoices &amp; shipping documents</div>
+            <div className="text-xs text-muted-foreground">Invoices link to each payment request. Upload proforma, commercial invoice and packing list per Trade File.</div>
+            <ButtonGroup label="Invoice actions">
+              <Button size="sm" variant="outline" onClick={() => toast.success("Proforma invoice uploaded")}><Upload className="h-4 w-4 mr-2" /> Upload proforma invoice</Button>
+              <Button size="sm" variant="outline" onClick={() => toast.success("Commercial invoice uploaded")}><Upload className="h-4 w-4 mr-2" /> Upload commercial invoice</Button>
+              <Button size="sm" variant="outline" onClick={() => toast.success("Packing list uploaded")}><Upload className="h-4 w-4 mr-2" /> Upload packing list</Button>
+            </ButtonGroup>
+          </Card>
         </TabsContent>
 
         <TabsContent value="settlement" className="mt-4 space-y-3">
-          <Card className="p-4">
-            <div className="text-sm font-semibold mb-3">RMB settlement statuses</div>
+          <Card className="p-4 space-y-3">
+            <div className="text-sm font-semibold">RMB settlement statuses</div>
             <div className="flex flex-wrap gap-2 text-xs">
               {(Object.keys(STATUS_TONE) as SettlementStatus[]).map((s) => (
                 <Badge key={s} className={STATUS_TONE[s]}>{s}</Badge>
               ))}
             </div>
+            <ButtonGroup label="Settlement actions">
+              <Button size="sm" variant="outline" onClick={() => toast.success("RMB payout bank details saved")}><Wallet className="h-4 w-4 mr-2" /> Add RMB payout bank details</Button>
+              <Button size="sm" variant="outline" onClick={() => toast.success("Settlement receipt downloaded")}><FileText className="h-4 w-4 mr-2" /> Download settlement receipt</Button>
+              <Button size="sm" variant="outline" onClick={() => toast.success("Settlement tracker opened")}><Clock className="h-4 w-4 mr-2" /> Track RMB settlement</Button>
+            </ButtonGroup>
           </Card>
           <RequestsTable rows={filtered} />
         </TabsContent>
