@@ -70,16 +70,6 @@ function FxTicker() {
   );
 }
 
-const MODE_TO_WORKSPACE: Record<Mode, import("@/lib/profile").WorkspaceType> = {
-  "Enterprise Treasury": "enterprise_treasury",
-  "Importer": "importer_portal",
-  "Freight Forwarder": "freight_workspace",
-  "Supplier": "supplier_dashboard",
-  "Global Merchant": "global_collections",
-  "Partner Property": "partner_property",
-  "Canta Ops": "canta_ops",
-};
-
 const WORKSPACE_TO_MODE: Record<import("@/lib/profile").WorkspaceType, Mode> = {
   enterprise_treasury: "Enterprise Treasury",
   importer_portal: "Importer",
@@ -138,7 +128,7 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
   const { mode, setMode } = useMode();
   const userProfile = loadProfile();
   const pathWorkspace = workspaceFromPath(pathname);
-  const workspace = pathWorkspace ?? resolveActiveWorkspace(pathname, mode) ?? userProfile?.workspace_type ?? "importer_portal";
+  const workspace = pathWorkspace ?? resolveActiveWorkspace(pathname, mode) ?? "importer_portal";
   // Persist the active workspace whenever the user lands on any workspace-scoped
   // route (direct URL visit, refresh, or link click). Without this, shared
   // routes like /reports, /support and /whatsapp silently fall back to
