@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { ButtonGroup } from "@/components/ui/action-group";
 
 export const Route = createFileRoute("/supplier-portal")({
   head: () => ({ meta: [{ title: "Supplier Portal — Canta" }] }),
@@ -107,14 +108,14 @@ function SupplierPortal() {
             Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <ButtonGroup label="Supplier portal actions" className="w-auto justify-start md:justify-end">
           <Button variant="outline" size="sm" onClick={() => setInvite("buyer")}>
             <Users className="h-4 w-4 mr-2" /> Add Nigerian buyer
           </Button>
           <Button size="sm" onClick={() => setInvite("request")}>
             <Receipt className="h-4 w-4 mr-2" /> New payment request
           </Button>
-        </div>
+        </ButtonGroup>
       </header>
 
       {!verified && (
@@ -256,10 +257,10 @@ function SupplierPortal() {
           <Card className="p-4 space-y-3 text-sm">
             <div className="font-semibold">Supplier support</div>
             <div className="text-muted-foreground">Get help with buyer payment requests, invoice documents, verification, and RMB settlement receipts.</div>
-            <div className="flex flex-wrap gap-2">
+            <ButtonGroup label="Supplier support actions">
               <Button size="sm" variant="outline">Open support ticket</Button>
               <Button size="sm" variant="outline">Message Canta</Button>
-            </div>
+            </ButtonGroup>
           </Card>
         </TabsContent>
       </Tabs>

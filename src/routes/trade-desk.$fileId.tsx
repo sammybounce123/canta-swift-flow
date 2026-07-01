@@ -15,6 +15,7 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ImporterActions } from "@/components/ImporterActions";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { ButtonGroup } from "@/components/ui/action-group";
 
 export const Route = createFileRoute("/trade-desk/$fileId")({
   head: ({ params }) => ({ meta: [{ title: `${params.fileId} · Trade Desk — Canta` }] }),
@@ -95,7 +96,7 @@ function TradeFileDetail() {
               Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta.
             </div>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <ButtonGroup label="Supplier collaboration actions" className="w-auto justify-start sm:justify-end">
             <Button asChild size="sm" variant="outline">
               <Link to="/supplier-portal">Invite Supplier</Link>
             </Button>
@@ -105,7 +106,7 @@ function TradeFileDetail() {
             <Button asChild size="sm">
               <Link to="/supplier-portal">View Supplier RMB Settlement</Link>
             </Button>
-          </div>
+          </ButtonGroup>
         </div>
         <div className="mt-4 grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-3 text-xs">
           <Field label="Supplier name" value={file.supplier} />
@@ -164,10 +165,10 @@ function TradeFileDetail() {
               <div className="text-sm text-muted-foreground mt-1">
                 ETA {file.eta} · Current stage: <span className="font-medium text-foreground">{shipmentMilestones[reachedIdx - 1]}</span>
               </div>
-              <div className="flex gap-2 mt-4">
+              <ButtonGroup label="Next action controls" className="mt-4">
                 <Button size="sm" onClick={() => toast.success("Action assigned")}>Assign to teammate</Button>
                 <Button size="sm" variant="outline" onClick={() => toast.success("Reminder set")}>Set reminder</Button>
-              </div>
+              </ButtonGroup>
             </Card>
             <Card className="p-5 shadow-card">
               <div className="text-xs uppercase tracking-widest text-muted-foreground">Clearing readiness</div>
@@ -263,11 +264,11 @@ function TradeFileDetail() {
                 </div>
               ))}
             </div>
-            <div className="mt-5 flex gap-2 flex-wrap">
+            <ButtonGroup label="Escrow actions" className="mt-5">
               <Button size="sm" onClick={() => toast.success("Escrow release requested")}>Request release</Button>
               <Button size="sm" variant="outline" onClick={() => toast.success("Dispute opened")}>Open dispute</Button>
               <Button size="sm" variant="ghost" onClick={() => toast.info("Funds secured certificate downloaded")}>Download certificate</Button>
-            </div>
+            </ButtonGroup>
           </Card>
         </TabsContent>
 
@@ -534,7 +535,7 @@ function ClearingQuotesTab({ fileId }: { fileId: string }) {
           </p>
         </div>
       </div>
-      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <ButtonGroup label="Clearing marketplace actions" className="mt-4">
         {actions.map((a) => (
           <Button
             key={a.label}
@@ -553,7 +554,7 @@ function ClearingQuotesTab({ fileId }: { fileId: string }) {
             </Link>
           </Button>
         ))}
-      </div>
+      </ButtonGroup>
       <div className="mt-4 rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-muted-foreground">
         Canta connects importers with verified clearing agents. Clearing fees, timelines, duty estimates, and service delivery are provided by the clearing agent. Importers should review bids carefully before accepting.
       </div>

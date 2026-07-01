@@ -21,7 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState } from "react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
-import { ActionButton, ActionGroup } from "@/components/ui/action-group";
+import { ActionButton, ActionGroup, ButtonGroup } from "@/components/ui/action-group";
 
 export const Route = createFileRoute("/importer")({
   head: () => ({ meta: [{ title: "Importer Portal — Canta" }] }),
@@ -307,11 +307,11 @@ function MyShipments({ shipments: list }: { shipments: Shipment[] }) {
               <ArrowRight className="h-4 w-4 mt-0.5 shrink-0" /> <span><strong>Next step:</strong> {next.text}</span>
             </div>
 
-            <div className="mt-4 flex gap-2 flex-wrap">
+            <ButtonGroup label="Shipment actions" className="mt-4">
               <Button size="sm" variant="outline" onClick={() => toast.success("Asked for landed cost")}>Ask for landed cost</Button>
               <Button size="sm" variant="outline" onClick={() => toast.success("Asked for update")}>Request update</Button>
               <ShareLinkButton shipment={s} />
-            </div>
+            </ButtonGroup>
           </Card>
         );
       })}
@@ -390,10 +390,10 @@ function MySuppliers() {
               : <Badge variant="outline" className="text-[10px] border-amber-500/30 text-amber-700">Unverified</Badge>}
           </div>
           <div className="mt-3 text-xs text-muted-foreground">{s.invoices} invoices on file</div>
-          <div className="mt-3 flex gap-2">
+          <ButtonGroup label="Supplier actions" className="mt-3">
             <Button size="sm" variant="outline" onClick={() => toast.success("Verification requested")}>Verify supplier</Button>
             <Button size="sm" variant="ghost" onClick={() => toast.success("Message sent")}><MessageCircle className="h-3.5 w-3.5 mr-1" /> Message</Button>
-          </div>
+          </ButtonGroup>
         </Card>
       ))}
     </div>
@@ -534,9 +534,9 @@ function Assistant() {
           </div>
         ))}
       </div>
-      <div className="mt-4 flex flex-wrap gap-1.5">
+      <ButtonGroup label="Assistant quick prompts" className="mt-4">
         {quick.map((q) => <Button key={q} size="sm" variant="outline" onClick={() => send(q)} className="text-xs">{q}</Button>)}
-      </div>
+      </ButtonGroup>
       <div className="mt-3 flex gap-2">
         <Input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send(input)} placeholder="Type your question…" />
         <Button onClick={() => send(input)} className="bg-primary"><Send className="h-4 w-4" /></Button>
