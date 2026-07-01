@@ -44,12 +44,6 @@ const permissions = [
 
 // Role templates — default grants by role
 const defaults: Record<string, string[]> = {
-  Owner: permissions.flatMap((g) => g.items),
-  Admin: permissions.flatMap((g) => g.items).filter((p) => p !== "manage API keys"),
-  Treasury: ["approve payments", "release escrow", "view financial data", "export reports"],
-  Finance: ["view financial data", "export reports"],
-  Compliance: ["view compliance pack", "approve KYB", "delete documents", "export reports"],
-  Viewer: ["view landed cost", "view financial data", "view compliance pack"],
   "Importer Owner": ["create shipment", "edit shipment", "upload documents", "create trade file", "view landed cost", "approve payments", "manage supplier", "send WhatsApp updates"],
   "Importer Staff": ["create shipment", "upload documents", "send WhatsApp updates"],
   "Procurement Officer": ["create trade file", "manage supplier", "upload documents", "view landed cost"],
@@ -58,11 +52,16 @@ const defaults: Record<string, string[]> = {
   "Supplier Admin": ["upload documents", "manage customer", "view financial data"],
   "Supplier Finance": ["view financial data", "export reports"],
   "Supplier Operations": ["upload documents", "send WhatsApp updates"],
+  "Partner Admin": ["manage customer", "view financial data", "export reports"],
+  "Partner Marketer": ["manage customer", "send WhatsApp updates"],
+  "Partner Finance": ["view financial data", "export reports"],
 };
 
 function Team() {
   const { openInvite } = useActions();
-  const [activeGroup, setActiveGroup] = useState<string>("enterprise");
+  const { workspace, workspaceLabel } = useActiveWorkspace();
+  const activeGroup =
+    roleGroups.find((g) => g.id === workspace) ?? roleGroups[0];
   const [q, setQ] = useState("");
   const [matrix, setMatrix] = useState<Record<string, Record<string, boolean>>>(() => {
     const m: Record<string, Record<string, boolean>> = {};
@@ -74,7 +73,7 @@ function Team() {
     return m;
   });
 
-  const currentGroup = roleGroups.find((g) => g.id === activeGroup)!;
+  const currentGroup = activeGroup;
   const filteredRoles = useMemo(
     () => currentGroup.roles.filter((r) => r.toLowerCase().includes(q.toLowerCase())),
     [currentGroup, q],
@@ -99,9 +98,9 @@ function Team() {
     <div className="space-y-6">
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Team & Roles</h1>
+          <h1 className="text-2xl font-semibold">{workspaceLabel} Team & Roles</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Invite teammates and manage role-based access for your workspace.
+            Invite teammates and manage role-based access for your {workspaceLabel.toLowerCase()} workspace.
           </p>
         </div>
         <div className="flex gap-2">
@@ -114,23 +113,7 @@ function Team() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        {roleGroups.map((g) => {
-          const Icon = g.icon;
-          const active = g.id === activeGroup;
-          return (
-            <button
-              key={g.id}
-              onClick={() => setActiveGroup(g.id)}
-              className={`p-3 rounded-xl border text-left transition ${active ? "border-primary bg-primary/5 shadow-card" : "border-border bg-card hover:bg-secondary/40"}`}
-            >
-              <Icon className={`h-4 w-4 mb-2 ${active ? "text-primary" : "text-muted-foreground"}`} />
-              <div className="text-sm font-semibold">{g.label}</div>
-              <div className="text-[11px] text-muted-foreground">{g.roles.length} roles</div>
-            </button>
-          );
-        })}
-      </div>
+
 
       <Tabs defaultValue="members">
         <TabsList>
