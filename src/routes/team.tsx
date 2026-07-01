@@ -20,18 +20,19 @@ export const Route = createFileRoute("/team")({
 
 const roleGroups = [
   {
-    id: "enterprise", label: "Enterprise", icon: Building2,
-    roles: ["Owner", "Admin", "Treasury", "Finance", "Compliance", "Viewer"],
-  },
-  {
-    id: "importer", label: "Importer", icon: Users2,
+    id: "importer_portal", label: "Importer",
     roles: ["Importer Owner", "Importer Staff", "Procurement Officer", "Logistics Manager", "Accountant"],
   },
   {
-    id: "supplier", label: "Supplier", icon: Factory,
+    id: "supplier_dashboard", label: "Supplier",
     roles: ["Supplier Admin", "Supplier Finance", "Supplier Operations"],
   },
+  {
+    id: "partner_property", label: "Partner",
+    roles: ["Partner Admin", "Partner Marketer", "Partner Finance"],
+  },
 ] as const;
+
 
 const permissions = [
   { group: "Trade", items: ["create shipment", "edit shipment", "upload documents", "delete documents", "create trade file", "view landed cost", "send WhatsApp updates"] },
