@@ -407,6 +407,157 @@ function SupplierPortal() {
         </div>
         )}
 
+        {tab === "fx-quotes" && (
+        <div role="tabpanel" data-state="active" className="space-y-3">
+          <Card className="p-4 space-y-3">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <div className="text-sm font-semibold">FX Quotes</div>
+                <div className="text-xs text-muted-foreground">Generate a quote to see estimated RMB/USD you receive and the NGN amount your buyer pays.</div>
+              </div>
+              <ButtonGroup label="FX quote actions">
+                <Button size="sm" onClick={() => toast.success("FX quote generated")}><Receipt className="h-4 w-4 mr-2" /> Generate FX Quote</Button>
+                <Button size="sm" variant="outline" onClick={() => toast.success("Rate locked for 15 minutes")}><Lock className="h-4 w-4 mr-2" /> Lock Quote</Button>
+                <Button size="sm" variant="outline" onClick={() => selectTab("ngn-details")}><ArrowRight className="h-4 w-4 mr-2" /> Send Quote to Buyer</Button>
+                <Button size="sm" variant="outline" onClick={() => toast.success("Quote refreshed")}><Clock className="h-4 w-4 mr-2" /> Refresh Quote</Button>
+              </ButtonGroup>
+            </div>
+          </Card>
+
+          <Card className="overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-secondary/40 text-[11px] uppercase tracking-wider text-muted-foreground">
+                  <tr>
+                    <th className="text-left py-2 px-3">Quote #</th>
+                    <th className="text-left py-2 px-3">Invoice</th>
+                    <th className="text-right py-2 px-3">Invoice amt</th>
+                    <th className="text-left py-2 px-3">Buyer pays</th>
+                    <th className="text-right py-2 px-3">Est. receivable</th>
+                    <th className="text-right py-2 px-3">Rate</th>
+                    <th className="text-right py-2 px-3">Canta fee</th>
+                    <th className="text-left py-2 px-3">Settlement</th>
+                    <th className="text-left py-2 px-3">Payout acct</th>
+                    <th className="text-left py-2 px-3">Expires</th>
+                    <th className="text-left py-2 px-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {REQUESTS.slice(0, 4).map((r, i) => {
+                    const status = ["Quote Generated","Rate Locked","Buyer Paid","Processing Settlement"][i] ?? "Draft";
+                    const settle = i % 2 === 0 ? "RMB" : "USD";
+                    return (
+                      <tr key={r.id} className="border-t">
+                        <td className="py-2 px-3 font-mono text-xs">FXQ-{3100 + i}</td>
+                        <td className="py-2 px-3 font-mono text-xs">{r.invoiceNumber}</td>
+                        <td className="py-2 px-3 text-right tabular-nums">¥{r.amountRmb.toLocaleString()} <span className="text-[10px] text-muted-foreground">{r.invoiceCurrency}</span></td>
+                        <td className="py-2 px-3 tabular-nums">₦{r.amountNgn.toLocaleString()} <span className="text-[10px] text-muted-foreground">NGN</span></td>
+                        <td className="py-2 px-3 text-right tabular-nums">{settle === "RMB" ? `¥${r.amountRmb.toLocaleString()}` : `$${Math.round(r.amountRmb / 7.2).toLocaleString()}`}</td>
+                        <td className="py-2 px-3 text-right tabular-nums text-xs">{r.rate.toFixed(2)}</td>
+                        <td className="py-2 px-3 text-right tabular-nums text-xs">₦{r.fee.toLocaleString()}</td>
+                        <td className="py-2 px-3 text-xs">{settle}</td>
+                        <td className="py-2 px-3 text-xs">{settle === "RMB" ? "ICBC ****4821" : "Bank of China ****9012"}</td>
+                        <td className="py-2 px-3 text-xs">14m 32s</td>
+                        <td className="py-2 px-3"><Badge className="bg-primary/10 text-primary">{status}</Badge></td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+
+          <Card className="p-3 text-xs text-muted-foreground">
+            Quote statuses: Draft · Quote Generated · Rate Locked · Expired · Buyer Paid · Processing Settlement · Settled · Cancelled
+          </Card>
+          <Card className="p-3 text-[11px] text-muted-foreground italic border-l-4 border-primary/40">{COMPLIANCE_DISCLAIMER}</Card>
+        </div>
+        )}
+
+        {tab === "ngn-details" && (
+        <div role="tabpanel" data-state="active" className="space-y-3">
+          <Card className="p-4 space-y-3">
+            <div className="text-sm font-semibold">Canta NGN payment details for your buyer</div>
+            <div className="text-xs text-muted-foreground">
+              Nigerian buyers pay NGN locally through Canta. Canta handles conversion and settlement backend, then pays the supplier in RMB or USD through approved payout rails.
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              <DetailRow label="Account name" value="Canta Settlement / Guangzhou Tech Factory" />
+              <DetailRow label="Bank name" value="Providus Bank" />
+              <DetailRow label="Account number" value="9901234567" />
+              <DetailRow label="Payment reference" value="CANTA-INV-2026-055" />
+              <DetailRow label="NGN amount to pay" value="₦8,650,000" />
+              <DetailRow label="Payment expiry" value="Today · 23:59 WAT" />
+              <DetailRow label="Linked invoice" value="INV-2026-055" />
+              <DetailRow label="Linked payment request" value="PR-3055" />
+            </div>
+            <Card className="p-3 bg-muted/40 text-xs">
+              <div className="font-semibold mb-1">Buyer instructions</div>
+              Pay the exact NGN amount into the Canta account using the payment reference. Your supplier will receive RMB/USD settlement after payment confirmation, compliance checks, and payout processing.
+            </Card>
+            <ButtonGroup label="Payment detail actions">
+              <Button size="sm" onClick={() => toast.success("Payment details copied")}><FileText className="h-4 w-4 mr-2" /> Copy Payment Details</Button>
+              <Button size="sm" variant="outline" onClick={() => toast.success("Sent to buyer on WhatsApp")}><Phone className="h-4 w-4 mr-2" /> Send on WhatsApp</Button>
+              <Button size="sm" variant="outline" onClick={() => toast.success("Sent to buyer by email")}><Mail className="h-4 w-4 mr-2" /> Send by Email</Button>
+              <Button size="sm" variant="outline" onClick={() => toast.success("Payment instruction PDF downloaded")}><Download className="h-4 w-4 mr-2" /> Download Instruction</Button>
+            </ButtonGroup>
+          </Card>
+          <Card className="p-3 text-[11px] text-muted-foreground italic border-l-4 border-primary/40">{COMPLIANCE_DISCLAIMER}</Card>
+        </div>
+        )}
+
+        {tab === "payout-accounts" && (
+        <div role="tabpanel" data-state="active" className="space-y-3">
+          <Card className="p-4 space-y-3">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <div className="text-sm font-semibold">Supplier payout accounts</div>
+                <div className="text-xs text-muted-foreground">Add RMB and USD accounts to receive settlement from Canta. Unverified accounts cannot receive settlement.</div>
+              </div>
+              <ButtonGroup label="Payout account actions">
+                <Button size="sm" onClick={() => toast.success("Add RMB payout account")}><Landmark className="h-4 w-4 mr-2" /> Add RMB account</Button>
+                <Button size="sm" variant="outline" onClick={() => toast.success("Add USD payout account")}><Landmark className="h-4 w-4 mr-2" /> Add USD account</Button>
+              </ButtonGroup>
+            </div>
+          </Card>
+
+          <div className="grid gap-3 md:grid-cols-2">
+            <PayoutAccountCard
+              currency="RMB"
+              status="Verified"
+              rows={[
+                ["Beneficiary", "Guangzhou Tech Factory Co., Ltd"],
+                ["Bank", "ICBC — Guangzhou Baiyun Branch"],
+                ["Account number", "6222 **** **** 4821"],
+                ["SWIFT", "ICBKCNBJGDG"],
+                ["CNAPS", "102581000026"],
+                ["Beneficiary address", "88 Baiyun Rd, Guangzhou, China"],
+                ["Contact", "Li Wei · +86 138 0000 1234"],
+              ]}
+            />
+            <PayoutAccountCard
+              currency="USD"
+              status="Under Review"
+              rows={[
+                ["Beneficiary", "Guangzhou Tech Factory Co., Ltd"],
+                ["Bank", "Bank of China — Guangdong Branch"],
+                ["Account number", "**** **** 9012"],
+                ["SWIFT", "BKCHCNBJ400"],
+                ["Bank branch", "Guangdong, China"],
+                ["Beneficiary address", "88 Baiyun Rd, Guangzhou, China"],
+                ["Contact", "Li Wei · liwei@gztech.cn"],
+              ]}
+            />
+          </div>
+
+          <Card className="p-3 text-xs text-muted-foreground">
+            Account statuses: Not Submitted · Under Review · Verified · Rejected · Update Required. Supplier cannot receive settlement into an unverified payout account.
+          </Card>
+        </div>
+        )}
+
+
+
         {tab === "invoices" && (
         <div role="tabpanel" data-state="active" className="space-y-3">
           <Card className="p-4 space-y-3">
