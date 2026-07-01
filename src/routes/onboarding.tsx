@@ -52,11 +52,10 @@ const DO_BULLETS: Partial<Record<WorkspaceType, string[]>> = {
 };
 
 const ROUTE_FOR: Partial<Record<WorkspaceType, string>> = {
-  enterprise_treasury: "/merchant/kyb",
-  importer_portal: "/merchant/kyb",
-  freight_workspace: "/merchant/kyb",
-  supplier_dashboard: "/suppliers/kyb",
-  partner_property: "/merchant/kyb",
+  enterprise_treasury: "/treasury",
+  importer_portal: "/importer",
+  freight_workspace: "/freight",
+  partner_property: "/partner",
 };
 
 const VISIBLE: WorkspaceType[] = ["importer_portal", "freight_workspace", "enterprise_treasury", "partner_property"];
