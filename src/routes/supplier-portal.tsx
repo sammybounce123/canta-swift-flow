@@ -46,7 +46,7 @@ function SupplierPortalLayout() {
   return (
     <div className="space-y-6">
       <ReadinessBar
-        status="Supplier Mode"
+        status="Demo Preview"
         cue="Collect NGN from Nigerian buyers · Receive RMB in your wallet · 用人民币结算"
       />
 
