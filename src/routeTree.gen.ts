@@ -38,6 +38,7 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MySuppliersRouteImport } from './routes/my-suppliers'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as LandedCostRouteImport } from './routes/landed-cost'
+import { Route as KybOnboardingRouteImport } from './routes/kyb-onboarding'
 import { Route as InvoicesRouteImport } from './routes/invoices'
 import { Route as IntegrationsRouteImport } from './routes/integrations'
 import { Route as ImporterRouteImport } from './routes/importer'
@@ -238,6 +239,11 @@ const MessagesRoute = MessagesRouteImport.update({
 const LandedCostRoute = LandedCostRouteImport.update({
   id: '/landed-cost',
   path: '/landed-cost',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KybOnboardingRoute = KybOnboardingRouteImport.update({
+  id: '/kyb-onboarding',
+  path: '/kyb-onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InvoicesRoute = InvoicesRouteImport.update({
@@ -546,6 +552,7 @@ export interface FileRoutesByFullPath {
   '/importer': typeof ImporterRouteWithChildren
   '/integrations': typeof IntegrationsRoute
   '/invoices': typeof InvoicesRoute
+  '/kyb-onboarding': typeof KybOnboardingRoute
   '/landed-cost': typeof LandedCostRoute
   '/messages': typeof MessagesRoute
   '/my-suppliers': typeof MySuppliersRoute
@@ -633,6 +640,7 @@ export interface FileRoutesByTo {
   '/importer': typeof ImporterRouteWithChildren
   '/integrations': typeof IntegrationsRoute
   '/invoices': typeof InvoicesRoute
+  '/kyb-onboarding': typeof KybOnboardingRoute
   '/landed-cost': typeof LandedCostRoute
   '/messages': typeof MessagesRoute
   '/my-suppliers': typeof MySuppliersRoute
@@ -718,6 +726,7 @@ export interface FileRoutesById {
   '/importer': typeof ImporterRouteWithChildren
   '/integrations': typeof IntegrationsRoute
   '/invoices': typeof InvoicesRoute
+  '/kyb-onboarding': typeof KybOnboardingRoute
   '/landed-cost': typeof LandedCostRoute
   '/messages': typeof MessagesRoute
   '/my-suppliers': typeof MySuppliersRoute
@@ -807,6 +816,7 @@ export interface FileRouteTypes {
     | '/importer'
     | '/integrations'
     | '/invoices'
+    | '/kyb-onboarding'
     | '/landed-cost'
     | '/messages'
     | '/my-suppliers'
@@ -894,6 +904,7 @@ export interface FileRouteTypes {
     | '/importer'
     | '/integrations'
     | '/invoices'
+    | '/kyb-onboarding'
     | '/landed-cost'
     | '/messages'
     | '/my-suppliers'
@@ -978,6 +989,7 @@ export interface FileRouteTypes {
     | '/importer'
     | '/integrations'
     | '/invoices'
+    | '/kyb-onboarding'
     | '/landed-cost'
     | '/messages'
     | '/my-suppliers'
@@ -1066,6 +1078,7 @@ export interface RootRouteChildren {
   ImporterRoute: typeof ImporterRouteWithChildren
   IntegrationsRoute: typeof IntegrationsRoute
   InvoicesRoute: typeof InvoicesRoute
+  KybOnboardingRoute: typeof KybOnboardingRoute
   LandedCostRoute: typeof LandedCostRoute
   MessagesRoute: typeof MessagesRoute
   MySuppliersRoute: typeof MySuppliersRoute
@@ -1306,6 +1319,13 @@ declare module '@tanstack/react-router' {
       path: '/landed-cost'
       fullPath: '/landed-cost'
       preLoaderRoute: typeof LandedCostRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kyb-onboarding': {
+      id: '/kyb-onboarding'
+      path: '/kyb-onboarding'
+      fullPath: '/kyb-onboarding'
+      preLoaderRoute: typeof KybOnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/invoices': {
@@ -1858,6 +1878,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImporterRoute: ImporterRouteWithChildren,
   IntegrationsRoute: IntegrationsRoute,
   InvoicesRoute: InvoicesRoute,
+  KybOnboardingRoute: KybOnboardingRoute,
   LandedCostRoute: LandedCostRoute,
   MessagesRoute: MessagesRoute,
   MySuppliersRoute: MySuppliersRoute,
