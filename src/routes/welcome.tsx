@@ -56,8 +56,15 @@ function WelcomePage() {
   const choose = (id: WorkspaceType) => {
     const segment = SEGMENTS.find((s) => s.id === id)!;
     saveProfile(segment);
-    toast.success(`Workspace set: ${segment.shortLabel}`);
-    setTimeout(() => navigate({ to: (ROUTE_OVERRIDE[id] ?? segment.route) as never }), 250);
+    const kybDone = typeof window !== "undefined"
+      && window.localStorage.getItem("canta:kyb:" + id) === "done";
+    if (kybDone) {
+      toast.success(`Workspace set: ${segment.shortLabel}`);
+      setTimeout(() => navigate({ to: (ROUTE_OVERRIDE[id] ?? segment.route) as never }), 250);
+    } else {
+      toast.success(`Let's verify your business for ${segment.shortLabel}`);
+      setTimeout(() => navigate({ to: "/kyb-onboarding", search: { workspace: id } as never }), 250);
+    }
   };
 
   return (
