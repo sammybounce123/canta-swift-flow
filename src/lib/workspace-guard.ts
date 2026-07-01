@@ -38,6 +38,7 @@ const SHARED_WORKSPACE_PATHS = new Set([
   "/invoices",
   "/messages",
   "/audit-logs",
+  "/verification",
 ]);
 
 const VALID_CUSTOMER_WORKSPACES = new Set<WorkspaceType>([
@@ -110,7 +111,7 @@ export function workspaceFromPath(pathname: string): WorkspaceType | null {
   if (pathname.startsWith("/partner")) return "partner_property";
   if (pathname.startsWith("/collections") || pathname.startsWith("/merchant") || pathname.startsWith("/payment-links") || pathname.startsWith("/payers") || pathname.startsWith("/reconciliation")) return "global_collections";
   if (pathname.startsWith("/supplier-portal")) return "supplier_dashboard";
-  if (pathname.startsWith("/importer") || pathname.startsWith("/trade-desk") || pathname.startsWith("/my-suppliers") || pathname.startsWith("/landed-cost") || pathname.startsWith("/clearing-quotes")) return "importer_portal";
+  if (pathname.startsWith("/importer") || pathname.startsWith("/trade-desk") || pathname.startsWith("/my-suppliers") || pathname.startsWith("/landed-cost") || pathname.startsWith("/clearing-quotes") || pathname.startsWith("/shipments")) return "importer_portal";
   if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
   if (pathname.startsWith("/suppliers") || pathname.startsWith("/buyers") || pathname.startsWith("/verified-buyers") || pathname.startsWith("/escrow")) return "supplier_dashboard";
   if (pathname === "/cards" || pathname.startsWith("/cards/")) return null;
@@ -149,7 +150,11 @@ export function getSavedCustomerWorkspace(): WorkspaceType | null {
   // Prefer the non-Enterprise value when one side is stale so shared routes do
   // not leak Enterprise identity after a user has selected Importer/Supplier/Partner.
   if (isCustomerWorkspace(savedWorkspace) && isCustomerWorkspace(savedModeWorkspace) && savedWorkspace !== savedModeWorkspace) {
-    const repaired = savedWorkspace === "enterprise_treasury" ? savedModeWorkspace : savedWorkspace;
+    const repaired = savedModeWorkspace !== "enterprise_treasury"
+      ? savedModeWorkspace
+      : savedWorkspace !== "enterprise_treasury"
+        ? savedWorkspace
+        : savedModeWorkspace;
     window.localStorage.setItem(ACTIVE_WORKSPACE_KEY, repaired);
     window.localStorage.setItem("canta:mode", WORKSPACE_TO_MODE[repaired]);
     return repaired;
@@ -176,10 +181,13 @@ export function getSavedCustomerWorkspace(): WorkspaceType | null {
 export function resolveActiveWorkspace(pathname: string, mode: Mode): WorkspaceType | null {
   const pathWorkspace = workspaceFromPath(pathname);
   if (pathWorkspace) return pathWorkspace;
-  const savedWorkspace = getSavedCustomerWorkspace();
-  if (savedWorkspace) return savedWorkspace;
-  if (isSharedWorkspacePath(pathname)) return null;
   const modeWorkspace = MODE_TO_WORKSPACE[mode];
+  const savedWorkspace = getSavedCustomerWorkspace();
+  if (isSharedWorkspacePath(pathname)) {
+    if (savedWorkspace) return savedWorkspace;
+    return isCustomerWorkspace(modeWorkspace) ? modeWorkspace : null;
+  }
+  if (savedWorkspace) return savedWorkspace;
   return isCustomerWorkspace(modeWorkspace) ? modeWorkspace : null;
 }
 
@@ -199,13 +207,10 @@ export function useRequireWorkspace() {
 export function useActiveWorkspace() {
   const { mode } = useMode();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const modeWorkspace = MODE_TO_WORKSPACE[mode];
   const pathWorkspace = workspaceFromPath(pathname);
 
   const resolveWorkspace = () =>
-    pathWorkspace ??
-    getSavedCustomerWorkspace() ??
-    (isSharedWorkspacePath(pathname) ? null : isCustomerWorkspace(modeWorkspace) ? modeWorkspace : null) ??
+    resolveActiveWorkspace(pathname, mode) ??
     "importer_portal";
 
   const [workspace, setWorkspace] = useState<WorkspaceType>(resolveWorkspace);
