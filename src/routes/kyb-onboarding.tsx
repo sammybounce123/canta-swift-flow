@@ -64,21 +64,19 @@ function KybOnboardingPage() {
     { key: "addr", label: "Proof of business address" },
   ];
 
-  function next() {
-    if (step.key === "business" && (!biz.name || !biz.regNo)) {
-      toast.error("Enter your business name and registration number.");
-      return;
-    }
-    if (step.key === "directors" && (!director.name || !director.email)) {
-      toast.error("Enter director name and email.");
-      return;
-    }
-    if (step.key === "documents" && requiredDocs.some((d) => !docs[d.key])) {
-      toast.error("Upload all required documents.");
-      return;
-    }
-    setStepIdx((i) => Math.min(STEPS.length - 1, i + 1));
-  }
+  const emailValid = !director.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(director.email);
+  const errors = {
+    name: !biz.name ? "Add your registered business name so we can verify it." : "",
+    regNo: !biz.regNo ? "Enter your CAC / incorporation number (e.g. RC-1234567)." : "",
+    address: !biz.address ? "A registered address helps speed up verification." : "",
+    dirName: !director.name ? "Add at least one director or beneficial owner." : "",
+    dirEmail: !director.email
+      ? "We'll email verification updates here."
+      : !emailValid ? "That doesn't look like a valid email address." : "",
+  };
+  const missingDocs = requiredDocs.filter((d) => !docs[d.key]);
+
+  function next() { setStepIdx((i) => Math.min(STEPS.length - 1, i + 1)); }
   function back() { setStepIdx((i) => Math.max(0, i - 1)); }
 
   function submit() {
@@ -86,6 +84,9 @@ function KybOnboardingPage() {
     toast.success("KYB submitted — welcome to your workspace.");
     setTimeout(() => navigate({ to: segment.route as never }), 400);
   }
+
+  const fieldError = (msg: string) =>
+    msg ? <p className="text-[11px] text-destructive mt-1">{msg}</p> : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -107,8 +108,7 @@ function KybOnboardingPage() {
             Complete KYB to unlock {segment.shortLabel}
           </h1>
           <p className="text-sm text-muted-foreground mt-2">
-            We need a few details to verify your business before you enter your dashboard.
-            You can save and continue anytime.
+            Fields with warnings are optional for demo access — you can complete them later from Settings.
           </p>
         </div>
 
@@ -132,59 +132,53 @@ function KybOnboardingPage() {
             </div>
             <Button
               size="sm"
-              onClick={() => {
-                if (step.key === "review") submit();
-                else next();
-              }}
+              onClick={() => { if (step.key === "review") submit(); else next(); }}
             >
               Continue KYB <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
         </Card>
 
-        <Card className="p-4 mb-4 shadow-card">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-2 flex-wrap">
-              {STEPS.map((s, i) => {
-                const Icon = s.icon;
-                const active = i === stepIdx;
-                const done = i < stepIdx;
-                return (
-                  <div key={s.key} className={`flex items-center gap-1.5 text-xs px-2 py-1 rounded-md border ${
-                    active ? "border-primary text-primary bg-primary/5"
-                    : done ? "border-success/30 text-success bg-success/10"
-                    : "border-border text-muted-foreground"
-                  }`}>
-                    <Icon className="h-3.5 w-3.5" /> {s.label}
-                  </div>
-                );
-              })}
-            </div>
-            <div className="min-w-[160px] flex-1 max-w-xs">
-              <Progress value={pct} />
-              <div className="text-[11px] text-muted-foreground mt-1">{pct}% complete</div>
-            </div>
-          </div>
-        </Card>
-
         <Card className="p-6 shadow-card">
           {step.key === "business" && (
             <div className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div><Label>Business name</Label><Input value={biz.name} onChange={(e) => setBiz({ ...biz, name: e.target.value })} placeholder="Acme Trading Ltd" /></div>
-                <div><Label>Registration number</Label><Input value={biz.regNo} onChange={(e) => setBiz({ ...biz, regNo: e.target.value })} placeholder="RC-1234567" /></div>
-                <div><Label>Country of incorporation</Label><Input value={biz.country} onChange={(e) => setBiz({ ...biz, country: e.target.value })} /></div>
-                <div><Label>Registered address</Label><Input value={biz.address} onChange={(e) => setBiz({ ...biz, address: e.target.value })} placeholder="Street, City" /></div>
+              <div>
+                <Label>Business name</Label>
+                <Input value={biz.name} onChange={(e) => setBiz({ ...biz, name: e.target.value })} placeholder="Acme Trading Ltd" aria-invalid={!!errors.name} />
+                {fieldError(errors.name)}
+              </div>
+              <div>
+                <Label>Registration number</Label>
+                <Input value={biz.regNo} onChange={(e) => setBiz({ ...biz, regNo: e.target.value })} placeholder="RC-1234567" aria-invalid={!!errors.regNo} />
+                {fieldError(errors.regNo)}
+              </div>
+              <div>
+                <Label>Country of incorporation</Label>
+                <Input value={biz.country} onChange={(e) => setBiz({ ...biz, country: e.target.value })} />
+              </div>
+              <div>
+                <Label>Registered address</Label>
+                <Input value={biz.address} onChange={(e) => setBiz({ ...biz, address: e.target.value })} placeholder="Street, City" aria-invalid={!!errors.address} />
+                {fieldError(errors.address)}
               </div>
             </div>
           )}
 
           {step.key === "directors" && (
             <div className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div><Label>Director / owner name</Label><Input value={director.name} onChange={(e) => setDirector({ ...director, name: e.target.value })} /></div>
-                <div><Label>Email</Label><Input type="email" value={director.email} onChange={(e) => setDirector({ ...director, email: e.target.value })} /></div>
-                <div><Label>Role</Label><Input value={director.role} onChange={(e) => setDirector({ ...director, role: e.target.value })} /></div>
+              <div>
+                <Label>Director / owner name</Label>
+                <Input value={director.name} onChange={(e) => setDirector({ ...director, name: e.target.value })} aria-invalid={!!errors.dirName} />
+                {fieldError(errors.dirName)}
+              </div>
+              <div>
+                <Label>Email</Label>
+                <Input type="email" value={director.email} onChange={(e) => setDirector({ ...director, email: e.target.value })} aria-invalid={!!errors.dirEmail} />
+                {fieldError(errors.dirEmail)}
+              </div>
+              <div>
+                <Label>Role</Label>
+                <Input value={director.role} onChange={(e) => setDirector({ ...director, role: e.target.value })} />
               </div>
               <p className="text-[11px] text-muted-foreground">You can add more directors and beneficial owners after onboarding.</p>
             </div>
@@ -192,30 +186,39 @@ function KybOnboardingPage() {
 
           {step.key === "documents" && (
             <div className="space-y-3">
+              {missingDocs.length > 0 && (
+                <p className="text-[11px] text-muted-foreground">
+                  Uploads are optional for demo — you can add {missingDocs.length} document{missingDocs.length > 1 ? "s" : ""} later from Settings › Verification.
+                </p>
+              )}
               {requiredDocs.map((d) => (
-                <div key={d.key} className="flex items-center justify-between gap-3 p-3 rounded-lg border border-border flex-wrap">
-                  <div className="text-sm font-medium flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-muted-foreground" /> {d.label}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {docs[d.key] ? (
-                      <Badge variant="outline" className="text-[10px] bg-success/15 text-success border-success/30">
-                        <CheckCircle2 className="h-3 w-3 mr-1" /> {docs[d.key]}
-                      </Badge>
-                    ) : null}
-                    <Label className="cursor-pointer">
-                      <input
-                        type="file"
-                        className="hidden"
-                        onChange={(e) => {
-                          const f = e.target.files?.[0];
-                          if (f) setDocs((prev) => ({ ...prev, [d.key]: f.name }));
-                        }}
-                      />
-                      <span className="inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-md border border-border hover:bg-accent/10">
-                        <Upload className="h-3.5 w-3.5" /> {docs[d.key] ? "Replace" : "Upload"}
-                      </span>
-                    </Label>
+                <div key={d.key} className="flex flex-col gap-2 p-3 rounded-lg border border-border">
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <div className="text-sm font-medium flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-muted-foreground" /> {d.label}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {docs[d.key] ? (
+                        <Badge variant="outline" className="text-[10px] bg-success/15 text-success border-success/30">
+                          <CheckCircle2 className="h-3 w-3 mr-1" /> {docs[d.key]}
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="text-[10px] text-muted-foreground">Not uploaded</Badge>
+                      )}
+                      <Label className="cursor-pointer">
+                        <input
+                          type="file"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) setDocs((prev) => ({ ...prev, [d.key]: f.name }));
+                          }}
+                        />
+                        <span className="inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-md border border-border hover:bg-accent/10">
+                          <Upload className="h-3.5 w-3.5" /> {docs[d.key] ? "Replace" : "Upload"}
+                        </span>
+                      </Label>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -238,13 +241,13 @@ function KybOnboardingPage() {
                   {requiredDocs.map((d) => (
                     <li key={d.key} className="flex justify-between">
                       <span>{d.label}</span>
-                      <span className="text-muted-foreground">{docs[d.key] ?? "—"}</span>
+                      <span className="text-muted-foreground">{docs[d.key] ?? "Skipped"}</span>
                     </li>
                   ))}
                 </ul>
               </div>
               <p className="text-[11px] text-muted-foreground">
-                By submitting you confirm the information provided is accurate. After submission you'll be taken to your {segment.shortLabel} dashboard.
+                Submitting will unlock your {segment.shortLabel} dashboard. Any skipped items can be completed later from Settings › Verification.
               </p>
             </div>
           )}
