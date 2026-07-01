@@ -107,6 +107,11 @@ function write<T>(key: string, value: T) {
   }
 }
 
+// Fixed 2026 timestamps so demo data never renders as 1969/1970 even if
+// Date.now() returns 0 in a snapshot / SSR edge case.
+const T0 = new Date("2026-08-14T09:00:00Z").getTime();
+const iso = (offsetHrs: number) => new Date(T0 + offsetHrs * 3600_000).toISOString();
+
 const SEED_REQUESTS: ClearingRequest[] = [
   {
     id: "CQR-2031",
@@ -126,13 +131,13 @@ const SEED_REQUESTS: ClearingRequest[] = [
     notes: "Need PAAR support and warehouse drop in Ikeja.",
     documents: ["Supplier invoice", "Packing list", "Bill of lading", "Form M"],
     status: "In Workflow",
-    createdAt: new Date(Date.now() - 36 * 3600_000).toISOString(),
+    createdAt: iso(-36),
     selectedBidId: "BID-7703",
     workflow: [
-      { status: "Agent Selected", at: new Date(Date.now() - 30 * 3600_000).toISOString(), actor: "Importer", note: "Importer accepted Harbour Trust Logistics bid and authorised clearing." },
-      { status: "Documents Requested", at: new Date(Date.now() - 28 * 3600_000).toISOString(), actor: "Agent", note: "Form M, PAAR, SONCAP, and insurance certificate requested." },
-      { status: "Documents Submitted", at: new Date(Date.now() - 24 * 3600_000).toISOString(), actor: "Importer" },
-      { status: "Clearing Started", at: new Date(Date.now() - 18 * 3600_000).toISOString(), actor: "Agent", note: "Filing lodged at Apapa command." },
+      { status: "Agent Selected", at: iso(-30), actor: "Importer", note: "Importer accepted Harbour Trust Logistics bid and authorised clearing." },
+      { status: "Documents Requested", at: iso(-28), actor: "Agent", note: "Form M, PAAR, SONCAP, and insurance certificate requested." },
+      { status: "Documents Submitted", at: iso(-24), actor: "Importer" },
+      { status: "Clearing Started", at: iso(-18), actor: "Agent", note: "Filing lodged at Apapa command." },
     ],
   },
   {
@@ -151,7 +156,7 @@ const SEED_REQUESTS: ClearingRequest[] = [
     preferredTimeline: "Standard",
     documents: ["Supplier invoice", "Packing list", "Bill of lading"],
     status: "Bids Received",
-    createdAt: new Date(Date.now() - 10 * 3600_000).toISOString(),
+    createdAt: iso(-10),
     workflow: [],
   },
 ];
@@ -173,7 +178,7 @@ const SEED_BIDS: ClearingBid[] = [
     requiredDocs: ["Form M", "PAAR", "SONCAP"],
     terms: "50% upfront, 50% on release. Demurrage billed at cost.",
     notes: "Strong on Apapa. Can drop at Ikeja warehouse.",
-    expiresAt: new Date(Date.now() + 72 * 3600_000).toISOString(),
+    expiresAt: iso(72),
     status: "Not Selected",
     portCoverage: "Apapa, Tin Can",
   },
@@ -193,7 +198,7 @@ const SEED_BIDS: ClearingBid[] = [
     requiredDocs: ["Form M", "PAAR"],
     terms: "Full payment on PAAR issuance.",
     notes: "Lowest fee. Delivery not included.",
-    expiresAt: new Date(Date.now() + 48 * 3600_000).toISOString(),
+    expiresAt: iso(48),
     status: "Not Selected",
     portCoverage: "Apapa, Tin Can, Onne",
   },
@@ -213,14 +218,14 @@ const SEED_BIDS: ClearingBid[] = [
     requiredDocs: ["Form M", "PAAR", "SONCAP", "Insurance certificate"],
     terms: "30% upfront, milestones at PAAR, release, and delivery.",
     notes: "Premium service, top rated. Includes inspection support.",
-    expiresAt: new Date(Date.now() + 96 * 3600_000).toISOString(),
+    expiresAt: iso(96),
     status: "Accepted",
     portCoverage: "Apapa, Tin Can, Onne, Port Harcourt",
   },
 ];
 
 const LS_SEED_VERSION = "canta:clearing:seedVersion";
-const SEED_VERSION = "5";
+const SEED_VERSION = "6";
 
 const SEED_REQUEST_IDS = new Set(SEED_REQUESTS.map((r) => r.id));
 const SEED_BID_IDS = new Set(SEED_BIDS.map((b) => b.id));
