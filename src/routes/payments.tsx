@@ -69,11 +69,18 @@ function PaymentsPage() {
   ), [q, tab, kind]);
 
   const stats = useMemo(() => {
-    const paid = PAYMENTS.filter((p) => p.status === "Paid").reduce((a, b) => a + b.amount, 0);
-    const scheduled = PAYMENTS.filter((p) => p.status === "Scheduled").reduce((a, b) => a + b.amount, 0);
-    const pending = PAYMENTS.filter((p) => p.status === "Pending approval").reduce((a, b) => a + b.amount, 0);
-    const failed = PAYMENTS.filter((p) => p.status === "Failed").length;
-    return { paid, scheduled, pending, failed };
+    const supplierPayments = PAYMENTS.filter((p) => p.kind === "Supplier");
+    const ngnPaid = supplierPayments
+      .filter((p) => p.status === "Paid")
+      .reduce((a, b) => a + b.amount * 1600, 0);
+    const rmbProcessing = supplierPayments
+      .filter((p) => p.status === "Scheduled" || p.status === "Pending approval")
+      .reduce((a, b) => a + b.amount * 7.2, 0);
+    const rmbPaidToSupplier = supplierPayments
+      .filter((p) => p.status === "Paid")
+      .reduce((a, b) => a + b.amount * 7.2, 0);
+    const receiptsAvailable = supplierPayments.filter((p) => p.status === "Paid").length;
+    return { ngnPaid, rmbProcessing, rmbPaidToSupplier, receiptsAvailable };
   }, []);
 
   return (
@@ -81,35 +88,32 @@ function PaymentsPage() {
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:flex-wrap sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
-            <Receipt className="h-5 w-5 text-primary shrink-0" /> Payments
+            <Receipt className="h-5 w-5 text-primary shrink-0" /> Supplier Payments
           </h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            Pay suppliers, forwarders and customs. Track every payment against its trade file or shipment.
+            Pay suppliers in RMB against each trade file. Track NGN funded, RMB processing, RMB paid to supplier, and receipts available.
           </p>
         </div>
         <div className="flex gap-2 shrink-0">
-          <Button variant="outline" onClick={() => toast.success("Exported payments report")}>
+          <Button variant="outline" onClick={() => toast.success("Exported supplier payments report")}>
             <Download className="h-4 w-4 mr-1.5" /> Export
           </Button>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button><Plus className="h-4 w-4 mr-1.5" /> New payment</Button>
+              <Button><Plus className="h-4 w-4 mr-1.5" /> Pay supplier</Button>
             </DialogTrigger>
             <NewPaymentDialog onClose={() => setOpen(false)} />
           </Dialog>
         </div>
       </header>
 
-
-
-
-
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <Stat label="Paid (last 30 days)" value={fmtMoney(stats.paid, "USD")} icon={<CheckCircle2 className="h-3.5 w-3.5 text-success" />} tone="text-success" />
-        <Stat label="Scheduled" value={fmtMoney(stats.scheduled, "USD")} icon={<Clock className="h-3.5 w-3.5 text-primary" />} />
-        <Stat label="Pending approval" value={fmtMoney(stats.pending, "USD")} icon={<AlertCircle className="h-3.5 w-3.5 text-amber-600" />} tone="text-amber-600" />
-        <Stat label="Failed" value={String(stats.failed)} icon={<AlertCircle className="h-3.5 w-3.5 text-destructive" />} tone={stats.failed ? "text-destructive" : ""} />
+        <Stat label="NGN paid" value={fmtMoney(stats.ngnPaid, "NGN")} icon={<CheckCircle2 className="h-3.5 w-3.5 text-success" />} tone="text-success" />
+        <Stat label="RMB processing" value={fmtMoney(stats.rmbProcessing, "RMB")} icon={<Clock className="h-3.5 w-3.5 text-primary" />} />
+        <Stat label="RMB paid to supplier" value={fmtMoney(stats.rmbPaidToSupplier, "RMB")} icon={<CheckCircle2 className="h-3.5 w-3.5 text-success" />} tone="text-success" />
+        <Stat label="Receipts available" value={String(stats.receiptsAvailable)} icon={<FileText className="h-3.5 w-3.5 text-primary" />} />
       </div>
+
 
       <Card className="p-4 shadow-card">
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
