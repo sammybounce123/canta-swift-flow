@@ -98,7 +98,7 @@ function Team() {
         <div>
           <h1 className="text-2xl font-semibold">Team & Roles</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Manage role-based access across enterprises, importers, freight, suppliers, merchants and Canta internal teams.
+            Invite teammates and manage role-based access for your workspace.
           </p>
         </div>
         <div className="flex gap-2">
