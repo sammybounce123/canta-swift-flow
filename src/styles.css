@@ -188,6 +188,7 @@
     max-width: 100%;
     min-width: 0;
     overflow: visible;
+    white-space: normal !important;
   }
 
   [data-canta-tabs-trigger="true"],
@@ -202,15 +203,37 @@
     text-align: center;
     overflow-wrap: anywhere;
     border-radius: 0.375rem;
+    cursor: pointer;
+  }
+
+  [data-canta-tabs-trigger="true"]:hover,
+  [role="tab"]:hover {
+    border-color: color-mix(in oklab, var(--color-primary) 50%, transparent) !important;
+    background-color: var(--color-secondary) !important;
+    color: var(--color-foreground) !important;
+  }
+
+  [data-canta-tabs-trigger="true"]:focus-visible,
+  [role="tab"]:focus-visible {
+    outline: 2px solid var(--color-ring) !important;
+    outline-offset: 2px !important;
+  }
+
+  [data-canta-tabs-trigger="true"][data-state="active"],
+  [role="tab"][data-state="active"] {
+    border-color: var(--color-primary) !important;
+    background-color: var(--color-primary) !important;
+    color: var(--color-primary-foreground) !important;
   }
 
   [data-canta-action-group="true"],
   [data-canta-button-group="true"] {
     display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)) !important;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)) !important;
     gap: 0.5rem !important;
     width: 100%;
     min-width: 0;
+    white-space: normal !important;
   }
 
   [data-canta-button-group="true"] {
@@ -230,12 +253,26 @@
     white-space: normal !important;
     text-align: left;
     overflow-wrap: anywhere;
+    cursor: pointer;
+  }
+
+  [data-canta-button="true"] {
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    cursor: pointer;
   }
 
   :is(.flex, .inline-flex):has(> [data-canta-button="true"]),
   :is(.flex, .inline-flex):has(> a[data-canta-button="true"]) {
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+
+  :is(.flex, .inline-flex):has(> [data-canta-button="true"]) > [data-canta-button="true"],
+  :is(.flex, .inline-flex):has(> a[data-canta-button="true"]) > a[data-canta-button="true"] {
+    flex: 0 1 auto !important;
+    min-width: max-content;
+    max-width: 100%;
   }
 }
 
