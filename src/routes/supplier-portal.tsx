@@ -783,18 +783,6 @@ function SupplierPortal() {
         </div>
         )}
 
-        {tab === "support" && (
-        <div role="tabpanel" data-state="active">
-          <Card className="p-4 space-y-3 text-sm">
-            <div className="font-semibold">Supplier support</div>
-            <div className="text-muted-foreground">Get help with buyer payment requests, invoice documents, verification, and RMB settlement receipts.</div>
-            <ButtonGroup label="Supplier support actions">
-              <Button size="sm" variant="outline">Open support ticket</Button>
-              <Button size="sm" variant="outline">Message Canta</Button>
-            </ButtonGroup>
-          </Card>
-        </div>
-        )}
       </section>
 
       <Dialog open={!!invite} onOpenChange={(o) => !o && setInvite(null)}>
