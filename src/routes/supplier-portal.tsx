@@ -209,7 +209,7 @@ function SupplierPortal() {
         </div>
 
         {tab === "overview" && (
-        <div role="tabpanel" className="space-y-4">
+        <div role="tabpanel" data-state="active" className="space-y-4">
           <Card className="p-5">
             <div className="text-sm font-semibold mb-3">Most recent payment request</div>
             <SettlementTimeline currentIndex={5} />
@@ -222,7 +222,7 @@ function SupplierPortal() {
         )}
 
         {tab === "buyers" && (
-        <div role="tabpanel">
+        <div role="tabpanel" data-state="active">
           <Card className="p-4">
             <div className="text-xs text-muted-foreground mb-3">Nigerian buyers who have transacted with you on Canta.</div>
             <div className="divide-y">
@@ -241,7 +241,7 @@ function SupplierPortal() {
         )}
 
         {tab === "requests" && (
-        <div role="tabpanel" className="space-y-3">
+        <div role="tabpanel" data-state="active" className="space-y-3">
           <ButtonGroup label="Payment request actions">
             <Button size="sm" onClick={() => setInvite("request")}><Receipt className="h-4 w-4 mr-2" /> Create payment request</Button>
             <Button size="sm" variant="outline" onClick={() => toast.success("Buyer payment status refreshed")}><Clock className="h-4 w-4 mr-2" /> View buyer payment status</Button>
@@ -251,7 +251,7 @@ function SupplierPortal() {
         )}
 
         {tab === "invoices" && (
-        <div role="tabpanel" className="space-y-3">
+        <div role="tabpanel" data-state="active" className="space-y-3">
           <Card className="p-4 space-y-3">
             <div className="text-sm font-semibold">Invoices &amp; shipping documents</div>
             <div className="text-xs text-muted-foreground">Invoices link to each payment request. Upload proforma, commercial invoice and packing list per Trade File.</div>
@@ -265,7 +265,7 @@ function SupplierPortal() {
         )}
 
         {tab === "settlement" && (
-        <div role="tabpanel" className="space-y-3">
+        <div role="tabpanel" data-state="active" className="space-y-3">
           <Card className="p-4 space-y-3">
             <div className="text-sm font-semibold">RMB settlement statuses</div>
             <div className="flex flex-wrap gap-2 text-xs">
@@ -284,7 +284,7 @@ function SupplierPortal() {
         )}
 
         {tab === "trade-files" && (
-        <div role="tabpanel">
+        <div role="tabpanel" data-state="active">
           <Card className="p-4 space-y-3 text-sm">
             <div className="text-muted-foreground">You can only see Trade Files where you have been invited as a supplier.</div>
             {Array.from(new Set(REQUESTS.map((r) => r.tradeFile))).map((tf) => (
@@ -301,7 +301,7 @@ function SupplierPortal() {
         )}
 
         {tab === "documents" && (
-        <div role="tabpanel">
+        <div role="tabpanel" data-state="active">
           <Card className="p-4 space-y-3">
             <div className="text-sm font-semibold">Documents on file</div>
             <Button size="sm" variant="outline"><Upload className="h-4 w-4 mr-2" /> Upload document</Button>
@@ -315,7 +315,7 @@ function SupplierPortal() {
         )}
 
         {tab === "messages" && (
-        <div role="tabpanel">
+        <div role="tabpanel" data-state="active">
           <Card className="p-4 text-sm">
             <div className="text-muted-foreground mb-2">Messages are scoped to each Trade File. You only see communication related to your invoices.</div>
             <div className="border rounded-lg p-3">
@@ -327,7 +327,7 @@ function SupplierPortal() {
         )}
 
         {tab === "verification" && (
-        <div role="tabpanel">
+        <div role="tabpanel" data-state="active">
           <Card className="p-4 space-y-3">
             <div className="text-sm font-semibold">Verification checklist</div>
             <ul className="text-sm space-y-2">
@@ -346,7 +346,7 @@ function SupplierPortal() {
         )}
 
         {tab === "support" && (
-        <div role="tabpanel">
+        <div role="tabpanel" data-state="active">
           <Card className="p-4 space-y-3 text-sm">
             <div className="font-semibold">Supplier support</div>
             <div className="text-muted-foreground">Get help with buyer payment requests, invoice documents, verification, and RMB settlement receipts.</div>
