@@ -12,7 +12,7 @@ import { loadProfile, getSidebarForWorkspace, defaultFlagsFor, type SidebarItem 
 import { useMode, ALL_MODES, MODE_DISPLAY_LABEL, type Mode } from "@/components/ModeProvider";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { PARTNER_ROLES, PARTNER_ORG, MARKETERS, setActivePartnerUser } from "@/lib/partner";
-import { resolveActiveWorkspace, saveActiveWorkspace } from "@/lib/workspace-guard";
+import { resolveActiveWorkspace, saveActiveWorkspace, workspaceFromPath } from "@/lib/workspace-guard";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -95,33 +95,6 @@ const WORKSPACE_PROFILES: Record<import("@/lib/profile").WorkspaceType, Workspac
   global_spend_cards:  { name: "Adaeze Okonkwo", initials: "AO", title: "Treasury Admin",           badge: "Enterprise Treasury Mode" },
   canta_ops:           { name: "Ezekiel Oni",    initials: "EO", title: "Canta Operations Admin", badge: "Canta Ops Mode" },
 };
-
-// Derive workspace from the current pathname so visiting a workspace's routes
-// always renders that workspace's sidebar/topbar/badge, regardless of saved mode.
-function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceType | null {
-  if (pathname.startsWith("/partner")) return "partner_property";
-  if (pathname.startsWith("/collections") || pathname.startsWith("/payment-links") ||
-      pathname.startsWith("/payers") || pathname.startsWith("/reconciliation") ||
-      pathname.startsWith("/merchant")) return "global_collections";
-  if (pathname.startsWith("/supplier-portal")) return "supplier_dashboard";
-  if (pathname.startsWith("/importer") || pathname.startsWith("/trade-desk") ||
-      pathname.startsWith("/my-suppliers") ||
-      pathname.startsWith("/landed-cost") || pathname.startsWith("/clearing-quotes")) return "importer_portal";
-
-  if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
-  if (pathname.startsWith("/suppliers") || pathname.startsWith("/buyers") ||
-      pathname.startsWith("/verified-buyers") || pathname.startsWith("/escrow")) return "supplier_dashboard";
-  if (pathname.startsWith("/receipts") || pathname.startsWith("/spend-controls") ||
-      pathname.startsWith("/wallet-funding")) return null;
-  if (pathname.startsWith("/treasury") || pathname.startsWith("/wallets") ||
-      pathname.startsWith("/fx") || pathname.startsWith("/beneficiaries")) return "enterprise_treasury";
-  // /whatsapp, /support, /reports, /compliance, /approvals, /audit-logs,
-  // /integrations follow the saved active customer mode. No internal/Canta Ops
-  // fallback for direct visits — these are customer-facing surfaces.
-  return null;
-}
-
-
 
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   const { role } = useRole();
