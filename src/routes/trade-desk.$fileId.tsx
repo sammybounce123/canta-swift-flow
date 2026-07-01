@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,13 +9,12 @@ import { tradeFiles, shipmentMilestones, fmtMoney } from "@/lib/mock";
 import {
   ArrowLeft, FileText, FileCheck2, Calculator, Activity, Clock, CheckCircle2,
   AlertTriangle, Upload, Ship, MapPin, Building2, Factory, Truck, Calendar, Sparkles,
-  Shield, MessageCircle, Send,
+  Shield, MessageCircle, Send, UserPlus, Mail, LinkIcon, Eye, Banknote,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { ImporterActions } from "@/components/ImporterActions";
 import { ReadinessBar } from "@/components/ReadinessBar";
-import { ButtonGroup } from "@/components/ui/action-group";
+import { ActionButton, ActionGroup, ButtonGroup } from "@/components/ui/action-group";
 
 export const Route = createFileRoute("/trade-desk/$fileId")({
   head: ({ params }) => ({ meta: [{ title: `${params.fileId} · Trade Desk — Canta` }] }),
@@ -29,6 +28,7 @@ export const Route = createFileRoute("/trade-desk/$fileId")({
 
 function TradeFileDetail() {
   const { fileId } = Route.useParams();
+  const navigate = useNavigate();
   const file = tradeFiles.find((f) => f.id === fileId);
   if (!file) throw notFound();
 
@@ -70,18 +70,7 @@ function TradeFileDetail() {
 
       <Card className="p-4 shadow-card">
         <div className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Quick actions on this trade file</div>
-        <ImporterActions
-          variant="tradefile"
-          ctx={{
-            tradeFileId: file.id,
-            supplier: file.supplier,
-            origin: file.origin,
-            destination: file.destination,
-            eta: file.eta,
-            invoiceAmount: file.invoiceValue,
-            currency: file.ccy,
-          }}
-        />
+        <TradeFileActions fileId={file.id} supplier={file.supplier} onNavigate={navigate} />
       </Card>
       </div>
 
@@ -325,6 +314,91 @@ function TradeFileDetail() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+function TradeFileActions({
+  fileId,
+  supplier,
+  onNavigate,
+}: {
+  fileId: string;
+  supplier: string;
+  onNavigate: ReturnType<typeof useNavigate>;
+}) {
+  const supplierPortal = () => onNavigate({ to: "/supplier-portal" });
+  const actions = [
+    {
+      label: "Request Clearing Quotes",
+      icon: Send,
+      element: (
+        <ActionButton asChild variant="outline">
+          <Link to="/clearing-quotes" search={{ file: fileId, request: undefined }}>
+            <Send className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>Request Clearing Quotes</span>
+          </Link>
+        </ActionButton>
+      ),
+    },
+    {
+      label: "Compare Clearing Agent Bids",
+      icon: Calculator,
+      element: (
+        <ActionButton asChild variant="outline">
+          <Link to="/clearing-quotes" search={{ file: fileId, request: undefined }}>
+            <Calculator className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>Compare Clearing Agent Bids</span>
+          </Link>
+        </ActionButton>
+      ),
+    },
+    {
+      label: "Select Clearing Agent",
+      icon: CheckCircle2,
+      element: (
+        <ActionButton asChild variant="outline">
+          <Link to="/clearing-quotes" search={{ file: fileId, request: undefined }}>
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>Select Clearing Agent</span>
+          </Link>
+        </ActionButton>
+      ),
+    },
+    {
+      label: "Track Clearing Workflow",
+      icon: Activity,
+      element: (
+        <ActionButton asChild variant="outline">
+          <Link to="/clearing-quotes" search={{ file: fileId, request: undefined }}>
+            <Activity className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>Track Clearing Workflow</span>
+          </Link>
+        </ActionButton>
+      ),
+    },
+    { label: "Add Supplier", icon: UserPlus, onClick: () => { supplierPortal(); toast.message(`Opening Supplier Portal to add ${supplier}`); } },
+    { label: "Invite Supplier", icon: Mail, onClick: () => { supplierPortal(); toast.message(`Invite ${supplier} from the Supplier Portal`); } },
+    { label: "Link Supplier Payment Request", icon: LinkIcon, onClick: () => { supplierPortal(); toast.message("Link a supplier payment request to this trade file"); } },
+    { label: "View Supplier Payment Status", icon: Eye, onClick: () => { supplierPortal(); toast.message("Opening supplier payment status"); } },
+    { label: "Open Supplier Portal Preview", icon: Building2, onClick: supplierPortal },
+    { label: "View Supplier RMB Settlement", icon: Banknote, onClick: () => { supplierPortal(); toast.message("Opening RMB settlement details"); } },
+    { label: "Pay Supplier", icon: FileCheck2, onClick: () => toast.success("Supplier payment initiated for NGN collection") },
+    { label: "Send WhatsApp Update", icon: MessageCircle, onClick: () => toast.success("WhatsApp update requested") },
+  ];
+
+  return (
+    <ActionGroup label="Trade file requested actions">
+      {actions.map((action) => {
+        if (action.element) return <div key={action.label} className="contents">{action.element}</div>;
+        const Icon = action.icon;
+        return (
+          <ActionButton key={action.label} type="button" variant="outline" onClick={action.onClick}>
+            <Icon className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{action.label}</span>
+          </ActionButton>
+        );
+      })}
+    </ActionGroup>
   );
 }
 
