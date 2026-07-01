@@ -46,29 +46,30 @@ function SupplierPortalLayout() {
   return (
     <div className="space-y-6">
       <ReadinessBar
-        status="Demo Preview"
-        cue="Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta."
+        status="Supplier Mode"
+        cue="Collect NGN from Nigerian buyers · Receive RMB in your wallet · 用人民币结算"
       />
 
       <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <Badge variant="outline" className="gap-1"><Factory className="h-3 w-3" /> Supplier Portal · Invite-only access</Badge>
-          <h1 className="text-2xl font-semibold tracking-tight mt-2">Welcome, Li Wei</h1>
+          <Badge variant="outline" className="gap-1"><Factory className="h-3 w-3" /> Supplier Portal · 供应商门户</Badge>
+          <h1 className="text-2xl font-semibold tracking-tight mt-2">欢迎, Li Wei 👋</h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta. Suppliers only <strong>receive</strong> funds — no outbound payments from this portal.
+            Your Nigerian buyers pay in NGN. Canta settles you in <strong>RMB directly into your RMB wallet</strong>. You only receive — no outbound payments.
+            <br />
+            <span className="text-xs">尼日利亚买家用奈拉付款，Canta 将人民币结算至您的钱包。</span>
           </p>
           <div className="flex flex-wrap items-center gap-2 mt-2">
             <Badge className="text-xs bg-primary/10 text-primary border-primary/30">Li Wei · Supplier Admin</Badge>
-            <Badge variant="secondary" className="text-xs">Supplier Mode</Badge>
-            <Badge variant="outline" className="text-xs">Guangzhou Tech Factory</Badge>
+            <Badge variant="outline" className="text-xs">Guangzhou Tech Factory · 广州</Badge>
           </div>
         </div>
         <ButtonGroup label="Supplier portal actions" className="w-auto justify-start md:justify-end">
           <Button variant="outline" size="sm" onClick={() => setInvite("buyer")}>
-            <Users className="h-4 w-4 mr-2" /> Add Nigerian buyer
+            <Users className="h-4 w-4 mr-2" /> Add buyer 添加买家
           </Button>
           <Button size="sm" onClick={() => setInvite("request")}>
-            <Receipt className="h-4 w-4 mr-2" /> New payment request
+            <Receipt className="h-4 w-4 mr-2" /> New payment request 新建收款
           </Button>
         </ButtonGroup>
       </header>
@@ -77,27 +78,22 @@ function SupplierPortalLayout() {
         <Card className="p-4 border-amber-300 bg-amber-50 text-amber-900 flex items-start gap-3">
           <Lock className="h-5 w-5 shrink-0 mt-0.5" />
           <div className="text-sm flex-1">
-            <div className="font-semibold">Complete supplier verification to receive RMB settlement.</div>
-            <div className="text-xs mt-1">You can view invited payment requests and upload documents now. RMB payouts unlock after verification.</div>
+            <div className="font-semibold">Verify your business to unlock RMB payouts · 完成认证以解锁人民币结算</div>
+            <div className="text-xs mt-1">You can view requests and upload documents now. RMB wallet payouts unlock after verification.</div>
           </div>
           <Button size="sm" variant="outline" onClick={() => { verifiedStore.set(true); toast.success("Verification simulated — RMB payouts enabled"); }}>
-            Complete verification
+            Verify now
           </Button>
         </Card>
       )}
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-3">
-        <KPI label="Active FX Quotes" value={String(activeQuoteCount)} icon={Receipt} />
-        <KPI label="Quotes Awaiting Buyer Payment" value={String(totals.pending)} icon={Clock} />
-        <KPI label="NGN Received Awaiting Settlement" value={`₦${(totals.ngnHeld / 1_000_000).toFixed(1)}M`} icon={Wallet} />
-        <KPI label="RMB Settlement Pending" value="¥42,300" icon={Landmark} />
-        <KPI label="USD Settlement Pending" value="$0" icon={Landmark} />
-        <KPI label="Settled This Month" value={`¥${totals.rmbPaid.toLocaleString()}`} icon={CheckCircle2} />
-        <KPI label="Active Nigerian Buyers" value={String(totals.buyers)} icon={Users} />
-        <KPI label="Payout Accounts Verified" value="1 of 2" icon={ShieldCheck} />
-        <KPI label="Documents Required" value="2" icon={FileText} />
-        <KPI label="Verification Status" value={verified ? "Verified" : "Pending"} icon={ShieldCheck} />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <KPI label="RMB Wallet Balance · 钱包余额" value="¥128,400" icon={Wallet} />
+        <KPI label="Awaiting Settlement · 待结算" value={`¥${(totals.ngnHeld / 204).toLocaleString(undefined,{maximumFractionDigits:0})}`} icon={Clock} />
+        <KPI label="Active Payment Requests · 收款中" value={String(totals.pending + activeQuoteCount)} icon={Receipt} />
+        <KPI label="Nigerian Buyers · 买家" value={String(totals.buyers)} icon={Users} />
       </div>
+
 
       <Card className="p-3 text-[11px] text-muted-foreground italic border-l-4 border-primary/40">
         {COMPLIANCE_DISCLAIMER}
