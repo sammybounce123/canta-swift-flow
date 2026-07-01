@@ -104,10 +104,15 @@ function SupplierPortal() {
       <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
           <Badge variant="outline" className="gap-1"><Factory className="h-3 w-3" /> Supplier Portal · Invite-only access</Badge>
-          <h1 className="text-2xl font-semibold tracking-tight mt-2">Welcome, Guangzhou Tech Factory</h1>
+          <h1 className="text-2xl font-semibold tracking-tight mt-2">Welcome, Li Wei</h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
             Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta.
           </p>
+          <div className="flex flex-wrap items-center gap-2 mt-2">
+            <Badge className="text-xs bg-primary/10 text-primary border-primary/30">Li Wei · Supplier Admin</Badge>
+            <Badge variant="secondary" className="text-xs">Supplier Mode</Badge>
+            <Badge variant="outline" className="text-xs">Guangzhou Tech Factory</Badge>
+          </div>
         </div>
         <ButtonGroup label="Supplier portal actions" className="w-auto justify-start md:justify-end">
           <Button variant="outline" size="sm" onClick={() => setInvite("buyer")}>
