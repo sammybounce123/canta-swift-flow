@@ -12,7 +12,7 @@ import { loadProfile, getSidebarForWorkspace, defaultFlagsFor, type SidebarItem 
 import { useMode, ALL_MODES, MODE_DISPLAY_LABEL, type Mode } from "@/components/ModeProvider";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { PARTNER_ROLES, PARTNER_ORG, MARKETERS, setActivePartnerUser } from "@/lib/partner";
-import { getSavedCustomerWorkspace, saveActiveWorkspace } from "@/lib/workspace-guard";
+import { resolveActiveWorkspace, saveActiveWorkspace } from "@/lib/workspace-guard";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -138,7 +138,7 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
   const { mode, setMode } = useMode();
   const userProfile = loadProfile();
   const pathWorkspace = workspaceFromPath(pathname);
-  const workspace = pathWorkspace ?? getSavedCustomerWorkspace() ?? MODE_TO_WORKSPACE[mode] ?? userProfile?.workspace_type ?? "enterprise_treasury";
+  const workspace = pathWorkspace ?? resolveActiveWorkspace(pathname, mode) ?? userProfile?.workspace_type ?? "importer_portal";
   // Persist the active workspace whenever the user lands on any workspace-scoped
   // route (direct URL visit, refresh, or link click). Without this, shared
   // routes like /reports, /support and /whatsapp silently fall back to
@@ -279,7 +279,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   // Derive the active workspace from path first, then fall back to saved mode.
   const pathWorkspace = workspaceFromPath(pathname);
-  const activeWorkspace = pathWorkspace ?? getSavedCustomerWorkspace() ?? MODE_TO_WORKSPACE[mode] ?? "enterprise_treasury";
+  const activeWorkspace = pathWorkspace ?? resolveActiveWorkspace(pathname, mode) ?? "importer_portal";
   const displayMode: Mode = WORKSPACE_TO_MODE[activeWorkspace];
 
   // Persist the inferred mode so other surfaces (dashboard hero, etc.) follow.
