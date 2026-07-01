@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { UserPlus, Check, Search, Sparkles, Shield, Users2, Building2, Factory } from "lucide-react";
+import { UserPlus, Check, Search, Sparkles, Shield } from "lucide-react";
 import { team } from "@/lib/mock";
 import { useActions } from "@/components/ActionsProvider";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { useMemo, useState, Fragment } from "react";
+import { useActiveWorkspace } from "@/lib/workspace-guard";
+
 
 export const Route = createFileRoute("/team")({
   head: () => ({ meta: [{ title: "Team & Roles — Canta" }] }),
