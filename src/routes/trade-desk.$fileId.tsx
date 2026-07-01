@@ -327,55 +327,12 @@ function TradeFileActions({
   onNavigate: ReturnType<typeof useNavigate>;
 }) {
   const supplierPortal = () => onNavigate({ to: "/supplier-portal" });
+  const clearingQuotes = () => onNavigate({ to: "/clearing-quotes", search: { file: fileId, request: undefined } });
   const actions = [
-    {
-      label: "Request Clearing Quotes",
-      icon: Send,
-      element: (
-        <ActionButton asChild variant="outline">
-          <Link to="/clearing-quotes" search={{ file: fileId, request: undefined }}>
-            <Send className="mt-0.5 h-4 w-4 shrink-0" />
-            <span>Request Clearing Quotes</span>
-          </Link>
-        </ActionButton>
-      ),
-    },
-    {
-      label: "Compare Clearing Agent Bids",
-      icon: Calculator,
-      element: (
-        <ActionButton asChild variant="outline">
-          <Link to="/clearing-quotes" search={{ file: fileId, request: undefined }}>
-            <Calculator className="mt-0.5 h-4 w-4 shrink-0" />
-            <span>Compare Clearing Agent Bids</span>
-          </Link>
-        </ActionButton>
-      ),
-    },
-    {
-      label: "Select Clearing Agent",
-      icon: CheckCircle2,
-      element: (
-        <ActionButton asChild variant="outline">
-          <Link to="/clearing-quotes" search={{ file: fileId, request: undefined }}>
-            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
-            <span>Select Clearing Agent</span>
-          </Link>
-        </ActionButton>
-      ),
-    },
-    {
-      label: "Track Clearing Workflow",
-      icon: Activity,
-      element: (
-        <ActionButton asChild variant="outline">
-          <Link to="/clearing-quotes" search={{ file: fileId, request: undefined }}>
-            <Activity className="mt-0.5 h-4 w-4 shrink-0" />
-            <span>Track Clearing Workflow</span>
-          </Link>
-        </ActionButton>
-      ),
-    },
+    { label: "Request Clearing Quotes", icon: Send, onClick: clearingQuotes },
+    { label: "Compare Clearing Agent Bids", icon: Calculator, onClick: clearingQuotes },
+    { label: "Select Clearing Agent", icon: CheckCircle2, onClick: clearingQuotes },
+    { label: "Track Clearing Workflow", icon: Activity, onClick: clearingQuotes },
     { label: "Add Supplier", icon: UserPlus, onClick: () => { supplierPortal(); toast.message(`Opening Supplier Portal to add ${supplier}`); } },
     { label: "Invite Supplier", icon: Mail, onClick: () => { supplierPortal(); toast.message(`Invite ${supplier} from the Supplier Portal`); } },
     { label: "Link Supplier Payment Request", icon: LinkIcon, onClick: () => { supplierPortal(); toast.message("Link a supplier payment request to this trade file"); } },
@@ -389,7 +346,6 @@ function TradeFileActions({
   return (
     <ActionGroup label="Trade file requested actions">
       {actions.map((action) => {
-        if (action.element) return <div key={action.label} className="contents">{action.element}</div>;
         const Icon = action.icon;
         return (
           <ActionButton key={action.label} type="button" variant="outline" onClick={action.onClick}>
