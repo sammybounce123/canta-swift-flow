@@ -10,8 +10,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Factory, Users, Receipt, Wallet, FileText, ShieldCheck,
-  ArrowRight, CheckCircle2, Clock, Lock, Landmark,
+  Factory, Users, Receipt, Wallet,
+  ArrowRight, Clock, Lock,
 } from "lucide-react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
