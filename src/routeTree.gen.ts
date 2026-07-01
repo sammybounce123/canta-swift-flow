@@ -72,6 +72,7 @@ import { Route as TradeDeskFileIdRouteImport } from './routes/trade-desk.$fileId
 import { Route as TrackIdRouteImport } from './routes/track.$id'
 import { Route as SuppliersProfileRouteImport } from './routes/suppliers.profile'
 import { Route as SuppliersKybRouteImport } from './routes/suppliers.kyb'
+import { Route as SupplierPortalWalletRouteImport } from './routes/supplier-portal.wallet'
 import { Route as SupplierPortalVerificationRouteImport } from './routes/supplier-portal.verification'
 import { Route as SupplierPortalTradeFilesRouteImport } from './routes/supplier-portal.trade-files'
 import { Route as SupplierPortalSupportRouteImport } from './routes/supplier-portal.support'
@@ -424,6 +425,11 @@ const SuppliersKybRoute = SuppliersKybRouteImport.update({
   path: '/kyb',
   getParentRoute: () => SuppliersRoute,
 } as any)
+const SupplierPortalWalletRoute = SupplierPortalWalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => SupplierPortalRoute,
+} as any)
 const SupplierPortalVerificationRoute =
   SupplierPortalVerificationRouteImport.update({
     id: '/verification',
@@ -699,6 +705,7 @@ export interface FileRoutesByFullPath {
   '/supplier-portal/support': typeof SupplierPortalSupportRoute
   '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
   '/supplier-portal/verification': typeof SupplierPortalVerificationRoute
+  '/supplier-portal/wallet': typeof SupplierPortalWalletRoute
   '/suppliers/kyb': typeof SuppliersKybRoute
   '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
@@ -796,6 +803,7 @@ export interface FileRoutesByTo {
   '/supplier-portal/support': typeof SupplierPortalSupportRoute
   '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
   '/supplier-portal/verification': typeof SupplierPortalVerificationRoute
+  '/supplier-portal/wallet': typeof SupplierPortalWalletRoute
   '/suppliers/kyb': typeof SuppliersKybRoute
   '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
@@ -898,6 +906,7 @@ export interface FileRoutesById {
   '/supplier-portal/support': typeof SupplierPortalSupportRoute
   '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
   '/supplier-portal/verification': typeof SupplierPortalVerificationRoute
+  '/supplier-portal/wallet': typeof SupplierPortalWalletRoute
   '/suppliers/kyb': typeof SuppliersKybRoute
   '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
@@ -1001,6 +1010,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/support'
     | '/supplier-portal/trade-files'
     | '/supplier-portal/verification'
+    | '/supplier-portal/wallet'
     | '/suppliers/kyb'
     | '/suppliers/profile'
     | '/track/$id'
@@ -1098,6 +1108,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/support'
     | '/supplier-portal/trade-files'
     | '/supplier-portal/verification'
+    | '/supplier-portal/wallet'
     | '/suppliers/kyb'
     | '/suppliers/profile'
     | '/track/$id'
@@ -1199,6 +1210,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/support'
     | '/supplier-portal/trade-files'
     | '/supplier-portal/verification'
+    | '/supplier-portal/wallet'
     | '/suppliers/kyb'
     | '/suppliers/profile'
     | '/track/$id'
@@ -1718,6 +1730,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuppliersKybRouteImport
       parentRoute: typeof SuppliersRoute
     }
+    '/supplier-portal/wallet': {
+      id: '/supplier-portal/wallet'
+      path: '/wallet'
+      fullPath: '/supplier-portal/wallet'
+      preLoaderRoute: typeof SupplierPortalWalletRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
     '/supplier-portal/verification': {
       id: '/supplier-portal/verification'
       path: '/verification'
@@ -2076,6 +2095,7 @@ interface SupplierPortalRouteChildren {
   SupplierPortalSupportRoute: typeof SupplierPortalSupportRoute
   SupplierPortalTradeFilesRoute: typeof SupplierPortalTradeFilesRoute
   SupplierPortalVerificationRoute: typeof SupplierPortalVerificationRoute
+  SupplierPortalWalletRoute: typeof SupplierPortalWalletRoute
   SupplierPortalIndexRoute: typeof SupplierPortalIndexRoute
 }
 
@@ -2092,6 +2112,7 @@ const SupplierPortalRouteChildren: SupplierPortalRouteChildren = {
   SupplierPortalSupportRoute: SupplierPortalSupportRoute,
   SupplierPortalTradeFilesRoute: SupplierPortalTradeFilesRoute,
   SupplierPortalVerificationRoute: SupplierPortalVerificationRoute,
+  SupplierPortalWalletRoute: SupplierPortalWalletRoute,
   SupplierPortalIndexRoute: SupplierPortalIndexRoute,
 }
 

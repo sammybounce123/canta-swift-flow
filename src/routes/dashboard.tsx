@@ -167,11 +167,7 @@ function Dashboard() {
                   <Send className="h-4 w-4 mr-1.5" /> Send Payment
                 </Button>
               </div>
-            ) : (
-              <div className="mt-6 text-xs text-primary-foreground/70 bg-white/5 border border-white/10 rounded-lg px-3 py-2 inline-flex items-center gap-2">
-                Your role ({role}) doesn't allow initiating transactions.
-              </div>
-            )}
+            ) : null}
           </div>
         </Card>
 
