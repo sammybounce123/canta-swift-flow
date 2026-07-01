@@ -124,7 +124,7 @@ function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceT
 
 
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
-  const { role, profile } = useRole();
+  const { role } = useRole();
   const { mode, setMode } = useMode();
   const userProfile = loadProfile();
   const pathWorkspace = workspaceFromPath(pathname);
@@ -261,7 +261,7 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { role, setRole, profile } = useRole();
+  const { role, setRole } = useRole();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { mode, setMode } = useMode();
   const partner = usePartnerRole();
