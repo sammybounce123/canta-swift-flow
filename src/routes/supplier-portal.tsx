@@ -22,6 +22,9 @@ type SupplierTab =
   | "overview"
   | "buyers"
   | "requests"
+  | "fx-quotes"
+  | "ngn-details"
+  | "payout-accounts"
   | "invoices"
   | "settlement"
   | "trade-files"
@@ -34,8 +37,11 @@ const SUPPLIER_TABS: Array<{ value: SupplierTab; label: string }> = [
   { value: "overview", label: "Overview" },
   { value: "buyers", label: "Nigerian Buyers" },
   { value: "requests", label: "Payment Requests" },
+  { value: "fx-quotes", label: "FX Quotes" },
+  { value: "ngn-details", label: "NGN Payment Details" },
+  { value: "payout-accounts", label: "Payout Accounts" },
   { value: "invoices", label: "Invoices" },
-  { value: "settlement", label: "RMB Settlement" },
+  { value: "settlement", label: "RMB / USD Settlement" },
   { value: "trade-files", label: "Trade Files" },
   { value: "documents", label: "Documents" },
   { value: "messages", label: "Messages" },
