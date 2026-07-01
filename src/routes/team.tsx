@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { UserPlus, Check, Search, Sparkles, Shield, Users2, Building2, Truck, Factory, Globe, ShieldCheck } from "lucide-react";
+import { UserPlus, Check, Search, Sparkles, Shield, Users2, Building2, Factory } from "lucide-react";
 import { team } from "@/lib/mock";
 import { useActions } from "@/components/ActionsProvider";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -26,26 +26,14 @@ const roleGroups = [
     roles: ["Importer Owner", "Importer Staff", "Procurement Officer", "Logistics Manager", "Accountant"],
   },
   {
-    id: "freight", label: "Freight", icon: Truck,
-    roles: ["Freight Forwarder Admin", "Freight Operations Manager", "Freight Customer Support", "Warehouse Staff", "Clearing Agent"],
-  },
-  {
     id: "supplier", label: "Supplier", icon: Factory,
     roles: ["Supplier Admin", "Supplier Finance", "Supplier Operations"],
-  },
-  {
-    id: "merchant", label: "Global Merchant", icon: Globe,
-    roles: ["Merchant Admin", "Merchant Finance", "Merchant Support"],
-  },
-  {
-    id: "canta", label: "Canta Internal", icon: ShieldCheck,
-    roles: ["Canta Super Admin", "Canta Trade Officer", "Canta Compliance Officer", "Canta Treasury Officer", "Canta Sales Agent", "Canta Support Agent"],
   },
 ] as const;
 
 const permissions = [
   { group: "Trade", items: ["create shipment", "edit shipment", "upload documents", "delete documents", "create trade file", "view landed cost", "send WhatsApp updates"] },
-  { group: "Finance", items: ["approve payments", "release escrow", "view financial data", "create payment link", "export reports"] },
+  { group: "Finance", items: ["approve payments", "release escrow", "view financial data", "export reports"] },
   { group: "Counterparties", items: ["manage supplier", "manage customer"] },
   { group: "Compliance", items: ["view compliance pack", "approve KYB"] },
   { group: "Platform", items: ["manage API keys"] },
@@ -55,8 +43,8 @@ const permissions = [
 const defaults: Record<string, string[]> = {
   Owner: permissions.flatMap((g) => g.items),
   Admin: permissions.flatMap((g) => g.items).filter((p) => p !== "manage API keys"),
-  Treasury: ["approve payments", "release escrow", "view financial data", "export reports", "create payment link"],
-  Finance: ["view financial data", "create payment link", "export reports"],
+  Treasury: ["approve payments", "release escrow", "view financial data", "export reports"],
+  Finance: ["view financial data", "export reports"],
   Compliance: ["view compliance pack", "approve KYB", "delete documents", "export reports"],
   Viewer: ["view landed cost", "view financial data", "view compliance pack"],
   "Importer Owner": ["create shipment", "edit shipment", "upload documents", "create trade file", "view landed cost", "approve payments", "manage supplier", "send WhatsApp updates"],
@@ -64,23 +52,9 @@ const defaults: Record<string, string[]> = {
   "Procurement Officer": ["create trade file", "manage supplier", "upload documents", "view landed cost"],
   "Logistics Manager": ["edit shipment", "create shipment", "send WhatsApp updates", "upload documents"],
   Accountant: ["view financial data", "export reports", "view landed cost"],
-  "Freight Forwarder Admin": ["create shipment", "edit shipment", "upload documents", "manage customer", "create payment link", "approve payments", "export reports"],
-  "Freight Operations Manager": ["edit shipment", "create shipment", "upload documents", "send WhatsApp updates"],
-  "Freight Customer Support": ["send WhatsApp updates", "upload documents"],
-  "Warehouse Staff": ["upload documents", "edit shipment"],
-  "Clearing Agent": ["upload documents", "edit shipment", "view landed cost"],
-  "Supplier Admin": ["upload documents", "create payment link", "manage customer", "view financial data"],
-  "Supplier Finance": ["view financial data", "create payment link", "export reports"],
+  "Supplier Admin": ["upload documents", "manage customer", "view financial data"],
+  "Supplier Finance": ["view financial data", "export reports"],
   "Supplier Operations": ["upload documents", "send WhatsApp updates"],
-  "Merchant Admin": ["create payment link", "manage customer", "view financial data", "export reports", "manage API keys"],
-  "Merchant Finance": ["view financial data", "export reports", "create payment link"],
-  "Merchant Support": ["send WhatsApp updates", "manage customer"],
-  "Canta Super Admin": permissions.flatMap((g) => g.items),
-  "Canta Trade Officer": ["create trade file", "edit shipment", "send WhatsApp updates", "upload documents", "manage supplier", "manage customer"],
-  "Canta Compliance Officer": ["view compliance pack", "approve KYB", "delete documents", "export reports"],
-  "Canta Treasury Officer": ["approve payments", "release escrow", "view financial data", "export reports"],
-  "Canta Sales Agent": ["manage customer", "send WhatsApp updates"],
-  "Canta Support Agent": ["send WhatsApp updates", "manage customer"],
 };
 
 function Team() {
@@ -124,7 +98,7 @@ function Team() {
         <div>
           <h1 className="text-2xl font-semibold">Team & Roles</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Manage role-based access across enterprises, importers, freight, suppliers, merchants and Canta internal teams.
+            Invite teammates and manage role-based access for your workspace.
           </p>
         </div>
         <div className="flex gap-2">
@@ -137,7 +111,7 @@ function Team() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {roleGroups.map((g) => {
           const Icon = g.icon;
           const active = g.id === activeGroup;
