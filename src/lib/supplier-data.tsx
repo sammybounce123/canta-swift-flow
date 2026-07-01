@@ -75,19 +75,14 @@ export const COMPLIANCE_DISCLAIMER =
   "FX quotes, settlement amounts, and payout timelines are subject to payment confirmation, compliance review, FX availability, partner rails, and applicable regulations.";
 
 export const SUPPLIER_TABS: Array<{ to: string; label: string }> = [
-  { to: "/supplier-portal",                    label: "Overview" },
-  { to: "/supplier-portal/buyers",             label: "Nigerian Buyers" },
-  { to: "/supplier-portal/requests",           label: "Payment Requests" },
-  { to: "/supplier-portal/fx-quotes",          label: "FX Quotes" },
-  { to: "/supplier-portal/ngn-details",        label: "NGN Payment Details" },
-  { to: "/supplier-portal/payout-accounts",    label: "Payout Accounts" },
-  { to: "/supplier-portal/invoices",           label: "Invoices" },
-  { to: "/supplier-portal/settlement",         label: "RMB / USD Settlement" },
-  { to: "/supplier-portal/trade-files",        label: "Trade Files" },
-  { to: "/supplier-portal/documents",          label: "Documents" },
-  { to: "/supplier-portal/messages",           label: "Messages" },
-  { to: "/supplier-portal/verification",       label: "Verification" },
-  { to: "/supplier-portal/support",            label: "Support" },
+  { to: "/supplier-portal",                    label: "Overview 首页" },
+  { to: "/supplier-portal/buyers",             label: "Nigerian Buyers 尼日利亚买家" },
+  { to: "/supplier-portal/requests",           label: "Payment Requests 收款请求" },
+  { to: "/supplier-portal/wallet",             label: "RMB Wallet 人民币钱包" },
+  { to: "/supplier-portal/invoices",           label: "Invoices 发票" },
+  { to: "/supplier-portal/documents",          label: "Documents 文件" },
+  { to: "/supplier-portal/verification",       label: "Verification 认证" },
+  { to: "/supplier-portal/support",            label: "Support 支持" },
 ];
 
 // --- Verification store ------------------------------------------------------
