@@ -12,7 +12,7 @@ import { loadProfile, getSidebarForWorkspace, defaultFlagsFor, type SidebarItem 
 import { useMode, ALL_MODES, MODE_DISPLAY_LABEL, type Mode } from "@/components/ModeProvider";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { PARTNER_ROLES, PARTNER_ORG, MARKETERS, setActivePartnerUser } from "@/lib/partner";
-import { getSavedCustomerWorkspace, saveActiveWorkspace } from "@/lib/workspace-guard";
+import { resolveActiveWorkspace, saveActiveWorkspace } from "@/lib/workspace-guard";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -70,16 +70,6 @@ function FxTicker() {
   );
 }
 
-const MODE_TO_WORKSPACE: Record<Mode, import("@/lib/profile").WorkspaceType> = {
-  "Enterprise Treasury": "enterprise_treasury",
-  "Importer": "importer_portal",
-  "Freight Forwarder": "freight_workspace",
-  "Supplier": "supplier_dashboard",
-  "Global Merchant": "global_collections",
-  "Partner Property": "partner_property",
-  "Canta Ops": "canta_ops",
-};
-
 const WORKSPACE_TO_MODE: Record<import("@/lib/profile").WorkspaceType, Mode> = {
   enterprise_treasury: "Enterprise Treasury",
   importer_portal: "Importer",
@@ -134,11 +124,11 @@ function workspaceFromPath(pathname: string): import("@/lib/profile").WorkspaceT
 
 
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
-  const { role, profile } = useRole();
+  const { role } = useRole();
   const { mode, setMode } = useMode();
   const userProfile = loadProfile();
   const pathWorkspace = workspaceFromPath(pathname);
-  const workspace = pathWorkspace ?? getSavedCustomerWorkspace() ?? MODE_TO_WORKSPACE[mode] ?? userProfile?.workspace_type ?? "enterprise_treasury";
+  const workspace = pathWorkspace ?? resolveActiveWorkspace(pathname, mode) ?? "importer_portal";
   // Persist the active workspace whenever the user lands on any workspace-scoped
   // route (direct URL visit, refresh, or link click). Without this, shared
   // routes like /reports, /support and /whatsapp silently fall back to
@@ -157,9 +147,8 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
   const isPartner = workspace === "partner_property";
   const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
   const wsProfile = WORKSPACE_PROFILES[workspace];
-  // Enterprise Treasury still respects the role-based identity so role-switching demos work there.
-  const displayName = workspace === "enterprise_treasury" ? profile.name : wsProfile.name;
-  const displayTitle = workspace === "enterprise_treasury" ? `${role} · ${profile.title}` : wsProfile.title;
+  const displayName = wsProfile.name;
+  const displayTitle = wsProfile.title;
 
 
   return (
@@ -272,14 +261,14 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { role, setRole, profile } = useRole();
+  const { role, setRole } = useRole();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { mode, setMode } = useMode();
   const partner = usePartnerRole();
 
   // Derive the active workspace from path first, then fall back to saved mode.
   const pathWorkspace = workspaceFromPath(pathname);
-  const activeWorkspace = pathWorkspace ?? getSavedCustomerWorkspace() ?? MODE_TO_WORKSPACE[mode] ?? "enterprise_treasury";
+  const activeWorkspace = pathWorkspace ?? resolveActiveWorkspace(pathname, mode) ?? "importer_portal";
   const displayMode: Mode = WORKSPACE_TO_MODE[activeWorkspace];
 
   // Persist the inferred mode so other surfaces (dashboard hero, etc.) follow.
@@ -294,10 +283,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
   const partnerInitials = partner.user ? partner.user.name.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase() : "BC";
   const wsProfile = WORKSPACE_PROFILES[activeWorkspace];
-  const isEnterprise = activeWorkspace === "enterprise_treasury";
-  const tbName = isEnterprise ? profile.name : wsProfile.name;
-  const tbInitials = isEnterprise ? profile.initials : wsProfile.initials;
-  const tbTitle = isEnterprise ? `${role} · ${profile.title}` : wsProfile.title;
+  const tbName = wsProfile.name;
+  const tbInitials = wsProfile.initials;
+  const tbTitle = wsProfile.title;
 
 
   return (

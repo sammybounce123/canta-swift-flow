@@ -35,6 +35,7 @@ import { Route as PartnerRouteImport } from './routes/partner'
 import { Route as OrganizationRouteImport } from './routes/organization'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MySuppliersRouteImport } from './routes/my-suppliers'
+import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as LandedCostRouteImport } from './routes/landed-cost'
 import { Route as InvoicesRouteImport } from './routes/invoices'
 import { Route as IntegrationsRouteImport } from './routes/integrations'
@@ -221,6 +222,11 @@ const OnboardingRoute = OnboardingRouteImport.update({
 const MySuppliersRoute = MySuppliersRouteImport.update({
   id: '/my-suppliers',
   path: '/my-suppliers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LandedCostRoute = LandedCostRouteImport.update({
@@ -535,6 +541,7 @@ export interface FileRoutesByFullPath {
   '/integrations': typeof IntegrationsRoute
   '/invoices': typeof InvoicesRoute
   '/landed-cost': typeof LandedCostRoute
+  '/messages': typeof MessagesRoute
   '/my-suppliers': typeof MySuppliersRoute
   '/onboarding': typeof OnboardingRoute
   '/organization': typeof OrganizationRoute
@@ -620,6 +627,7 @@ export interface FileRoutesByTo {
   '/integrations': typeof IntegrationsRoute
   '/invoices': typeof InvoicesRoute
   '/landed-cost': typeof LandedCostRoute
+  '/messages': typeof MessagesRoute
   '/my-suppliers': typeof MySuppliersRoute
   '/onboarding': typeof OnboardingRoute
   '/organization': typeof OrganizationRoute
@@ -703,6 +711,7 @@ export interface FileRoutesById {
   '/integrations': typeof IntegrationsRoute
   '/invoices': typeof InvoicesRoute
   '/landed-cost': typeof LandedCostRoute
+  '/messages': typeof MessagesRoute
   '/my-suppliers': typeof MySuppliersRoute
   '/onboarding': typeof OnboardingRoute
   '/organization': typeof OrganizationRoute
@@ -790,6 +799,7 @@ export interface FileRouteTypes {
     | '/integrations'
     | '/invoices'
     | '/landed-cost'
+    | '/messages'
     | '/my-suppliers'
     | '/onboarding'
     | '/organization'
@@ -875,6 +885,7 @@ export interface FileRouteTypes {
     | '/integrations'
     | '/invoices'
     | '/landed-cost'
+    | '/messages'
     | '/my-suppliers'
     | '/onboarding'
     | '/organization'
@@ -957,6 +968,7 @@ export interface FileRouteTypes {
     | '/integrations'
     | '/invoices'
     | '/landed-cost'
+    | '/messages'
     | '/my-suppliers'
     | '/onboarding'
     | '/organization'
@@ -1043,6 +1055,7 @@ export interface RootRouteChildren {
   IntegrationsRoute: typeof IntegrationsRoute
   InvoicesRoute: typeof InvoicesRoute
   LandedCostRoute: typeof LandedCostRoute
+  MessagesRoute: typeof MessagesRoute
   MySuppliersRoute: typeof MySuppliersRoute
   OnboardingRoute: typeof OnboardingRoute
   OrganizationRoute: typeof OrganizationRoute
@@ -1259,6 +1272,13 @@ declare module '@tanstack/react-router' {
       path: '/my-suppliers'
       fullPath: '/my-suppliers'
       preLoaderRoute: typeof MySuppliersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/landed-cost': {
@@ -1819,6 +1839,7 @@ const rootRouteChildren: RootRouteChildren = {
   IntegrationsRoute: IntegrationsRoute,
   InvoicesRoute: InvoicesRoute,
   LandedCostRoute: LandedCostRoute,
+  MessagesRoute: MessagesRoute,
   MySuppliersRoute: MySuppliersRoute,
   OnboardingRoute: OnboardingRoute,
   OrganizationRoute: OrganizationRoute,
@@ -1855,13 +1876,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
