@@ -116,13 +116,8 @@ function Settings() {
             { name: "Supplier payment", threshold: "USD 50,000", chain: "Finance → Treasury → Compliance" },
             { name: "New beneficiary", threshold: "Always", chain: "Compliance KYB → Treasury" },
             { name: "Escrow release", threshold: "Always", chain: "Document review → Treasury" },
-            { name: "Freight invoice approval", threshold: "USD 10,000", chain: "Operations → Finance" },
-            { name: "Expense policy update", threshold: "Always", chain: "Admin → Finance" },
-            { name: "High-value FX conversion", threshold: "USD 250,000", chain: "Treasury → Owner" },
-            { name: "Global collection settlement", threshold: "USD 100,000", chain: "Reconciliation → Finance" },
             { name: "Document approval", threshold: "Sensitive docs", chain: "Trade Officer → Compliance" },
-            { name: "Compliance approval", threshold: "Risk ≥ 70", chain: "Compliance → Super Admin" },
-            { name: "Trade finance request", threshold: "Always", chain: "Credit → Risk → Treasury" },
+            { name: "High-value FX conversion", threshold: "USD 250,000", chain: "Treasury → Owner" },
           ].map((w) => (
             <div key={w.name} className="p-3 rounded-lg border border-border bg-secondary/30 flex items-start justify-between gap-3">
               <div className="min-w-0">
