@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,39 @@ import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
 import { ButtonGroup } from "@/components/ui/action-group";
 
+type SupplierTab =
+  | "overview"
+  | "buyers"
+  | "requests"
+  | "invoices"
+  | "settlement"
+  | "trade-files"
+  | "documents"
+  | "messages"
+  | "verification"
+  | "support";
+
+const SUPPLIER_TABS: Array<{ value: SupplierTab; label: string }> = [
+  { value: "overview", label: "Overview" },
+  { value: "buyers", label: "Nigerian Buyers" },
+  { value: "requests", label: "Payment Requests" },
+  { value: "invoices", label: "Invoices" },
+  { value: "settlement", label: "RMB Settlement" },
+  { value: "trade-files", label: "Trade Files" },
+  { value: "documents", label: "Documents" },
+  { value: "messages", label: "Messages" },
+  { value: "verification", label: "Verification" },
+  { value: "support", label: "Support" },
+];
+
+function coerceSupplierTab(value: unknown): SupplierTab {
+  return typeof value === "string" && SUPPLIER_TABS.some((item) => item.value === value)
+    ? value as SupplierTab
+    : "overview";
+}
+
 export const Route = createFileRoute("/supplier-portal")({
+  validateSearch: (search) => ({ tab: coerceSupplierTab(search.tab) }),
   head: () => ({ meta: [{ title: "Supplier Portal — Canta" }] }),
   component: SupplierPortal,
 });
@@ -72,38 +104,24 @@ const TIMELINE_STEPS = [
   "Settlement Receipt Available",
 ];
 
-type SupplierTab =
-  | "overview"
-  | "buyers"
-  | "requests"
-  | "invoices"
-  | "settlement"
-  | "trade-files"
-  | "documents"
-  | "messages"
-  | "verification"
-  | "support";
-
-const SUPPLIER_TABS: Array<{ value: SupplierTab; label: string }> = [
-  { value: "overview", label: "Overview" },
-  { value: "buyers", label: "Nigerian Buyers" },
-  { value: "requests", label: "Payment Requests" },
-  { value: "invoices", label: "Invoices" },
-  { value: "settlement", label: "RMB Settlement" },
-  { value: "trade-files", label: "Trade Files" },
-  { value: "documents", label: "Documents" },
-  { value: "messages", label: "Messages" },
-  { value: "verification", label: "Verification" },
-  { value: "support", label: "Support" },
-];
-
 // --- Component ---------------------------------------------------------------
 
 function SupplierPortal() {
+  const { tab: routeTab } = Route.useSearch();
+  const navigate = useNavigate();
   const [verified, setVerified] = useState(false);
-  const [tab, setTab] = useState<SupplierTab>("overview");
+  const [tab, setTab] = useState<SupplierTab>(routeTab);
   const [search] = useState("");
   const [invite, setInvite] = useState<null | "buyer" | "request">(null);
+
+  useEffect(() => {
+    setTab(routeTab);
+  }, [routeTab]);
+
+  const selectTab = (next: SupplierTab) => {
+    setTab(next);
+    void navigate({ to: "/supplier-portal", search: { tab: next } as never, replace: true });
+  };
 
   const filtered = useMemo(
     () => REQUESTS.filter((r) => !search || r.buyer.toLowerCase().includes(search.toLowerCase())),
@@ -182,7 +200,7 @@ function SupplierPortal() {
                 aria-selected={active}
                 data-state={active ? "active" : "inactive"}
                 className={`inline-flex min-h-10 max-w-full flex-none shrink-0 items-center justify-center whitespace-normal break-words rounded-md border px-3 py-2 text-center text-sm font-medium leading-snug transition-all hover:border-primary/50 hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${active ? "border-primary bg-primary text-primary-foreground shadow-sm" : "border-border bg-background/80"}`}
-                onClick={() => setTab(item.value)}
+                onClick={() => selectTab(item.value)}
               >
                 {item.label}
               </button>
