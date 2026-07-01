@@ -288,7 +288,7 @@ function SupplierPortal() {
       )}
 
       <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-3">
-        <KPI label="Active FX Quotes" value="3" icon={Receipt} />
+        <KPI label="Active FX Quotes" value={String(activeQuoteCount)} icon={Receipt} />
         <KPI label="Quotes Awaiting Buyer Payment" value={String(totals.pending)} icon={Clock} />
         <KPI label="NGN Received Awaiting Settlement" value={`₦${(totals.ngnHeld / 1_000_000).toFixed(1)}M`} icon={Wallet} />
         <KPI label="RMB Settlement Pending" value="¥42,300" icon={Landmark} />
