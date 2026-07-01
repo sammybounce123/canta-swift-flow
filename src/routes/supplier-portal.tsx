@@ -139,6 +139,89 @@ function SupplierPortal() {
   const [search] = useState("");
   const [invite, setInvite] = useState<null | "buyer" | "request">(null);
 
+  // --- FX Quote state ---
+  type FxQuoteStatus = "Draft" | "Quote Generated" | "Rate Locked" | "Sent to Buyer" | "Expired" | "Buyer Paid" | "Processing Settlement" | "Settled" | "Cancelled";
+  type FxQuote = {
+    id: string; invoiceNumber: string; buyer: string;
+    invoiceAmount: number; invoiceCurrency: "RMB" | "USD";
+    settlementCurrency: "RMB" | "USD"; rate: number; ngnTotal: number;
+    fee: number; estReceivable: number; payoutAccount: string;
+    expiresAt: number; lockedUntil?: number; status: FxQuoteStatus;
+    sentAt?: number;
+  };
+  const buildQuote = (r: Request, seq: number, statusOverride?: FxQuoteStatus): FxQuote => {
+    const settlementCurrency: "RMB" | "USD" = seq % 2 === 0 ? "RMB" : "USD";
+    const jitter = (Math.random() - 0.5) * 0.6;
+    const rate = +(r.rate + jitter).toFixed(2);
+    const ngnTotal = Math.round(r.amountRmb * rate);
+    const estReceivable = settlementCurrency === "RMB" ? r.amountRmb : Math.round(r.amountRmb / 7.2);
+    return {
+      id: `FXQ-${3100 + seq}`, invoiceNumber: r.invoiceNumber, buyer: r.buyer,
+      invoiceAmount: r.amountRmb, invoiceCurrency: r.invoiceCurrency,
+      settlementCurrency, rate, ngnTotal, fee: r.fee, estReceivable,
+      payoutAccount: settlementCurrency === "RMB" ? "ICBC ****4821" : "Bank of China ****9012",
+      expiresAt: Date.now() + 15 * 60 * 1000,
+      status: statusOverride ?? "Quote Generated",
+    };
+  };
+  const [fxQuotes, setFxQuotes] = useState<FxQuote[]>(() => {
+    const seeded: FxQuoteStatus[] = ["Quote Generated", "Rate Locked", "Buyer Paid", "Processing Settlement"];
+    return REQUESTS.slice(0, 4).map((r, i) => {
+      const q = buildQuote(r, i, seeded[i]);
+      if (q.status === "Rate Locked") q.lockedUntil = q.expiresAt;
+      return q;
+    });
+  });
+  const [selectedQuoteId, setSelectedQuoteId] = useState<string | null>(null);
+  const [, setNowTick] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setNowTick((n) => n + 1), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const activeQuote = fxQuotes.find((q) => q.id === selectedQuoteId) ?? fxQuotes.find((q) => q.status === "Quote Generated") ?? fxQuotes[0];
+
+  const handleGenerateQuote = () => {
+    const nextIndex = fxQuotes.length;
+    const source = REQUESTS[nextIndex % REQUESTS.length];
+    const quote = buildQuote(source, nextIndex);
+    setFxQuotes((prev) => [quote, ...prev]);
+    setSelectedQuoteId(quote.id);
+    toast.success(`FX quote ${quote.id} generated · Rate ${quote.rate} · Expires in 15m`);
+  };
+  const handleLockQuote = () => {
+    if (!activeQuote) return toast.error("No quote to lock");
+    if (activeQuote.status === "Rate Locked") return toast.info(`${activeQuote.id} already locked`);
+    setFxQuotes((prev) => prev.map((q) => q.id === activeQuote.id
+      ? { ...q, status: "Rate Locked", lockedUntil: Date.now() + 15 * 60 * 1000, expiresAt: Date.now() + 15 * 60 * 1000 }
+      : q));
+    toast.success(`${activeQuote.id} locked at ${activeQuote.rate} for 15 minutes`);
+  };
+  const handleSendQuote = () => {
+    if (!activeQuote) return toast.error("No quote to send");
+    setFxQuotes((prev) => prev.map((q) => q.id === activeQuote.id
+      ? { ...q, status: q.status === "Rate Locked" ? "Rate Locked" : "Sent to Buyer", sentAt: Date.now() }
+      : q));
+    toast.success(`${activeQuote.id} sent to ${activeQuote.buyer}`);
+    selectTab("ngn-details");
+  };
+  const handleRefreshQuote = () => {
+    if (!activeQuote) return toast.error("No quote to refresh");
+    if (activeQuote.status === "Rate Locked") return toast.error("Locked quote cannot be refreshed — unlock or generate a new quote");
+    const jitter = (Math.random() - 0.5) * 0.8;
+    const newRate = +(activeQuote.rate + jitter).toFixed(2);
+    const newNgn = Math.round(activeQuote.invoiceAmount * newRate);
+    setFxQuotes((prev) => prev.map((q) => q.id === activeQuote.id
+      ? { ...q, rate: newRate, ngnTotal: newNgn, expiresAt: Date.now() + 15 * 60 * 1000, status: "Quote Generated" }
+      : q));
+    toast.success(`${activeQuote.id} refreshed · New rate ${newRate}`);
+  };
+  const formatCountdown = (ts: number) => {
+    const ms = Math.max(0, ts - Date.now());
+    const m = Math.floor(ms / 60000); const s = Math.floor((ms % 60000) / 1000);
+    return ms === 0 ? "Expired" : `${m}m ${s.toString().padStart(2, "0")}s`;
+  };
+  const activeQuoteCount = fxQuotes.filter((q) => q.status === "Quote Generated" || q.status === "Rate Locked" || q.status === "Sent to Buyer").length;
+
   useEffect(() => {
     setTab(routeTab);
   }, [routeTab]);
