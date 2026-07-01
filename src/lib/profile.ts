@@ -212,6 +212,7 @@ export type SidebarItem = {
   iconKey: string;
   group: string;
   exact?: boolean;
+  search?: Record<string, string>;
 };
 
 /** Exact per-workspace sidebar. Each workspace sees ONLY its own menus. */
@@ -249,15 +250,15 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
     case "supplier_dashboard":
       return [
         D,
-        { to: "/supplier-portal", label: "Overview", iconKey: "factory", group: "Supplier Portal", exact: true },
-        { to: "/supplier-portal", label: "Nigerian Buyers", iconKey: "users", group: "Supplier Portal" },
-        { to: "/supplier-portal", label: "Payment Requests", iconKey: "receipt", group: "Supplier Portal" },
+        { to: "/supplier-portal", label: "Overview", iconKey: "factory", group: "Supplier Portal", exact: true, search: { tab: "overview" } },
+        { to: "/supplier-portal", label: "Nigerian Buyers", iconKey: "users", group: "Supplier Portal", search: { tab: "buyers" } },
+        { to: "/supplier-portal", label: "Payment Requests", iconKey: "receipt", group: "Supplier Portal", search: { tab: "requests" } },
         { to: "/invoices", label: "Invoices", iconKey: "receipt", group: "Supplier Portal" },
-        { to: "/supplier-portal", label: "RMB Settlement", iconKey: "globe", group: "Supplier Portal" },
-        { to: "/supplier-portal", label: "Trade Files", iconKey: "trade", group: "Operations" },
+        { to: "/supplier-portal", label: "RMB Settlement", iconKey: "globe", group: "Supplier Portal", search: { tab: "settlement" } },
+        { to: "/supplier-portal", label: "Trade Files", iconKey: "trade", group: "Operations", search: { tab: "trade-files" } },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
         { to: "/whatsapp", label: "Messages", iconKey: "whatsapp", group: "Operations" },
-        { to: "/supplier-portal", label: "Verification", iconKey: "shield-check", group: "Workspace" },
+        { to: "/supplier-portal", label: "Verification", iconKey: "shield-check", group: "Workspace", search: { tab: "verification" } },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         Team, Settings,
