@@ -232,8 +232,18 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
   );
 }
 
+const WORKSPACE_DASHBOARD_PATHS: Record<string, string> = {
+  enterprise_treasury: "/treasury",
+  importer_portal: "/importer",
+  supplier_dashboard: "/supplier-portal",
+  partner_property: "/partner",
+  freight_workspace: "/freight",
+  global_collections: "/collections",
+};
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
   const { role, setRole } = useRole();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { mode, setMode } = useMode();
@@ -251,6 +261,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       setMode(WORKSPACE_TO_MODE[pathWorkspace]);
     }
   }, [pathWorkspace, mode, setMode]);
+
+  // KYB route guard: block workspace dashboard until KYB is complete for that workspace.
+  useEffect(() => {
+    const dashPath = WORKSPACE_DASHBOARD_PATHS[activeWorkspace];
+    if (!dashPath) return;
+    if (pathname !== dashPath && pathname !== "/dashboard") return;
+    const done = typeof window !== "undefined"
+      && window.localStorage.getItem("canta:kyb:" + activeWorkspace) === "done";
+    if (!done) {
+      navigate({ to: "/kyb-onboarding", search: { workspace: activeWorkspace } as never, replace: true });
+    }
+  }, [pathname, activeWorkspace, navigate]);
+
 
   const isPartner = activeWorkspace === "partner_property";
   const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
