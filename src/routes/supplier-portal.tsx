@@ -10,8 +10,9 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Factory, Users, Receipt, Wallet, FileText, MessageSquare, ShieldCheck,
+  Factory, Users, Receipt, Wallet, FileText, ShieldCheck,
   Upload, ArrowRight, CheckCircle2, Clock, AlertTriangle, Lock,
+  Eye, Bell, Download, Building2, Mail, Phone, MapPin, Landmark, UserCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
@@ -80,16 +81,29 @@ const STATUS_TONE: Record<SettlementStatus, string> = {
 };
 
 type Request = {
-  id: string; buyer: string; tradeFile: string; goods: string;
-  amountNgn: number; amountRmb: number; status: SettlementStatus; updated: string;
+  id: string; invoiceNumber: string; buyer: string; tradeFile: string; goods: string;
+  amountNgn: number; amountRmb: number; invoiceCurrency: "RMB" | "USD";
+  dueDate: string; invoiceDoc: string; status: SettlementStatus; updated: string;
+  rate: number; fee: number; payoutRef?: string; paidDate?: string;
 };
 
 const REQUESTS: Request[] = [
-  { id: "PR-3041", buyer: "Lagos Trade Holdings",  tradeFile: "TF-2026-0214", goods: "Bluetooth speakers x 500", amountNgn: 19_300_000, amountRmb: 94_500, status: "RMB Paid", updated: "2 hours ago" },
-  { id: "PR-3055", buyer: "Abuja Imports Ltd",     tradeFile: "TF-2026-0231", goods: "LED panels x 220",          amountNgn: 8_650_000,  amountRmb: 42_300, status: "FX Processing", updated: "today" },
-  { id: "PR-3062", buyer: "Kano Distributors",     tradeFile: "TF-2026-0244", goods: "Industrial sewing machines", amountNgn: 14_120_000, amountRmb: 69_100, status: "NGN Received", updated: "yesterday" },
-  { id: "PR-3071", buyer: "Port Harcourt Trading", tradeFile: "TF-2026-0259", goods: "Solar inverters x 60",      amountNgn: 27_400_000, amountRmb: 134_200, status: "Awaiting Buyer Payment", updated: "3 days ago" },
-  { id: "PR-3080", buyer: "Lagos Trade Holdings",  tradeFile: "TF-2026-0263", goods: "Plastic injection moulds",  amountNgn: 6_120_000,  amountRmb: 29_900, status: "Compliance Review", updated: "5 days ago" },
+  { id: "PR-3041", invoiceNumber: "INV-2026-041", buyer: "Lagos Trade Holdings",  tradeFile: "TF-2026-0214", goods: "Bluetooth speakers x 500",   amountNgn: 19_300_000, amountRmb: 94_500,  invoiceCurrency: "RMB", dueDate: "2026-06-10", invoiceDoc: "INV-041.pdf", status: "RMB Paid",              updated: "2 hours ago",  rate: 204.23, fee: 12_500, payoutRef: "RMB-PO-88421", paidDate: "2026-06-12" },
+  { id: "PR-3055", invoiceNumber: "INV-2026-055", buyer: "Abuja Imports Ltd",     tradeFile: "TF-2026-0231", goods: "LED panels x 220",           amountNgn: 8_650_000,  amountRmb: 42_300,  invoiceCurrency: "RMB", dueDate: "2026-06-20", invoiceDoc: "INV-055.pdf", status: "FX Processing",         updated: "today",        rate: 204.49, fee: 8_100 },
+  { id: "PR-3062", invoiceNumber: "INV-2026-062", buyer: "Kano Distributors",     tradeFile: "TF-2026-0244", goods: "Industrial sewing machines", amountNgn: 14_120_000, amountRmb: 69_100,  invoiceCurrency: "RMB", dueDate: "2026-06-25", invoiceDoc: "INV-062.pdf", status: "NGN Received",          updated: "yesterday",    rate: 204.34, fee: 10_900 },
+  { id: "PR-3071", invoiceNumber: "INV-2026-071", buyer: "Port Harcourt Trading", tradeFile: "TF-2026-0259", goods: "Solar inverters x 60",       amountNgn: 27_400_000, amountRmb: 134_200, invoiceCurrency: "RMB", dueDate: "2026-07-01", invoiceDoc: "INV-071.pdf", status: "Awaiting Buyer Payment", updated: "3 days ago",  rate: 204.17, fee: 15_400 },
+  { id: "PR-3080", invoiceNumber: "INV-2026-080", buyer: "Lagos Trade Holdings",  tradeFile: "TF-2026-0263", goods: "Plastic injection moulds",   amountNgn: 6_120_000,  amountRmb: 29_900,  invoiceCurrency: "RMB", dueDate: "2026-07-04", invoiceDoc: "INV-080.pdf", status: "Compliance Review",     updated: "5 days ago",   rate: 204.68, fee: 6_200 },
+];
+
+type Buyer = {
+  name: string; company: string; email: string; phone: string; country: string;
+};
+
+const BUYERS: Buyer[] = [
+  { name: "Tunde Bakare",   company: "Lagos Trade Holdings",  email: "tunde@lagostrade.ng",    phone: "+234 802 111 2233", country: "Nigeria" },
+  { name: "Amina Yusuf",    company: "Abuja Imports Ltd",     email: "amina@abujaimports.ng",  phone: "+234 803 222 3344", country: "Nigeria" },
+  { name: "Ibrahim Musa",   company: "Kano Distributors",     email: "ibrahim@kanodist.ng",    phone: "+234 805 333 4455", country: "Nigeria" },
+  { name: "Chioma Eze",     company: "Port Harcourt Trading", email: "chioma@phtrading.ng",    phone: "+234 806 444 5566", country: "Nigeria" },
 ];
 
 const TIMELINE_STEPS = [
@@ -210,31 +224,107 @@ function SupplierPortal() {
 
         {tab === "overview" && (
         <div role="tabpanel" data-state="active" className="space-y-4">
+          <ButtonGroup label="Overview quick actions">
+            <Button size="sm" onClick={() => setInvite("request")}><Receipt className="h-4 w-4 mr-2" /> Create Payment Request</Button>
+            {!verified && (
+              <Button size="sm" variant="outline" onClick={() => selectTab("verification")}><ShieldCheck className="h-4 w-4 mr-2" /> Complete Verification</Button>
+            )}
+          </ButtonGroup>
+
+          {(!verified || REQUESTS.some((r) => r.status === "Compliance Review")) && (
+            <Card className="p-4 border-amber-300 bg-amber-50 text-amber-900 flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5" />
+              <div className="text-sm flex-1">
+                <div className="font-semibold">Action needed</div>
+                <ul className="text-xs mt-1 list-disc pl-4 space-y-0.5">
+                  {!verified && <li>Verification incomplete — RMB settlement is on hold until verification is approved.</li>}
+                  <li>2 documents required: Factory address proof, Bank statement.</li>
+                  {REQUESTS.some((r) => r.status === "Compliance Review") && <li>1 payment request under compliance review.</li>}
+                </ul>
+              </div>
+            </Card>
+          )}
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Card className="p-5">
+              <div className="text-sm font-semibold mb-3">Recent payment requests</div>
+              <RequestsTable rows={REQUESTS.slice(0, 3)} compact />
+            </Card>
+            <Card className="p-5">
+              <div className="text-sm font-semibold mb-3">Recent settlement activity</div>
+              <ul className="text-sm space-y-2">
+                {REQUESTS.filter((r) => r.status === "RMB Paid" || r.status === "FX Processing" || r.status === "Compliance Review").map((r) => (
+                  <li key={r.id} className="flex items-center justify-between border rounded-lg p-2">
+                    <div>
+                      <div className="font-mono text-xs">{r.id} · {r.invoiceNumber}</div>
+                      <div className="text-xs text-muted-foreground">{r.buyer} · {r.updated}</div>
+                    </div>
+                    <Badge className={STATUS_TONE[r.status]}>{r.status}</Badge>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </div>
+
           <Card className="p-5">
-            <div className="text-sm font-semibold mb-3">Most recent payment request</div>
+            <div className="text-sm font-semibold mb-3">Most recent payment request timeline</div>
             <SettlementTimeline currentIndex={5} />
           </Card>
+
           <Card className="p-4 text-xs text-muted-foreground">
             You only see your own buyers, invoices, payment requests, documents, Trade Files, messages and settlement status. Other suppliers, importer landed cost, clearing agent bids and unrelated Trade Files are hidden.
           </Card>
-          <RequestsTable rows={filtered.slice(0, 3)} compact />
         </div>
         )}
 
         {tab === "buyers" && (
-        <div role="tabpanel" data-state="active">
+        <div role="tabpanel" data-state="active" className="space-y-3">
           <Card className="p-4">
-            <div className="text-xs text-muted-foreground mb-3">Nigerian buyers who have transacted with you on Canta.</div>
-            <div className="divide-y">
-              {Array.from(new Set(REQUESTS.map((r) => r.buyer))).map((b) => (
-                <div key={b} className="py-3 flex items-center justify-between">
-                  <div>
-                    <div className="font-medium">{b}</div>
-                    <div className="text-xs text-muted-foreground">{REQUESTS.filter((r) => r.buyer === b).length} requests on file</div>
-                  </div>
-                  <Button size="sm" variant="outline">View buyer</Button>
-                </div>
-              ))}
+            <div className="text-xs text-muted-foreground mb-3">Nigerian buyers linked to your supplier account. You only see buyers you have transacted with.</div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-secondary/40 text-[11px] uppercase tracking-wider text-muted-foreground">
+                  <tr>
+                    <th className="text-left py-2 px-3">Buyer</th>
+                    <th className="text-left py-2 px-3">Company</th>
+                    <th className="text-left py-2 px-3">Contact</th>
+                    <th className="text-left py-2 px-3">Country</th>
+                    <th className="text-left py-2 px-3">Trade File</th>
+                    <th className="text-right py-2 px-3">Invoice value</th>
+                    <th className="text-left py-2 px-3">Payment status</th>
+                    <th className="text-left py-2 px-3">Last activity</th>
+                    <th className="text-right py-2 px-3">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {BUYERS.map((b) => {
+                    const rows = REQUESTS.filter((r) => r.buyer === b.company);
+                    const total = rows.reduce((s, r) => s + r.amountNgn, 0);
+                    const last = rows[0];
+                    return (
+                      <tr key={b.company} className="border-t align-top">
+                        <td className="py-2 px-3 font-medium flex items-center gap-1"><UserCheck className="h-3.5 w-3.5 text-muted-foreground" /> {b.name}</td>
+                        <td className="py-2 px-3 text-xs"><Building2 className="h-3 w-3 inline mr-1" />{b.company}</td>
+                        <td className="py-2 px-3 text-xs">
+                          <div className="flex items-center gap-1"><Mail className="h-3 w-3" /> {b.email}</div>
+                          <div className="flex items-center gap-1 text-muted-foreground"><Phone className="h-3 w-3" /> {b.phone}</div>
+                        </td>
+                        <td className="py-2 px-3 text-xs"><MapPin className="h-3 w-3 inline mr-1" />{b.country}</td>
+                        <td className="py-2 px-3 font-mono text-xs">{last?.tradeFile ?? "—"}</td>
+                        <td className="py-2 px-3 text-right tabular-nums">₦{total.toLocaleString()}</td>
+                        <td className="py-2 px-3">{last && <Badge className={STATUS_TONE[last.status]}>{last.status}</Badge>}</td>
+                        <td className="py-2 px-3 text-xs text-muted-foreground">{last?.updated ?? "—"}</td>
+                        <td className="py-2 px-3">
+                          <ButtonGroup label={`Actions for ${b.company}`} className="justify-end">
+                            <Button size="sm" variant="outline" onClick={() => toast.success(`Opened ${b.company}`)}><Eye className="h-3.5 w-3.5 mr-1" /> View buyer</Button>
+                            <Button size="sm" onClick={() => setInvite("request")}><Receipt className="h-3.5 w-3.5 mr-1" /> Create payment request</Button>
+                          </ButtonGroup>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </Card>
         </div>
@@ -243,10 +333,58 @@ function SupplierPortal() {
         {tab === "requests" && (
         <div role="tabpanel" data-state="active" className="space-y-3">
           <ButtonGroup label="Payment request actions">
-            <Button size="sm" onClick={() => setInvite("request")}><Receipt className="h-4 w-4 mr-2" /> Create payment request</Button>
-            <Button size="sm" variant="outline" onClick={() => toast.success("Buyer payment status refreshed")}><Clock className="h-4 w-4 mr-2" /> View buyer payment status</Button>
+            <Button size="sm" onClick={() => setInvite("request")}><Receipt className="h-4 w-4 mr-2" /> Create Payment Request</Button>
+            <Button size="sm" variant="outline" onClick={() => toast.success("Invoice uploaded")}><Upload className="h-4 w-4 mr-2" /> Upload Invoice</Button>
+            <Button size="sm" variant="outline" onClick={() => toast.success("Reminder sent to buyer")}><Bell className="h-4 w-4 mr-2" /> Send Reminder</Button>
+            <Button size="sm" variant="outline" onClick={() => toast.success("Timeline opened")}><Clock className="h-4 w-4 mr-2" /> View Timeline</Button>
+            <Button size="sm" variant="outline" onClick={() => toast.success("Receipt downloaded")}><Download className="h-4 w-4 mr-2" /> Download Receipt</Button>
           </ButtonGroup>
-          <RequestsTable rows={filtered} />
+
+          <Card className="overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-secondary/40 text-[11px] uppercase tracking-wider text-muted-foreground">
+                  <tr>
+                    <th className="text-left py-2 px-3">Invoice #</th>
+                    <th className="text-left py-2 px-3">Buyer</th>
+                    <th className="text-right py-2 px-3">Amount</th>
+                    <th className="text-right py-2 px-3">NGN equiv.</th>
+                    <th className="text-left py-2 px-3">Due</th>
+                    <th className="text-left py-2 px-3">Status</th>
+                    <th className="text-left py-2 px-3">Invoice</th>
+                    <th className="text-right py-2 px-3">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((r) => (
+                    <tr key={r.id} className="border-t">
+                      <td className="py-2 px-3 font-mono text-xs">{r.invoiceNumber}</td>
+                      <td className="py-2 px-3">{r.buyer}</td>
+                      <td className="py-2 px-3 text-right tabular-nums">¥{r.amountRmb.toLocaleString()} <span className="text-xs text-muted-foreground">{r.invoiceCurrency}</span></td>
+                      <td className="py-2 px-3 text-right tabular-nums">₦{r.amountNgn.toLocaleString()}</td>
+                      <td className="py-2 px-3 text-xs">{r.dueDate}</td>
+                      <td className="py-2 px-3"><Badge className={STATUS_TONE[r.status]}>{r.status}</Badge></td>
+                      <td className="py-2 px-3 text-xs"><FileText className="h-3 w-3 inline mr-1" />{r.invoiceDoc}</td>
+                      <td className="py-2 px-3">
+                        <ButtonGroup label={`Actions for ${r.invoiceNumber}`} className="justify-end">
+                          <Button size="sm" variant="outline" onClick={() => toast.success(`Timeline for ${r.invoiceNumber}`)}><Clock className="h-3.5 w-3.5 mr-1" /> Timeline</Button>
+                          <Button size="sm" variant="outline" onClick={() => toast.success("Reminder sent")}><Bell className="h-3.5 w-3.5 mr-1" /> Remind</Button>
+                          {r.status === "RMB Paid" && (
+                            <Button size="sm" variant="outline" onClick={() => toast.success("Settlement receipt downloaded")}><Download className="h-3.5 w-3.5 mr-1" /> Receipt</Button>
+                          )}
+                        </ButtonGroup>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+
+          <Card className="p-4">
+            <div className="text-sm font-semibold mb-2">Payment request timeline stages</div>
+            <SettlementTimeline currentIndex={5} />
+          </Card>
         </div>
         )}
 
@@ -273,13 +411,60 @@ function SupplierPortal() {
                 <Badge key={s} className={STATUS_TONE[s]}>{s}</Badge>
               ))}
             </div>
+            <div className="text-xs text-muted-foreground italic border-l-2 border-primary/30 pl-3">
+              RMB settlement is processed after NGN payment confirmation, compliance checks, FX availability, and payout approval.
+            </div>
             <ButtonGroup label="Settlement actions">
-              <Button size="sm" variant="outline" onClick={() => toast.success("RMB payout bank details saved")}><Wallet className="h-4 w-4 mr-2" /> Add RMB payout bank details</Button>
-              <Button size="sm" variant="outline" onClick={() => toast.success("Settlement receipt downloaded")}><FileText className="h-4 w-4 mr-2" /> Download settlement receipt</Button>
+              <Button size="sm" variant="outline" onClick={() => toast.success("RMB payout bank details saved")}><Landmark className="h-4 w-4 mr-2" /> Add RMB payout bank details</Button>
+              <Button size="sm" variant="outline" onClick={() => toast.success("Settlement receipt downloaded")}><Download className="h-4 w-4 mr-2" /> Download settlement receipt</Button>
               <Button size="sm" variant="outline" onClick={() => toast.success("Settlement tracker opened")}><Clock className="h-4 w-4 mr-2" /> Track RMB settlement</Button>
             </ButtonGroup>
           </Card>
-          <RequestsTable rows={filtered} />
+
+          <Card className="overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-secondary/40 text-[11px] uppercase tracking-wider text-muted-foreground">
+                  <tr>
+                    <th className="text-left py-2 px-3">Buyer</th>
+                    <th className="text-left py-2 px-3">Invoice #</th>
+                    <th className="text-right py-2 px-3">NGN paid</th>
+                    <th className="text-right py-2 px-3">Expected RMB</th>
+                    <th className="text-right py-2 px-3">Rate</th>
+                    <th className="text-right py-2 px-3">Fee (₦)</th>
+                    <th className="text-left py-2 px-3">Payout bank</th>
+                    <th className="text-left py-2 px-3">Status</th>
+                    <th className="text-left py-2 px-3">Compliance</th>
+                    <th className="text-left py-2 px-3">Payout ref</th>
+                    <th className="text-left py-2 px-3">Date paid</th>
+                    <th className="text-right py-2 px-3">Receipt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((r) => (
+                    <tr key={r.id} className="border-t">
+                      <td className="py-2 px-3">{r.buyer}</td>
+                      <td className="py-2 px-3 font-mono text-xs">{r.invoiceNumber}</td>
+                      <td className="py-2 px-3 text-right tabular-nums">{["NGN Received","Compliance Review","FX Processing","RMB Payout Initiated","RMB Paid"].includes(r.status) ? `₦${r.amountNgn.toLocaleString()}` : "—"}</td>
+                      <td className="py-2 px-3 text-right tabular-nums">¥{r.amountRmb.toLocaleString()}</td>
+                      <td className="py-2 px-3 text-right tabular-nums text-xs">{r.rate.toFixed(2)}</td>
+                      <td className="py-2 px-3 text-right tabular-nums text-xs">₦{r.fee.toLocaleString()}</td>
+                      <td className="py-2 px-3 text-xs">ICBC · ****4821</td>
+                      <td className="py-2 px-3"><Badge className={STATUS_TONE[r.status]}>{r.status}</Badge></td>
+                      <td className="py-2 px-3 text-xs">{r.status === "Compliance Review" ? "In review" : r.status === "Awaiting Buyer Payment" ? "Not started" : "Cleared"}</td>
+                      <td className="py-2 px-3 font-mono text-xs">{r.payoutRef ?? "—"}</td>
+                      <td className="py-2 px-3 text-xs">{r.paidDate ?? "—"}</td>
+                      <td className="py-2 px-3 text-right">
+                        {r.status === "RMB Paid"
+                          ? <Button size="sm" variant="outline" onClick={() => toast.success(`Receipt ${r.payoutRef} downloaded`)}><Download className="h-3.5 w-3.5 mr-1" /> Receipt</Button>
+                          : <span className="text-xs text-muted-foreground">—</span>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
         </div>
         )}
 
@@ -327,20 +512,103 @@ function SupplierPortal() {
         )}
 
         {tab === "verification" && (
-        <div role="tabpanel" data-state="active">
+        <div role="tabpanel" data-state="active" className="space-y-4">
+          <Card className="p-4 border-amber-300 bg-amber-50 text-amber-900 flex items-start gap-3">
+            <Lock className="h-5 w-5 shrink-0 mt-0.5" />
+            <div className="text-sm flex-1">
+              <div className="font-semibold">Complete supplier verification to receive RMB settlement.</div>
+              <div className="text-xs mt-1">You can view payment requests, upload invoices/documents, and message buyers or Canta before verification. RMB payouts unlock only after verification is approved.</div>
+            </div>
+            <Badge className={verified ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}>
+              {verified ? "Verified" : "Submitted"}
+            </Badge>
+          </Card>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card className="p-4 space-y-2">
+              <div className="text-sm font-semibold flex items-center gap-1"><Building2 className="h-4 w-4" /> Business Information</div>
+              <ul className="text-xs text-muted-foreground space-y-1">
+                <li>Legal name: Guangzhou Tech Factory Co., Ltd</li>
+                <li>Registration #: 91440101MA9XXX</li>
+                <li>Address: 88 Baiyun Rd, Guangzhou, China</li>
+              </ul>
+              <Button size="sm" variant="outline">Update business info</Button>
+            </Card>
+
+            <Card className="p-4 space-y-2">
+              <div className="text-sm font-semibold flex items-center gap-1"><FileText className="h-4 w-4" /> Company Documents</div>
+              <ul className="text-xs space-y-1">
+                <li className="flex items-center justify-between">Business licence <Badge className="bg-emerald-100 text-emerald-800">Verified</Badge></li>
+                <li className="flex items-center justify-between">Tax certificate <Badge className="bg-amber-100 text-amber-800">Pending</Badge></li>
+                <li className="flex items-center justify-between">Export licence <Badge variant="outline">Required</Badge></li>
+              </ul>
+              <Button size="sm" variant="outline"><Upload className="h-3.5 w-3.5 mr-1" /> Upload document</Button>
+            </Card>
+
+            <Card className="p-4 space-y-2">
+              <div className="text-sm font-semibold flex items-center gap-1"><UserCheck className="h-4 w-4" /> Authorized Representative</div>
+              <ul className="text-xs text-muted-foreground space-y-1">
+                <li>Name: Li Wei</li>
+                <li>Role: Supplier Admin</li>
+                <li>ID: Passport E12345678</li>
+              </ul>
+              <Button size="sm" variant="outline">Update representative</Button>
+            </Card>
+
+            <Card className="p-4 space-y-2">
+              <div className="text-sm font-semibold flex items-center gap-1"><Landmark className="h-4 w-4" /> Bank / RMB Payout Details</div>
+              <ul className="text-xs text-muted-foreground space-y-1">
+                <li>Bank: ICBC Guangzhou Branch</li>
+                <li>Account: ****4821</li>
+                <li>Beneficiary: Guangzhou Tech Factory Co., Ltd</li>
+              </ul>
+              <Button size="sm" variant="outline">Update payout details</Button>
+            </Card>
+          </div>
+
           <Card className="p-4 space-y-3">
-            <div className="text-sm font-semibold">Verification checklist</div>
+            <div className="text-sm font-semibold">Verification Status</div>
+            <div className="flex flex-wrap gap-2 text-xs">
+              {(["Not Submitted","Submitted","Under Review","Verified","Rejected","Update Required"]).map((s) => {
+                const active = (verified && s === "Verified") || (!verified && s === "Under Review");
+                return (
+                  <Badge key={s} className={active ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"}>{s}</Badge>
+                );
+              })}
+            </div>
             <ul className="text-sm space-y-2">
               <Check item="Business registration" done />
               <Check item="Factory address proof" done={false} />
               <Check item="Bank account verification" done={false} />
               <Check item="Authorized representative ID" done />
             </ul>
+          </Card>
+
+          <Card className="p-4 space-y-3">
+            <div className="text-sm font-semibold">Required Actions</div>
+            <ul className="text-xs text-muted-foreground list-disc pl-4 space-y-1">
+              <li>Upload factory address proof.</li>
+              <li>Upload bank statement (last 3 months).</li>
+              <li>Confirm authorized representative contact.</li>
+            </ul>
             {!verified && (
               <Button size="sm" onClick={() => { setVerified(true); toast.success("Verification submitted"); }}>
                 Submit for review
               </Button>
             )}
+          </Card>
+        </div>
+        )}
+
+        {tab === "support" && (
+        <div role="tabpanel" data-state="active">
+          <Card className="p-4 space-y-3 text-sm">
+            <div className="font-semibold">Supplier support</div>
+            <div className="text-muted-foreground">Get help with buyer payment requests, invoice documents, verification, and RMB settlement receipts.</div>
+            <ButtonGroup label="Supplier support actions">
+              <Button size="sm" variant="outline">Open support ticket</Button>
+              <Button size="sm" variant="outline">Message Canta</Button>
+            </ButtonGroup>
           </Card>
         </div>
         )}
