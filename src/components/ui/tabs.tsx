@@ -5,19 +5,6 @@ import { cn } from "@/lib/utils";
 
 const Tabs = TabsPrimitive.Root;
 
-function intersperseTabSpacing(children: React.ReactNode) {
-  return React.Children.toArray(children).flatMap((child, index) => (
-    index === 0
-      ? [child]
-      : [
-          <span key={`tab-separator-${index}`} aria-hidden="true" className="contents select-none">
-            {" "}
-          </span>,
-          child,
-        ]
-  ));
-}
-
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
@@ -31,9 +18,10 @@ const TabsList = React.forwardRef<
     )}
     {...props}
   >
-    {intersperseTabSpacing(children)}
+    {children}
   </TabsPrimitive.List>
 ));
+
 TabsList.displayName = TabsPrimitive.List.displayName;
 
 const TabsTrigger = React.forwardRef<
