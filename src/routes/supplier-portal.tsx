@@ -897,3 +897,47 @@ function RequestsTable({ rows, compact }: { rows: Request[]; compact?: boolean }
     </Card>
   );
 }
+
+function DetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-start justify-between gap-3 rounded-md border bg-card p-3">
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className="text-sm font-medium text-right break-all">{value}</div>
+    </div>
+  );
+}
+
+function PayoutAccountCard({
+  currency, status, rows,
+}: { currency: "RMB" | "USD"; status: "Not Submitted" | "Under Review" | "Verified" | "Rejected" | "Update Required"; rows: Array<[string, string]> }) {
+  const tone =
+    status === "Verified" ? "bg-emerald-100 text-emerald-800" :
+    status === "Under Review" ? "bg-amber-100 text-amber-800" :
+    status === "Rejected" ? "bg-destructive/10 text-destructive" :
+    "bg-muted text-foreground";
+  return (
+    <Card className="p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="text-sm font-semibold flex items-center gap-1"><Landmark className="h-4 w-4" /> {currency} payout account</div>
+        <Badge className={tone}>{status}</Badge>
+      </div>
+      <ul className="text-xs space-y-1.5">
+        {rows.map(([k, v]) => (
+          <li key={k} className="flex items-start justify-between gap-3 border-b last:border-0 pb-1">
+            <span className="text-muted-foreground">{k}</span>
+            <span className="text-right font-medium">{v}</span>
+          </li>
+        ))}
+      </ul>
+      <ButtonGroup label={`${currency} account actions`}>
+        <Button size="sm" variant="outline">Edit account</Button>
+        <Button size="sm" variant="outline">Submit for review</Button>
+      </ButtonGroup>
+      {status !== "Verified" && (
+        <div className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded p-2">
+          This account cannot receive settlement until it is verified.
+        </div>
+      )}
+    </Card>
+  );
+}
