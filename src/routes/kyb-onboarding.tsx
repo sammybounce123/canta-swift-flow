@@ -112,6 +112,36 @@ function KybOnboardingPage() {
           </p>
         </div>
 
+        <Card className="p-4 mb-4 shadow-card border-primary/30 bg-primary/5">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-start gap-3 min-w-0">
+              <div className="h-9 w-9 rounded-md bg-primary/15 text-primary grid place-items-center shrink-0">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <div className="min-w-0">
+                <div className="text-sm font-semibold truncate">
+                  {segment.shortLabel} KYB · {stepIdx + 1} of {STEPS.length} steps
+                </div>
+                <div className="text-xs text-muted-foreground truncate">
+                  Currently on <span className="text-foreground font-medium">{step.label}</span> · {pct}% complete
+                </div>
+                <div className="mt-2 w-full max-w-xs">
+                  <Progress value={pct} />
+                </div>
+              </div>
+            </div>
+            <Button
+              size="sm"
+              onClick={() => {
+                if (step.key === "review") submit();
+                else next();
+              }}
+            >
+              Continue KYB <ArrowRight className="h-4 w-4 ml-1" />
+            </Button>
+          </div>
+        </Card>
+
         <Card className="p-4 mb-4 shadow-card">
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-2 flex-wrap">
