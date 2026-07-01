@@ -147,9 +147,8 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
   const isPartner = workspace === "partner_property";
   const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
   const wsProfile = WORKSPACE_PROFILES[workspace];
-  // Enterprise Treasury still respects the role-based identity so role-switching demos work there.
-  const displayName = workspace === "enterprise_treasury" ? profile.name : wsProfile.name;
-  const displayTitle = workspace === "enterprise_treasury" ? `${role} · ${profile.title}` : wsProfile.title;
+  const displayName = wsProfile.name;
+  const displayTitle = wsProfile.title;
 
 
   return (
@@ -284,10 +283,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const partnerRoleLabel = PARTNER_ROLES.find((r) => r.id === partner.role)?.label ?? partner.role;
   const partnerInitials = partner.user ? partner.user.name.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase() : "BC";
   const wsProfile = WORKSPACE_PROFILES[activeWorkspace];
-  const isEnterprise = activeWorkspace === "enterprise_treasury";
-  const tbName = isEnterprise ? profile.name : wsProfile.name;
-  const tbInitials = isEnterprise ? profile.initials : wsProfile.initials;
-  const tbTitle = isEnterprise ? `${role} · ${profile.title}` : wsProfile.title;
+  const tbName = wsProfile.name;
+  const tbInitials = wsProfile.initials;
+  const tbTitle = wsProfile.title;
 
 
   return (
