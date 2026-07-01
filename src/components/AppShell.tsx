@@ -256,7 +256,7 @@ const WORKSPACE_DASHBOARD_PATHS: Record<string, string> = {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const search = useRouterState({ select: (s) => s.location.search });
+  const search = useRouterState({ select: (s) => s.location.search as Record<string, unknown> });
   const navigate = useNavigate();
   const { role, setRole } = useRole();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -301,13 +301,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="h-screen flex bg-background overflow-hidden">
       <aside className="hidden md:flex w-60 lg:w-64 flex-col h-screen shrink-0 border-r border-sidebar-border">
-        <SidebarContent pathname={pathname} search={search as Record<string, unknown>} />
+        <SidebarContent pathname={pathname} search={search} />
       </aside>
 
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="left" className="p-0 w-72 bg-sidebar border-sidebar-border">
           <SheetTitle className="sr-only">Navigation</SheetTitle>
-          <SidebarContent pathname={pathname} search={search as Record<string, unknown>} onNavigate={() => setMobileOpen(false)} />
+          <SidebarContent pathname={pathname} search={search} onNavigate={() => setMobileOpen(false)} />
         </SheetContent>
       </Sheet>
 
