@@ -67,6 +67,7 @@ const TIMELINE_STEPS = [
   "NGN Awaiting Payment",
   "NGN Received",
   "Rate Locked",
+  "Compliance Review",
   "RMB Settlement Processing",
   "RMB Paid Out",
   "Settlement Receipt Available",
