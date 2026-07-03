@@ -113,15 +113,15 @@ export const TIMELINE_STEPS = [
 export const COMPLIANCE_DISCLAIMER =
   "How settlement completes: buyer pays NGN → Canta compliance review (typically same day) → FX conversion at the locked rate → RMB paid to your wallet → settlement receipt generated. Fees are shown on every quote. Refunds return only to the exact Nigerian bank account that sent the NGN payment. Final NGN/RMB amounts and timing are subject to payment confirmation, compliance review, FX availability, partner rails and applicable regulations.";
 
-export const SUPPLIER_TABS: Array<{ to: string; label: string }> = [
-  { to: "/supplier-portal",                    label: "Overview 首页" },
-  { to: "/supplier-portal/buyers",             label: "Nigerian Buyers 尼日利亚买家" },
-  { to: "/supplier-portal/payment-requests",           label: "Payment Requests 收款请求" },
-  { to: "/supplier-portal/rmb-wallet",             label: "RMB Wallet 人民币钱包" },
-  { to: "/supplier-portal/invoices",           label: "Invoices 发票" },
-  { to: "/supplier-portal/documents",          label: "Documents 文件" },
-  { to: "/supplier-portal/verification",       label: "Verification 认证" },
-  { to: "/supplier-portal/support",            label: "Support 支持" },
+export const SUPPLIER_TABS: Array<{ to: string; label: string; zh: string; icon: LucideIcon }> = [
+  { to: "/supplier-portal",                    label: "Overview",         zh: "首页",             icon: LayoutDashboard },
+  { to: "/supplier-portal/buyers",             label: "Nigerian Buyers",  zh: "尼日利亚买家",       icon: Users },
+  { to: "/supplier-portal/payment-requests",   label: "Payment Requests", zh: "收款请求",         icon: Receipt },
+  { to: "/supplier-portal/rmb-wallet",         label: "RMB Wallet",       zh: "人民币钱包",         icon: Wallet },
+  { to: "/supplier-portal/invoices",           label: "Invoices",         zh: "发票",             icon: FileText },
+  { to: "/supplier-portal/documents",          label: "Documents",        zh: "文件",             icon: FolderCheck },
+  { to: "/supplier-portal/verification",       label: "Verification",     zh: "认证",             icon: ShieldCheck },
+  { to: "/supplier-portal/support",            label: "Support",          zh: "支持",             icon: LifeBuoy },
 ];
 
 
