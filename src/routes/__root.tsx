@@ -109,14 +109,18 @@ function RootComponent() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isLanding = pathname === "/";
   const isPublic = pathname.startsWith("/track") || pathname.startsWith("/pay/") || pathname.startsWith("/p/") || pathname === "/welcome" || pathname === "/onboarding" || pathname === "/kyb-onboarding";
+  // Providers are mounted unconditionally so the React tree shape is identical
+  // between SSR and client hydration. Conditionally stripping providers around
+  // <Outlet /> caused hydration-time context loss (e.g. useActions null) on
+  // routes like /treasury and /settings when the router's initial pathname
+  // briefly resolved differently than the SSR pathname.
+  const showShell = !(isLanding || isPublic);
   return (
     <QueryClientProvider client={queryClient}>
-      {isLanding || isPublic ? (
-        <Outlet />
-      ) : (
-        <RoleProvider>
-          <ModeProvider>
-            <ActionsProvider>
+      <RoleProvider>
+        <ModeProvider>
+          <ActionsProvider>
+            {showShell ? (
               <AppShell>
                 <div
                   role="note"
@@ -127,10 +131,12 @@ function RootComponent() {
                 </div>
                 <Outlet />
               </AppShell>
-            </ActionsProvider>
-          </ModeProvider>
-        </RoleProvider>
-      )}
+            ) : (
+              <Outlet />
+            )}
+          </ActionsProvider>
+        </ModeProvider>
+      </RoleProvider>
       <Toaster />
     </QueryClientProvider>
   );
