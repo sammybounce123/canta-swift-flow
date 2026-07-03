@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/action-group";
-import { Receipt, ShieldCheck, AlertTriangle, Send, Wallet, Landmark } from "lucide-react";
+import { Receipt, AlertTriangle, Send, Wallet, Landmark, RefreshCw } from "lucide-react";
 import { REQUESTS, STATUS_TONE, RequestsTable, SettlementTimeline, useVerified } from "@/lib/supplier-data";
 
 
