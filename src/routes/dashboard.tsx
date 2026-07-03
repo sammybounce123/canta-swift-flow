@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowUpRight, ArrowDownRight, Plus, ArrowLeftRight, Send, Sparkles,
-  TrendingUp, Wallet as WalletIcon, Zap, Eye, EyeOff,
+  Wallet as WalletIcon, Zap, Eye, EyeOff,
 } from "lucide-react";
 import {
   AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid,
