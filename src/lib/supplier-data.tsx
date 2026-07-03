@@ -46,6 +46,31 @@ export const REQUESTS: SupplierRequest[] = [
   { id: "PR-3080", invoiceNumber: "INV-2026-080", buyer: "Zenith Imports Nigeria",  goods: "Plastic injection moulds",   amountNgn: 6_120_000,  amountRmb: 29_900,  invoiceCurrency: "RMB", dueDate: "2026-07-04", invoiceDoc: "INV-080.pdf", status: "Compliance Review",      updated: "5 days ago",  rate: 204.68, fee: 6_200,  senderAccount: { bank: "GTBank", accountName: "Zenith Imports Nigeria Ltd", accountNumber: "0123456789" } },
 ];
 
+let requestsVersion = 0;
+const requestsSubs = new Set<() => void>();
+let nextRequestSeq = 3100;
+export const requestsStore = {
+  add: (r: Omit<SupplierRequest, "id" | "updated" | "status"> & Partial<Pick<SupplierRequest, "id" | "updated" | "status">>) => {
+    const full: SupplierRequest = {
+      id: r.id ?? `PR-${nextRequestSeq++}`,
+      updated: r.updated ?? "just now",
+      status: r.status ?? "Awaiting Buyer Payment",
+      ...r,
+    } as SupplierRequest;
+    REQUESTS.unshift(full);
+    requestsVersion++;
+    requestsSubs.forEach((f) => f());
+    return full;
+  },
+  subscribe: (f: () => void) => { requestsSubs.add(f); return () => requestsSubs.delete(f); },
+  getVersion: () => requestsVersion,
+};
+export function useRequests() {
+  useSyncExternalStore(requestsStore.subscribe, requestsStore.getVersion, requestsStore.getVersion);
+  return REQUESTS;
+}
+
+
 
 export type Buyer = {
   name: string; company: string; email: string; phone: string; country: string;
