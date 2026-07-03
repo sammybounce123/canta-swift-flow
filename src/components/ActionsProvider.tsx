@@ -86,7 +86,7 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Fund {fund.ccy} Wallet</DialogTitle>
-            <DialogDescription>Choose a funding method to top up instantly.</DialogDescription>
+            <DialogDescription>Choose a funding method to top up your wallet.</DialogDescription>
           </DialogHeader>
           <FundForm
             ccy={fund.ccy}
