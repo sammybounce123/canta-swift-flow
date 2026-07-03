@@ -19,15 +19,20 @@ export const Route = createFileRoute("/supplier-portal/payment-requests")({
 
 // Indicative NGN per 1 RMB. Buyers always pay NGN; suppliers always receive RMB.
 const NGN_PER_RMB = 204.35;
+const RMB_PER_USD = 7.2; // indicative reference rate for USD equivalent display
 const FEE_BPS = 90; // ~0.9% platform fee for indicative preview
 
 function buildIndicativeQuote(amountRmb: number) {
-  const jitter = (Math.random() - 0.5) * 0.4;
+  // Deterministic pseudo-jitter so SSR and client agree (avoids hydration mismatch)
+  // and the number is stable per amount within a session.
+  const seed = Math.abs(Math.sin(amountRmb * 0.017 + 1.3));
+  const jitter = (seed - 0.5) * 0.4;
   const rate = +(NGN_PER_RMB + jitter).toFixed(2);
   const ngnGross = Math.round(amountRmb * rate);
   const feeNgn = Math.round((ngnGross * FEE_BPS) / 10000);
   const ngnBuyerPays = ngnGross + feeNgn;
-  return { rate, ngnGross, feeNgn, ngnBuyerPays, expiresInMin: 15 };
+  const usdEquiv = +(amountRmb / RMB_PER_USD).toFixed(2);
+  return { rate, ngnGross, feeNgn, ngnBuyerPays, usdEquiv, expiresInMin: 15 };
 }
 
 function RequestsPanel() {
