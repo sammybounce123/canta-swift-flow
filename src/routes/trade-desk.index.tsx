@@ -77,15 +77,16 @@ function TradeDeskList() {
     <div className="space-y-6">
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div className="min-w-0">
-          <h1 className="text-2xl font-semibold">Trade Desk</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Every shipment, supplier, payment and document in one operating system.
+          <h1 className="text-2xl font-semibold">Trade Files</h1>
+          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+            One file per shipment. Track the supplier, BL and documents, pay the supplier, compare clearing agent bids, and see landed cost — from PI to delivery.
           </p>
         </div>
         <Button onClick={() => setDraftOpen(true)} className="bg-primary">
           <Plus className="h-4 w-4 mr-1.5" /> New Trade File
         </Button>
       </div>
+
 
       <NewTradeFileDialog open={draftOpen} setOpen={setDraftOpen} />
 
@@ -176,9 +177,13 @@ function TradeDeskList() {
           ))}
           {filtered.length === 0 && (
             <div className="px-5 py-12 text-center text-sm text-muted-foreground">
-              No trade files match your filters.
+              <div className="mb-3">No trade files match your filters.</div>
+              <Button size="sm" onClick={() => setDraftOpen(true)}>
+                <Plus className="h-4 w-4 mr-1.5" /> Create your first trade file
+              </Button>
             </div>
           )}
+
         </div>
       </Card>
 
