@@ -46,65 +46,68 @@ function SupplierPortalLayout() {
 
   return (
     <div className="space-y-6">
-      <ReadinessBar
-        status="Demo Preview"
-        cue="Interactive demo — buyers, invoices, FX quotes and RMB wallet shown here are illustrative. 演示环境"
-      />
+      {!isPaymentRequests && (
+        <>
+          <ReadinessBar
+            status="Demo Preview"
+            cue="Interactive demo — buyers, invoices, FX quotes and RMB wallet shown here are illustrative. 演示环境"
+          />
 
-      <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-        <div>
-          <Badge variant="outline" className="gap-1"><Factory className="h-3 w-3" /> Supplier Portal · 供应商门户</Badge>
-          <div className="flex flex-wrap items-center gap-2 mt-2">
-            <h1 className="text-2xl font-semibold tracking-tight">欢迎, Li Wei 👋</h1>
-            <Badge variant="outline" className="text-[10px]">Demo persona · 演示账户</Badge>
-          </div>
-          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            Your Nigerian buyer pays in <strong>NGN</strong> to Canta's regulated NGN collection account. Canta reviews compliance, converts at the locked FX rate, and settles you in <strong>RMB</strong> directly into your RMB wallet. You never make outbound payments here — this portal is receive-only.
-            <br />
-            <span className="text-xs">尼日利亚买家用奈拉付款至 Canta 合规收款账户，Canta 审核合规后按锁定汇率换汇，将人民币直接结算至您的钱包。</span>
-          </p>
-          <div className="flex flex-wrap items-center gap-2 mt-2">
-            <Badge className="text-xs bg-primary/10 text-primary border-primary/30">Li Wei · Supplier Admin</Badge>
-            <Badge variant="outline" className="text-xs">Guangzhou Tech Factory · 广州</Badge>
-          </div>
-        </div>
+          <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4.4">
+            <div>
+              <Badge variant="outline" className="gap-1"><Factory className="h-3 w-3" /> Supplier Portal · 供应商门户</Badge>
+              <div className="flex flex-wrap items-center gap-2 mt-2">
+                <h1 className="text-2xl font-semibold tracking-tight">欢迎, Li Wei 👋</h1>
+                <Badge variant="outline" className="text-[10px]">Demo persona · 演示账户</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+                Your Nigerian buyer pays in <strong>NGN</strong> to Canta's regulated NGN collection account. Canta reviews compliance, converts at the locked FX rate, and settles you in <strong>RMB</strong> directly into your RMB wallet. You never make outbound payments here — this portal is receive-only.
+                <br />
+                <span className="text-xs">尼日利亚买家用奈拉付款至 Canta 合规收款账户，Canta 审核合规后按锁定汇率换汇，将人民币直接结算至您的钱包。</span>
+              </p>
+              <div className="flex flex-wrap items-center gap-2 mt-2">
+                <Badge className="text-xs bg-primary/10 text-primary border-primary/30">Li Wei · Supplier Admin</Badge>
+                <Badge variant="outline" className="text-xs">Guangzhou Tech Factory · 广州</Badge>
+              </div>
+            </div>
 
-        <ButtonGroup label="Supplier portal actions" className="w-auto justify-start md:justify-end">
-          <Button variant="outline" size="sm" onClick={() => setInvite("buyer")}>
-            <Users className="h-4 w-4 mr-2" /> Add buyer 添加买家
-          </Button>
-          <Button size="sm" asChild>
-            <Link to="/supplier-portal/payment-requests" search={{ new: true }}>
-              <Receipt className="h-4 w-4 mr-2" /> New payment request 新建收款
-            </Link>
-          </Button>
-        </ButtonGroup>
-      </header>
+            <ButtonGroup label="Supplier portal actions" className="w-auto justify-start md:justify-end">
+              <Button variant="outline" size="sm" onClick={() => setInvite("buyer")}>
+                <Users className="h-4 w-4 mr-2" /> Add buyer 添加买家
+              </Button>
+              <Button size="sm" asChild>
+                <Link to="/supplier-portal/payment-requests" search={{ new: true }}>
+                  <Receipt className="h-4 w-4 mr-2" /> New payment request 新建收款
+                </Link>
+              </Button>
+            </ButtonGroup>
+          </header>
 
-      {!verified && (
-        <Card className="p-4 border-amber-300 bg-amber-50 text-amber-900 flex items-start gap-3">
-          <Lock className="h-5 w-5 shrink-0 mt-0.5" />
-          <div className="text-sm flex-1">
-            <div className="font-semibold">Verify your business to unlock RMB payouts · 完成认证以解锁人民币结算</div>
-            <div className="text-xs mt-1">You can view requests and upload documents now. RMB wallet payouts unlock after verification.</div>
+          {!verified && (
+            <Card className="p-4 border-amber-300 bg-amber-50 text-amber-900 flex items-start gap-3">
+              <Lock className="h-5 w-5 shrink-0 mt-0.5" />
+              <div className="text-sm flex-1">
+                <div className="font-semibold">Verify your business to unlock RMB payouts · 完成认证以解锁人民币结算</div>
+                <div className="text-xs mt-1">You can view requests and upload documents now. RMB wallet payouts unlock after verification.</div>
+              </div>
+              <Button size="sm" variant="outline" onClick={() => { verifiedStore.set(true); toast.success("Verification simulated — RMB payouts enabled"); }}>
+                Verify now
+              </Button>
+            </Card>
+          )}
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <KPI label="RMB Wallet Balance · 钱包余额" value="¥128,400" icon={Wallet} />
+            <KPI label="Awaiting Settlement · 待结算" value={`¥${(totals.ngnHeld / 204).toLocaleString(undefined,{maximumFractionDigits:0})}`} icon={Clock} />
+            <KPI label="Active Payment Requests · 收款中" value={String(totals.pending + activeQuoteCount)} icon={Receipt} />
+            <KPI label="Nigerian Buyers · 买家" value={String(totals.buyers)} icon={Users} />
           </div>
-          <Button size="sm" variant="outline" onClick={() => { verifiedStore.set(true); toast.success("Verification simulated — RMB payouts enabled"); }}>
-            Verify now
-          </Button>
-        </Card>
+
+          <Card className="p-3 text-[11px] text-muted-foreground italic border-l-4 border-primary/40">
+            {COMPLIANCE_DISCLAIMER}
+          </Card>
+        </>
       )}
-
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <KPI label="RMB Wallet Balance · 钱包余额" value="¥128,400" icon={Wallet} />
-        <KPI label="Awaiting Settlement · 待结算" value={`¥${(totals.ngnHeld / 204).toLocaleString(undefined,{maximumFractionDigits:0})}`} icon={Clock} />
-        <KPI label="Active Payment Requests · 收款中" value={String(totals.pending + activeQuoteCount)} icon={Receipt} />
-        <KPI label="Nigerian Buyers · 买家" value={String(totals.buyers)} icon={Users} />
-      </div>
-
-
-      <Card className="p-3 text-[11px] text-muted-foreground italic border-l-4 border-primary/40">
-        {COMPLIANCE_DISCLAIMER}
-      </Card>
 
       <nav aria-label="Supplier Portal sections" className="flex w-full min-w-0 flex-wrap items-stretch justify-start gap-3">
         {SUPPLIER_TABS.map((item) => {
@@ -174,11 +177,13 @@ function SupplierPortalLayout() {
         </DialogContent>
       </Dialog>
 
-      <Card className="p-4 text-xs text-muted-foreground">
-        <Link to="/welcome" className="inline-flex items-center gap-1 hover:underline">
-          Switch workspace <ArrowRight className="h-3 w-3" />
-        </Link>
-      </Card>
+      {!isPaymentRequests && (
+        <Card className="p-4 text-xs text-muted-foreground">
+          <Link to="/welcome" className="inline-flex items-center gap-1 hover:underline">
+            Switch workspace <ArrowRight className="h-3 w-3" />
+          </Link>
+        </Card>
+      )}
     </div>
   );
 }
