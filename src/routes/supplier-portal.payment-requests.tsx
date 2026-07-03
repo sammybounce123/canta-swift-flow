@@ -19,15 +19,20 @@ export const Route = createFileRoute("/supplier-portal/payment-requests")({
 
 // Indicative NGN per 1 RMB. Buyers always pay NGN; suppliers always receive RMB.
 const NGN_PER_RMB = 204.35;
+const RMB_PER_USD = 7.2; // indicative reference rate for USD equivalent display
 const FEE_BPS = 90; // ~0.9% platform fee for indicative preview
 
 function buildIndicativeQuote(amountRmb: number) {
-  const jitter = (Math.random() - 0.5) * 0.4;
+  // Deterministic pseudo-jitter so SSR and client agree (avoids hydration mismatch)
+  // and the number is stable per amount within a session.
+  const seed = Math.abs(Math.sin(amountRmb * 0.017 + 1.3));
+  const jitter = (seed - 0.5) * 0.4;
   const rate = +(NGN_PER_RMB + jitter).toFixed(2);
   const ngnGross = Math.round(amountRmb * rate);
   const feeNgn = Math.round((ngnGross * FEE_BPS) / 10000);
   const ngnBuyerPays = ngnGross + feeNgn;
-  return { rate, ngnGross, feeNgn, ngnBuyerPays, expiresInMin: 15 };
+  const usdEquiv = +(amountRmb / RMB_PER_USD).toFixed(2);
+  return { rate, ngnGross, feeNgn, ngnBuyerPays, usdEquiv, expiresInMin: 15 };
 }
 
 function RequestsPanel() {
@@ -197,13 +202,16 @@ function NewRequestDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
           <Card className="p-3 bg-secondary/30 space-y-2">
             <div className="flex items-center justify-between text-[11px] uppercase tracking-wider text-muted-foreground">
               <span className="inline-flex items-center gap-1"><Lock className="h-3 w-3" /> FX quote (indicative)</span>
-              <span className="inline-flex items-center gap-1"><RefreshCw className="h-3 w-3" /> 1 RMB ≈ ₦{quote.rate.toLocaleString()}</span>
+              <span className="inline-flex items-center gap-1"><RefreshCw className="h-3 w-3" /> 1 RMB ≈ ₦{quote.rate.toLocaleString()} · 1 USD ≈ ¥{RMB_PER_USD.toFixed(2)}</span>
+            </div>
+            <div className="rounded-md border border-primary/30 bg-primary/5 p-2">
+              <div className="text-[10px] text-muted-foreground uppercase">You receive</div>
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span className="font-semibold text-base tabular-nums">¥{amt.toLocaleString()} RMB</span>
+                <span className="text-xs text-muted-foreground tabular-nums">≈ ${quote.usdEquiv.toLocaleString()} USD</span>
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-2 text-sm">
-              <div>
-                <div className="text-[10px] text-muted-foreground uppercase">You receive (RMB)</div>
-                <div className="font-semibold tabular-nums">¥{amt.toLocaleString()}</div>
-              </div>
               <div>
                 <div className="text-[10px] text-muted-foreground uppercase">Buyer pays (NGN)</div>
                 <div className="font-semibold tabular-nums">₦{quote.ngnBuyerPays.toLocaleString()}</div>
@@ -216,9 +224,13 @@ function NewRequestDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
                 <div className="text-[10px] text-muted-foreground uppercase">Canta fee</div>
                 <div className="tabular-nums">₦{quote.feeNgn.toLocaleString()}</div>
               </div>
+              <div>
+                <div className="text-[10px] text-muted-foreground uppercase">USD equivalent</div>
+                <div className="tabular-nums">${quote.usdEquiv.toLocaleString()}</div>
+              </div>
             </div>
             <div className="text-[10px] text-muted-foreground italic">
-              Quote locks for {quote.expiresInMin} minutes on send. Final NGN/RMB depend on FX lock, compliance review, and payout rails.
+              Settlement is paid in RMB. USD equivalent shown for reference only using an indicative 1 USD ≈ {RMB_PER_USD.toFixed(2)} RMB. Quote locks for {quote.expiresInMin} minutes on send. Final NGN/RMB depend on FX lock, compliance review, and payout rails.
             </div>
           </Card>
         </div>
