@@ -20,14 +20,13 @@ function BuyersPanel() {
         <table className="w-full text-sm">
           <thead className="bg-secondary/40 text-[11px] uppercase tracking-wider text-muted-foreground">
             <tr>
-              <th className="text-left py-2 px-3">Buyer</th>
-              <th className="text-left py-2 px-3">Company</th>
+              <th className="text-left py-2 px-3">Buyer Company</th>
               <th className="text-left py-2 px-3">Contact</th>
               <th className="text-left py-2 px-3">Country</th>
-              <th className="text-left py-2 px-3">Trade File</th>
-              <th className="text-right py-2 px-3">Invoice value</th>
-              <th className="text-left py-2 px-3">Payment status</th>
-              <th className="text-left py-2 px-3">Last activity</th>
+              <th className="text-left py-2 px-3">Last Invoice Ref</th>
+              <th className="text-right py-2 px-3">Invoice Value</th>
+              <th className="text-left py-2 px-3">Payment Status</th>
+              <th className="text-left py-2 px-3">Last Activity</th>
               <th className="text-right py-2 px-3">Actions</th>
             </tr>
           </thead>
@@ -38,14 +37,16 @@ function BuyersPanel() {
               const last = rows[0];
               return (
                 <tr key={b.company} className="border-t align-top">
-                  <td className="py-2 px-3 font-medium flex items-center gap-1"><UserCheck className="h-3.5 w-3.5 text-muted-foreground" /> {b.name}</td>
-                  <td className="py-2 px-3 text-xs"><Building2 className="h-3 w-3 inline mr-1" />{b.company}</td>
+                  <td className="py-2 px-3 font-medium">
+                    <div className="flex items-center gap-1"><Building2 className="h-3.5 w-3.5 text-muted-foreground" /> {b.company}</div>
+                    <div className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5"><UserCheck className="h-3 w-3" /> {b.name}</div>
+                  </td>
                   <td className="py-2 px-3 text-xs">
                     <div className="flex items-center gap-1"><Mail className="h-3 w-3" /> {b.email}</div>
                     <div className="flex items-center gap-1 text-muted-foreground"><Phone className="h-3 w-3" /> {b.phone}</div>
                   </td>
                   <td className="py-2 px-3 text-xs"><MapPin className="h-3 w-3 inline mr-1" />{b.country}</td>
-                  <td className="py-2 px-3 font-mono text-xs">{last?.tradeFile ?? "—"}</td>
+                  <td className="py-2 px-3 font-mono text-xs">{last?.invoiceNumber ?? "—"}</td>
                   <td className="py-2 px-3 text-right tabular-nums">₦{total.toLocaleString()}</td>
                   <td className="py-2 px-3">{last && <Badge className={STATUS_TONE[last.status]}>{last.status}</Badge>}</td>
                   <td className="py-2 px-3 text-xs text-muted-foreground">{last?.updated ?? "—"}</td>
@@ -64,3 +65,4 @@ function BuyersPanel() {
     </Card>
   );
 }
+
