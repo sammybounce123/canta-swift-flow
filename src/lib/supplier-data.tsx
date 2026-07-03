@@ -241,12 +241,32 @@ export function formatCountdown(ts: number) {
 
 // --- Shared subcomponents ----------------------------------------------------
 
-export function KPI({ label, value, icon: Icon }: { label: string; value: string; icon: typeof Wallet }) {
+export function KPI({
+  label, value, icon: Icon, hint, tone = "default",
+}: {
+  label: string; value: string; icon: typeof Wallet; hint?: string;
+  tone?: "default" | "accent" | "success" | "warning";
+}) {
+  const toneRing = {
+    default: "from-primary/15 to-primary/0 text-primary",
+    accent:  "from-accent/25 to-accent/0 text-primary",
+    success: "from-emerald-500/20 to-emerald-500/0 text-emerald-700",
+    warning: "from-amber-500/25 to-amber-500/0 text-amber-800",
+  }[tone];
   return (
-    <Card className="p-4">
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground flex items-center gap-1"><Icon className="h-3 w-3" /> {label}</div>
-      <div className="text-lg font-semibold mt-1">{value}</div>
-    </Card>
+    <div className="group relative overflow-hidden rounded-2xl border bg-card p-4 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elevated">
+      <div className={`pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-gradient-to-br ${toneRing} blur-2xl`} />
+      <div className="relative flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">{label}</div>
+          <div className="mt-2 text-2xl font-semibold tracking-tight tabular-nums">{value}</div>
+          {hint && <div className="mt-1 text-[11px] text-muted-foreground">{hint}</div>}
+        </div>
+        <div className={`shrink-0 rounded-xl border bg-background/60 p-2 backdrop-blur ${toneRing.split(" ").pop()}`}>
+          <Icon className="h-4 w-4" />
+        </div>
+      </div>
+    </div>
   );
 }
 
