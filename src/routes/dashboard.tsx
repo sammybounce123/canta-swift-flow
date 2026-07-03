@@ -331,7 +331,7 @@ function Dashboard() {
             <div className="text-xs text-muted-foreground">Best corridor selected automatically · Avg savings 0.8%</div>
           </div>
         </div>
-        <Badge className="bg-success/15 text-success border-success/30 hover:bg-success/15">Instant Settlement</Badge>
+        <Badge className="bg-success/15 text-success border-success/30 hover:bg-success/15">Settlement tracking</Badge>
       </Card>
     </div>
   );
