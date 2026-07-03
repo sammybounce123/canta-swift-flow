@@ -3,8 +3,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-import { Shield, Key, Building2, Activity, Copy, Workflow, ArrowRight, RefreshCw } from "lucide-react";
+import { Shield, Key, Building2, Activity, Copy, Workflow, ArrowRight, RefreshCw, ShieldCheck, FileText, UserCheck, Landmark, Upload } from "lucide-react";
 import { toast } from "sonner";
+import { useMode } from "@/components/ModeProvider";
+import { useVerified, verifiedStore } from "@/lib/supplier-data";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({ meta: [{ title: "Settings — Canta" }] }),
@@ -14,6 +16,8 @@ export const Route = createFileRoute("/settings")({
 
 function Settings() {
   const navigate = useNavigate();
+  const { mode } = useMode();
+  const isSupplier = mode === "Supplier";
   function resetDemo() {
     if (typeof window === "undefined") return;
     const keep = new Set(["theme"]);
