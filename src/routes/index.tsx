@@ -5,7 +5,7 @@ import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { setActiveMode, type Mode } from "@/components/ModeProvider";
 import {
   ArrowRight, Zap, Shield, Sparkles, TrendingUp, CheckCircle2,
-  Building2, Lock, Quote, Ship, Brain, FileText,
+  Building2, Lock, Ship, Brain, FileText,
   MessageCircle, Factory, Briefcase, Home,
   ShieldCheck, ScanLine, Receipt, Languages,
 } from "lucide-react";
