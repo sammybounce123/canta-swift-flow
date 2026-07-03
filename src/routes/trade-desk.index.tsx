@@ -177,9 +177,13 @@ function TradeDeskList() {
           ))}
           {filtered.length === 0 && (
             <div className="px-5 py-12 text-center text-sm text-muted-foreground">
-              No trade files match your filters.
+              <div className="mb-3">No trade files match your filters.</div>
+              <Button size="sm" onClick={() => setDraftOpen(true)}>
+                <Plus className="h-4 w-4 mr-1.5" /> Create your first trade file
+              </Button>
             </div>
           )}
+
         </div>
       </Card>
 
