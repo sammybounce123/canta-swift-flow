@@ -206,3 +206,56 @@ function Row({ label, desc, enabled }: { label: string; desc: string; enabled?: 
     </div>
   );
 }
+
+function SupplierVerificationSection() {
+  const verified = useVerified();
+  return (
+    <Card className="p-6 shadow-card border-primary/30">
+      <div className="flex items-start justify-between gap-4 flex-wrap mb-5">
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="h-4 w-4 text-primary" />
+          <div>
+            <div className="text-sm font-semibold">Verification & KYC / KYB</div>
+            <div className="text-xs text-muted-foreground">Complete supplier verification to unlock RMB settlement payouts.</div>
+          </div>
+        </div>
+        <Badge className={verified ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}>
+          {verified ? "Verified" : "Under Review"}
+        </Badge>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        <div className="p-3 rounded-lg border border-border bg-secondary/30">
+          <div className="text-sm font-medium flex items-center gap-1.5"><Building2 className="h-3.5 w-3.5" /> Business Information</div>
+          <div className="text-xs text-muted-foreground mt-1">Guangzhou Tech Factory Co., Ltd · 91440101MA9XXX</div>
+        </div>
+        <div className="p-3 rounded-lg border border-border bg-secondary/30">
+          <div className="text-sm font-medium flex items-center gap-1.5"><FileText className="h-3.5 w-3.5" /> Company Documents</div>
+          <div className="text-xs text-muted-foreground mt-1">Business licence · Tax certificate · Export licence</div>
+        </div>
+        <div className="p-3 rounded-lg border border-border bg-secondary/30">
+          <div className="text-sm font-medium flex items-center gap-1.5"><UserCheck className="h-3.5 w-3.5" /> Authorized Representative</div>
+          <div className="text-xs text-muted-foreground mt-1">Li Wei · Supplier Admin</div>
+        </div>
+        <div className="p-3 rounded-lg border border-border bg-secondary/30">
+          <div className="text-sm font-medium flex items-center gap-1.5"><Landmark className="h-3.5 w-3.5" /> RMB Payout Details</div>
+          <div className="text-xs text-muted-foreground mt-1">ICBC Guangzhou · ****4821</div>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2 mt-5">
+        <Link to="/supplier-portal/verification">
+          <Button size="sm"><ShieldCheck className="h-3.5 w-3.5 mr-1.5" /> Open verification center</Button>
+        </Link>
+        <Button size="sm" variant="outline" onClick={() => toast.success("Upload dialog opened")}>
+          <Upload className="h-3.5 w-3.5 mr-1.5" /> Upload document
+        </Button>
+        {!verified && (
+          <Button size="sm" variant="outline" onClick={() => { verifiedStore.set(true); toast.success("Verification submitted"); }}>
+            Submit for review
+          </Button>
+        )}
+      </div>
+    </Card>
+  );
+}
