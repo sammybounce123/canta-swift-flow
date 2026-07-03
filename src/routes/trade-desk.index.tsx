@@ -19,7 +19,10 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/trade-desk/")({
   head: () => ({ meta: [{ title: "Trade Desk — Canta" }] }),
-  validateSearch: (s: Record<string, unknown>) => ({ new: s.new === "1" || s.new === true || s.new === "true" }),
+  validateSearch: (s: Record<string, unknown>): { new?: true } => {
+    const isNew = s.new === "1" || s.new === true || s.new === "true";
+    return isNew ? { new: true } : {};
+  },
   component: TradeDeskList,
 });
 
