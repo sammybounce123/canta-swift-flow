@@ -133,9 +133,9 @@ function SupplierPortalLayout() {
           <div className="grid gap-3">
             {invite === "buyer" ? (
               <>
-                <div><Label className="text-xs">Buyer company</Label><Input placeholder="e.g. Lagos Trade Holdings" /></div>
+                <div><Label className="text-xs">Buyer company</Label><Input placeholder="e.g. Zenith Imports Nigeria" /></div>
                 <div><Label className="text-xs">Buyer contact name</Label><Input placeholder="e.g. Tunde Bakare" /></div>
-                <div><Label className="text-xs">Buyer WhatsApp or email</Label><Input placeholder="+234 802 111 2233 or tunde@lagostrade.ng" /></div>
+                <div><Label className="text-xs">Buyer WhatsApp or email</Label><Input placeholder="+234 802 111 2233 or tunde@zenithimports.ng" /></div>
                 <div><Label className="text-xs">Goods / order description</Label><Input placeholder="Bluetooth speakers x 500" /></div>
                 <div><Label className="text-xs">Expected invoice amount (RMB)</Label><Input type="number" placeholder="50000" /></div>
                 <div><Label className="text-xs">Notes to buyer</Label><Textarea placeholder="50% deposit, balance on BL" /></div>
@@ -143,7 +143,7 @@ function SupplierPortalLayout() {
               </>
             ) : (
               <>
-                <div><Label className="text-xs">Nigerian buyer</Label><Input placeholder="Lagos Trade Holdings" /></div>
+                <div><Label className="text-xs">Nigerian buyer</Label><Input placeholder="Zenith Imports Nigeria" /></div>
                 <div className="grid grid-cols-2 gap-3">
                   <div><Label className="text-xs">Invoice number</Label><Input placeholder="INV-2026-091" /></div>
                   <div><Label className="text-xs">Amount to receive (RMB)</Label><Input type="number" placeholder="50000" /></div>
