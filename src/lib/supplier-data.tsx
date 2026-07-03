@@ -74,7 +74,7 @@ export const TIMELINE_STEPS = [
 
 
 export const COMPLIANCE_DISCLAIMER =
-  "FX quotes, settlement amounts, and payout timelines are subject to payment confirmation, compliance review, FX availability, partner rails, and applicable regulations.";
+  "How settlement completes: buyer pays NGN → Canta compliance review (typically same day) → FX conversion at the locked rate → RMB paid to your wallet → settlement receipt generated. Fees are shown on every quote. Refunds return only to the exact Nigerian bank account that sent the NGN payment. Final NGN/RMB amounts and timing are subject to payment confirmation, compliance review, FX availability, partner rails and applicable regulations.";
 
 export const SUPPLIER_TABS: Array<{ to: string; label: string }> = [
   { to: "/supplier-portal",                    label: "Overview 首页" },
