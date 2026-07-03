@@ -64,7 +64,7 @@ function Treasury() {
           { l: "FX Exposure", v: "$24.8M", s: "+3.2% MoM", up: true },
           { l: "Liquidity Position", v: "₦4.12B", s: "Strong", up: true },
           { l: "Open Orders", v: "12", s: "3 pending approval" },
-          { l: "Avg Settlement", v: "8.2s", s: "Instant rail" },
+          { l: "Avg Settlement", v: "8.2s", s: "After compliance clears" },
         ].map((m) => (
           <Card key={m.l} className="p-5 shadow-card">
             <div className="text-xs text-muted-foreground">{m.l}</div>
