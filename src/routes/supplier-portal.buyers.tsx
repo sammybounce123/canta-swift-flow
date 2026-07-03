@@ -53,7 +53,7 @@ function BuyersPanel() {
                   <td className="py-2 px-3">
                     <ButtonGroup label={`Actions for ${b.company}`} className="justify-end">
                       <Button size="sm" variant="outline" onClick={() => toast.success(`Opened ${b.company}`)}><Eye className="h-3.5 w-3.5 mr-1" /> View buyer</Button>
-                      <Button size="sm" asChild><Link to="/supplier-portal/requests"><Receipt className="h-3.5 w-3.5 mr-1" /> Create payment request</Link></Button>
+                      <Button size="sm" asChild><Link to="/supplier-portal/payment-requests"><Receipt className="h-3.5 w-3.5 mr-1" /> Create payment request</Link></Button>
                     </ButtonGroup>
                   </td>
                 </tr>
