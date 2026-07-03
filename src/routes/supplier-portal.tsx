@@ -47,23 +47,27 @@ function SupplierPortalLayout() {
     <div className="space-y-6">
       <ReadinessBar
         status="Demo Preview"
-        cue="Collect NGN from Nigerian buyers · Receive RMB in your wallet · 用人民币结算"
+        cue="Interactive demo — buyers, invoices, FX quotes and RMB wallet shown here are illustrative. 演示环境"
       />
 
       <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
           <Badge variant="outline" className="gap-1"><Factory className="h-3 w-3" /> Supplier Portal · 供应商门户</Badge>
-          <h1 className="text-2xl font-semibold tracking-tight mt-2">欢迎, Li Wei 👋</h1>
+          <div className="flex flex-wrap items-center gap-2 mt-2">
+            <h1 className="text-2xl font-semibold tracking-tight">欢迎, Li Wei 👋</h1>
+            <Badge variant="outline" className="text-[10px]">Demo persona · 演示账户</Badge>
+          </div>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            Your Nigerian buyers pay in NGN. Canta settles you in <strong>RMB directly into your RMB wallet</strong>. You only receive — no outbound payments.
+            Your Nigerian buyer pays in <strong>NGN</strong> to Canta's regulated NGN collection account. Canta reviews compliance, converts at the locked FX rate, and settles you in <strong>RMB</strong> directly into your RMB wallet. You never make outbound payments here — this portal is receive-only.
             <br />
-            <span className="text-xs">尼日利亚买家用奈拉付款，Canta 将人民币结算至您的钱包。</span>
+            <span className="text-xs">尼日利亚买家用奈拉付款至 Canta 合规收款账户，Canta 审核合规后按锁定汇率换汇，将人民币直接结算至您的钱包。</span>
           </p>
           <div className="flex flex-wrap items-center gap-2 mt-2">
             <Badge className="text-xs bg-primary/10 text-primary border-primary/30">Li Wei · Supplier Admin</Badge>
             <Badge variant="outline" className="text-xs">Guangzhou Tech Factory · 广州</Badge>
           </div>
         </div>
+
         <ButtonGroup label="Supplier portal actions" className="w-auto justify-start md:justify-end">
           <Button variant="outline" size="sm" onClick={() => setInvite("buyer")}>
             <Users className="h-4 w-4 mr-2" /> Add buyer 添加买家
