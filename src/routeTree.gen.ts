@@ -34,6 +34,7 @@ import { Route as PaymentLinksRouteImport } from './routes/payment-links'
 import { Route as PayersRouteImport } from './routes/payers'
 import { Route as PartnerRouteImport } from './routes/partner'
 import { Route as OrganizationRouteImport } from './routes/organization'
+import { Route as OpsRouteImport } from './routes/ops'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MySuppliersRouteImport } from './routes/my-suppliers'
 import { Route as MessagesRouteImport } from './routes/messages'
@@ -238,6 +239,11 @@ const PartnerRoute = PartnerRouteImport.update({
 const OrganizationRoute = OrganizationRouteImport.update({
   id: '/organization',
   path: '/organization',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpsRoute = OpsRouteImport.update({
+  id: '/ops',
+  path: '/ops',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -677,6 +683,7 @@ export interface FileRoutesByFullPath {
   '/messages': typeof MessagesRoute
   '/my-suppliers': typeof MySuppliersRoute
   '/onboarding': typeof OnboardingRoute
+  '/ops': typeof OpsRoute
   '/organization': typeof OrganizationRoute
   '/partner': typeof PartnerRouteWithChildren
   '/payers': typeof PayersRoute
@@ -784,6 +791,7 @@ export interface FileRoutesByTo {
   '/messages': typeof MessagesRoute
   '/my-suppliers': typeof MySuppliersRoute
   '/onboarding': typeof OnboardingRoute
+  '/ops': typeof OpsRoute
   '/organization': typeof OrganizationRoute
   '/payers': typeof PayersRoute
   '/payment-links': typeof PaymentLinksRoute
@@ -888,6 +896,7 @@ export interface FileRoutesById {
   '/messages': typeof MessagesRoute
   '/my-suppliers': typeof MySuppliersRoute
   '/onboarding': typeof OnboardingRoute
+  '/ops': typeof OpsRoute
   '/organization': typeof OrganizationRoute
   '/partner': typeof PartnerRouteWithChildren
   '/payers': typeof PayersRoute
@@ -997,6 +1006,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/my-suppliers'
     | '/onboarding'
+    | '/ops'
     | '/organization'
     | '/partner'
     | '/payers'
@@ -1104,6 +1114,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/my-suppliers'
     | '/onboarding'
+    | '/ops'
     | '/organization'
     | '/payers'
     | '/payment-links'
@@ -1207,6 +1218,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/my-suppliers'
     | '/onboarding'
+    | '/ops'
     | '/organization'
     | '/partner'
     | '/payers'
@@ -1315,6 +1327,7 @@ export interface RootRouteChildren {
   MessagesRoute: typeof MessagesRoute
   MySuppliersRoute: typeof MySuppliersRoute
   OnboardingRoute: typeof OnboardingRoute
+  OpsRoute: typeof OpsRoute
   OrganizationRoute: typeof OrganizationRoute
   PartnerRoute: typeof PartnerRouteWithChildren
   PayersRoute: typeof PayersRoute
@@ -1523,6 +1536,13 @@ declare module '@tanstack/react-router' {
       path: '/organization'
       fullPath: '/organization'
       preLoaderRoute: typeof OrganizationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ops': {
+      id: '/ops'
+      path: '/ops'
+      fullPath: '/ops'
+      preLoaderRoute: typeof OpsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -2296,6 +2316,7 @@ const rootRouteChildren: RootRouteChildren = {
   MessagesRoute: MessagesRoute,
   MySuppliersRoute: MySuppliersRoute,
   OnboardingRoute: OnboardingRoute,
+  OpsRoute: OpsRoute,
   OrganizationRoute: OrganizationRoute,
   PartnerRoute: PartnerRouteWithChildren,
   PayersRoute: PayersRoute,
