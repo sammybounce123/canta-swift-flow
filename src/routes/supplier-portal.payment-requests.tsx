@@ -38,8 +38,17 @@ function buildIndicativeQuote(amountRmb: number) {
 }
 
 function RequestsPanel() {
-  const [open, setOpen] = useState(false);
+  const { new: openNew } = Route.useSearch();
+  const [open, setOpen] = useState(!!openNew);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (openNew) {
+      setOpen(true);
+      void navigate({ to: "/supplier-portal/payment-requests", search: {}, replace: true });
+    }
+  }, [openNew, navigate]);
+
 
   const sendToBuyerWithQuote = (r: SupplierRequest) => {
     const q = buildIndicativeQuote(r.amountRmb);
