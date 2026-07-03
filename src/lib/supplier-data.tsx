@@ -3,11 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/action-group";
-import {
-  CheckCircle2, AlertTriangle, Landmark, Wallet,
-  LayoutDashboard, Users, Receipt, FileText, FolderCheck, ShieldCheck, LifeBuoy,
-  type LucideIcon,
-} from "lucide-react";
+import { CheckCircle2, AlertTriangle, Landmark, Wallet } from "lucide-react";
 
 // --- Types & constants -------------------------------------------------------
 
@@ -113,15 +109,15 @@ export const TIMELINE_STEPS = [
 export const COMPLIANCE_DISCLAIMER =
   "How settlement completes: buyer pays NGN → Canta compliance review (typically same day) → FX conversion at the locked rate → RMB paid to your wallet → settlement receipt generated. Fees are shown on every quote. Refunds return only to the exact Nigerian bank account that sent the NGN payment. Final NGN/RMB amounts and timing are subject to payment confirmation, compliance review, FX availability, partner rails and applicable regulations.";
 
-export const SUPPLIER_TABS: Array<{ to: string; label: string; zh: string; icon: LucideIcon }> = [
-  { to: "/supplier-portal",                    label: "Overview",         zh: "首页",             icon: LayoutDashboard },
-  { to: "/supplier-portal/buyers",             label: "Nigerian Buyers",  zh: "尼日利亚买家",       icon: Users },
-  { to: "/supplier-portal/payment-requests",   label: "Payment Requests", zh: "收款请求",         icon: Receipt },
-  { to: "/supplier-portal/rmb-wallet",         label: "RMB Wallet",       zh: "人民币钱包",         icon: Wallet },
-  { to: "/supplier-portal/invoices",           label: "Invoices",         zh: "发票",             icon: FileText },
-  { to: "/supplier-portal/documents",          label: "Documents",        zh: "文件",             icon: FolderCheck },
-  { to: "/supplier-portal/verification",       label: "Verification",     zh: "认证",             icon: ShieldCheck },
-  { to: "/supplier-portal/support",            label: "Support",          zh: "支持",             icon: LifeBuoy },
+export const SUPPLIER_TABS: Array<{ to: string; label: string }> = [
+  { to: "/supplier-portal",                    label: "Overview 首页" },
+  { to: "/supplier-portal/buyers",             label: "Nigerian Buyers 尼日利亚买家" },
+  { to: "/supplier-portal/payment-requests",           label: "Payment Requests 收款请求" },
+  { to: "/supplier-portal/rmb-wallet",             label: "RMB Wallet 人民币钱包" },
+  { to: "/supplier-portal/invoices",           label: "Invoices 发票" },
+  { to: "/supplier-portal/documents",          label: "Documents 文件" },
+  { to: "/supplier-portal/verification",       label: "Verification 认证" },
+  { to: "/supplier-portal/support",            label: "Support 支持" },
 ];
 
 
@@ -241,32 +237,12 @@ export function formatCountdown(ts: number) {
 
 // --- Shared subcomponents ----------------------------------------------------
 
-export function KPI({
-  label, value, icon: Icon, hint, tone = "default",
-}: {
-  label: string; value: string; icon: typeof Wallet; hint?: string;
-  tone?: "default" | "accent" | "success" | "warning";
-}) {
-  const toneRing = {
-    default: "from-primary/15 to-primary/0 text-primary",
-    accent:  "from-accent/25 to-accent/0 text-primary",
-    success: "from-emerald-500/20 to-emerald-500/0 text-emerald-700",
-    warning: "from-amber-500/25 to-amber-500/0 text-amber-800",
-  }[tone];
+export function KPI({ label, value, icon: Icon }: { label: string; value: string; icon: typeof Wallet }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border bg-card p-4 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elevated">
-      <div className={`pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-gradient-to-br ${toneRing} blur-2xl`} />
-      <div className="relative flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">{label}</div>
-          <div className="mt-2 text-2xl font-semibold tracking-tight tabular-nums">{value}</div>
-          {hint && <div className="mt-1 text-[11px] text-muted-foreground">{hint}</div>}
-        </div>
-        <div className={`shrink-0 rounded-xl border bg-background/60 p-2 backdrop-blur ${toneRing.split(" ").pop()}`}>
-          <Icon className="h-4 w-4" />
-        </div>
-      </div>
-    </div>
+    <Card className="p-4">
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground flex items-center gap-1"><Icon className="h-3 w-3" /> {label}</div>
+      <div className="text-lg font-semibold mt-1">{value}</div>
+    </Card>
   );
 }
 
