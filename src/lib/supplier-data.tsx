@@ -39,11 +39,11 @@ export type SupplierRequest = {
 };
 
 export const REQUESTS: SupplierRequest[] = [
-  { id: "PR-3041", invoiceNumber: "INV-2026-041", buyer: "Lagos Trade Holdings",  goods: "Bluetooth speakers x 500",   amountNgn: 19_300_000, amountRmb: 94_500,  invoiceCurrency: "RMB", dueDate: "2026-06-10", invoiceDoc: "INV-041.pdf", status: "RMB Paid",               updated: "2 hours ago", rate: 204.23, fee: 12_500, payoutRef: "RMB-PO-88421", paidDate: "2026-06-12", senderAccount: { bank: "GTBank", accountName: "Lagos Trade Holdings Ltd", accountNumber: "0123456789" } },
+  { id: "PR-3041", invoiceNumber: "INV-2026-041", buyer: "Zenith Imports Nigeria",  goods: "Bluetooth speakers x 500",   amountNgn: 19_300_000, amountRmb: 94_500,  invoiceCurrency: "RMB", dueDate: "2026-06-10", invoiceDoc: "INV-041.pdf", status: "RMB Paid",               updated: "2 hours ago", rate: 204.23, fee: 12_500, payoutRef: "RMB-PO-88421", paidDate: "2026-06-12", senderAccount: { bank: "GTBank", accountName: "Zenith Imports Nigeria Ltd", accountNumber: "0123456789" } },
   { id: "PR-3055", invoiceNumber: "INV-2026-055", buyer: "Abuja Imports Ltd",     goods: "LED panels x 220",           amountNgn: 8_650_000,  amountRmb: 42_300,  invoiceCurrency: "RMB", dueDate: "2026-06-20", invoiceDoc: "INV-055.pdf", status: "FX Processing",          updated: "today",       rate: 204.49, fee: 8_100,  senderAccount: { bank: "Access Bank", accountName: "Abuja Imports Ltd", accountNumber: "0987654321" } },
   { id: "PR-3062", invoiceNumber: "INV-2026-062", buyer: "Kano Distributors",     goods: "Industrial sewing machines", amountNgn: 14_120_000, amountRmb: 69_100,  invoiceCurrency: "RMB", dueDate: "2026-06-25", invoiceDoc: "INV-062.pdf", status: "NGN Received",           updated: "yesterday",   rate: 204.34, fee: 10_900, senderAccount: { bank: "Zenith Bank", accountName: "Kano Distributors", accountNumber: "1122334455" } },
   { id: "PR-3071", invoiceNumber: "INV-2026-071", buyer: "Port Harcourt Trading", goods: "Solar inverters x 60",       amountNgn: 27_400_000, amountRmb: 134_200, invoiceCurrency: "RMB", dueDate: "2026-07-01", invoiceDoc: "INV-071.pdf", status: "Awaiting Buyer Payment", updated: "3 days ago",  rate: 204.17, fee: 15_400 },
-  { id: "PR-3080", invoiceNumber: "INV-2026-080", buyer: "Lagos Trade Holdings",  goods: "Plastic injection moulds",   amountNgn: 6_120_000,  amountRmb: 29_900,  invoiceCurrency: "RMB", dueDate: "2026-07-04", invoiceDoc: "INV-080.pdf", status: "Compliance Review",      updated: "5 days ago",  rate: 204.68, fee: 6_200,  senderAccount: { bank: "GTBank", accountName: "Lagos Trade Holdings Ltd", accountNumber: "0123456789" } },
+  { id: "PR-3080", invoiceNumber: "INV-2026-080", buyer: "Zenith Imports Nigeria",  goods: "Plastic injection moulds",   amountNgn: 6_120_000,  amountRmb: 29_900,  invoiceCurrency: "RMB", dueDate: "2026-07-04", invoiceDoc: "INV-080.pdf", status: "Compliance Review",      updated: "5 days ago",  rate: 204.68, fee: 6_200,  senderAccount: { bank: "GTBank", accountName: "Zenith Imports Nigeria Ltd", accountNumber: "0123456789" } },
 ];
 
 
@@ -52,7 +52,7 @@ export type Buyer = {
 };
 
 export const BUYERS: Buyer[] = [
-  { name: "Tunde Bakare",   company: "Lagos Trade Holdings",  email: "tunde@lagostrade.ng",    phone: "+234 802 111 2233", country: "Nigeria" },
+  { name: "Tunde Bakare",   company: "Zenith Imports Nigeria",  email: "tunde@zenithimports.ng",    phone: "+234 802 111 2233", country: "Nigeria" },
   { name: "Amina Yusuf",    company: "Abuja Imports Ltd",     email: "amina@abujaimports.ng",  phone: "+234 803 222 3344", country: "Nigeria" },
   { name: "Ibrahim Musa",   company: "Kano Distributors",     email: "ibrahim@kanodist.ng",    phone: "+234 805 333 4455", country: "Nigeria" },
   { name: "Chioma Eze",     company: "Port Harcourt Trading", email: "chioma@phtrading.ng",    phone: "+234 806 444 5566", country: "Nigeria" },
