@@ -130,12 +130,8 @@ function RequestsPanel() {
         </div>
       </Card>
 
-      <Card className="p-4">
-        <div className="text-sm font-semibold mb-2">Payment request timeline stages</div>
-        <SettlementTimeline currentIndex={5} />
-      </Card>
 
-      <Card className="p-3 text-[11px] text-muted-foreground italic border-l-4 border-primary/40">{COMPLIANCE_DISCLAIMER}</Card>
+
 
       <NewRequestDialog open={open} onOpenChange={setOpen} />
     </div>
