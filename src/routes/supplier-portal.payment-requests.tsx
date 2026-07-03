@@ -70,9 +70,6 @@ function RequestsPanel() {
         <Button size="sm" variant="outline" onClick={() => toast.success("Receipt downloaded")}><Download className="h-4 w-4 mr-2" /> Download Receipt</Button>
       </ButtonGroup>
 
-      <Card className="p-3 text-[11px] text-muted-foreground italic border-l-4 border-primary/40">
-        Buyers always pay in <strong>NGN</strong>; suppliers always receive settlement in <strong>RMB</strong>. Every payment request and every send-to-buyer action carries the current FX quote (rate, NGN buyer pays, RMB you receive, fee, expiry). Refunds return only to the same Nigerian buyer bank account that originally sent the NGN payment.
-      </Card>
 
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
