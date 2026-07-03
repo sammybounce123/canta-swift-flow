@@ -31,9 +31,13 @@ function RmbWalletPanel() {
             <div className="text-xs uppercase tracking-wider opacity-80 flex items-center gap-1">
               <Wallet className="h-3 w-3" /> RMB Wallet · 人民币钱包
             </div>
-            <div className="text-4xl font-semibold mt-2 tabular-nums">¥{balance.toLocaleString()}.00</div>
-            <div className="text-xs opacity-80 mt-1">Available balance · 可用余额 · CNY</div>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="text-4xl font-semibold tabular-nums">¥{balance.toLocaleString()}.00</div>
+              <Badge variant="outline" className="bg-white/15 text-white border-white/30 text-[10px]">Demo balance · 演示</Badge>
+            </div>
+            <div className="text-xs opacity-80 mt-1">Available balance · 可用余额 · CNY · Held by Canta's RMB settlement partner</div>
           </div>
+
           <ButtonGroup label="Wallet actions">
             <Button size="sm" variant="secondary" onClick={() => toast.success("Withdrawal request sent to your verified RMB bank account")}>
               <ArrowDownLeft className="h-4 w-4 mr-2" /> Withdraw to bank 提现到银行
