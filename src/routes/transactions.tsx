@@ -191,7 +191,7 @@ function Transactions() {
                 <Row k="Amount" v={fmtMoney(active.amount, active.ccy)} />
                 <Row k="Status" v={active.status} />
                 <Row k="Corridor" v="Smart-routed · Tier 1" />
-                <Row k="Settlement" v="< 30s · Instant rail" />
+                <Row k="Settlement" v="Fast rail · after compliance clears" />
               </div>
               <div className="flex gap-2 pt-2">
                 <Button variant="outline" className="flex-1" onClick={() => toast.success("Receipt downloaded")}>Download receipt</Button>

@@ -141,7 +141,7 @@ function ImporterPortal() {
           <TabsTrigger value="landed">My Landed Cost</TabsTrigger>
           <TabsTrigger value="payments">My Payments</TabsTrigger>
           <TabsTrigger value="alerts">Alerts</TabsTrigger>
-          <TabsTrigger value="assistant">Ask Canta</TabsTrigger>
+          <TabsTrigger value="assistant">Ask Canta · Beta</TabsTrigger>
         </TabsList>
 
         <TabsContent value="shipments" className="mt-6">
@@ -507,7 +507,7 @@ function MyAlerts({ shipments: list }: { shipments: Shipment[] }) {
 
 function Assistant() {
   const [msgs, setMsgs] = useState<{ role: "user" | "bot"; text: string }[]>([
-    { role: "bot", text: "Hi! I'm Canta Assistant. Ask me anything about your shipments, documents, landed cost, or payments — in simple English or pidgin." },
+    { role: "bot", text: "Hi! I'm the Canta demo assistant (Beta). I can walk you through shipments, documents, landed cost, and payments — always confirm payment, FX, and compliance details with your Canta workspace before acting." },
   ]);
   const [input, setInput] = useState("");
   const quick = [
@@ -519,18 +519,22 @@ function Assistant() {
   const send = (text: string) => {
     if (!text.trim()) return;
     const reply = text.toLowerCase().includes("landed")
-      ? "Your landed cost for SHP-10421 is about ₦389,000,000 including freight, duty and clearing. Open the Landed Cost tab for a breakdown."
+      ? "Demo response: landed cost for SHP-10421 is about ₦389,000,000 including freight, duty and clearing. Open the Landed Cost tab for a breakdown."
       : text.toLowerCase().includes("document")
-      ? "You're missing the Packing List and SONCAP for SHP-10421. Tap Upload on the Documents tab or send them on WhatsApp."
+      ? "Demo response: you're missing the Packing List and SONCAP for SHP-10421. Tap Upload on the Documents tab or send them on WhatsApp."
       : text.toLowerCase().includes("when") || text.toLowerCase().includes("arrive")
-      ? "Your container (SHP-10421) is on vessel and expected in Apapa in about 7 days."
-      : "Your goods are on the vessel and expected in Lagos in about 7 days. I'll send a WhatsApp update when they arrive.";
+      ? "Demo response: container SHP-10421 is on vessel, expected in Apapa in about 7 days. Always confirm ETA with your carrier."
+      : "Demo response: your goods are on the vessel and expected in Lagos in about 7 days. I'll send a WhatsApp update when they arrive.";
     setMsgs((m) => [...m, { role: "user", text }, { role: "bot", text: reply }]);
     setInput("");
   };
   return (
     <Card className="p-5 shadow-card">
-      <div className="text-sm font-semibold flex items-center gap-2"><Sparkles className="h-4 w-4 text-accent" /> Canta Assistant</div>
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="text-sm font-semibold flex items-center gap-2"><Sparkles className="h-4 w-4 text-accent" /> Ask Canta — demo assistant</div>
+        <Badge variant="outline" className="text-[10px]">Beta · demo response</Badge>
+      </div>
+      <p className="text-xs text-muted-foreground mt-1">Beta assistant for trade, payment, and document guidance. Always confirm payment, FX, and compliance details before acting.</p>
       <div className="mt-4 space-y-3 max-h-[360px] overflow-y-auto">
         {msgs.map((m, i) => (
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : ""}`}>

@@ -86,7 +86,7 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Fund {fund.ccy} Wallet</DialogTitle>
-            <DialogDescription>Choose a funding method to top up instantly.</DialogDescription>
+            <DialogDescription>Choose a funding method to top up your wallet.</DialogDescription>
           </DialogHeader>
           <FundForm
             ccy={fund.ccy}
@@ -470,7 +470,7 @@ function FundTracker({
       : method === "Bank Transfer"
       ? [
           { label: "Awaiting bank inflow", sub: "Matching reference automatically" },
-          { label: "Funds received by Canta", sub: "Cleared on instant rail" },
+          { label: "Funds received by Canta", sub: "Cleared on fast settlement rail" },
           { label: `${fmtMoney(amount, ccy)} credited`, sub: `Available in your ${ccy} wallet` },
         ]
       : [

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowUpRight, ArrowDownRight, Plus, ArrowLeftRight, Send, Sparkles,
-  TrendingUp, Wallet as WalletIcon, Zap, Eye, EyeOff,
+  Wallet as WalletIcon, Zap, Eye, EyeOff,
 } from "lucide-react";
 import {
   AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid,
@@ -117,9 +117,23 @@ function Dashboard() {
             {hidden ? <Eye className="h-4 w-4 mr-1.5" /> : <EyeOff className="h-4 w-4 mr-1.5" />}
             {hidden ? "Show balances" : "Hide balances"}
           </Button>
-          <Badge className="bg-accent/15 text-accent-foreground border border-accent/30 hover:bg-accent/20">
-            <Zap className="h-3 w-3 mr-1" /> Treasury Mode
-          </Badge>
+          {(() => {
+            const modeLabel: Record<string, string> = {
+              "Enterprise Treasury": "Treasury Mode",
+              "Importer": "Importer Mode",
+              "Supplier": "Supplier Mode",
+              "Canta Ops": "Ops Mode",
+              "Freight Forwarder": "Clearing Agent Mode",
+              "Global Merchant": "Merchant Mode",
+              "Partner Property": "Partner Mode",
+            };
+            const label = modeLabel[mode] ?? "Workspace Demo";
+            return (
+              <Badge className="bg-accent/15 text-accent-foreground border border-accent/30 hover:bg-accent/20">
+                <Zap className="h-3 w-3 mr-1" /> {label}
+              </Badge>
+            );
+          })()}
         </div>
       </div>
 
@@ -242,30 +256,30 @@ function Dashboard() {
         </Card>
 
         <Card className="p-6 shadow-card border-accent/30 bg-gradient-to-br from-accent/5 to-transparent">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-accent/20 grid place-items-center">
-              <Sparkles className="h-4 w-4 text-accent" />
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-accent/20 grid place-items-center">
+                <Sparkles className="h-4 w-4 text-accent" />
+              </div>
+              <div className="text-sm font-semibold">AI Insight</div>
             </div>
-            <div className="text-sm font-semibold">AI Insight</div>
+            <Badge variant="outline" className="text-[10px]">Sample AI output</Badge>
           </div>
           <p className="mt-4 text-base font-medium leading-snug">
-            NGN expected to weaken <span className="text-destructive">~1.2%</span> against USD this week.
+            FX movement may affect this payment window.
           </p>
           <p className="text-sm text-muted-foreground mt-2">
-            Consider converting up to <span className="font-semibold text-foreground">$2.4M</span> in export proceeds within the next 24 hours.
+            Review the quote expiry before sending the buyer link, and consider converting export proceeds within your usual treasury cadence.
           </p>
           <div className="mt-4 flex items-center gap-2 text-xs">
-            <Badge className="bg-success/15 text-success border-success/30 hover:bg-success/15">
-              <TrendingUp className="h-3 w-3 mr-1" /> 87% confidence
-            </Badge>
-            <span className="text-muted-foreground">Updated 2m ago</span>
+            <Badge variant="secondary" className="text-[10px]">Demo insight · not financial advice</Badge>
           </div>
           <Button
             onClick={() => openConvert("NGN", "USD")}
             disabled={!can("initiate_tx")}
             className="w-full mt-5 bg-accent text-accent-foreground hover:bg-accent/90"
           >
-            {can("initiate_tx") ? "Convert now" : "Insight only · no permission"}
+            {can("initiate_tx") ? "Open converter" : "Insight only · no permission"}
           </Button>
         </Card>
       </div>
@@ -317,7 +331,7 @@ function Dashboard() {
             <div className="text-xs text-muted-foreground">Best corridor selected automatically · Avg savings 0.8%</div>
           </div>
         </div>
-        <Badge className="bg-success/15 text-success border-success/30 hover:bg-success/15">Instant Settlement</Badge>
+        <Badge className="bg-success/15 text-success border-success/30 hover:bg-success/15">Settlement tracking</Badge>
       </Card>
     </div>
   );
