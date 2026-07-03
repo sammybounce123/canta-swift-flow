@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Receipt, Upload, Bell, Clock, Download, FileText, RotateCcw, RefreshCw, Send, Lock } from "lucide-react";
 import { toast } from "sonner";
-import { REQUESTS, BUYERS, STATUS_TONE, SettlementTimeline, fxQuoteStore, requestsStore, useRequests, COMPLIANCE_DISCLAIMER, type SupplierRequest } from "@/lib/supplier-data";
+import { BUYERS, STATUS_TONE, fxQuoteStore, requestsStore, useRequests, type SupplierRequest } from "@/lib/supplier-data";
 
 export const Route = createFileRoute("/supplier-portal/payment-requests")({
   head: () => ({ meta: [{ title: "Payment Requests — Supplier Portal — Canta" }] }),
