@@ -54,10 +54,16 @@ function RequestsPanel() {
 
   const sendToBuyerWithQuote = (r: SupplierRequest) => {
     const q = buildIndicativeQuote(r.amountRmb);
+    const fx = fxQuoteStore.generate();
+    requestsStore.update(r.id, {
+      status: "Awaiting Buyer Payment",
+      rate: q.rate,
+      amountNgn: q.ngnBuyerPays,
+      fee: q.feeNgn,
+    });
     toast.success(
-      `Quote sent to ${r.buyer} · Buyer pays ₦${q.ngnBuyerPays.toLocaleString()} · You receive ¥${r.amountRmb.toLocaleString()} · Rate ${q.rate} · Locks 15m`,
+      `Quote sent to ${r.buyer} · Buyer pays ₦${q.ngnBuyerPays.toLocaleString()} · You receive ¥${r.amountRmb.toLocaleString()} · Rate ${q.rate} · FX quote ${fx.id} locked 15m`,
     );
-    void navigate({ to: "/supplier-portal/ngn-details" });
   };
 
   return (
