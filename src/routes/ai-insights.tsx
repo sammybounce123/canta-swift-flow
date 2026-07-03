@@ -20,41 +20,38 @@ export const Route = createFileRoute("/ai-insights")({
 function AIInsights() {
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="h-10 w-10 rounded-xl bg-accent/15 grid place-items-center">
-          <Sparkles className="h-5 w-5 text-accent" />
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-xl bg-accent/15 grid place-items-center">
+            <Sparkles className="h-5 w-5 text-accent" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-semibold">AI Insights</h1>
+            <p className="text-sm text-muted-foreground">Sample AI output for treasury teams — not financial advice.</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-2xl font-semibold">AI Insights</h1>
-          <p className="text-sm text-muted-foreground">Predictive FX intelligence for treasury teams.</p>
-        </div>
+        <Badge variant="outline" className="text-[10px]">Sample AI output · Demo</Badge>
       </div>
 
       <Card className="p-6 shadow-elevated bg-gradient-card text-primary-foreground border-none relative overflow-hidden">
         <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-accent/20 blur-3xl" />
         <div className="relative grid lg:grid-cols-3 gap-6">
           <div>
-            <Badge className="bg-accent text-accent-foreground hover:bg-accent">Buy Signal</Badge>
-            <div className="mt-4 text-3xl font-semibold">Buy USD now</div>
+            <Badge className="bg-accent text-accent-foreground hover:bg-accent">Sample signal</Badge>
+            <div className="mt-4 text-3xl font-semibold">FX may move in your window</div>
             <p className="text-sm text-primary-foreground/70 mt-2 leading-relaxed">
-              NGN expected to weaken ~1.2% over the next 48 hours driven by import demand
-              and corporate FX flows. Locking USD now optimises corporate cash positions.
-
+              Illustrative AI output only. Review the current quote expiry before sending the buyer link and
+              plan conversions within your usual treasury cadence.
             </p>
             <div className="mt-5 flex items-center gap-3">
-              <div>
-                <div className="text-xs text-primary-foreground/60">Confidence</div>
-                <div className="text-xl font-semibold">87%</div>
-              </div>
-              <div className="h-10 w-px bg-white/15" />
               <div>
                 <div className="text-xs text-primary-foreground/60">Horizon</div>
                 <div className="text-xl font-semibold">48h</div>
               </div>
               <div className="h-10 w-px bg-white/15" />
               <div>
-                <div className="text-xs text-primary-foreground/60">Suggested size</div>
-                <div className="text-xl font-semibold">$2.4M</div>
+                <div className="text-xs text-primary-foreground/60">Scope</div>
+                <div className="text-xl font-semibold">Treasury demo</div>
               </div>
             </div>
           </div>
@@ -73,6 +70,7 @@ function AIInsights() {
           </div>
         </div>
       </Card>
+
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
