@@ -256,11 +256,13 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/supplier-portal/wallet", label: "RMB Wallet", iconKey: "globe", group: "Supplier Portal" },
         { to: "/supplier-portal/invoices", label: "Invoices", iconKey: "receipt", group: "Supplier Portal" },
         { to: "/supplier-portal/documents", label: "Documents", iconKey: "file", group: "Operations" },
-        
+        { to: "/supplier-portal/verification", label: "Verification", iconKey: "shield-check", group: "Operations" },
         { to: "/supplier-portal/support", label: "Support", iconKey: "users", group: "Help" },
-        { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
-        Team, Settings,
+        { to: "/reports", label: "Supplier Reports", iconKey: "chart", group: "Insights" },
+        { to: "/team", label: "Supplier Team", iconKey: "team", group: "Workspace" },
+        { to: "/settings", label: "Supplier Settings", iconKey: "settings", group: "Workspace" },
       ];
+
     case "global_collections":
       return [
         D,

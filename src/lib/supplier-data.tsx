@@ -31,7 +31,7 @@ export const STATUS_TONE: Record<SettlementStatus, string> = {
 };
 
 export type SupplierRequest = {
-  id: string; invoiceNumber: string; buyer: string; tradeFile: string; goods: string;
+  id: string; invoiceNumber: string; buyer: string; goods: string;
   amountNgn: number; amountRmb: number; invoiceCurrency: "RMB" | "USD";
   dueDate: string; invoiceDoc: string; status: SettlementStatus; updated: string;
   rate: number; fee: number; payoutRef?: string; paidDate?: string;
@@ -39,12 +39,13 @@ export type SupplierRequest = {
 };
 
 export const REQUESTS: SupplierRequest[] = [
-  { id: "PR-3041", invoiceNumber: "INV-2026-041", buyer: "Lagos Trade Holdings",  tradeFile: "TF-2026-0214", goods: "Bluetooth speakers x 500",   amountNgn: 19_300_000, amountRmb: 94_500,  invoiceCurrency: "RMB", dueDate: "2026-06-10", invoiceDoc: "INV-041.pdf", status: "RMB Paid",               updated: "2 hours ago", rate: 204.23, fee: 12_500, payoutRef: "RMB-PO-88421", paidDate: "2026-06-12", senderAccount: { bank: "GTBank", accountName: "Lagos Trade Holdings Ltd", accountNumber: "0123456789" } },
-  { id: "PR-3055", invoiceNumber: "INV-2026-055", buyer: "Abuja Imports Ltd",     tradeFile: "TF-2026-0231", goods: "LED panels x 220",           amountNgn: 8_650_000,  amountRmb: 42_300,  invoiceCurrency: "RMB", dueDate: "2026-06-20", invoiceDoc: "INV-055.pdf", status: "FX Processing",          updated: "today",       rate: 204.49, fee: 8_100,  senderAccount: { bank: "Access Bank", accountName: "Abuja Imports Ltd", accountNumber: "0987654321" } },
-  { id: "PR-3062", invoiceNumber: "INV-2026-062", buyer: "Kano Distributors",     tradeFile: "TF-2026-0244", goods: "Industrial sewing machines", amountNgn: 14_120_000, amountRmb: 69_100,  invoiceCurrency: "RMB", dueDate: "2026-06-25", invoiceDoc: "INV-062.pdf", status: "NGN Received",           updated: "yesterday",   rate: 204.34, fee: 10_900, senderAccount: { bank: "Zenith Bank", accountName: "Kano Distributors", accountNumber: "1122334455" } },
-  { id: "PR-3071", invoiceNumber: "INV-2026-071", buyer: "Port Harcourt Trading", tradeFile: "TF-2026-0259", goods: "Solar inverters x 60",       amountNgn: 27_400_000, amountRmb: 134_200, invoiceCurrency: "RMB", dueDate: "2026-07-01", invoiceDoc: "INV-071.pdf", status: "Awaiting Buyer Payment", updated: "3 days ago",  rate: 204.17, fee: 15_400 },
-  { id: "PR-3080", invoiceNumber: "INV-2026-080", buyer: "Lagos Trade Holdings",  tradeFile: "TF-2026-0263", goods: "Plastic injection moulds",   amountNgn: 6_120_000,  amountRmb: 29_900,  invoiceCurrency: "RMB", dueDate: "2026-07-04", invoiceDoc: "INV-080.pdf", status: "Compliance Review",      updated: "5 days ago",  rate: 204.68, fee: 6_200,  senderAccount: { bank: "GTBank", accountName: "Lagos Trade Holdings Ltd", accountNumber: "0123456789" } },
+  { id: "PR-3041", invoiceNumber: "INV-2026-041", buyer: "Lagos Trade Holdings",  goods: "Bluetooth speakers x 500",   amountNgn: 19_300_000, amountRmb: 94_500,  invoiceCurrency: "RMB", dueDate: "2026-06-10", invoiceDoc: "INV-041.pdf", status: "RMB Paid",               updated: "2 hours ago", rate: 204.23, fee: 12_500, payoutRef: "RMB-PO-88421", paidDate: "2026-06-12", senderAccount: { bank: "GTBank", accountName: "Lagos Trade Holdings Ltd", accountNumber: "0123456789" } },
+  { id: "PR-3055", invoiceNumber: "INV-2026-055", buyer: "Abuja Imports Ltd",     goods: "LED panels x 220",           amountNgn: 8_650_000,  amountRmb: 42_300,  invoiceCurrency: "RMB", dueDate: "2026-06-20", invoiceDoc: "INV-055.pdf", status: "FX Processing",          updated: "today",       rate: 204.49, fee: 8_100,  senderAccount: { bank: "Access Bank", accountName: "Abuja Imports Ltd", accountNumber: "0987654321" } },
+  { id: "PR-3062", invoiceNumber: "INV-2026-062", buyer: "Kano Distributors",     goods: "Industrial sewing machines", amountNgn: 14_120_000, amountRmb: 69_100,  invoiceCurrency: "RMB", dueDate: "2026-06-25", invoiceDoc: "INV-062.pdf", status: "NGN Received",           updated: "yesterday",   rate: 204.34, fee: 10_900, senderAccount: { bank: "Zenith Bank", accountName: "Kano Distributors", accountNumber: "1122334455" } },
+  { id: "PR-3071", invoiceNumber: "INV-2026-071", buyer: "Port Harcourt Trading", goods: "Solar inverters x 60",       amountNgn: 27_400_000, amountRmb: 134_200, invoiceCurrency: "RMB", dueDate: "2026-07-01", invoiceDoc: "INV-071.pdf", status: "Awaiting Buyer Payment", updated: "3 days ago",  rate: 204.17, fee: 15_400 },
+  { id: "PR-3080", invoiceNumber: "INV-2026-080", buyer: "Lagos Trade Holdings",  goods: "Plastic injection moulds",   amountNgn: 6_120_000,  amountRmb: 29_900,  invoiceCurrency: "RMB", dueDate: "2026-07-04", invoiceDoc: "INV-080.pdf", status: "Compliance Review",      updated: "5 days ago",  rate: 204.68, fee: 6_200,  senderAccount: { bank: "GTBank", accountName: "Lagos Trade Holdings Ltd", accountNumber: "0123456789" } },
 ];
+
 
 export type Buyer = {
   name: string; company: string; email: string; phone: string; country: string;
@@ -60,7 +61,7 @@ export const BUYERS: Buyer[] = [
 export const TIMELINE_STEPS = [
   "Payment Request Created",
   "FX Quote Generated",
-  "NGN Payment Details Sent",
+  "NGN Payment Link Sent",
   "Buyer Viewed",
   "Awaiting NGN Payment",
   "NGN Received",
@@ -70,6 +71,7 @@ export const TIMELINE_STEPS = [
   "Supplier Paid",
   "Settlement Receipt Available",
 ];
+
 
 export const COMPLIANCE_DISCLAIMER =
   "FX quotes, settlement amounts, and payout timelines are subject to payment confirmation, compliance review, FX availability, partner rails, and applicable regulations.";
@@ -84,6 +86,7 @@ export const SUPPLIER_TABS: Array<{ to: string; label: string }> = [
   { to: "/supplier-portal/verification",       label: "Verification 认证" },
   { to: "/supplier-portal/support",            label: "Support 支持" },
 ];
+
 
 // --- Verification store ------------------------------------------------------
 
@@ -238,12 +241,12 @@ export function RequestsTable({ rows, compact }: { rows: SupplierRequest[]; comp
         <table className="w-full text-sm">
           <thead className="bg-secondary/40 text-[11px] uppercase tracking-wider text-muted-foreground">
             <tr>
-              <th className="text-left py-2 px-3">Request</th>
+              <th className="text-left py-2 px-3">Request Ref</th>
               <th className="text-left py-2 px-3">Buyer</th>
-              <th className="text-left py-2 px-3">Trade File</th>
+              <th className="text-left py-2 px-3">Invoice Ref</th>
               {!compact && <th className="text-left py-2 px-3">Goods</th>}
               <th className="text-right py-2 px-3">NGN</th>
-              <th className="text-right py-2 px-3">RMB</th>
+              <th className="text-right py-2 px-3">RMB Settlement</th>
               <th className="text-left py-2 px-3">Status</th>
               <th className="text-left py-2 px-3">Updated</th>
             </tr>
@@ -253,7 +256,7 @@ export function RequestsTable({ rows, compact }: { rows: SupplierRequest[]; comp
               <tr key={r.id} className="border-t">
                 <td className="py-2 px-3 font-mono text-xs">{r.id}</td>
                 <td className="py-2 px-3">{r.buyer}</td>
-                <td className="py-2 px-3 font-mono text-xs">{r.tradeFile}</td>
+                <td className="py-2 px-3 font-mono text-xs">{r.invoiceNumber}</td>
                 {!compact && <td className="py-2 px-3 text-xs">{r.goods}</td>}
                 <td className="py-2 px-3 text-right tabular-nums">₦{r.amountNgn.toLocaleString()}</td>
                 <td className="py-2 px-3 text-right tabular-nums">¥{r.amountRmb.toLocaleString()}</td>
@@ -267,6 +270,7 @@ export function RequestsTable({ rows, compact }: { rows: SupplierRequest[]; comp
     </Card>
   );
 }
+
 
 export function DetailRow({ label, value }: { label: string; value: string }) {
   return (

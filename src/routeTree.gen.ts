@@ -74,13 +74,11 @@ import { Route as SuppliersProfileRouteImport } from './routes/suppliers.profile
 import { Route as SuppliersKybRouteImport } from './routes/suppliers.kyb'
 import { Route as SupplierPortalWalletRouteImport } from './routes/supplier-portal.wallet'
 import { Route as SupplierPortalVerificationRouteImport } from './routes/supplier-portal.verification'
-import { Route as SupplierPortalTradeFilesRouteImport } from './routes/supplier-portal.trade-files'
 import { Route as SupplierPortalSupportRouteImport } from './routes/supplier-portal.support'
 import { Route as SupplierPortalSettlementRouteImport } from './routes/supplier-portal.settlement'
 import { Route as SupplierPortalRequestsRouteImport } from './routes/supplier-portal.requests'
 import { Route as SupplierPortalPayoutAccountsRouteImport } from './routes/supplier-portal.payout-accounts'
 import { Route as SupplierPortalNgnDetailsRouteImport } from './routes/supplier-portal.ngn-details'
-import { Route as SupplierPortalMessagesRouteImport } from './routes/supplier-portal.messages'
 import { Route as SupplierPortalInvoicesRouteImport } from './routes/supplier-portal.invoices'
 import { Route as SupplierPortalFxQuotesRouteImport } from './routes/supplier-portal.fx-quotes'
 import { Route as SupplierPortalDocumentsRouteImport } from './routes/supplier-portal.documents'
@@ -436,12 +434,6 @@ const SupplierPortalVerificationRoute =
     path: '/verification',
     getParentRoute: () => SupplierPortalRoute,
   } as any)
-const SupplierPortalTradeFilesRoute =
-  SupplierPortalTradeFilesRouteImport.update({
-    id: '/trade-files',
-    path: '/trade-files',
-    getParentRoute: () => SupplierPortalRoute,
-  } as any)
 const SupplierPortalSupportRoute = SupplierPortalSupportRouteImport.update({
   id: '/support',
   path: '/support',
@@ -470,11 +462,6 @@ const SupplierPortalNgnDetailsRoute =
     path: '/ngn-details',
     getParentRoute: () => SupplierPortalRoute,
   } as any)
-const SupplierPortalMessagesRoute = SupplierPortalMessagesRouteImport.update({
-  id: '/messages',
-  path: '/messages',
-  getParentRoute: () => SupplierPortalRoute,
-} as any)
 const SupplierPortalInvoicesRoute = SupplierPortalInvoicesRouteImport.update({
   id: '/invoices',
   path: '/invoices',
@@ -697,13 +684,11 @@ export interface FileRoutesByFullPath {
   '/supplier-portal/documents': typeof SupplierPortalDocumentsRoute
   '/supplier-portal/fx-quotes': typeof SupplierPortalFxQuotesRoute
   '/supplier-portal/invoices': typeof SupplierPortalInvoicesRoute
-  '/supplier-portal/messages': typeof SupplierPortalMessagesRoute
   '/supplier-portal/ngn-details': typeof SupplierPortalNgnDetailsRoute
   '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
   '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
   '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
   '/supplier-portal/support': typeof SupplierPortalSupportRoute
-  '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
   '/supplier-portal/verification': typeof SupplierPortalVerificationRoute
   '/supplier-portal/wallet': typeof SupplierPortalWalletRoute
   '/suppliers/kyb': typeof SuppliersKybRoute
@@ -795,13 +780,11 @@ export interface FileRoutesByTo {
   '/supplier-portal/documents': typeof SupplierPortalDocumentsRoute
   '/supplier-portal/fx-quotes': typeof SupplierPortalFxQuotesRoute
   '/supplier-portal/invoices': typeof SupplierPortalInvoicesRoute
-  '/supplier-portal/messages': typeof SupplierPortalMessagesRoute
   '/supplier-portal/ngn-details': typeof SupplierPortalNgnDetailsRoute
   '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
   '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
   '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
   '/supplier-portal/support': typeof SupplierPortalSupportRoute
-  '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
   '/supplier-portal/verification': typeof SupplierPortalVerificationRoute
   '/supplier-portal/wallet': typeof SupplierPortalWalletRoute
   '/suppliers/kyb': typeof SuppliersKybRoute
@@ -898,13 +881,11 @@ export interface FileRoutesById {
   '/supplier-portal/documents': typeof SupplierPortalDocumentsRoute
   '/supplier-portal/fx-quotes': typeof SupplierPortalFxQuotesRoute
   '/supplier-portal/invoices': typeof SupplierPortalInvoicesRoute
-  '/supplier-portal/messages': typeof SupplierPortalMessagesRoute
   '/supplier-portal/ngn-details': typeof SupplierPortalNgnDetailsRoute
   '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
   '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
   '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
   '/supplier-portal/support': typeof SupplierPortalSupportRoute
-  '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
   '/supplier-portal/verification': typeof SupplierPortalVerificationRoute
   '/supplier-portal/wallet': typeof SupplierPortalWalletRoute
   '/suppliers/kyb': typeof SuppliersKybRoute
@@ -1002,13 +983,11 @@ export interface FileRouteTypes {
     | '/supplier-portal/documents'
     | '/supplier-portal/fx-quotes'
     | '/supplier-portal/invoices'
-    | '/supplier-portal/messages'
     | '/supplier-portal/ngn-details'
     | '/supplier-portal/payout-accounts'
     | '/supplier-portal/requests'
     | '/supplier-portal/settlement'
     | '/supplier-portal/support'
-    | '/supplier-portal/trade-files'
     | '/supplier-portal/verification'
     | '/supplier-portal/wallet'
     | '/suppliers/kyb'
@@ -1100,13 +1079,11 @@ export interface FileRouteTypes {
     | '/supplier-portal/documents'
     | '/supplier-portal/fx-quotes'
     | '/supplier-portal/invoices'
-    | '/supplier-portal/messages'
     | '/supplier-portal/ngn-details'
     | '/supplier-portal/payout-accounts'
     | '/supplier-portal/requests'
     | '/supplier-portal/settlement'
     | '/supplier-portal/support'
-    | '/supplier-portal/trade-files'
     | '/supplier-portal/verification'
     | '/supplier-portal/wallet'
     | '/suppliers/kyb'
@@ -1202,13 +1179,11 @@ export interface FileRouteTypes {
     | '/supplier-portal/documents'
     | '/supplier-portal/fx-quotes'
     | '/supplier-portal/invoices'
-    | '/supplier-portal/messages'
     | '/supplier-portal/ngn-details'
     | '/supplier-portal/payout-accounts'
     | '/supplier-portal/requests'
     | '/supplier-portal/settlement'
     | '/supplier-portal/support'
-    | '/supplier-portal/trade-files'
     | '/supplier-portal/verification'
     | '/supplier-portal/wallet'
     | '/suppliers/kyb'
@@ -1744,13 +1719,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SupplierPortalVerificationRouteImport
       parentRoute: typeof SupplierPortalRoute
     }
-    '/supplier-portal/trade-files': {
-      id: '/supplier-portal/trade-files'
-      path: '/trade-files'
-      fullPath: '/supplier-portal/trade-files'
-      preLoaderRoute: typeof SupplierPortalTradeFilesRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
     '/supplier-portal/support': {
       id: '/supplier-portal/support'
       path: '/support'
@@ -1784,13 +1752,6 @@ declare module '@tanstack/react-router' {
       path: '/ngn-details'
       fullPath: '/supplier-portal/ngn-details'
       preLoaderRoute: typeof SupplierPortalNgnDetailsRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/messages': {
-      id: '/supplier-portal/messages'
-      path: '/messages'
-      fullPath: '/supplier-portal/messages'
-      preLoaderRoute: typeof SupplierPortalMessagesRouteImport
       parentRoute: typeof SupplierPortalRoute
     }
     '/supplier-portal/invoices': {
@@ -2087,13 +2048,11 @@ interface SupplierPortalRouteChildren {
   SupplierPortalDocumentsRoute: typeof SupplierPortalDocumentsRoute
   SupplierPortalFxQuotesRoute: typeof SupplierPortalFxQuotesRoute
   SupplierPortalInvoicesRoute: typeof SupplierPortalInvoicesRoute
-  SupplierPortalMessagesRoute: typeof SupplierPortalMessagesRoute
   SupplierPortalNgnDetailsRoute: typeof SupplierPortalNgnDetailsRoute
   SupplierPortalPayoutAccountsRoute: typeof SupplierPortalPayoutAccountsRoute
   SupplierPortalRequestsRoute: typeof SupplierPortalRequestsRoute
   SupplierPortalSettlementRoute: typeof SupplierPortalSettlementRoute
   SupplierPortalSupportRoute: typeof SupplierPortalSupportRoute
-  SupplierPortalTradeFilesRoute: typeof SupplierPortalTradeFilesRoute
   SupplierPortalVerificationRoute: typeof SupplierPortalVerificationRoute
   SupplierPortalWalletRoute: typeof SupplierPortalWalletRoute
   SupplierPortalIndexRoute: typeof SupplierPortalIndexRoute
@@ -2104,13 +2063,11 @@ const SupplierPortalRouteChildren: SupplierPortalRouteChildren = {
   SupplierPortalDocumentsRoute: SupplierPortalDocumentsRoute,
   SupplierPortalFxQuotesRoute: SupplierPortalFxQuotesRoute,
   SupplierPortalInvoicesRoute: SupplierPortalInvoicesRoute,
-  SupplierPortalMessagesRoute: SupplierPortalMessagesRoute,
   SupplierPortalNgnDetailsRoute: SupplierPortalNgnDetailsRoute,
   SupplierPortalPayoutAccountsRoute: SupplierPortalPayoutAccountsRoute,
   SupplierPortalRequestsRoute: SupplierPortalRequestsRoute,
   SupplierPortalSettlementRoute: SupplierPortalSettlementRoute,
   SupplierPortalSupportRoute: SupplierPortalSupportRoute,
-  SupplierPortalTradeFilesRoute: SupplierPortalTradeFilesRoute,
   SupplierPortalVerificationRoute: SupplierPortalVerificationRoute,
   SupplierPortalWalletRoute: SupplierPortalWalletRoute,
   SupplierPortalIndexRoute: SupplierPortalIndexRoute,

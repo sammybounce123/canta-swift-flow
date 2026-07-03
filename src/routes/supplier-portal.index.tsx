@@ -65,8 +65,9 @@ function OverviewPanel() {
       </Card>
 
       <Card className="p-4 text-xs text-muted-foreground">
-        You only see your own buyers, invoices, payment requests, documents, Trade Files, messages and settlement status. Other suppliers, importer landed cost, clearing agent bids and unrelated Trade Files are hidden.
+        You only see your own buyers, invoices, payment requests, documents, messages, FX quotes, RMB wallet, and settlement status.
       </Card>
+
     </div>
   );
 }
