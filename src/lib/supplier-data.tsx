@@ -79,8 +79,8 @@ export const COMPLIANCE_DISCLAIMER =
 export const SUPPLIER_TABS: Array<{ to: string; label: string }> = [
   { to: "/supplier-portal",                    label: "Overview 首页" },
   { to: "/supplier-portal/buyers",             label: "Nigerian Buyers 尼日利亚买家" },
-  { to: "/supplier-portal/requests",           label: "Payment Requests 收款请求" },
-  { to: "/supplier-portal/wallet",             label: "RMB Wallet 人民币钱包" },
+  { to: "/supplier-portal/payment-requests",           label: "Payment Requests 收款请求" },
+  { to: "/supplier-portal/rmb-wallet",             label: "RMB Wallet 人民币钱包" },
   { to: "/supplier-portal/invoices",           label: "Invoices 发票" },
   { to: "/supplier-portal/documents",          label: "Documents 文件" },
   { to: "/supplier-portal/verification",       label: "Verification 认证" },
