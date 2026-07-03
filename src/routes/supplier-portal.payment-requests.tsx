@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Receipt, Upload, Bell, Clock, Download, FileText, RotateCcw, RefreshCw, Send, Lock } from "lucide-react";
 import { toast } from "sonner";
-import { REQUESTS, BUYERS, STATUS_TONE, SettlementTimeline, fxQuoteStore, COMPLIANCE_DISCLAIMER, type SupplierRequest } from "@/lib/supplier-data";
+import { REQUESTS, BUYERS, STATUS_TONE, SettlementTimeline, fxQuoteStore, requestsStore, useRequests, COMPLIANCE_DISCLAIMER, type SupplierRequest } from "@/lib/supplier-data";
 
 export const Route = createFileRoute("/supplier-portal/payment-requests")({
   head: () => ({ meta: [{ title: "Payment Requests — Supplier Portal — Canta" }] }),
@@ -41,6 +41,8 @@ function RequestsPanel() {
   const { new: openNew } = Route.useSearch();
   const [open, setOpen] = useState(!!openNew);
   const navigate = useNavigate();
+  const requests = useRequests();
+
 
   useEffect(() => {
     if (openNew) {
@@ -90,7 +92,7 @@ function RequestsPanel() {
               </tr>
             </thead>
             <tbody>
-              {REQUESTS.map((r) => {
+              {requests.map((r) => {
                 const canRefund = ["NGN Received","Compliance Review","FX Processing","RMB Paid"].includes(r.status) && !!r.senderAccount;
                 return (
                   <tr key={r.id} className="border-t align-top">
@@ -160,12 +162,25 @@ function NewRequestDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
     }
     // Persist a real FX quote so it appears on the FX Quotes page and travels with the send-to-buyer flow.
     const q = fxQuoteStore.generate();
+    const created = requestsStore.add({
+      invoiceNumber,
+      buyer,
+      goods: goods || "—",
+      amountRmb: amt,
+      amountNgn: quote.ngnBuyerPays,
+      invoiceCurrency: "RMB",
+      dueDate: dueDate || "—",
+      invoiceDoc: `${invoiceNumber}.pdf`,
+      rate: quote.rate,
+      fee: quote.feeNgn,
+    });
     toast.success(
-      `Payment request created for ${buyer} · Buyer pays ₦${quote.ngnBuyerPays.toLocaleString()} · You receive ¥${amt.toLocaleString()} · Rate ${quote.rate} · FX quote ${q.id} generated (locks 15m)`,
+      `Payment request ${created.id} created for ${buyer} · Buyer pays ₦${quote.ngnBuyerPays.toLocaleString()} · You receive ¥${amt.toLocaleString()} · Rate ${quote.rate} · FX quote ${q.id} generated (locks 15m)`,
     );
     onOpenChange(false);
     setInvoiceNumber(""); setAmountRmb(""); setDueDate(""); setGoods("");
   };
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
