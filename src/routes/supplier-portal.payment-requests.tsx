@@ -162,12 +162,25 @@ function NewRequestDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
     }
     // Persist a real FX quote so it appears on the FX Quotes page and travels with the send-to-buyer flow.
     const q = fxQuoteStore.generate();
+    const created = requestsStore.add({
+      invoiceNumber,
+      buyer,
+      goods: goods || "—",
+      amountRmb: amt,
+      amountNgn: quote.ngnBuyerPays,
+      invoiceCurrency: "RMB",
+      dueDate: dueDate || "—",
+      invoiceDoc: `${invoiceNumber}.pdf`,
+      rate: quote.rate,
+      fee: quote.feeNgn,
+    });
     toast.success(
-      `Payment request created for ${buyer} · Buyer pays ₦${quote.ngnBuyerPays.toLocaleString()} · You receive ¥${amt.toLocaleString()} · Rate ${quote.rate} · FX quote ${q.id} generated (locks 15m)`,
+      `Payment request ${created.id} created for ${buyer} · Buyer pays ₦${quote.ngnBuyerPays.toLocaleString()} · You receive ¥${amt.toLocaleString()} · Rate ${quote.rate} · FX quote ${q.id} generated (locks 15m)`,
     );
     onOpenChange(false);
     setInvoiceNumber(""); setAmountRmb(""); setDueDate(""); setGoods("");
   };
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
