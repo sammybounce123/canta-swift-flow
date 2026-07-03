@@ -84,22 +84,23 @@ function Landing() {
 
         <div className="max-w-6xl mx-auto px-6 pt-20 pb-24 lg:pt-28 lg:pb-32 text-primary-foreground relative flex flex-col items-center text-center">
           <Badge className="bg-white/10 text-primary-foreground border border-white/20 hover:bg-white/15">
-            <Sparkles className="h-3 w-3 mr-1" /> A focused trade & treasury platform
+            <Sparkles className="h-3 w-3 mr-1" /> Interactive demo · no sign-up
           </Badge>
           <h1 className="mt-6 text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05] max-w-5xl mx-auto">
-            One trusted workspace for{" "}
-            <span className="text-accent">trade, supplier settlement, and treasury</span>.
+            Pay your supplier. Get paid by your buyer.{" "}
+            <span className="text-accent">Move treasury globally.</span>
           </h1>
           <p className="mt-6 max-w-3xl mx-auto text-lg text-primary-foreground/80">
-            Canta helps importers, suppliers, enterprises, and partners manage trade files,
-            supplier payments, FX, RMB settlement, documents, and treasury workflows from one trusted workspace.
+            Nigerian importers pay Chinese suppliers safely. Chinese suppliers receive
+            <strong className="text-primary-foreground"> RMB settlement</strong> after buyers pay locally in NGN.
+            Enterprises run FX, wallets and payouts — all from one workspace with full audit trails.
           </p>
           <div className="mt-10 flex flex-wrap gap-3 justify-center">
             <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold">
-              <Link to="/importer" onClick={pickWorkspace("Importer")}>Start with Importer Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
+              <Link to="/welcome">Try the demo <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
             </Button>
             <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-              <Link to="/treasury" onClick={pickWorkspace("Enterprise Treasury")}>Explore Enterprise Treasury</Link>
+              <Link to="/importer" onClick={pickWorkspace("Importer")}>Importer Trade Desk</Link>
             </Button>
             <Button asChild size="lg" className="bg-[#25D366] text-white hover:bg-[#1FB855] hover:shadow-lg hover:shadow-[#25D366]/30 transition h-12 px-6 font-semibold">
               <a href={buildWhatsAppUrl("trackShipment")} target="_blank" rel="noopener noreferrer">
@@ -108,12 +109,16 @@ function Landing() {
             </Button>
           </div>
 
+          <div className="mt-6 inline-flex items-center gap-2 text-xs text-primary-foreground/70">
+            <ShieldCheck className="h-3.5 w-3.5" /> KYB · Audit trail · Compliance review on every settlement
+          </div>
+
           <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto w-full">
             {[
-              { v: "1 platform", l: "Trade, settlement & treasury" },
-              { v: "4", l: "Focused workspaces" },
-              { v: "NGN → RMB", l: "Supplier settlement flow" },
-              { v: "24/7", l: "Trade & settlement support" },
+              { v: "NGN → RMB", l: "China supplier settlement" },
+              { v: "4 roles", l: "Importer · Supplier · Treasury · Ops" },
+              { v: "1 workspace", l: "Trade files, FX, payouts, docs" },
+              { v: "Full audit", l: "Every action reviewable" },
             ].map((s) => (
               <div key={s.l}>
                 <div className="text-2xl md:text-3xl font-semibold tabular-nums">{s.v}</div>
@@ -122,6 +127,7 @@ function Landing() {
             ))}
           </div>
         </div>
+
       </section>
 
       {/* Logo strip */}
