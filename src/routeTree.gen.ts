@@ -72,7 +72,6 @@ import { Route as TradeDeskFileIdRouteImport } from './routes/trade-desk.$fileId
 import { Route as TrackIdRouteImport } from './routes/track.$id'
 import { Route as SuppliersProfileRouteImport } from './routes/suppliers.profile'
 import { Route as SuppliersKybRouteImport } from './routes/suppliers.kyb'
-import { Route as SupplierPortalWalletRouteImport } from './routes/supplier-portal.wallet'
 import { Route as SupplierPortalVerificationRouteImport } from './routes/supplier-portal.verification'
 import { Route as SupplierPortalTradeFilesRouteImport } from './routes/supplier-portal.trade-files'
 import { Route as SupplierPortalTeamRouteImport } from './routes/supplier-portal.team'
@@ -80,7 +79,6 @@ import { Route as SupplierPortalSupportRouteImport } from './routes/supplier-por
 import { Route as SupplierPortalSettlementRouteImport } from './routes/supplier-portal.settlement'
 import { Route as SupplierPortalSettingsRouteImport } from './routes/supplier-portal.settings'
 import { Route as SupplierPortalRmbWalletRouteImport } from './routes/supplier-portal.rmb-wallet'
-import { Route as SupplierPortalRequestsRouteImport } from './routes/supplier-portal.requests'
 import { Route as SupplierPortalReportsRouteImport } from './routes/supplier-portal.reports'
 import { Route as SupplierPortalPayoutAccountsRouteImport } from './routes/supplier-portal.payout-accounts'
 import { Route as SupplierPortalPaymentRequestsRouteImport } from './routes/supplier-portal.payment-requests'
@@ -430,11 +428,6 @@ const SuppliersKybRoute = SuppliersKybRouteImport.update({
   path: '/kyb',
   getParentRoute: () => SuppliersRoute,
 } as any)
-const SupplierPortalWalletRoute = SupplierPortalWalletRouteImport.update({
-  id: '/wallet',
-  path: '/wallet',
-  getParentRoute: () => SupplierPortalRoute,
-} as any)
 const SupplierPortalVerificationRoute =
   SupplierPortalVerificationRouteImport.update({
     id: '/verification',
@@ -471,11 +464,6 @@ const SupplierPortalSettingsRoute = SupplierPortalSettingsRouteImport.update({
 const SupplierPortalRmbWalletRoute = SupplierPortalRmbWalletRouteImport.update({
   id: '/rmb-wallet',
   path: '/rmb-wallet',
-  getParentRoute: () => SupplierPortalRoute,
-} as any)
-const SupplierPortalRequestsRoute = SupplierPortalRequestsRouteImport.update({
-  id: '/requests',
-  path: '/requests',
   getParentRoute: () => SupplierPortalRoute,
 } as any)
 const SupplierPortalReportsRoute = SupplierPortalReportsRouteImport.update({
@@ -733,7 +721,6 @@ export interface FileRoutesByFullPath {
   '/supplier-portal/payment-requests': typeof SupplierPortalPaymentRequestsRoute
   '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
   '/supplier-portal/reports': typeof SupplierPortalReportsRoute
-  '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
   '/supplier-portal/rmb-wallet': typeof SupplierPortalRmbWalletRoute
   '/supplier-portal/settings': typeof SupplierPortalSettingsRoute
   '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
@@ -741,7 +728,6 @@ export interface FileRoutesByFullPath {
   '/supplier-portal/team': typeof SupplierPortalTeamRoute
   '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
   '/supplier-portal/verification': typeof SupplierPortalVerificationRoute
-  '/supplier-portal/wallet': typeof SupplierPortalWalletRoute
   '/suppliers/kyb': typeof SuppliersKybRoute
   '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
@@ -836,7 +822,6 @@ export interface FileRoutesByTo {
   '/supplier-portal/payment-requests': typeof SupplierPortalPaymentRequestsRoute
   '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
   '/supplier-portal/reports': typeof SupplierPortalReportsRoute
-  '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
   '/supplier-portal/rmb-wallet': typeof SupplierPortalRmbWalletRoute
   '/supplier-portal/settings': typeof SupplierPortalSettingsRoute
   '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
@@ -844,7 +829,6 @@ export interface FileRoutesByTo {
   '/supplier-portal/team': typeof SupplierPortalTeamRoute
   '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
   '/supplier-portal/verification': typeof SupplierPortalVerificationRoute
-  '/supplier-portal/wallet': typeof SupplierPortalWalletRoute
   '/suppliers/kyb': typeof SuppliersKybRoute
   '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
@@ -944,7 +928,6 @@ export interface FileRoutesById {
   '/supplier-portal/payment-requests': typeof SupplierPortalPaymentRequestsRoute
   '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
   '/supplier-portal/reports': typeof SupplierPortalReportsRoute
-  '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
   '/supplier-portal/rmb-wallet': typeof SupplierPortalRmbWalletRoute
   '/supplier-portal/settings': typeof SupplierPortalSettingsRoute
   '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
@@ -952,7 +935,6 @@ export interface FileRoutesById {
   '/supplier-portal/team': typeof SupplierPortalTeamRoute
   '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
   '/supplier-portal/verification': typeof SupplierPortalVerificationRoute
-  '/supplier-portal/wallet': typeof SupplierPortalWalletRoute
   '/suppliers/kyb': typeof SuppliersKybRoute
   '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
@@ -1053,7 +1035,6 @@ export interface FileRouteTypes {
     | '/supplier-portal/payment-requests'
     | '/supplier-portal/payout-accounts'
     | '/supplier-portal/reports'
-    | '/supplier-portal/requests'
     | '/supplier-portal/rmb-wallet'
     | '/supplier-portal/settings'
     | '/supplier-portal/settlement'
@@ -1061,7 +1042,6 @@ export interface FileRouteTypes {
     | '/supplier-portal/team'
     | '/supplier-portal/trade-files'
     | '/supplier-portal/verification'
-    | '/supplier-portal/wallet'
     | '/suppliers/kyb'
     | '/suppliers/profile'
     | '/track/$id'
@@ -1156,7 +1136,6 @@ export interface FileRouteTypes {
     | '/supplier-portal/payment-requests'
     | '/supplier-portal/payout-accounts'
     | '/supplier-portal/reports'
-    | '/supplier-portal/requests'
     | '/supplier-portal/rmb-wallet'
     | '/supplier-portal/settings'
     | '/supplier-portal/settlement'
@@ -1164,7 +1143,6 @@ export interface FileRouteTypes {
     | '/supplier-portal/team'
     | '/supplier-portal/trade-files'
     | '/supplier-portal/verification'
-    | '/supplier-portal/wallet'
     | '/suppliers/kyb'
     | '/suppliers/profile'
     | '/track/$id'
@@ -1263,7 +1241,6 @@ export interface FileRouteTypes {
     | '/supplier-portal/payment-requests'
     | '/supplier-portal/payout-accounts'
     | '/supplier-portal/reports'
-    | '/supplier-portal/requests'
     | '/supplier-portal/rmb-wallet'
     | '/supplier-portal/settings'
     | '/supplier-portal/settlement'
@@ -1271,7 +1248,6 @@ export interface FileRouteTypes {
     | '/supplier-portal/team'
     | '/supplier-portal/trade-files'
     | '/supplier-portal/verification'
-    | '/supplier-portal/wallet'
     | '/suppliers/kyb'
     | '/suppliers/profile'
     | '/track/$id'
@@ -1791,13 +1767,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuppliersKybRouteImport
       parentRoute: typeof SuppliersRoute
     }
-    '/supplier-portal/wallet': {
-      id: '/supplier-portal/wallet'
-      path: '/wallet'
-      fullPath: '/supplier-portal/wallet'
-      preLoaderRoute: typeof SupplierPortalWalletRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
     '/supplier-portal/verification': {
       id: '/supplier-portal/verification'
       path: '/verification'
@@ -1845,13 +1814,6 @@ declare module '@tanstack/react-router' {
       path: '/rmb-wallet'
       fullPath: '/supplier-portal/rmb-wallet'
       preLoaderRoute: typeof SupplierPortalRmbWalletRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/requests': {
-      id: '/supplier-portal/requests'
-      path: '/requests'
-      fullPath: '/supplier-portal/requests'
-      preLoaderRoute: typeof SupplierPortalRequestsRouteImport
       parentRoute: typeof SupplierPortalRoute
     }
     '/supplier-portal/reports': {
@@ -2188,7 +2150,6 @@ interface SupplierPortalRouteChildren {
   SupplierPortalPaymentRequestsRoute: typeof SupplierPortalPaymentRequestsRoute
   SupplierPortalPayoutAccountsRoute: typeof SupplierPortalPayoutAccountsRoute
   SupplierPortalReportsRoute: typeof SupplierPortalReportsRoute
-  SupplierPortalRequestsRoute: typeof SupplierPortalRequestsRoute
   SupplierPortalRmbWalletRoute: typeof SupplierPortalRmbWalletRoute
   SupplierPortalSettingsRoute: typeof SupplierPortalSettingsRoute
   SupplierPortalSettlementRoute: typeof SupplierPortalSettlementRoute
@@ -2196,7 +2157,6 @@ interface SupplierPortalRouteChildren {
   SupplierPortalTeamRoute: typeof SupplierPortalTeamRoute
   SupplierPortalTradeFilesRoute: typeof SupplierPortalTradeFilesRoute
   SupplierPortalVerificationRoute: typeof SupplierPortalVerificationRoute
-  SupplierPortalWalletRoute: typeof SupplierPortalWalletRoute
   SupplierPortalIndexRoute: typeof SupplierPortalIndexRoute
 }
 
@@ -2210,7 +2170,6 @@ const SupplierPortalRouteChildren: SupplierPortalRouteChildren = {
   SupplierPortalPaymentRequestsRoute: SupplierPortalPaymentRequestsRoute,
   SupplierPortalPayoutAccountsRoute: SupplierPortalPayoutAccountsRoute,
   SupplierPortalReportsRoute: SupplierPortalReportsRoute,
-  SupplierPortalRequestsRoute: SupplierPortalRequestsRoute,
   SupplierPortalRmbWalletRoute: SupplierPortalRmbWalletRoute,
   SupplierPortalSettingsRoute: SupplierPortalSettingsRoute,
   SupplierPortalSettlementRoute: SupplierPortalSettlementRoute,
@@ -2218,7 +2177,6 @@ const SupplierPortalRouteChildren: SupplierPortalRouteChildren = {
   SupplierPortalTeamRoute: SupplierPortalTeamRoute,
   SupplierPortalTradeFilesRoute: SupplierPortalTradeFilesRoute,
   SupplierPortalVerificationRoute: SupplierPortalVerificationRoute,
-  SupplierPortalWalletRoute: SupplierPortalWalletRoute,
   SupplierPortalIndexRoute: SupplierPortalIndexRoute,
 }
 
