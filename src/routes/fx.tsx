@@ -182,8 +182,8 @@ function FX() {
           <div className="mt-4 p-4 rounded-xl bg-gradient-to-br from-accent/10 to-transparent border border-accent/30 flex items-start gap-3">
             <Sparkles className="h-5 w-5 text-accent shrink-0 mt-0.5" />
             <div className="text-sm">
-              <div className="font-semibold">AI signal: Buy USD now</div>
-              <div className="text-xs text-muted-foreground mt-0.5">Predicted upward trend over next 48h. Confidence 87%.</div>
+              <div className="font-semibold">Sample AI output</div>
+              <div className="text-xs text-muted-foreground mt-0.5">Demo signal only — review your live quote and treasury policy before converting.</div>
             </div>
           </div>
         </Card>
