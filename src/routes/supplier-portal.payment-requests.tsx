@@ -92,7 +92,7 @@ function RequestsPanel() {
               </tr>
             </thead>
             <tbody>
-              {REQUESTS.map((r) => {
+              {requests.map((r) => {
                 const canRefund = ["NGN Received","Compliance Review","FX Processing","RMB Paid"].includes(r.status) && !!r.senderAccount;
                 return (
                   <tr key={r.id} className="border-t align-top">
