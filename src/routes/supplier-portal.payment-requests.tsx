@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { z } from "zod";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import { REQUESTS, BUYERS, STATUS_TONE, SettlementTimeline, fxQuoteStore, COMPLI
 
 export const Route = createFileRoute("/supplier-portal/payment-requests")({
   head: () => ({ meta: [{ title: "Payment Requests — Supplier Portal — Canta" }] }),
+  validateSearch: z.object({ new: z.coerce.boolean().optional() }),
   component: RequestsPanel,
 });
 
@@ -36,8 +38,17 @@ function buildIndicativeQuote(amountRmb: number) {
 }
 
 function RequestsPanel() {
-  const [open, setOpen] = useState(false);
+  const { new: openNew } = Route.useSearch();
+  const [open, setOpen] = useState(!!openNew);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (openNew) {
+      setOpen(true);
+      void navigate({ to: "/supplier-portal/payment-requests", search: {}, replace: true });
+    }
+  }, [openNew, navigate]);
+
 
   const sendToBuyerWithQuote = (r: SupplierRequest) => {
     const q = buildIndicativeQuote(r.amountRmb);
