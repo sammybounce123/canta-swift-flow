@@ -15,6 +15,7 @@ import { REQUESTS, BUYERS, STATUS_TONE, SettlementTimeline, fxQuoteStore, COMPLI
 
 export const Route = createFileRoute("/supplier-portal/payment-requests")({
   head: () => ({ meta: [{ title: "Payment Requests — Supplier Portal — Canta" }] }),
+  validateSearch: z.object({ new: z.coerce.boolean().optional() }),
   component: RequestsPanel,
 });
 
