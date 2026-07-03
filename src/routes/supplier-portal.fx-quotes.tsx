@@ -51,13 +51,14 @@ function FxQuotesPanel() {
       <Card className="p-4 space-y-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div>
-            <div className="text-sm font-semibold">FX Quotes</div>
+            <div className="text-sm font-semibold">FX Quotes · 汇率报价</div>
             <div className="text-xs text-muted-foreground">
               {activeQuote
                 ? <>Active: <span className="font-mono">{activeQuote.id}</span> · {activeQuote.buyer} · Rate {activeQuote.rate} · {activeQuote.status}</>
-                : "Generate a quote to see estimated RMB/USD you receive and the NGN amount your buyer pays."}
+                : "Generate a quote to see the RMB you'll receive and the NGN your buyer needs to pay. Lock the rate for 15 minutes before sending to the buyer — once paid within the lock window, that rate is guaranteed."}
             </div>
           </div>
+
           <ButtonGroup label="FX quote actions">
             <Button size="sm" onClick={handleGenerate}><Receipt className="h-4 w-4 mr-2" /> Generate FX Quote</Button>
             <Button size="sm" variant="outline" onClick={handleLock} disabled={!activeQuote || activeQuote.status === "Rate Locked"}>
