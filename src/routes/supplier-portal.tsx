@@ -72,8 +72,10 @@ function SupplierPortalLayout() {
           <Button variant="outline" size="sm" onClick={() => setInvite("buyer")}>
             <Users className="h-4 w-4 mr-2" /> Add buyer 添加买家
           </Button>
-          <Button size="sm" onClick={() => setInvite("request")}>
-            <Receipt className="h-4 w-4 mr-2" /> New payment request 新建收款
+          <Button size="sm" asChild>
+            <Link to="/supplier-portal/payment-requests" search={{ new: true }}>
+              <Receipt className="h-4 w-4 mr-2" /> New payment request 新建收款
+            </Link>
           </Button>
         </ButtonGroup>
       </header>
