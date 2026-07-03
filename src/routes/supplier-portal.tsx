@@ -123,26 +123,41 @@ function SupplierPortalLayout() {
       <Dialog open={!!invite} onOpenChange={(o) => !o && setInvite(null)}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>{invite === "buyer" ? "Add a Nigerian buyer" : "New payment request"}</DialogTitle>
+            <DialogTitle>{invite === "buyer" ? "Add Nigerian buyer" : "New payment request"}</DialogTitle>
             <DialogDescription>
               {invite === "buyer"
                 ? "Invite a Nigerian buyer to pay you through Canta. Buyer pays in NGN; you receive RMB settlement."
-                : "Send a payment request linked to a Trade File. Buyer receives a Canta NGN payment link."}
+                : "Send a payment request to a Nigerian buyer. Buyer receives a Canta NGN payment link; you receive RMB after payment, FX processing, and compliance approval."}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-3">
-            <div><Label className="text-xs">Buyer company</Label><Input placeholder="e.g. Lagos Trade Holdings" /></div>
-            <div><Label className="text-xs">Trade file</Label><Input placeholder="TF-2026-XXXX" /></div>
-            {invite === "request" && (
+            {invite === "buyer" ? (
               <>
+                <div><Label className="text-xs">Buyer company</Label><Input placeholder="e.g. Lagos Trade Holdings" /></div>
+                <div><Label className="text-xs">Buyer contact name</Label><Input placeholder="e.g. Tunde Bakare" /></div>
+                <div><Label className="text-xs">Buyer WhatsApp or email</Label><Input placeholder="+234 802 111 2233 or tunde@lagostrade.ng" /></div>
+                <div><Label className="text-xs">Goods / order description</Label><Input placeholder="Bluetooth speakers x 500" /></div>
+                <div><Label className="text-xs">Expected invoice amount (RMB)</Label><Input type="number" placeholder="50000" /></div>
+                <div><Label className="text-xs">Notes to buyer</Label><Textarea placeholder="50% deposit, balance on BL" /></div>
+                <div className="text-[11px] text-muted-foreground italic">Canta will create a payment reference automatically after you send the invite.</div>
+              </>
+            ) : (
+              <>
+                <div><Label className="text-xs">Nigerian buyer</Label><Input placeholder="Lagos Trade Holdings" /></div>
                 <div className="grid grid-cols-2 gap-3">
-                  <div><Label className="text-xs">Amount (RMB)</Label><Input type="number" placeholder="50000" /></div>
-                  <div><Label className="text-xs">Goods</Label><Input placeholder="Bluetooth speakers x 500" /></div>
+                  <div><Label className="text-xs">Invoice number</Label><Input placeholder="INV-2026-091" /></div>
+                  <div><Label className="text-xs">Amount to receive (RMB)</Label><Input type="number" placeholder="50000" /></div>
+                </div>
+                <div><Label className="text-xs">Goods / order description</Label><Input placeholder="Bluetooth speakers x 500" /></div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div><Label className="text-xs">Expiry date</Label><Input type="date" /></div>
+                  <div><Label className="text-xs">Settlement currency</Label><Input placeholder="RMB (default)" defaultValue="RMB" /></div>
                 </div>
                 <div><Label className="text-xs">Notes for buyer</Label><Textarea placeholder="50% deposit, balance on BL" /></div>
               </>
             )}
           </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setInvite(null)}>Cancel</Button>
             <Button onClick={() => { setInvite(null); toast.success(invite === "buyer" ? "Buyer invitation sent" : "Payment request sent"); }}>
