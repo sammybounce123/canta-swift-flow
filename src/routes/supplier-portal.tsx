@@ -31,6 +31,7 @@ function SupplierPortalLayout() {
   const fxQuotes = useFxQuotes();
   const [invite, setInvite] = useState<null | "buyer" | "request">(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isPaymentRequests = pathname === "/supplier-portal/payment-requests" || pathname.startsWith("/supplier-portal/payment-requests/");
 
   const totals = {
     pending: REQUESTS.filter((r) => r.status === "Awaiting Buyer Payment").length,
