@@ -59,7 +59,7 @@ function FxTicker() {
       {rates.map((r) => (
         <div key={r.pair} className={`flex items-center gap-2 text-xs font-medium ${flash[r.pair] === "up" ? "flash-up" : flash[r.pair] === "down" ? "flash-down" : ""} px-2 py-0.5 rounded`}>
           <span className="text-muted-foreground">{r.pair}</span>
-          <span className="font-semibold tabular-nums">{r.rate.toLocaleString()}</span>
+          <span className="font-semibold tabular-nums">{r.rate.toLocaleString("en-US")}</span>
           <span className={`flex items-center gap-0.5 ${r.change >= 0 ? "text-success" : "text-destructive"}`}>
             {r.change >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
             {Math.abs(r.change).toFixed(2)}%

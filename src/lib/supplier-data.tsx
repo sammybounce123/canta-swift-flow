@@ -116,9 +116,13 @@ export type FxQuote = {
   sentAt?: number;
 };
 
+// Deterministic seed values — Math.random / Date.now during module init would
+// produce a different tree on the server vs. the client and trigger React
+// hydration mismatches. Live values are only introduced by user actions.
+const SEED_NOW = 1_735_689_600_000; // fixed epoch used for initial expiry / lock timestamps
 function buildQuote(r: SupplierRequest, seq: number, statusOverride?: FxQuoteStatus): FxQuote {
   const settlementCurrency: "RMB" | "USD" = seq % 2 === 0 ? "RMB" : "USD";
-  const jitter = (Math.random() - 0.5) * 0.6;
+  const jitter = ((seq * 37) % 100) / 100 * 0.6 - 0.3; // deterministic pseudo-jitter
   const rate = +(r.rate + jitter).toFixed(2);
   const ngnTotal = Math.round(r.amountRmb * rate);
   const estReceivable = settlementCurrency === "RMB" ? r.amountRmb : Math.round(r.amountRmb / 7.2);
@@ -127,7 +131,7 @@ function buildQuote(r: SupplierRequest, seq: number, statusOverride?: FxQuoteSta
     invoiceAmount: r.amountRmb, invoiceCurrency: r.invoiceCurrency,
     settlementCurrency, rate, ngnTotal, fee: r.fee, estReceivable,
     payoutAccount: settlementCurrency === "RMB" ? "ICBC ****4821" : "Bank of China ****9012",
-    expiresAt: Date.now() + 15 * 60 * 1000,
+    expiresAt: SEED_NOW + 15 * 60 * 1000,
     status: statusOverride ?? "Quote Generated",
   };
 }
