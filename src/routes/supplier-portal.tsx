@@ -53,7 +53,7 @@ function SupplierPortalLayout() {
             cue="Interactive demo — buyers, invoices, FX quotes and RMB wallet shown here are illustrative. 演示环境"
           />
 
-          <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4.4">
+          <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
               <Badge variant="outline" className="gap-1"><Factory className="h-3 w-3" /> Supplier Portal · 供应商门户</Badge>
               <div className="flex flex-wrap items-center gap-2 mt-2">
