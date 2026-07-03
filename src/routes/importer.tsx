@@ -88,12 +88,16 @@ function ImporterPortal() {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
-      <ReadinessBar status="Demo Preview" cue="Documents remain linked to this transaction for audit and reference." />
+      <ReadinessBar status="Demo Preview" cue="Interactive demo — shipments, invoices, suppliers and payments shown here are illustrative." />
       <WorkspaceWelcome workspace="importer_portal" />
-      <div>
+      <div className="flex flex-wrap items-center gap-2">
         <h1 className="text-2xl font-semibold">Welcome back, Tunde 👋</h1>
-        <p className="text-sm text-muted-foreground mt-1">Here's a simple view of your goods, suppliers and payments.</p>
+        <Badge variant="outline" className="text-[10px]">Demo persona</Badge>
       </div>
+      <p className="text-sm text-muted-foreground -mt-4">
+        Here's a simple view of your goods, suppliers and payments. You pay your supplier in USD, EUR, RMB or AED — Canta handles the FX, escrow option, documents and audit trail.
+      </p>
+
 
       <StartHereCard
         title="Create your first Trade File"

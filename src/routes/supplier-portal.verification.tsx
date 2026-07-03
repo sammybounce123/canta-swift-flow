@@ -19,12 +19,13 @@ function VerificationPanel() {
         <Lock className="h-5 w-5 shrink-0 mt-0.5" />
         <div className="text-sm flex-1">
           <div className="font-semibold">Complete supplier verification to receive RMB settlement.</div>
-          <div className="text-xs mt-1">You can view payment requests, upload invoices/documents, and message buyers or Canta before verification. RMB payouts unlock only after verification is approved.</div>
+          <div className="text-xs mt-1">You can view payment requests, upload invoices/documents, and message buyers or Canta before verification. RMB payouts unlock only after verification is approved — Canta review is typically completed within 1 business day.</div>
         </div>
         <Badge className={verified ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}>
-          {verified ? "Verified" : "Submitted"}
+          {verified ? "Verified" : "Incomplete"}
         </Badge>
       </Card>
+
 
       <div className="grid gap-4 md:grid-cols-2">
         <Card className="p-4 space-y-2">

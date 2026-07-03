@@ -80,8 +80,9 @@ function OpsConsole() {
             <Badge variant="secondary">Demo data</Badge>
           </div>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            Monitor verification, payments, support, WhatsApp shipment checks, and compliance activity.
+            Internal operations overview. Monitor verification, payments, support, WhatsApp shipment checks, and compliance activity across all workspaces. Counts and activity below are illustrative for this demo.
           </p>
+
         </div>
         <Button asChild variant="outline" size="sm">
           <Link to="/reports"><BarChart3 className="h-4 w-4 mr-1.5" /> Open reports</Link>
