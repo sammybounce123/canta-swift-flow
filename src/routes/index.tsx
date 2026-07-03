@@ -259,17 +259,16 @@ function Landing() {
         </div>
       </section>
 
-      {/* Quote */}
+      {/* Product benefit */}
       <section className="max-w-7xl mx-auto px-6 py-24">
         <div className="rounded-3xl border border-border p-10 md:p-14 bg-card">
-          <Quote className="h-8 w-8 text-accent" />
+          <FileText className="h-8 w-8 text-accent" />
           <p className="mt-5 text-2xl md:text-3xl font-medium tracking-tight leading-snug max-w-4xl">
-            "Canta replaced our FX broker, trade file tracker and supplier WhatsApp chaos with one
-            workspace. Our trade cycle dropped from weeks to days."
+            Built for documented trade.
           </p>
-          <div className="mt-6 text-sm text-muted-foreground">
-            COO · West African Importer Group
-          </div>
+          <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-3xl leading-relaxed">
+            Keep invoices, payment requests, FX quotes, compliance checks, receipts, and settlement updates in one auditable workspace.
+          </p>
         </div>
       </section>
 
