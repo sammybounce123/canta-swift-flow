@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/action-group";
-import { Receipt, ShieldCheck, AlertTriangle, Send, Wallet, Landmark } from "lucide-react";
+import { Receipt, AlertTriangle, Send, Wallet, Landmark, RefreshCw } from "lucide-react";
 import { REQUESTS, STATUS_TONE, RequestsTable, SettlementTimeline, useVerified } from "@/lib/supplier-data";
 
 
@@ -17,12 +17,11 @@ function OverviewPanel() {
   return (
     <div className="space-y-4">
       <ButtonGroup label="Overview quick actions">
-        <Button size="sm" asChild><Link to="/supplier-portal/payment-requests" search={{ new: true }}><Receipt className="h-4 w-4 mr-2" /> Create Payment Request</Link></Button>
-        {!verified && (
-          <Button size="sm" variant="outline" asChild>
-            <Link to="/supplier-portal/verification"><ShieldCheck className="h-4 w-4 mr-2" /> Complete Verification</Link>
-          </Button>
-        )}
+        <Button size="sm" asChild>
+          <Link to="/supplier-portal/fx-quotes">
+            <RefreshCw className="h-4 w-4 mr-2" /> FX Exchange · 实时汇率
+          </Link>
+        </Button>
       </ButtonGroup>
 
       <Card className="p-4">

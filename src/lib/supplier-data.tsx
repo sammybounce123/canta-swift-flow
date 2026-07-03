@@ -62,6 +62,14 @@ export const requestsStore = {
     requestsSubs.forEach((f) => f());
     return full;
   },
+  update: (id: string, patch: Partial<SupplierRequest>) => {
+    const idx = REQUESTS.findIndex((r) => r.id === id);
+    if (idx === -1) return null;
+    REQUESTS[idx] = { ...REQUESTS[idx], ...patch, updated: patch.updated ?? "just now" };
+    requestsVersion++;
+    requestsSubs.forEach((f) => f());
+    return REQUESTS[idx];
+  },
   subscribe: (f: () => void) => { requestsSubs.add(f); return () => requestsSubs.delete(f); },
   getVersion: () => requestsVersion,
 };

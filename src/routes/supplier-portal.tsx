@@ -46,6 +46,23 @@ function SupplierPortalLayout() {
 
   return (
     <div className="space-y-6">
+      <nav aria-label="Supplier Portal sections" className="flex w-full min-w-0 flex-wrap items-stretch justify-start gap-3">
+        {SUPPLIER_TABS.map((item) => {
+          const active = item.to === "/supplier-portal"
+            ? pathname === "/supplier-portal" || pathname === "/supplier-portal/"
+            : pathname === item.to || pathname.startsWith(item.to + "/");
+          return (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={`inline-flex min-h-11 max-w-full flex-none shrink-0 items-center justify-center whitespace-normal break-words rounded-lg border-2 px-4 py-2.5 text-center text-sm font-semibold leading-snug shadow-sm transition-all hover:border-primary/60 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${active ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"}`}
+            >
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+
       {!isPaymentRequests && (
         <>
           <ReadinessBar
@@ -109,22 +126,6 @@ function SupplierPortalLayout() {
         </>
       )}
 
-      <nav aria-label="Supplier Portal sections" className="flex w-full min-w-0 flex-wrap items-stretch justify-start gap-3">
-        {SUPPLIER_TABS.map((item) => {
-          const active = item.to === "/supplier-portal"
-            ? pathname === "/supplier-portal" || pathname === "/supplier-portal/"
-            : pathname === item.to || pathname.startsWith(item.to + "/");
-          return (
-            <Link
-              key={item.to}
-              to={item.to}
-              className={`inline-flex min-h-11 max-w-full flex-none shrink-0 items-center justify-center whitespace-normal break-words rounded-lg border-2 px-4 py-2.5 text-center text-sm font-semibold leading-snug shadow-sm transition-all hover:border-primary/60 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${active ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"}`}
-            >
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
 
       <section className="space-y-4">
         <Outlet />
