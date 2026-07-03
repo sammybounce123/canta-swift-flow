@@ -17,7 +17,7 @@ function OverviewPanel() {
   return (
     <div className="space-y-4">
       <ButtonGroup label="Overview quick actions">
-        <Button size="sm" asChild><Link to="/supplier-portal/payment-requests"><Receipt className="h-4 w-4 mr-2" /> Create Payment Request</Link></Button>
+        <Button size="sm" asChild><Link to="/supplier-portal/payment-requests" search={{ new: true }}><Receipt className="h-4 w-4 mr-2" /> Create Payment Request</Link></Button>
         {!verified && (
           <Button size="sm" variant="outline" asChild>
             <Link to="/supplier-portal/verification"><ShieldCheck className="h-4 w-4 mr-2" /> Complete Verification</Link>
