@@ -26,7 +26,17 @@ type Ctx = {
   openBulk: () => void;
   openInvite: () => void;
 };
-const ActionsCtx = createContext<Ctx | null>(null);
+// Share the context on globalThis so that if this module happens to be
+// evaluated in two parallel graphs (e.g. main bundle + a TanStack Start
+// code-split route chunk during dev), both instances still reference the
+// same React Context object. Otherwise useContext returns null in the
+// split chunk even though a Provider is mounted, which surfaces as a
+// hydration-time "useActions must be used within ActionsProvider" throw.
+const CTX_KEY = "__CANTA_ACTIONS_CTX__";
+const globalRef = globalThis as unknown as Record<string, unknown>;
+const ActionsCtx =
+  (globalRef[CTX_KEY] as React.Context<Ctx | null> | undefined) ??
+  (globalRef[CTX_KEY] = createContext<Ctx | null>(null)) as React.Context<Ctx | null>;
 export const useActions = () => {
   const c = useContext(ActionsCtx);
   if (!c) throw new Error("useActions must be used within ActionsProvider");
