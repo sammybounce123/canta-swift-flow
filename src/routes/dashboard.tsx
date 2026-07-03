@@ -117,9 +117,23 @@ function Dashboard() {
             {hidden ? <Eye className="h-4 w-4 mr-1.5" /> : <EyeOff className="h-4 w-4 mr-1.5" />}
             {hidden ? "Show balances" : "Hide balances"}
           </Button>
-          <Badge className="bg-accent/15 text-accent-foreground border border-accent/30 hover:bg-accent/20">
-            <Zap className="h-3 w-3 mr-1" /> Treasury Mode
-          </Badge>
+          {(() => {
+            const modeLabel: Record<string, string> = {
+              "Enterprise Treasury": "Treasury Mode",
+              "Importer": "Importer Mode",
+              "Supplier": "Supplier Mode",
+              "Canta Ops": "Ops Mode",
+              "Freight Forwarder": "Clearing Agent Mode",
+              "Global Merchant": "Merchant Mode",
+              "Partner Property": "Partner Mode",
+            };
+            const label = modeLabel[mode] ?? "Workspace Demo";
+            return (
+              <Badge className="bg-accent/15 text-accent-foreground border border-accent/30 hover:bg-accent/20">
+                <Zap className="h-3 w-3 mr-1" /> {label}
+              </Badge>
+            );
+          })()}
         </div>
       </div>
 
