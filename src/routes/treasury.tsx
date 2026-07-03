@@ -33,8 +33,21 @@ function Treasury() {
   const { openBulk, openSchedule } = useActions();
   return (
     <div className="space-y-6">
-      <ReadinessBar status="Demo Preview" cue="Treasury actions may require approval and KYC/KYB documents." />
+      <ReadinessBar status="Demo Preview" cue="Interactive demo — balances, rates, and approvals shown here are illustrative." />
       <WorkspaceWelcome workspace="enterprise_treasury" />
+      <div className="flex items-end justify-between flex-wrap gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold">Treasury & Liquidity</h1>
+          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+            Move multi-currency balances, run FX, pay beneficiaries in bulk, and route every action through approvals — with a full audit trail.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={openBulk}><Layers className="h-4 w-4 mr-1.5" /> Bulk Payments</Button>
+          <Button className="bg-primary" onClick={openSchedule}><Calendar className="h-4 w-4 mr-1.5" /> Schedule Conversion</Button>
+        </div>
+      </div>
+
       <StartHereCard
         title="Start FX Transfer"
         description="Convert funds, manage beneficiaries, and track approvals from one treasury workspace."
@@ -44,16 +57,7 @@ function Treasury() {
           { label: "View Transactions", to: "/transactions" },
         ]}
       />
-      <div className="flex items-end justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold">Treasury & Liquidity</h1>
-          <p className="text-sm text-muted-foreground mt-1">FX exposure and corporate cash positions.</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={openBulk}><Layers className="h-4 w-4 mr-1.5" /> Bulk Payments</Button>
-          <Button className="bg-primary" onClick={openSchedule}><Calendar className="h-4 w-4 mr-1.5" /> Schedule Conversion</Button>
-        </div>
-      </div>
+
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
