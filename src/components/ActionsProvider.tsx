@@ -470,7 +470,7 @@ function FundTracker({
       : method === "Bank Transfer"
       ? [
           { label: "Awaiting bank inflow", sub: "Matching reference automatically" },
-          { label: "Funds received by Canta", sub: "Cleared on instant rail" },
+          { label: "Funds received by Canta", sub: "Cleared on fast settlement rail" },
           { label: `${fmtMoney(amount, ccy)} credited`, sub: `Available in your ${ccy} wallet` },
         ]
       : [
