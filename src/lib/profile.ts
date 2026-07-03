@@ -333,6 +333,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
     case "canta_ops":
       return [
         D,
+        { to: "/ops", label: "Ops Console", iconKey: "dashboard", group: "Overview" },
         { to: "/whatsapp", label: "WhatsApp Desk", iconKey: "whatsapp", group: "Ops" },
         { to: "/ai-growth", label: "AI Growth", iconKey: "brain", group: "Intelligence" },
         { to: "/ai-document-extraction", label: "AI Document Extraction", iconKey: "sparkles", group: "Intelligence" },
