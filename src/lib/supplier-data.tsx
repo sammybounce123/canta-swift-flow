@@ -3,7 +3,11 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/action-group";
-import { CheckCircle2, AlertTriangle, Landmark, Wallet } from "lucide-react";
+import {
+  CheckCircle2, AlertTriangle, Landmark, Wallet,
+  LayoutDashboard, Users, Receipt, FileText, FolderCheck, ShieldCheck, LifeBuoy,
+  type LucideIcon,
+} from "lucide-react";
 
 // --- Types & constants -------------------------------------------------------
 
