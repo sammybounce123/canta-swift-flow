@@ -41,6 +41,8 @@ function RequestsPanel() {
   const { new: openNew } = Route.useSearch();
   const [open, setOpen] = useState(!!openNew);
   const navigate = useNavigate();
+  const requests = useRequests();
+
 
   useEffect(() => {
     if (openNew) {
