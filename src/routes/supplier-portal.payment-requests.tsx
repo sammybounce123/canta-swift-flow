@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Receipt, Upload, Bell, Clock, Download, FileText, RotateCcw, RefreshCw, Send, Lock } from "lucide-react";
 import { toast } from "sonner";
-import { REQUESTS, BUYERS, STATUS_TONE, SettlementTimeline, fxQuoteStore, requestsStore, useRequests, COMPLIANCE_DISCLAIMER, type SupplierRequest } from "@/lib/supplier-data";
+import { BUYERS, STATUS_TONE, fxQuoteStore, requestsStore, useRequests, type SupplierRequest } from "@/lib/supplier-data";
 
 export const Route = createFileRoute("/supplier-portal/payment-requests")({
   head: () => ({ meta: [{ title: "Payment Requests — Supplier Portal — Canta" }] }),
@@ -70,9 +70,6 @@ function RequestsPanel() {
         <Button size="sm" variant="outline" onClick={() => toast.success("Receipt downloaded")}><Download className="h-4 w-4 mr-2" /> Download Receipt</Button>
       </ButtonGroup>
 
-      <Card className="p-3 text-[11px] text-muted-foreground italic border-l-4 border-primary/40">
-        Buyers always pay in <strong>NGN</strong>; suppliers always receive settlement in <strong>RMB</strong>. Every payment request and every send-to-buyer action carries the current FX quote (rate, NGN buyer pays, RMB you receive, fee, expiry). Refunds return only to the same Nigerian buyer bank account that originally sent the NGN payment.
-      </Card>
 
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
@@ -133,12 +130,8 @@ function RequestsPanel() {
         </div>
       </Card>
 
-      <Card className="p-4">
-        <div className="text-sm font-semibold mb-2">Payment request timeline stages</div>
-        <SettlementTimeline currentIndex={5} />
-      </Card>
 
-      <Card className="p-3 text-[11px] text-muted-foreground italic border-l-4 border-primary/40">{COMPLIANCE_DISCLAIMER}</Card>
+
 
       <NewRequestDialog open={open} onOpenChange={setOpen} />
     </div>
