@@ -141,7 +141,7 @@ function ImporterPortal() {
           <TabsTrigger value="landed">My Landed Cost</TabsTrigger>
           <TabsTrigger value="payments">My Payments</TabsTrigger>
           <TabsTrigger value="alerts">Alerts</TabsTrigger>
-          <TabsTrigger value="assistant">Ask Canta</TabsTrigger>
+          <TabsTrigger value="assistant">Ask Canta · Beta</TabsTrigger>
         </TabsList>
 
         <TabsContent value="shipments" className="mt-6">
