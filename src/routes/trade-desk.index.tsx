@@ -30,12 +30,7 @@ export const Route = createFileRoute("/trade-desk/")({
 const STATUS_FILTERS = ["All", "Drafting", "In Transit", "Arrived", "Cleared", "Delivered"] as const;
 
 function readDraftTradeFiles(): typeof tradeFiles {
-  try {
-    const raw = typeof window !== "undefined" ? localStorage.getItem("canta:tradeFiles") : null;
-    if (!raw) return [];
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr : [];
-  } catch { return []; }
+  return readDrafts() as unknown as typeof tradeFiles;
 }
 
 function TradeDeskList() {
