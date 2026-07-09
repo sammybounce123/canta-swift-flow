@@ -2,24 +2,67 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/action-group";
-import { Upload } from "lucide-react";
+import { FileText, Upload } from "lucide-react";
 import { toast } from "sonner";
+import { useState } from "react";
 
 export const Route = createFileRoute("/supplier-portal/invoices")({
   head: () => ({ meta: [{ title: "Invoices — Supplier Portal — Canta" }] }),
   component: InvoicesPanel,
 });
 
+type GeneratedInvoice = { id: string; buyer: string; amount: string; ccy: string; date: string };
+
 function InvoicesPanel() {
+  const [invoices, setInvoices] = useState<GeneratedInvoice[]>([]);
+
+  function generate() {
+    const inv: GeneratedInvoice = {
+      id: `INV-${Math.floor(1000 + Math.random() * 9000)}`,
+      buyer: "Lagos Trading Co.",
+      amount: (Math.round(Math.random() * 50000 + 5000)).toLocaleString(),
+      ccy: "USD",
+      date: new Date().toISOString().slice(0, 10),
+    };
+    setInvoices((prev) => [inv, ...prev]);
+    toast.success(`Invoice ${inv.id} generated`);
+  }
+
   return (
     <Card className="p-4 space-y-3">
       <div className="text-sm font-semibold">Invoices &amp; shipping documents</div>
-      <div className="text-xs text-muted-foreground">Invoices link to each payment request. Upload proforma invoice, commercial invoice, and packing list for each buyer payment.</div>
+      <div className="text-xs text-muted-foreground">Invoices link to each payment request. Generate a new invoice or upload proforma, commercial and packing list documents for each buyer payment.</div>
       <ButtonGroup label="Invoice actions">
+        <Button size="sm" onClick={generate}><FileText className="h-4 w-4 mr-2" /> Generate invoice</Button>
         <Button size="sm" variant="outline" onClick={() => toast.success("Proforma invoice uploaded")}><Upload className="h-4 w-4 mr-2" /> Upload proforma invoice</Button>
         <Button size="sm" variant="outline" onClick={() => toast.success("Commercial invoice uploaded")}><Upload className="h-4 w-4 mr-2" /> Upload commercial invoice</Button>
         <Button size="sm" variant="outline" onClick={() => toast.success("Packing list uploaded")}><Upload className="h-4 w-4 mr-2" /> Upload packing list</Button>
       </ButtonGroup>
+
+      {invoices.length > 0 && (
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-sm">
+            <thead className="bg-secondary/40">
+              <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
+                <th className="py-2 px-3">Invoice</th>
+                <th className="py-2 px-3">Buyer</th>
+                <th className="py-2 px-3">Date</th>
+                <th className="py-2 px-3 text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {invoices.map((i) => (
+                <tr key={i.id} className="border-t">
+                  <td className="py-2 px-3 text-xs font-mono">{i.id}</td>
+                  <td className="py-2 px-3 text-xs">{i.buyer}</td>
+                  <td className="py-2 px-3 text-xs">{i.date}</td>
+                  <td className="py-2 px-3 text-xs text-right tabular-nums">{i.amount} {i.ccy}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </Card>
   );
 }
