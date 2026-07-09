@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { shipments, freightInvoices, fmtMoney, type Shipment } from "@/lib/mock";
 import { MessageCircle, CheckCircle2, Circle, AlertCircle, Calendar, Ship, MapPin, ArrowRight, FileText, Receipt } from "lucide-react";
-import { buildWhatsAppUrl } from "@/lib/whatsapp";
+
 
 export const Route = createFileRoute("/track/$id")({
   head: ({ params }) => ({ meta: [{ title: `Track ${params.id} — Canta` }] }),
