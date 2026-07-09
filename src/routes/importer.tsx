@@ -10,6 +10,7 @@ import { shipments, suppliers, freightInvoices, fmtMoney, type Shipment } from "
 import { buildWhatsAppUrl, type WhatsAppTemplateKey } from "@/lib/whatsapp";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import { ImporterActions } from "@/components/ImporterActions";
+import { TradeFileExplainer } from "@/components/TradeFileExplainer";
 
 
 import {
