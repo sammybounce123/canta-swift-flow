@@ -75,14 +75,15 @@ function TradeDeskList() {
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold">Trade Files</h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            One file per shipment. Track the supplier, BL and documents, pay the supplier, compare clearing agent bids, and see landed cost — from PI to delivery.
+            Trade Files open automatically when a document, invoice, payment or case starts. Pick an action below and Canta assigns the reference and takes you to the review screen.
           </p>
         </div>
-        <Button onClick={() => setDraftOpen(true)} className="bg-primary">
+        <Button onClick={() => setDraftOpen(true)} variant="outline" size="sm">
           <Plus className="h-4 w-4 mr-1.5" /> New Trade File
         </Button>
       </div>
 
+      <ContextualStart />
 
       <NewTradeFileDialog open={draftOpen} setOpen={setDraftOpen} />
 
