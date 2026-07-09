@@ -351,11 +351,47 @@ const FX_PAIRS = [
   { from: "GBP", to: "NGN", rate: 2048.77, flag: "🇬🇧" },
 ];
 
+const DEFAULT_BUYERS = ["Lagos Trading Co.", "Accra Imports Ltd.", "Nairobi Wholesale", "Cairo Distributors"];
+
 function SupplierFxQuoteCard() {
   const navigate = useNavigate();
   const [pairKey, setPairKey] = useState("USD-NGN");
   const [amount, setAmount] = useState("10000");
-  const [buyer, setBuyer] = useState("Lagos Trading Co.");
+  const [buyers, setBuyers] = useState<string[]>(DEFAULT_BUYERS);
+  const [buyer, setBuyer] = useState(DEFAULT_BUYERS[0]);
+  const [addingBuyer, setAddingBuyer] = useState(false);
+  const [newBuyer, setNewBuyer] = useState("");
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem("canta.buyers");
+      if (raw) {
+        const parsed = JSON.parse(raw) as string[];
+        if (Array.isArray(parsed) && parsed.length) {
+          const merged = Array.from(new Set([...parsed, ...DEFAULT_BUYERS]));
+          setBuyers(merged);
+          setBuyer(parsed[0] ?? DEFAULT_BUYERS[0]);
+        }
+      }
+    } catch {}
+  }, []);
+
+  function saveBuyers(next: string[]) {
+    setBuyers(next);
+    try { window.localStorage.setItem("canta.buyers", JSON.stringify(next)); } catch {}
+  }
+
+  function confirmAddBuyer() {
+    const name = newBuyer.trim();
+    if (!name) { toast.error("Enter a buyer name"); return; }
+    if (buyers.includes(name)) { toast.error("Buyer already exists"); setBuyer(name); setAddingBuyer(false); setNewBuyer(""); return; }
+    const next = [name, ...buyers];
+    saveBuyers(next);
+    setBuyer(name);
+    setNewBuyer("");
+    setAddingBuyer(false);
+    toast.success(`Added buyer ${name}`);
+  }
 
   const pair = useMemo(() => {
     const [from, to] = pairKey.split("-");
