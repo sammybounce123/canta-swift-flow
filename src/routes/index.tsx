@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { buildWhatsAppUrl } from "@/lib/whatsapp";
+
 import { setActiveMode, type Mode } from "@/components/ModeProvider";
 import {
   ArrowRight, Zap, Shield, Sparkles, TrendingUp, CheckCircle2,
