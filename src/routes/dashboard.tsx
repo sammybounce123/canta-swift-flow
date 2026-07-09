@@ -14,8 +14,13 @@ import { StatusPill } from "@/components/StatusPill";
 import { useActions } from "@/components/ActionsProvider";
 import { useRole } from "@/components/RoleProvider";
 import { useMode } from "@/components/ModeProvider";
-import { Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useState, useEffect, useMemo } from "react";
+import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FileText, TrendingUp } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Canta" }] }),
@@ -185,6 +190,7 @@ function Dashboard() {
           </div>
         </Card>
 
+        {mode === "Supplier" ? <SupplierFxQuoteCard /> : (
         <Card className="p-6 shadow-card">
           <div className="flex items-center justify-between">
             <div className="text-sm font-semibold">Live FX Rates</div>
@@ -216,6 +222,7 @@ function Dashboard() {
             <Link to="/fx">Open Exchange</Link>
           </Button>
         </Card>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -334,5 +341,102 @@ function Dashboard() {
         <Badge className="bg-success/15 text-success border-success/30 hover:bg-success/15">Settlement tracking</Badge>
       </Card>
     </div>
+  );
+}
+
+const FX_PAIRS = [
+  { from: "USD", to: "NGN", rate: 1612.45, flag: "🇺🇸" },
+  { from: "RMB", to: "NGN", rate: 223.18, flag: "🇨🇳" },
+  { from: "EUR", to: "NGN", rate: 1745.10, flag: "🇪🇺" },
+  { from: "GBP", to: "NGN", rate: 2048.77, flag: "🇬🇧" },
+];
+
+function SupplierFxQuoteCard() {
+  const navigate = useNavigate();
+  const [pairKey, setPairKey] = useState("USD-NGN");
+  const [amount, setAmount] = useState("10000");
+  const [buyer, setBuyer] = useState("Lagos Trading Co.");
+
+  const pair = useMemo(() => {
+    const [from, to] = pairKey.split("-");
+    return FX_PAIRS.find((p) => p.from === from && p.to === to) ?? FX_PAIRS[0];
+  }, [pairKey]);
+
+  const amt = Number(amount.replace(/,/g, "")) || 0;
+  const converted = amt * pair.rate;
+  const expiresIn = "15:00";
+
+  function generateInvoice() {
+    if (!amt) { toast.error("Enter an amount"); return; }
+    if (!buyer.trim()) { toast.error("Enter buyer name"); return; }
+    const quote = {
+      id: `Q-${Math.floor(1000 + Math.random() * 9000)}`,
+      buyer: buyer.trim(),
+      from: pair.from,
+      to: pair.to,
+      rate: pair.rate,
+      amount: amt,
+      converted,
+      createdAt: new Date().toISOString(),
+    };
+    try { window.sessionStorage.setItem("canta.fx.quote", JSON.stringify(quote)); } catch {}
+    toast.success(`Invoice draft prepared at ${pair.from}/${pair.to} = ${pair.rate.toLocaleString()}`);
+    navigate({ to: "/supplier-portal/invoices" });
+  }
+
+  return (
+    <Card className="p-6 shadow-card border-accent/30 bg-gradient-to-br from-accent/5 to-transparent">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-lg bg-accent/20 grid place-items-center">
+            <TrendingUp className="h-4 w-4 text-accent" />
+          </div>
+          <div>
+            <div className="text-sm font-semibold">FX Quote</div>
+            <div className="text-[11px] text-muted-foreground">Live rate · expires in {expiresIn}</div>
+          </div>
+        </div>
+        <Badge variant="outline" className="text-[10px]"><span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse mr-1 inline-block" /> Live</Badge>
+      </div>
+
+      <div className="mt-4 space-y-3">
+        <div>
+          <Label className="text-xs">Currency pair</Label>
+          <Select value={pairKey} onValueChange={setPairKey}>
+            <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {FX_PAIRS.map((p) => (
+                <SelectItem key={`${p.from}-${p.to}`} value={`${p.from}-${p.to}`}>
+                  {p.flag} {p.from}/{p.to} · {p.rate.toLocaleString()}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <Label className="text-xs">Amount ({pair.from})</Label>
+            <Input value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" className="mt-1 tabular-nums" />
+          </div>
+          <div>
+            <Label className="text-xs">Buyer</Label>
+            <Input value={buyer} onChange={(e) => setBuyer(e.target.value)} className="mt-1" />
+          </div>
+        </div>
+        <div className="rounded-lg bg-secondary/50 p-3">
+          <div className="text-[11px] text-muted-foreground">Buyer pays ({pair.to})</div>
+          <div className="text-lg font-semibold tabular-nums mt-0.5">
+            {converted.toLocaleString(undefined, { maximumFractionDigits: 2 })} {pair.to}
+          </div>
+          <div className="text-[11px] text-muted-foreground mt-1">
+            @ {pair.rate.toLocaleString()} {pair.from}/{pair.to}
+          </div>
+        </div>
+      </div>
+
+      <Button onClick={generateInvoice} className="w-full mt-4 bg-accent text-accent-foreground hover:bg-accent/90">
+        <FileText className="h-4 w-4 mr-1.5" /> Generate invoice with this quote
+      </Button>
+    </Card>
   );
 }
