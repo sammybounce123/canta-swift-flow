@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { buildWhatsAppUrl } from "@/lib/whatsapp";
+
 import { setActiveMode, type Mode } from "@/components/ModeProvider";
 import {
   ArrowRight, Zap, Shield, Sparkles, TrendingUp, CheckCircle2,
@@ -103,9 +103,9 @@ function Landing() {
               <Link to="/importer" onClick={pickWorkspace("Importer")}>Importer Trade Desk</Link>
             </Button>
             <Button asChild size="lg" className="bg-[#25D366] text-white hover:bg-[#1FB855] hover:shadow-lg hover:shadow-[#25D366]/30 transition h-12 px-6 font-semibold">
-              <a href={buildWhatsAppUrl("trackShipment")} target="_blank" rel="noopener noreferrer">
+              <Link to="/track/whatsapp">
                 <MessageCircle className="h-4 w-4 mr-1.5" /> Track on WhatsApp
-              </a>
+              </Link>
             </Button>
           </div>
 
