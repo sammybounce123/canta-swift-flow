@@ -2,19 +2,38 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/action-group";
-import { FileText, Upload } from "lucide-react";
+import { FileText, Upload, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/supplier-portal/invoices")({
   head: () => ({ meta: [{ title: "Invoices — Supplier Portal — Canta" }] }),
   component: InvoicesPanel,
 });
 
-type GeneratedInvoice = { id: string; buyer: string; amount: string; ccy: string; date: string };
+type GeneratedInvoice = { id: string; buyer: string; amount: string; ccy: string; date: string; quote?: string };
 
 function InvoicesPanel() {
   const [invoices, setInvoices] = useState<GeneratedInvoice[]>([]);
+
+  useEffect(() => {
+    try {
+      const raw = window.sessionStorage.getItem("canta.fx.quote");
+      if (!raw) return;
+      const q = JSON.parse(raw) as { buyer: string; from: string; to: string; rate: number; amount: number; converted: number };
+      const inv: GeneratedInvoice = {
+        id: `INV-${Math.floor(1000 + Math.random() * 9000)}`,
+        buyer: q.buyer,
+        amount: q.converted.toLocaleString(undefined, { maximumFractionDigits: 2 }),
+        ccy: q.to,
+        date: new Date().toISOString().slice(0, 10),
+        quote: `${q.amount.toLocaleString()} ${q.from} @ ${q.rate.toLocaleString()} ${q.from}/${q.to}`,
+      };
+      setInvoices((prev) => [inv, ...prev]);
+      window.sessionStorage.removeItem("canta.fx.quote");
+      toast.success(`Invoice ${inv.id} generated from FX quote`);
+    } catch {}
+  }, []);
 
   function generate() {
     const inv: GeneratedInvoice = {
