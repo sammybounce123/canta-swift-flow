@@ -159,18 +159,22 @@ function TrackPage() {
         </Card>
 
         {/* WhatsApp CTA */}
-        <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="block group">
+        <Link
+          to="/track/whatsapp"
+          search={{ ref: s.shipmentNumber, origin: s.origin, destination: s.destination, eta: s.eta }}
+          className="block group"
+        >
           <Card className="p-5 shadow-card flex items-center justify-between bg-[#25D366] hover:bg-[#1FB855] hover:shadow-lg hover:shadow-[#25D366]/30 transition text-white">
             <div className="flex items-center gap-3">
               <MessageCircle className="h-6 w-6" />
               <div>
                 <div className="font-semibold">Continue on WhatsApp</div>
-                <div className="text-xs opacity-90">Pre-filled with your shipment details. We reply within minutes.</div>
+                <div className="text-xs opacity-90">Share a few details and we'll open WhatsApp pre-filled with your shipment.</div>
               </div>
             </div>
             <ArrowRight className="h-5 w-5 transition group-hover:translate-x-1" />
           </Card>
-        </a>
+        </Link>
 
         <div className="text-center text-xs text-muted-foreground pb-6">
           Powered by <Link to="/" className="text-primary font-medium">Canta</Link>
