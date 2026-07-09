@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/select";
 import { tradeFiles, fmtMoney } from "@/lib/mock";
 import { TradeFileExplainer } from "@/components/TradeFileExplainer";
-import { FileText, Plus, Search, ArrowRight, Ship, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
+import { createDraftTradeFile, readDraftTradeFiles as readDrafts, type TradeFileEvent } from "@/lib/trade-file-auto";
+import { FileText, Plus, Search, ArrowRight, Ship, AlertTriangle, CheckCircle2, Clock, Upload, Receipt, Send } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
