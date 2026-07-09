@@ -185,6 +185,7 @@ function Dashboard() {
           </div>
         </Card>
 
+        {mode === "Supplier" ? <SupplierFxQuoteCard /> : (
         <Card className="p-6 shadow-card">
           <div className="flex items-center justify-between">
             <div className="text-sm font-semibold">Live FX Rates</div>
@@ -216,6 +217,7 @@ function Dashboard() {
             <Link to="/fx">Open Exchange</Link>
           </Button>
         </Card>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
