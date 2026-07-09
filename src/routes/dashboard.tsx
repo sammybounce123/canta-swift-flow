@@ -143,33 +143,33 @@ function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-5">
-        <Card className="p-4 bg-gradient-card text-primary-foreground border-none shadow-elevated overflow-hidden relative w-fit min-w-0">
-          <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-accent/20 blur-3xl" />
-          <div className="relative flex flex-col gap-4">
-            <div className="flex items-center justify-between gap-6">
+        <Card className="p-3 bg-gradient-card text-primary-foreground border-none shadow-elevated overflow-hidden relative w-fit min-w-0">
+          <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent/20 blur-3xl" />
+          <div className="relative flex flex-col gap-2">
+            <div className="flex items-start gap-4">
               <div>
-                <div className="text-[11px] uppercase tracking-widest text-primary-foreground/60">
+                <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">
                   Total balance · NGN equivalent
                 </div>
-                <div className="mt-1 text-3xl font-semibold tabular-nums break-all">
+                <div className="text-2xl font-semibold tabular-nums break-all">
                   {hidden ? `₦${MASK}` : fmtNGN(totalNGN)}
                 </div>
-                <div className="mt-1 inline-flex items-center gap-1 bg-success/20 text-success px-1.5 py-0.5 rounded text-[11px] shrink-0">
+                <div className="mt-0.5 inline-flex items-center gap-1 bg-success/20 text-success px-1.5 py-0.5 rounded text-[10px] shrink-0">
                   <ArrowUpRight className="h-3 w-3" /> +4.8% this week
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-1.5 min-w-[160px]">
+              <div className="grid grid-cols-2 gap-1.5 min-w-[132px] self-center">
                 {wallets.map((w) => (
                   <button
                     key={w.ccy}
                     onClick={() => can("initiate_tx") ? openFund(w.ccy) : undefined}
                     disabled={!can("initiate_tx")}
-                    className="text-left rounded-md bg-white/5 backdrop-blur border border-white/10 px-2.5 py-1.5 hover:bg-white/10 transition disabled:cursor-not-allowed disabled:hover:bg-white/5"
+                    className="text-left rounded-md bg-white/5 backdrop-blur border border-white/10 px-2 py-1 hover:bg-white/10 transition disabled:cursor-not-allowed disabled:hover:bg-white/5"
                   >
-                    <div className="text-[10px] text-primary-foreground/60 uppercase tracking-wider">
+                    <div className="text-[9px] text-primary-foreground/60 uppercase tracking-wider">
                       {w.flag} {w.ccy}
                     </div>
-                    <div className="text-xs font-semibold tabular-nums mt-0.5">
+                    <div className="text-[11px] font-semibold tabular-nums mt-0.5">
                       {hidden ? MASK : fmtMoney(w.balance, w.ccy)}
                     </div>
                   </button>
@@ -177,15 +177,15 @@ function Dashboard() {
               </div>
             </div>
             {can("initiate_tx") && mode !== "Supplier" ? (
-              <div className="flex flex-wrap gap-2">
-                <Button onClick={() => openFund("NGN")} className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold h-8 text-xs">
-                  <Plus className="h-3.5 w-3.5 mr-1" /> Fund Wallet
+              <div className="flex flex-wrap gap-1.5">
+                <Button onClick={() => openFund("NGN")} className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold h-7 text-[11px] px-2.5">
+                  <Plus className="h-3 w-3 mr-1" /> Fund Wallet
                 </Button>
-                <Button onClick={() => openConvert("NGN", "USD")} variant="secondary" className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15 h-8 text-xs">
-                  <ArrowLeftRight className="h-3.5 w-3.5 mr-1" /> Convert Currency
+                <Button onClick={() => openConvert("NGN", "USD")} variant="secondary" className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15 h-7 text-[11px] px-2.5">
+                  <ArrowLeftRight className="h-3 w-3 mr-1" /> Convert Currency
                 </Button>
-                <Button onClick={() => openSend()} variant="secondary" className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15 h-8 text-xs">
-                  <Send className="h-3.5 w-3.5 mr-1" /> Send Payment
+                <Button onClick={() => openSend()} variant="secondary" className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15 h-7 text-[11px] px-2.5">
+                  <Send className="h-3 w-3 mr-1" /> Send Payment
                 </Button>
               </div>
             ) : null}
