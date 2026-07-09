@@ -14,8 +14,13 @@ import { StatusPill } from "@/components/StatusPill";
 import { useActions } from "@/components/ActionsProvider";
 import { useRole } from "@/components/RoleProvider";
 import { useMode } from "@/components/ModeProvider";
-import { Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useState, useEffect, useMemo } from "react";
+import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FileText, TrendingUp } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Canta" }] }),
