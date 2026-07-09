@@ -58,12 +58,6 @@ function TrackPage() {
   const missing = REQUIRED_DOCS.filter((d) => !s.documents.includes(d));
   const invoice = freightInvoices.find((i) => i.shipment === s.id);
   const delayed = s.status === "Delayed";
-  const whatsappHref = buildWhatsAppUrl("trackShipment", {
-    reference: s.shipmentNumber,
-    origin: s.origin,
-    destination: s.destination,
-    eta: s.eta,
-  });
 
   return (
     <PublicShell>
