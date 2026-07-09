@@ -226,7 +226,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       return [
         D,
         { to: "/importer", label: "Importer Dashboard", iconKey: "importer", group: "My Workspace" },
-        { to: "/trade-desk", label: "Trade Files", iconKey: "trade", group: "Move Goods" },
+        
         { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Move Goods" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Trade Ops" },
         { to: "/landed-cost", label: "Landed Cost", iconKey: "calculator", group: "Trade Ops" },
