@@ -10,8 +10,8 @@ import { shipments, suppliers, freightInvoices, fmtMoney, type Shipment } from "
 import { buildWhatsAppUrl, type WhatsAppTemplateKey } from "@/lib/whatsapp";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import { ImporterActions } from "@/components/ImporterActions";
-import { StartHereCard } from "@/components/StartHereCard";
-import { TradeFileExplainer } from "@/components/TradeFileExplainer";
+
+
 import {
   MessageCircle, Upload, Sparkles, FileQuestion, Ship, Calendar, Truck, Bell, ShieldCheck,
   CheckCircle2, AlertCircle, ArrowRight, Receipt, Package, Send, Link as LinkIcon, Copy, Lock,
@@ -99,18 +99,6 @@ function ImporterPortal() {
       </p>
 
 
-      <StartHereCard
-        title="Create your first Trade File"
-        description="A Trade File is one folder per import transaction — supplier, invoice, BL, shipment, clearing bids and payments in one place. Start by uploading an invoice, BL, container number, or supplier details."
-        primary={{ label: "Create Trade File", to: "/trade-desk", search: { new: "1" } }}
-        secondary={[
-          { label: "Upload Invoice or BL", to: "/trade-desk", search: { new: "1" } },
-          { label: "Track Shipment", to: "/shipments" },
-          { label: "Open Trade Files", to: "/trade-desk" },
-        ]}
-      />
-
-      <TradeFileExplainer />
 
       {/* KPIs in plain language */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -125,7 +113,7 @@ function ImporterPortal() {
 
       <Card className="p-5 shadow-card">
         <div className="text-xs uppercase tracking-widest text-muted-foreground mb-1">Importer quick actions</div>
-        <p className="text-sm text-muted-foreground mb-3">Send RFQs, start trade files, verify suppliers, link shipments and documents, request escrow, and invite forwarders.</p>
+        <p className="text-sm text-muted-foreground mb-3">Send RFQs, verify suppliers, link shipments and documents, request escrow, and invite forwarders.</p>
         <ImporterActions variant="toolbar" />
       </Card>
 
@@ -560,12 +548,12 @@ function Empty({ msg }: { msg: string }) {
 type EscrowStatus = "Escrow Not Started" | "Escrow Requested" | "Escrow Under Review" | "Escrow Active" | "Release Requested" | "Released" | "Cancelled" | "Disputed";
 
 function EscrowSection() {
-  const [rows, setRows] = useState<{ id: string; tradeFile: string; supplier: string; amount: number; ccy: string; status: EscrowStatus }[]>([
-    { id: "ESC-2041", tradeFile: "TR-2031 · Guangzhou Q2", supplier: "Guangzhou Tech Factory", amount: 48000, ccy: "USD", status: "Escrow Active" },
-    { id: "ESC-2042", tradeFile: "TR-2042 · Yiwu Fashion", supplier: "Yiwu General Trading",   amount: 19500, ccy: "USD", status: "Escrow Under Review" },
+  const [rows, setRows] = useState<{ id: string; reference: string; supplier: string; amount: number; ccy: string; status: EscrowStatus }[]>([
+    { id: "ESC-2041", reference: "PO-2031 · Guangzhou Q2", supplier: "Guangzhou Tech Factory", amount: 48000, ccy: "USD", status: "Escrow Active" },
+    { id: "ESC-2042", reference: "PO-2042 · Yiwu Fashion", supplier: "Yiwu General Trading",   amount: 19500, ccy: "USD", status: "Escrow Under Review" },
   ]);
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ tradeFile: "", supplier: "", invoiceAmount: "", escrowAmount: "", ccy: "USD", purpose: "Goods quality milestone", milestones: "", releaseCondition: "BL + inspection signoff", notes: "" });
+  const [form, setForm] = useState({ reference: "", supplier: "", invoiceAmount: "", escrowAmount: "", ccy: "USD", purpose: "Goods quality milestone", milestones: "", releaseCondition: "BL + inspection signoff", notes: "" });
   const tone: Record<EscrowStatus, string> = {
     "Escrow Not Started": "bg-muted text-muted-foreground",
     "Escrow Requested": "bg-primary/15 text-primary border-primary/30",
@@ -577,12 +565,12 @@ function EscrowSection() {
     "Disputed": "bg-destructive/15 text-destructive border-destructive/30",
   };
   const submit = () => {
-    if (!form.tradeFile || !form.supplier || !form.escrowAmount) { toast.error("Fill trade file, supplier and escrow amount"); return; }
+    if (!form.reference || !form.supplier || !form.escrowAmount) { toast.error("Fill reference, supplier and escrow amount"); return; }
     const id = `ESC-${Math.floor(2100 + Math.random() * 900)}`;
-    setRows((r) => [{ id, tradeFile: form.tradeFile, supplier: form.supplier, amount: Number(form.escrowAmount), ccy: form.ccy, status: "Escrow Requested" }, ...r]);
+    setRows((r) => [{ id, reference: form.reference, supplier: form.supplier, amount: Number(form.escrowAmount), ccy: form.ccy, status: "Escrow Requested" }, ...r]);
     toast.success("Escrow request submitted for review.");
     setOpen(false);
-    setForm({ tradeFile: "", supplier: "", invoiceAmount: "", escrowAmount: "", ccy: "USD", purpose: "Goods quality milestone", milestones: "", releaseCondition: "BL + inspection signoff", notes: "" });
+    setForm({ reference: "", supplier: "", invoiceAmount: "", escrowAmount: "", ccy: "USD", purpose: "Goods quality milestone", milestones: "", releaseCondition: "BL + inspection signoff", notes: "" });
   };
   const requestRelease = (id: string) => {
     setRows((r) => r.map((x) => x.id === id ? { ...x, status: "Release Requested" } : x));
@@ -600,7 +588,7 @@ function EscrowSection() {
           <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
             <DialogHeader><DialogTitle>Request Escrow</DialogTitle></DialogHeader>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-xs">Trade file</Label><Input value={form.tradeFile} onChange={(e) => setForm({ ...form, tradeFile: e.target.value })} placeholder="TR-2031 · Guangzhou Q2" /></div>
+              <div><Label className="text-xs">Reference</Label><Input value={form.reference} onChange={(e) => setForm({ ...form, reference: e.target.value })} placeholder="PO-2031 · Guangzhou Q2" /></div>
               <div><Label className="text-xs">Supplier</Label><Input value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })} placeholder="Guangzhou Tech Factory" /></div>
               <div><Label className="text-xs">Invoice amount</Label><Input type="number" value={form.invoiceAmount} onChange={(e) => setForm({ ...form, invoiceAmount: e.target.value })} placeholder="60000" /></div>
               <div><Label className="text-xs">Escrow amount</Label><Input type="number" value={form.escrowAmount} onChange={(e) => setForm({ ...form, escrowAmount: e.target.value })} placeholder="48000" /></div>
@@ -633,14 +621,14 @@ function EscrowSection() {
       <div className="mt-4 overflow-x-auto">
         <table className="w-full text-sm">
           <thead><tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground bg-secondary/40">
-            <th className="px-3 py-2">Ref</th><th className="px-3 py-2">Trade file</th><th className="px-3 py-2">Supplier</th>
+            <th className="px-3 py-2">Ref</th><th className="px-3 py-2">Reference</th><th className="px-3 py-2">Supplier</th>
             <th className="px-3 py-2 text-right">Amount</th><th className="px-3 py-2">Status</th><th className="px-3 py-2 text-right">Action</th>
           </tr></thead>
           <tbody>
             {rows.map((r) => (
               <tr key={r.id} className="border-t border-border">
                 <td className="px-3 py-2 font-mono text-xs">{r.id}</td>
-                <td className="px-3 py-2">{r.tradeFile}</td>
+                <td className="px-3 py-2">{r.reference}</td>
                 <td className="px-3 py-2">{r.supplier}</td>
                 <td className="px-3 py-2 text-right tabular-nums font-semibold">{fmtMoney(r.amount, r.ccy)}</td>
                 <td className="px-3 py-2"><Badge variant="outline" className={`text-[10px] ${tone[r.status]}`}>{r.status}</Badge></td>
