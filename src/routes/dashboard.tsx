@@ -169,7 +169,7 @@ function Dashboard() {
                 </button>
               ))}
             </div>
-            {can("initiate_tx") ? (
+            {can("initiate_tx") && mode !== "Supplier" ? (
               <div className="mt-6 flex flex-wrap gap-2">
                 <Button onClick={() => openFund("NGN")} className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold">
                   <Plus className="h-4 w-4 mr-1.5" /> Fund Wallet
