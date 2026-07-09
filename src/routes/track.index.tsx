@@ -47,11 +47,11 @@ function TrackIndex() {
             </div>
           </div>
         </Card>
-        <a href={buildWhatsAppUrl("trackShipment")} target="_blank" rel="noopener noreferrer" className="mt-4 block group">
+        <Link to="/track/whatsapp" className="mt-4 block group">
           <Card className="p-4 bg-[#25D366] text-white shadow-card flex items-center justify-center gap-2 transition group-hover:bg-[#1FB855] group-hover:shadow-lg group-hover:shadow-[#25D366]/30">
             <MessageCircle className="h-4 w-4" /> <span className="text-sm font-semibold">Track My Shipment on WhatsApp</span>
           </Card>
-        </a>
+        </Link>
       </main>
     </div>
   );
