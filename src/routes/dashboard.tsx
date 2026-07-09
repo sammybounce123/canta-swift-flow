@@ -142,8 +142,8 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <Card className="lg:col-span-2 p-6 bg-gradient-card text-primary-foreground border-none shadow-elevated overflow-hidden relative">
+      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-5">
+        <Card className="p-6 bg-gradient-card text-primary-foreground border-none shadow-elevated overflow-hidden relative w-fit min-w-0">
           <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-accent/20 blur-3xl" />
           <div className="relative">
             <div className="text-xs uppercase tracking-widest text-primary-foreground/60">
