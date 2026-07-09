@@ -70,6 +70,7 @@ import { Route as SupplierPortalIndexRouteImport } from './routes/supplier-porta
 import { Route as PartnerIndexRouteImport } from './routes/partner.index'
 import { Route as TreasuryCardsRouteImport } from './routes/treasury.cards'
 import { Route as TradeDeskFileIdRouteImport } from './routes/trade-desk.$fileId'
+import { Route as TrackWhatsappRouteImport } from './routes/track.whatsapp'
 import { Route as TrackIdRouteImport } from './routes/track.$id'
 import { Route as SuppliersProfileRouteImport } from './routes/suppliers.profile'
 import { Route as SuppliersKybRouteImport } from './routes/suppliers.kyb'
@@ -421,6 +422,11 @@ const TradeDeskFileIdRoute = TradeDeskFileIdRouteImport.update({
   path: '/$fileId',
   getParentRoute: () => TradeDeskRoute,
 } as any)
+const TrackWhatsappRoute = TrackWhatsappRouteImport.update({
+  id: '/track/whatsapp',
+  path: '/track/whatsapp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TrackIdRoute = TrackIdRouteImport.update({
   id: '/track/$id',
   path: '/track/$id',
@@ -752,6 +758,7 @@ export interface FileRoutesByFullPath {
   '/suppliers/kyb': typeof SuppliersKybRoute
   '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
+  '/track/whatsapp': typeof TrackWhatsappRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/treasury/cards': typeof TreasuryCardsRoute
   '/partner/': typeof PartnerIndexRoute
@@ -856,6 +863,7 @@ export interface FileRoutesByTo {
   '/suppliers/kyb': typeof SuppliersKybRoute
   '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
+  '/track/whatsapp': typeof TrackWhatsappRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/treasury/cards': typeof TreasuryCardsRoute
   '/partner': typeof PartnerIndexRoute
@@ -965,6 +973,7 @@ export interface FileRoutesById {
   '/suppliers/kyb': typeof SuppliersKybRoute
   '/suppliers/profile': typeof SuppliersProfileRoute
   '/track/$id': typeof TrackIdRoute
+  '/track/whatsapp': typeof TrackWhatsappRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/treasury/cards': typeof TreasuryCardsRoute
   '/partner/': typeof PartnerIndexRoute
@@ -1075,6 +1084,7 @@ export interface FileRouteTypes {
     | '/suppliers/kyb'
     | '/suppliers/profile'
     | '/track/$id'
+    | '/track/whatsapp'
     | '/trade-desk/$fileId'
     | '/treasury/cards'
     | '/partner/'
@@ -1179,6 +1189,7 @@ export interface FileRouteTypes {
     | '/suppliers/kyb'
     | '/suppliers/profile'
     | '/track/$id'
+    | '/track/whatsapp'
     | '/trade-desk/$fileId'
     | '/treasury/cards'
     | '/partner'
@@ -1287,6 +1298,7 @@ export interface FileRouteTypes {
     | '/suppliers/kyb'
     | '/suppliers/profile'
     | '/track/$id'
+    | '/track/whatsapp'
     | '/trade-desk/$fileId'
     | '/treasury/cards'
     | '/partner/'
@@ -1358,6 +1370,7 @@ export interface RootRouteChildren {
   PLinkIdRoute: typeof PLinkIdRoute
   PayLinkIdRoute: typeof PayLinkIdRoute
   TrackIdRoute: typeof TrackIdRoute
+  TrackWhatsappRoute: typeof TrackWhatsappRoute
   TrackIndexRoute: typeof TrackIndexRoute
 }
 
@@ -1789,6 +1802,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/trade-desk/$fileId'
       preLoaderRoute: typeof TradeDeskFileIdRouteImport
       parentRoute: typeof TradeDeskRoute
+    }
+    '/track/whatsapp': {
+      id: '/track/whatsapp'
+      path: '/track/whatsapp'
+      fullPath: '/track/whatsapp'
+      preLoaderRoute: typeof TrackWhatsappRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/track/$id': {
       id: '/track/$id'
@@ -2347,6 +2367,7 @@ const rootRouteChildren: RootRouteChildren = {
   PLinkIdRoute: PLinkIdRoute,
   PayLinkIdRoute: PayLinkIdRoute,
   TrackIdRoute: TrackIdRoute,
+  TrackWhatsappRoute: TrackWhatsappRoute,
   TrackIndexRoute: TrackIndexRoute,
 }
 export const routeTree = rootRouteImport
