@@ -29,7 +29,8 @@ export const Route = createFileRoute("/trade-desk/$fileId")({
 function TradeFileDetail() {
   const { fileId } = Route.useParams();
   const navigate = useNavigate();
-  const file = tradeFiles.find((f) => f.id === fileId);
+  const file = (tradeFiles.find((f) => f.id === fileId)
+    ?? (findDraftTradeFile(fileId) as (typeof tradeFiles)[number] | null));
   if (!file) throw notFound();
 
   const reachedIdx =
