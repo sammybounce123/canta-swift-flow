@@ -142,40 +142,67 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-5">
-        <Card className="p-3 bg-gradient-card text-primary-foreground border-none shadow-elevated overflow-hidden relative w-fit min-w-0">
-          <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent/20 blur-3xl" />
-          <div className="relative flex flex-col gap-2">
-            <div className="flex items-start gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-5 items-start">
+        <Card className="p-4 bg-gradient-card text-primary-foreground border-none shadow-elevated overflow-hidden relative w-fit min-w-0 self-start">
+          <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-accent/15 blur-3xl" />
+          <div className="absolute -left-12 -bottom-12 h-28 w-28 rounded-full bg-primary/20 blur-3xl" />
+          <div className="relative flex flex-col gap-4">
+            <div className="flex items-start gap-5">
               <div>
-                <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">
-                  Total balance · NGN equivalent
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-widest text-primary-foreground/60">
+                    Total balance
+                  </span>
+                  <Badge variant="outline" className="h-5 text-[9px] px-1.5 border-white/20 text-primary-foreground/70">
+                    NGN equivalent
+                  </Badge>
                 </div>
-                <div className="text-2xl font-semibold tabular-nums break-all">
+                <div className="text-3xl font-semibold tabular-nums tracking-tight mt-1.5">
                   {hidden ? `₦${MASK}` : fmtNGN(totalNGN)}
                 </div>
-                <div className="mt-0.5 inline-flex items-center gap-1 bg-success/20 text-success px-1.5 py-0.5 rounded text-[10px] shrink-0">
+                <div className="mt-2 inline-flex items-center gap-1 bg-success/20 text-success px-2 py-0.5 rounded-full text-[11px] font-medium">
                   <ArrowUpRight className="h-3 w-3" /> +4.8% this week
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-1.5 min-w-[132px] self-center">
+              <div className="grid grid-cols-2 gap-2 min-w-[168px] self-start">
                 {wallets.map((w) => (
                   <button
                     key={w.ccy}
                     onClick={() => can("initiate_tx") ? openFund(w.ccy) : undefined}
                     disabled={!can("initiate_tx")}
-                    className="text-left rounded-md bg-white/5 backdrop-blur border border-white/10 px-2 py-1 hover:bg-white/10 transition disabled:cursor-not-allowed disabled:hover:bg-white/5"
+                    className="text-left rounded-xl bg-white/5 backdrop-blur border border-white/10 px-3 py-2 hover:bg-white/10 transition disabled:cursor-not-allowed disabled:hover:bg-white/5"
                   >
-                    <div className="text-[9px] text-primary-foreground/60 uppercase tracking-wider">
-                      {w.flag} {w.ccy}
+                    <div className="flex items-center gap-1 text-[9px] text-primary-foreground/60 uppercase tracking-wider">
+                      <span className="text-sm leading-none">{w.flag}</span> {w.ccy}
                     </div>
-                    <div className="text-[11px] font-semibold tabular-nums mt-0.5">
+                    <div className="text-xs font-semibold tabular-nums mt-1">
                       {hidden ? MASK : fmtMoney(w.balance, w.ccy)}
                     </div>
                   </button>
                 ))}
               </div>
             </div>
+
+            <div>
+              <div className="flex justify-between text-[10px] text-primary-foreground/50 uppercase tracking-wider mb-1.5">
+                <span>Allocation</span>
+                <span>{wallets.length} wallets</span>
+              </div>
+              <div className="flex h-1.5 w-full rounded-full overflow-hidden bg-white/10">
+                {wallets.map((w, i) => {
+                  const total = wallets.reduce((s, x) => s + x.balance, 0);
+                  const pct = total ? Math.max((w.balance / total) * 100, 1) : 0;
+                  return (
+                    <div
+                      key={w.ccy}
+                      className="h-full first:rounded-l-full last:rounded-r-full"
+                      style={{ width: `${pct}%`, backgroundColor: `var(--chart-${i + 1})` }}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+
             {can("initiate_tx") && mode !== "Supplier" ? (
               <div className="flex flex-wrap gap-1.5">
                 <Button onClick={() => openFund("NGN")} className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold h-7 text-[11px] px-2.5">
