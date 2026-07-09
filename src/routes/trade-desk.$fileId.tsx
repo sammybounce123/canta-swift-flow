@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { tradeFiles, shipmentMilestones, fmtMoney } from "@/lib/mock";
+import { findDraftTradeFile } from "@/lib/trade-file-auto";
 import {
   ArrowLeft, FileText, FileCheck2, Calculator, Activity, Clock, CheckCircle2,
   AlertTriangle, Upload, Ship, MapPin, Building2, Factory, Truck, Calendar, Sparkles,
@@ -29,7 +30,8 @@ export const Route = createFileRoute("/trade-desk/$fileId")({
 function TradeFileDetail() {
   const { fileId } = Route.useParams();
   const navigate = useNavigate();
-  const file = tradeFiles.find((f) => f.id === fileId);
+  const file = (tradeFiles.find((f) => f.id === fileId)
+    ?? (findDraftTradeFile(fileId) as (typeof tradeFiles)[number] | null));
   if (!file) throw notFound();
 
   const reachedIdx =

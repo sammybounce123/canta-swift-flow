@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/select";
 import { tradeFiles, fmtMoney } from "@/lib/mock";
 import { TradeFileExplainer } from "@/components/TradeFileExplainer";
-import { FileText, Plus, Search, ArrowRight, Ship, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
+import { createDraftTradeFile, readDraftTradeFiles as readDrafts, type TradeFileEvent } from "@/lib/trade-file-auto";
+import { FileText, Plus, Search, ArrowRight, Ship, AlertTriangle, CheckCircle2, Clock, Upload, Receipt, Send } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -29,12 +30,7 @@ export const Route = createFileRoute("/trade-desk/")({
 const STATUS_FILTERS = ["All", "Drafting", "In Transit", "Arrived", "Cleared", "Delivered"] as const;
 
 function readDraftTradeFiles(): typeof tradeFiles {
-  try {
-    const raw = typeof window !== "undefined" ? localStorage.getItem("canta:tradeFiles") : null;
-    if (!raw) return [];
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr : [];
-  } catch { return []; }
+  return readDrafts() as unknown as typeof tradeFiles;
 }
 
 function TradeDeskList() {
@@ -79,14 +75,15 @@ function TradeDeskList() {
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold">Trade Files</h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            One file per shipment. Track the supplier, BL and documents, pay the supplier, compare clearing agent bids, and see landed cost — from PI to delivery.
+            Trade Files open automatically when a document, invoice, payment or case starts. Pick an action below and Canta assigns the reference and takes you to the review screen.
           </p>
         </div>
-        <Button onClick={() => setDraftOpen(true)} className="bg-primary">
+        <Button onClick={() => setDraftOpen(true)} variant="outline" size="sm">
           <Plus className="h-4 w-4 mr-1.5" /> New Trade File
         </Button>
       </div>
 
+      <ContextualStart />
 
       <NewTradeFileDialog open={draftOpen} setOpen={setDraftOpen} />
 
@@ -190,6 +187,45 @@ function TradeDeskList() {
     </div>
   );
 }
+
+type QuickStart = { key: string; label: string; icon: typeof Upload; event: TradeFileEvent; hint: string };
+const QUICK_STARTS: QuickStart[] = [
+  { key: "bl",      label: "Upload Bill of Lading",  icon: Upload,  event: "bl_upload",                hint: "Drop a BL and we open a Trade File with the shipment already attached." },
+  { key: "invoice", label: "Add Supplier Invoice",   icon: Receipt, event: "supplier_invoice",         hint: "Attach a supplier invoice to draft a file with payment and cost lined up." },
+  { key: "track",   label: "Track Shipment",         icon: Ship,    event: "container_document",       hint: "Enter a container or booking to start a file that tracks the movement." },
+  { key: "pay",     label: "Start Supplier Payment", icon: Send,    event: "supplier_payment_request", hint: "Open a payment request — the Trade File follows the money." },
+];
+
+function ContextualStart() {
+  const navigate = useNavigate();
+  const run = (q: QuickStart) => {
+    const { id } = createDraftTradeFile(q.event);
+    toast.success("Trade File opened", { description: `${id} — ${q.label}` });
+    navigate({ to: "/trade-desk/$fileId", params: { fileId: id } });
+  };
+  return (
+    <Card className="p-4 shadow-card border-primary/20 bg-gradient-to-br from-primary/5 via-transparent to-transparent">
+      <div className="text-[11px] uppercase tracking-widest text-primary font-semibold mb-2">Start here</div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+        {QUICK_STARTS.map((q) => (
+          <button
+            key={q.key}
+            onClick={() => run(q)}
+            className="text-left rounded-lg border border-border bg-card hover:border-primary/40 hover:bg-primary/5 transition p-3 group"
+          >
+            <div className="flex items-center gap-2 text-sm font-semibold">
+              <q.icon className="h-4 w-4 text-primary" />
+              <span>{q.label}</span>
+              <ArrowRight className="h-3.5 w-3.5 ml-auto opacity-0 group-hover:opacity-100 text-primary" />
+            </div>
+            <div className="text-xs text-muted-foreground mt-1 leading-relaxed">{q.hint}</div>
+          </button>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
 
 function Kpi({ icon, label, value, tone }: { icon: React.ReactNode; label: string; value: string; tone?: "success" | "danger" | "accent" }) {
   const toneCls =

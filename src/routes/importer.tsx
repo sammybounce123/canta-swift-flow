@@ -10,6 +10,7 @@ import { shipments, suppliers, freightInvoices, fmtMoney, type Shipment } from "
 import { buildWhatsAppUrl, type WhatsAppTemplateKey } from "@/lib/whatsapp";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import { ImporterActions } from "@/components/ImporterActions";
+import { TradeFileExplainer } from "@/components/TradeFileExplainer";
 
 
 import {
@@ -132,7 +133,8 @@ function ImporterPortal() {
           <TabsTrigger value="assistant">Ask Canta · Beta</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="shipments" className="mt-6">
+        <TabsContent value="shipments" className="mt-6 space-y-6">
+          <TradeFileExplainer />
           <MyShipments shipments={mine} />
         </TabsContent>
         <TabsContent value="documents" className="mt-6">
