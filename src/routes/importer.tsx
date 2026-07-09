@@ -133,7 +133,8 @@ function ImporterPortal() {
           <TabsTrigger value="assistant">Ask Canta · Beta</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="shipments" className="mt-6">
+        <TabsContent value="shipments" className="mt-6 space-y-6">
+          <TradeFileExplainer />
           <MyShipments shipments={mine} />
         </TabsContent>
         <TabsContent value="documents" className="mt-6">
