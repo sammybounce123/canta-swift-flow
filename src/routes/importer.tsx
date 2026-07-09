@@ -11,7 +11,7 @@ import { buildWhatsAppUrl, type WhatsAppTemplateKey } from "@/lib/whatsapp";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import { ImporterActions } from "@/components/ImporterActions";
 import { StartHereCard } from "@/components/StartHereCard";
-import { TradeFileExplainer } from "@/components/TradeFileExplainer";
+
 import {
   MessageCircle, Upload, Sparkles, FileQuestion, Ship, Calendar, Truck, Bell, ShieldCheck,
   CheckCircle2, AlertCircle, ArrowRight, Receipt, Package, Send, Link as LinkIcon, Copy, Lock,
@@ -99,18 +99,6 @@ function ImporterPortal() {
       </p>
 
 
-      <StartHereCard
-        title="Create your first Trade File"
-        description="A Trade File is one folder per import transaction — supplier, invoice, BL, shipment, clearing bids and payments in one place. Start by uploading an invoice, BL, container number, or supplier details."
-        primary={{ label: "Create Trade File", to: "/trade-desk", search: { new: "1" } }}
-        secondary={[
-          { label: "Upload Invoice or BL", to: "/trade-desk", search: { new: "1" } },
-          { label: "Track Shipment", to: "/shipments" },
-          { label: "Open Trade Files", to: "/trade-desk" },
-        ]}
-      />
-
-      <TradeFileExplainer />
 
       {/* KPIs in plain language */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
