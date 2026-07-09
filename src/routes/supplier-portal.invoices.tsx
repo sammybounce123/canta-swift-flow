@@ -66,6 +66,7 @@ function InvoicesPanel() {
                 <th className="py-2 px-3">Invoice</th>
                 <th className="py-2 px-3">Buyer</th>
                 <th className="py-2 px-3">Date</th>
+                <th className="py-2 px-3">FX Quote</th>
                 <th className="py-2 px-3 text-right">Amount</th>
               </tr>
             </thead>
@@ -75,6 +76,7 @@ function InvoicesPanel() {
                   <td className="py-2 px-3 text-xs font-mono">{i.id}</td>
                   <td className="py-2 px-3 text-xs">{i.buyer}</td>
                   <td className="py-2 px-3 text-xs">{i.date}</td>
+                  <td className="py-2 px-3 text-xs">{i.quote ? (<span className="inline-flex items-center gap-1"><TrendingUp className="h-3 w-3 text-accent" />{i.quote}</span>) : <span className="text-muted-foreground">—</span>}</td>
                   <td className="py-2 px-3 text-xs text-right tabular-nums">{i.amount} {i.ccy}</td>
                 </tr>
               ))}
