@@ -15,7 +15,7 @@ import { createCase, addDocument, partnerActorFromUser } from "@/lib/partner-sto
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 
 export const Route = createFileRoute("/partner/new-referral")({
-  head: () => ({ meta: [{ title: "New Payment Case — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "New Payment Case — Kingsbridge Property Partners" }] }),
   component: NewReferral,
 });
 

@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/payment-links")({
-  head: () => ({ meta: [{ title: "Payment Links — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "Payment Links — Kingsbridge Property Partners" }] }),
   component: PaymentLinksPage,
 });
 

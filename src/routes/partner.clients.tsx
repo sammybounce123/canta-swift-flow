@@ -15,7 +15,7 @@ import {
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 
 export const Route = createFileRoute("/partner/clients")({
-  head: () => ({ meta: [{ title: "Partner Clients — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "Partner Clients — Kingsbridge Property Partners" }] }),
   component: PartnerClientsPage,
 });
 
@@ -73,7 +73,7 @@ function PartnerClientsPage() {
           <h1 className="text-2xl font-semibold flex items-center gap-2">
             <Users className="h-5 w-5 text-primary shrink-0" /> Partner Clients
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">All Baron & Cabot referred clients — visible to your team only.</p>
+          <p className="text-sm text-muted-foreground mt-1">All Kingsbridge Property Partners referred clients — visible to your team only.</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <Button variant="outline"><Download className="h-4 w-4 mr-1.5" /> Export</Button>

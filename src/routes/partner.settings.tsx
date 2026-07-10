@@ -8,7 +8,7 @@ import { PARTNER_ORG } from "@/lib/partner";
 import { getSettings, setSetting, subscribeExtras, type PartnerSettings } from "@/lib/partner-extras";
 
 export const Route = createFileRoute("/partner/settings")({
-  head: () => ({ meta: [{ title: "Settings — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "Settings — Kingsbridge Property Partners" }] }),
   component: SettingsPage,
 });
 
@@ -47,8 +47,8 @@ function SettingsPage() {
 
       <Card className="p-6 shadow-card space-y-4">
         <div className="text-sm font-semibold">Branding</div>
-        <Row label="Payment page header" value="Canta × Baron & Cabot Property Payment" />
-        <Row label="Display referring partner" value="Baron & Cabot" />
+        <Row label="Payment page header" value="Canta × Kingsbridge Property Partners Property Payment" />
+        <Row label="Display referring partner" value="Kingsbridge Property Partners" />
         <Badge variant="outline" className="text-[10px]">Premium property-focused branding applied</Badge>
       </Card>
     </div>

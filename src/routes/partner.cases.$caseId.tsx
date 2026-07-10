@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/partner/cases/$caseId")({
-  head: () => ({ meta: [{ title: "Client Case — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "Client Case — Kingsbridge Property Partners" }] }),
   component: CaseDetail,
 });
 
@@ -349,7 +349,7 @@ function FxQuoteTab({ caseId, quote, quotes, amount, actor, paymentLink, clientN
               if (!paymentLink || typeof window === "undefined") return;
               const full = window.location.origin + paymentLink.url;
               const body = encodeURIComponent(`Hi ${clientName ?? "there"},\n\nYour FX quote ${quote.reference} is ready.\nGBP: ${formatGBP(quote.gbpAmount)}\nRate: 1 GBP = ₦${quote.rate.toLocaleString()}\nNGN total: ₦${quote.ngnTotal.toLocaleString()}\nExpires: ${new Date(quote.expiresAt).toLocaleString()}\n\nPay here: ${full}`);
-              window.open(`mailto:${clientEmail ?? ""}?subject=${encodeURIComponent("Your FX quote from Baron & Cabot × Canta")}&body=${body}`, "_blank");
+              window.open(`mailto:${clientEmail ?? ""}?subject=${encodeURIComponent("Your FX quote from Kingsbridge Property Partners × Canta")}&body=${body}`, "_blank");
             }}>
               Email quote to client
             </Button>

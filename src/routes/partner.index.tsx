@@ -19,7 +19,7 @@ import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/")({
-  head: () => ({ meta: [{ title: "Dashboard — Baron & Cabot Partner Payments" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Kingsbridge Property Partners Partner Payments" }] }),
   component: PartnerDashboard,
 });
 
@@ -66,7 +66,7 @@ function AdminDashboard() {
   return (
     <div className="space-y-6">
       <ReadinessBar status="Demo Preview" cue="Client verification and consent may be required before funding instructions are shown." />
-      <Hero title="Baron & Cabot — Partner Property Payments" subtitle="Track every referred client, marketer and UK solicitor payout end-to-end." />
+      <Hero title="Kingsbridge Property Partners — Partner Property Payments" subtitle="Track every referred client, marketer and UK solicitor payout end-to-end." />
       <StartHereCard
         title="Create Payment Case"
         description="Refer a client, generate FX quote, create payment link, and track solicitor payout."

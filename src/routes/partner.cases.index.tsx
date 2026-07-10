@@ -23,7 +23,7 @@ import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/cases/")({
-  head: () => ({ meta: [{ title: "Client Payment Cases — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "Client Payment Cases — Kingsbridge Property Partners" }] }),
   component: CasesList,
 });
 
@@ -63,7 +63,7 @@ function CasesList() {
         <div>
           <h1 className="text-2xl font-semibold">Client payment cases</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {role === "marketer" ? "Your referred clients and their payment progress." : "All Baron & Cabot referred clients across the team."}
+            {role === "marketer" ? "Your referred clients and their payment progress." : "All Kingsbridge Property Partners referred clients across the team."}
           </p>
         </div>
         <div className="flex gap-2">

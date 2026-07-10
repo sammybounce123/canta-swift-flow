@@ -79,6 +79,7 @@ import { Route as SupplierPortalVerificationRouteImport } from './routes/supplie
 import { Route as SupplierPortalTradeFilesRouteImport } from './routes/supplier-portal.trade-files'
 import { Route as SupplierPortalTeamRouteImport } from './routes/supplier-portal.team'
 import { Route as SupplierPortalSupportRouteImport } from './routes/supplier-portal.support'
+import { Route as SupplierPortalSettlementsRouteImport } from './routes/supplier-portal.settlements'
 import { Route as SupplierPortalSettlementRouteImport } from './routes/supplier-portal.settlement'
 import { Route as SupplierPortalSettingsRouteImport } from './routes/supplier-portal.settings'
 import { Route as SupplierPortalRmbWalletRouteImport } from './routes/supplier-portal.rmb-wallet'
@@ -469,6 +470,12 @@ const SupplierPortalSupportRoute = SupplierPortalSupportRouteImport.update({
   path: '/support',
   getParentRoute: () => SupplierPortalRoute,
 } as any)
+const SupplierPortalSettlementsRoute =
+  SupplierPortalSettlementsRouteImport.update({
+    id: '/settlements',
+    path: '/settlements',
+    getParentRoute: () => SupplierPortalRoute,
+  } as any)
 const SupplierPortalSettlementRoute =
   SupplierPortalSettlementRouteImport.update({
     id: '/settlement',
@@ -750,6 +757,7 @@ export interface FileRoutesByFullPath {
   '/supplier-portal/rmb-wallet': typeof SupplierPortalRmbWalletRoute
   '/supplier-portal/settings': typeof SupplierPortalSettingsRoute
   '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
+  '/supplier-portal/settlements': typeof SupplierPortalSettlementsRoute
   '/supplier-portal/support': typeof SupplierPortalSupportRoute
   '/supplier-portal/team': typeof SupplierPortalTeamRoute
   '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
@@ -855,6 +863,7 @@ export interface FileRoutesByTo {
   '/supplier-portal/rmb-wallet': typeof SupplierPortalRmbWalletRoute
   '/supplier-portal/settings': typeof SupplierPortalSettingsRoute
   '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
+  '/supplier-portal/settlements': typeof SupplierPortalSettlementsRoute
   '/supplier-portal/support': typeof SupplierPortalSupportRoute
   '/supplier-portal/team': typeof SupplierPortalTeamRoute
   '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
@@ -965,6 +974,7 @@ export interface FileRoutesById {
   '/supplier-portal/rmb-wallet': typeof SupplierPortalRmbWalletRoute
   '/supplier-portal/settings': typeof SupplierPortalSettingsRoute
   '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
+  '/supplier-portal/settlements': typeof SupplierPortalSettlementsRoute
   '/supplier-portal/support': typeof SupplierPortalSupportRoute
   '/supplier-portal/team': typeof SupplierPortalTeamRoute
   '/supplier-portal/trade-files': typeof SupplierPortalTradeFilesRoute
@@ -1076,6 +1086,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/rmb-wallet'
     | '/supplier-portal/settings'
     | '/supplier-portal/settlement'
+    | '/supplier-portal/settlements'
     | '/supplier-portal/support'
     | '/supplier-portal/team'
     | '/supplier-portal/trade-files'
@@ -1181,6 +1192,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/rmb-wallet'
     | '/supplier-portal/settings'
     | '/supplier-portal/settlement'
+    | '/supplier-portal/settlements'
     | '/supplier-portal/support'
     | '/supplier-portal/team'
     | '/supplier-portal/trade-files'
@@ -1290,6 +1302,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/rmb-wallet'
     | '/supplier-portal/settings'
     | '/supplier-portal/settlement'
+    | '/supplier-portal/settlements'
     | '/supplier-portal/support'
     | '/supplier-portal/team'
     | '/supplier-portal/trade-files'
@@ -1866,6 +1879,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SupplierPortalSupportRouteImport
       parentRoute: typeof SupplierPortalRoute
     }
+    '/supplier-portal/settlements': {
+      id: '/supplier-portal/settlements'
+      path: '/settlements'
+      fullPath: '/supplier-portal/settlements'
+      preLoaderRoute: typeof SupplierPortalSettlementsRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
     '/supplier-portal/settlement': {
       id: '/supplier-portal/settlement'
       path: '/settlement'
@@ -2232,6 +2252,7 @@ interface SupplierPortalRouteChildren {
   SupplierPortalRmbWalletRoute: typeof SupplierPortalRmbWalletRoute
   SupplierPortalSettingsRoute: typeof SupplierPortalSettingsRoute
   SupplierPortalSettlementRoute: typeof SupplierPortalSettlementRoute
+  SupplierPortalSettlementsRoute: typeof SupplierPortalSettlementsRoute
   SupplierPortalSupportRoute: typeof SupplierPortalSupportRoute
   SupplierPortalTeamRoute: typeof SupplierPortalTeamRoute
   SupplierPortalTradeFilesRoute: typeof SupplierPortalTradeFilesRoute
@@ -2254,6 +2275,7 @@ const SupplierPortalRouteChildren: SupplierPortalRouteChildren = {
   SupplierPortalRmbWalletRoute: SupplierPortalRmbWalletRoute,
   SupplierPortalSettingsRoute: SupplierPortalSettingsRoute,
   SupplierPortalSettlementRoute: SupplierPortalSettlementRoute,
+  SupplierPortalSettlementsRoute: SupplierPortalSettlementsRoute,
   SupplierPortalSupportRoute: SupplierPortalSupportRoute,
   SupplierPortalTeamRoute: SupplierPortalTeamRoute,
   SupplierPortalTradeFilesRoute: SupplierPortalTradeFilesRoute,

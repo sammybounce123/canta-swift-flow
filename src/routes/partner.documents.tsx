@@ -15,7 +15,7 @@ import { appendDocAudit, listDocAudit, subscribeExtras } from "@/lib/partner-ext
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 
 export const Route = createFileRoute("/partner/documents")({
-  head: () => ({ meta: [{ title: "Documents — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "Documents — Kingsbridge Property Partners" }] }),
   component: DocumentsPage,
 });
 
@@ -40,7 +40,7 @@ function DocumentsPage() {
   const submitUpload = () => {
     if (!caseId || !docName) { toast.error("Pick a case and a document name"); return; }
     addDocument(caseId, { type: docType as any, name: docName, uploadedBy: userId, uploadedByName: user?.name ?? "Partner user", uploadedByRole: role });
-    appendDocAudit({ caseId, docType, action: "Document uploaded by Baron & Cabot", actorId: userId, actorName: user?.name ?? "Partner user", actorRole: role });
+    appendDocAudit({ caseId, docType, action: "Document uploaded by Kingsbridge Property Partners", actorId: userId, actorName: user?.name ?? "Partner user", actorRole: role });
     toast.success("Document uploaded");
     setUploadOpen(false);
     setDocName("");

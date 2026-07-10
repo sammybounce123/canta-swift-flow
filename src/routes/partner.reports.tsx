@@ -9,7 +9,7 @@ import { CASES, SOLICITORS, formatGBP, getSolicitor } from "@/lib/partner";
 import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/reports")({
-  head: () => ({ meta: [{ title: "Reports — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "Reports — Kingsbridge Property Partners" }] }),
   component: Reports,
 });
 

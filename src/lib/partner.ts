@@ -1,4 +1,4 @@
-// Mock data + helpers for the Baron & Cabot Partner Property Payments workspace.
+// Mock data + helpers for the Kingsbridge Property Partners Partner Property Payments workspace.
 // Pure presentation data; no backend.
 
 export type CaseStatus =
@@ -89,7 +89,7 @@ export function statusTone(s: CaseStatus): string {
   }
 }
 
-/* ---------------- Roles & users (Baron & Cabot partner org) ---------------- */
+/* ---------------- Roles & users (Kingsbridge Property Partners partner org) ---------------- */
 
 export type PartnerRole =
   | "partner_admin"
@@ -99,7 +99,7 @@ export type PartnerRole =
   | "viewer";
 
 export const PARTNER_ROLES: { id: PartnerRole; label: string; blurb: string }[] = [
-  { id: "partner_admin", label: "Partner Admin", blurb: "Full access across Baron & Cabot." },
+  { id: "partner_admin", label: "Partner Admin", blurb: "Full access across Kingsbridge Property Partners." },
   { id: "partner_manager", label: "Partner Manager", blurb: "Assigned marketers, their clients & performance." },
   { id: "marketer", label: "Marketer / Sales Agent", blurb: "Only my referrals, leads, cases and payouts." },
   { id: "finance_viewer", label: "Finance Viewer", blurb: "Payouts, receipts and reports." },
@@ -122,7 +122,7 @@ export type Marketer = {
 
 export const PARTNER_ORG = {
   id: "ORG-BARONCABOT",
-  name: "Baron & Cabot",
+  name: "Kingsbridge Property Partners",
   type: "Property Partner",
   country: "United Kingdom",
 };

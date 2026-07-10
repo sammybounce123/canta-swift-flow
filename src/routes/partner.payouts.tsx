@@ -16,7 +16,7 @@ import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/payouts")({
-  head: () => ({ meta: [{ title: "Solicitor Payouts — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "Solicitor Payouts — Kingsbridge Property Partners" }] }),
   component: Payouts,
 });
 
@@ -60,7 +60,7 @@ function Payouts() {
         <div>
           <h1 className="text-2xl font-semibold">Solicitor payouts</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {role === "marketer" ? "Payouts on your referred clients." : "Every payout sent to UK solicitors on behalf of Baron & Cabot clients."}
+            {role === "marketer" ? "Payouts on your referred clients." : "Every payout sent to UK solicitors on behalf of Kingsbridge Property Partners clients."}
           </p>
         </div>
         <Button variant="outline"><Download className="h-4 w-4 mr-1.5" /> Export</Button>

@@ -129,7 +129,7 @@ export function updateCommissionStatus(id: string, status: CommissionStatus) {
 
 /* ---------- Document audit log ---------- */
 export type DocAuditAction =
-  | "Document uploaded by Baron & Cabot"
+  | "Document uploaded by Kingsbridge Property Partners"
   | "Document uploaded by client"
   | "Document viewed by client"
   | "Document consent completed"

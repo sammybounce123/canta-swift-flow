@@ -103,7 +103,7 @@ export const SEGMENTS: Segment[] = [
     defaultPermissions: ["create referral", "view all cases", "view solicitor details", "add solicitor", "view payouts", "download receipts", "export reports", "manage team"],
     route: "/partner",
     welcome: "Refer property clients, track FX conversions and solicitor payouts end-to-end.",
-    tagline: "Baron & Cabot and property partners referring clients to Canta",
+    tagline: "Kingsbridge Property Partners and property partners referring clients to Canta",
   },
   {
     id: "global_spend_cards",
