@@ -127,8 +127,8 @@ function Landing() {
               { v: "Audit-ready by design", l: "Every action, approval, payment and receipt recorded" },
             ].map((s) => (
               <div key={s.l} className="text-center">
-                <div className="text-2xl md:text-3xl font-semibold tabular-nums">{s.v}</div>
-                <div className="text-xs text-primary-foreground/60 mt-1">{s.l}</div>
+                <div className="text-2xl md:text-3xl font-semibold tabular-nums text-balance">{s.v}</div>
+                <div className="text-xs text-primary-foreground/60 mt-1 text-balance">{s.l}</div>
               </div>
             ))}
           </div>
