@@ -140,11 +140,26 @@ function SidebarContent({ pathname, search, onNavigate }: { pathname: string; se
             <div className="px-3 mb-1 text-[10px] uppercase tracking-widest text-sidebar-foreground/40">{g}</div>
             <div className="space-y-0.5">
               {items.filter((n) => n.group === g).map((item) => {
-                const pathActive = item.exact ? pathname === item.to : pathname === item.to || pathname.startsWith(item.to + "/");
-                const searchActive = item.search
-                  ? Object.entries(item.search).every(([key, value]) => (search?.[key] ?? (key === "tab" && pathname === "/supplier-portal" ? "overview" : undefined)) === value)
+                const searchMatches = (it: SidebarItem) => it.search
+                  ? Object.entries(it.search).every(([key, value]) => (search?.[key] ?? (key === "tab" && pathname === "/supplier-portal" ? "overview" : undefined)) === value)
                   : true;
-                const active = pathActive && searchActive;
+                const pathMatches = (it: SidebarItem) => it.exact
+                  ? pathname === it.to
+                  : pathname === it.to || pathname.startsWith(it.to + "/");
+                // Mode-aware active: only the most specific matching item in
+                // the current sidebar highlights. Ties broken by whether the
+                // item declares a `search` (more specific) and by label to
+                // stay deterministic across renders.
+                const bestMatch = items
+                  .filter((it) => pathMatches(it) && searchMatches(it))
+                  .sort((a, b) => {
+                    if (b.to.length !== a.to.length) return b.to.length - a.to.length;
+                    const aHas = a.search ? 1 : 0;
+                    const bHas = b.search ? 1 : 0;
+                    if (bHas !== aHas) return bHas - aHas;
+                    return a.label.localeCompare(b.label);
+                  })[0];
+                const active = bestMatch === item;
                 const Icon = ICONS[item.iconKey] ?? LayoutDashboard;
                 return (
                   <Link
