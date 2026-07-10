@@ -107,13 +107,13 @@ export const TIMELINE_STEPS = [
 
 
 export const COMPLIANCE_DISCLAIMER =
-  "How settlement completes: buyer pays NGN → Canta compliance review (typically same day) → FX conversion at the locked rate → RMB paid to your wallet → settlement receipt generated. Fees are shown on every quote. Refunds return only to the exact Nigerian bank account that sent the NGN payment. Final NGN/RMB amounts and timing are subject to payment confirmation, compliance review, FX availability, partner rails and applicable regulations.";
+  "How settlement completes: buyer pays NGN → Canta compliance review → FX conversion at the locked rate → RMB paid to your verified RMB payout account → settlement receipt generated. Fees are shown on every quote. Refunds return only to the exact Nigerian bank account that sent the NGN payment. Timing depends on payment confirmation, document completeness, compliance review, FX availability and partner processing. Final NGN/RMB amounts are subject to applicable regulations.";
 
 export const SUPPLIER_TABS: Array<{ to: string; label: string }> = [
   { to: "/supplier-portal",                    label: "Overview 首页" },
   { to: "/supplier-portal/buyers",             label: "Nigerian Buyers 尼日利亚买家" },
   { to: "/supplier-portal/payment-requests",           label: "Payment Requests 收款请求" },
-  { to: "/supplier-portal/rmb-wallet",             label: "RMB Wallet 人民币钱包" },
+  { to: "/supplier-portal/rmb-wallet",             label: "RMB Settlement 人民币结算" },
   { to: "/supplier-portal/invoices",           label: "Invoices 发票" },
   { to: "/supplier-portal/documents",          label: "Documents 文件" },
   { to: "/supplier-portal/verification",       label: "Verification 认证" },
