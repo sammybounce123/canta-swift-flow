@@ -253,7 +253,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/supplier-portal", label: "Overview", iconKey: "factory", group: "Supplier Portal", exact: true },
         { to: "/supplier-portal/buyers", label: "Nigerian Buyers", iconKey: "users", group: "Supplier Portal" },
         { to: "/supplier-portal/payment-requests", label: "Payment Requests", iconKey: "receipt", group: "Supplier Portal" },
-        { to: "/supplier-portal/rmb-wallet", label: "RMB Wallet", iconKey: "globe", group: "Supplier Portal" },
+        { to: "/supplier-portal/rmb-wallet", label: "RMB Settlement", iconKey: "globe", group: "Supplier Portal" },
         { to: "/supplier-portal/invoices", label: "Invoices", iconKey: "receipt", group: "Supplier Portal" },
         { to: "/supplier-portal/documents", label: "Documents", iconKey: "file", group: "Operations" },
         { to: "/supplier-portal/verification", label: "Verification", iconKey: "shield-check", group: "Operations" },
@@ -324,7 +324,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/partner/marketers", label: "Marketer Performance", iconKey: "users", group: "Insights" },
         ...(commissionsEnabled ? [{ to: "/partner/commissions", label: "Commissions", iconKey: "receipt", group: "Insights" } as SidebarItem] : []),
         { to: "/partner/reports", label: "Reports", iconKey: "chart", group: "Insights" },
-        { to: "/audit-logs", label: "Activity Log", iconKey: "shield", group: "Governance" },
+        { to: "/partner/activity-log", label: "Activity Log", iconKey: "shield", group: "Governance" },
         { to: "/partner/team", label: "Team", iconKey: "team", group: "Workspace" },
         { to: "/partner/settings", label: "Settings", iconKey: "settings", group: "Workspace" },
       ];

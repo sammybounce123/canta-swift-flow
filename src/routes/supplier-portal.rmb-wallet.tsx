@@ -8,7 +8,7 @@ import { REQUESTS, STATUS_TONE, COMPLIANCE_DISCLAIMER, useVerified } from "@/lib
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/supplier-portal/rmb-wallet")({
-  head: () => ({ meta: [{ title: "RMB Wallet — Supplier Portal — Canta" }] }),
+  head: () => ({ meta: [{ title: "RMB Settlement — Supplier Portal — Canta" }] }),
   component: RmbWalletPanel,
 });
 
@@ -29,18 +29,18 @@ function RmbWalletPanel() {
         <div className="flex items-start justify-between flex-wrap gap-4">
           <div>
             <div className="text-xs uppercase tracking-wider opacity-80 flex items-center gap-1">
-              <Wallet className="h-3 w-3" /> RMB Wallet · 人民币钱包
+              <Wallet className="h-3 w-3" /> RMB Settlement · 人民币结算
             </div>
             <div className="flex items-center gap-2 mt-2">
               <div className="text-4xl font-semibold tabular-nums">¥{balance.toLocaleString()}.00</div>
-              <Badge variant="outline" className="bg-white/15 text-white border-white/30 text-[10px]">Demo balance · 演示</Badge>
+              <Badge variant="outline" className="bg-white/15 text-white border-white/30 text-[10px]">Illustrative demo data · 演示</Badge>
             </div>
-            <div className="text-xs opacity-80 mt-1">Available balance · 可用余额 · CNY · Held by Canta's RMB settlement partner</div>
+            <div className="text-xs opacity-80 mt-1">Settlement awaiting payout · 待支付结算 · CNY · Payable to your verified RMB payout account</div>
           </div>
 
-          <ButtonGroup label="Wallet actions">
-            <Button size="sm" variant="secondary" onClick={() => toast.success("Withdrawal request sent to your verified RMB bank account")}>
-              <ArrowDownLeft className="h-4 w-4 mr-2" /> Withdraw to bank 提现到银行
+          <ButtonGroup label="Settlement actions">
+            <Button size="sm" variant="secondary" onClick={() => toast.success("Transfer initiated to your verified RMB bank account")}>
+              <ArrowDownLeft className="h-4 w-4 mr-2" /> Transfer to verified bank account 转账至已认证银行
             </Button>
             <Button size="sm" variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20" onClick={() => toast.success("Statement downloaded")}>
               <Download className="h-4 w-4 mr-2" /> Statement 对账单

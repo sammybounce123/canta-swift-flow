@@ -298,7 +298,7 @@ function WhatsAppOnboarding() {
       <div className="p-4 border-b border-border flex items-center gap-2">
         <Bot className="h-4 w-4 text-success" />
         <div className="text-sm font-semibold">AI WhatsApp Onboarding</div>
-        <Badge variant="outline" className="text-[10px] ml-auto bg-success/15 text-success border-success/30">Live</Badge>
+        <Badge variant="outline" className="text-[10px] ml-auto bg-success/15 text-success border-success/30">Demo</Badge>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2">
         {/* Chat */}

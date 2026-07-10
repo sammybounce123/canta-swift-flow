@@ -249,7 +249,7 @@ function ConversionTracker({
   return (
     <div className="max-w-3xl mx-auto space-y-6 animate-fade-in">
       <div className="text-center space-y-1">
-        <Badge className="bg-accent/15 text-accent border-accent/30 hover:bg-accent/15">Live tracking</Badge>
+        <Badge className="bg-accent/15 text-accent border-accent/30 hover:bg-accent/15">Illustrative rates</Badge>
         <h1 className="text-2xl font-semibold">Conversion in progress</h1>
         <p className="text-sm text-muted-foreground">
           {fmtMoney(sendAmt, from)} <ArrowRight className="inline h-3.5 w-3.5 mx-1" /> {fmtMoney(out, to)} · {beneficiary.name}

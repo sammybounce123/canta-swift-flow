@@ -116,8 +116,8 @@ function Landing() {
           <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto w-full">
             {[
               { v: "NGN → RMB", l: "China supplier settlement" },
-              { v: "4 roles", l: "Importer · Supplier · Treasury · Ops" },
-              { v: "1 workspace", l: "Trade files, FX, payouts, docs" },
+              { v: "4 workspaces", l: "Importer · Supplier · Treasury · Partner" },
+              { v: "1 platform", l: "Trade files, FX, payouts, docs" },
               { v: "Full audit", l: "Every action reviewable" },
             ].map((s) => (
               <div key={s.l}>

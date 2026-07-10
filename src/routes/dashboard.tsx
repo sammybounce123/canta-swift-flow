@@ -119,7 +119,7 @@ function Dashboard() {
               ? "Review pending approvals and audit recent activity."
               : role === "Viewer"
               ? "Read-only view of treasury activity."
-              : "Here's what's happening with your treasury today."}
+              : `Here's what's happening in your ${mode} workspace today.`}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -461,7 +461,7 @@ function SupplierFxQuoteCard() {
           </div>
           <div>
             <div className="text-sm font-semibold">FX Quote</div>
-            <div className="text-[11px] text-muted-foreground">Live rate · expires in {expiresIn}</div>
+            <div className="text-[11px] text-muted-foreground">Illustrative rate · expires in {expiresIn}</div>
           </div>
         </div>
         <Badge variant="outline" className="text-[10px]"><span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse mr-1 inline-block" /> Live</Badge>
