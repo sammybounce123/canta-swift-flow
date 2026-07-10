@@ -22,7 +22,7 @@ import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/solicitors")({
-  head: () => ({ meta: [{ title: "Solicitors — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "Solicitors — Kingsbridge Property Partners" }] }),
   component: Solicitors,
 });
 

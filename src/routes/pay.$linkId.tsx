@@ -18,7 +18,7 @@ import { getSolicitor, PARTNER_ORG, formatGBP } from "@/lib/partner";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/pay/$linkId")({
-  head: () => ({ meta: [{ title: "Secure Property Payment — Canta × Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "Secure Property Payment — Canta × Kingsbridge Property Partners" }] }),
   component: ClientPayPage,
 });
 
@@ -208,7 +208,7 @@ function VerifyStep({ caseId, clientName, onDone }: any) {
       <div className="space-y-2 text-sm">
         <ConsentRow checked={name} onChange={setName} label={`I confirm my full name matches: ${clientName}`} />
         <ConsentRow checked={canta} onChange={setCanta} label="I consent to Canta processing this property payment." />
-        <ConsentRow checked={shared} onChange={setShared} label="I consent to Canta using KYC documents shared by Baron & Cabot for verification." />
+        <ConsentRow checked={shared} onChange={setShared} label="I consent to Canta using KYC documents shared by Kingsbridge Property Partners for verification." />
         <ConsentRow checked={purpose} onChange={setPurpose} label="I confirm the payment purpose and source of funds are accurate." />
         <ConsentRow checked={terms} onChange={setTerms} label="I accept Canta's Terms of Service." />
         <ConsentRow checked={privacy} onChange={setPrivacy} label="I accept Canta's Privacy and Data Processing Policy." />

@@ -27,7 +27,7 @@ const WHO_FOR: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "Multinationals, corporates, traders and large SMEs",
   importer_portal: "Importers buying from China, UAE, Turkey, India",
   supplier_dashboard: "Chinese suppliers receiving RMB settlement after Nigerian buyers pay NGN locally through Canta",
-  partner_property: "Property partners like Baron & Cabot referring clients",
+  partner_property: "Property partners like Kingsbridge Property Partners referring clients",
 };
 const DO_BULLETS: Partial<Record<WorkspaceType, string[]>> = {
   enterprise_treasury: ["FX & multi-currency balances", "Bulk payouts & approvals", "Beneficiaries & treasury reports"],

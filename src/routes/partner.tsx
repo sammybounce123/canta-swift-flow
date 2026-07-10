@@ -6,7 +6,7 @@ import { PARTNER_ORG, PARTNER_ROLES } from "@/lib/partner";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 
 export const Route = createFileRoute("/partner")({
-  head: () => ({ meta: [{ title: "Baron & Cabot — Partner Property Payments" }] }),
+  head: () => ({ meta: [{ title: "Kingsbridge Property Partners — Partner Property Payments" }] }),
   component: PartnerShell,
 });
 

@@ -82,7 +82,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
   },
 
   {
-    h: "Partner Property (Baron & Cabot)",
+    h: "Partner Property (Kingsbridge Property Partners)",
     body: [
       "/partner dashboard, /partner/cases + /partner/cases/$caseId with FX quote generator, document checklist and escrow status.",
       "/partner/fx-quotes live ledger with expiry timer. /partner/payouts solicitor payout history. /partner/payment-links client-facing links.",
@@ -122,7 +122,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
     h: "Partner Property — Client payment link gating (/pay/$linkId)",
     body: [
       "Funding instructions are LOCKED behind a visible incomplete checklist. The client must complete: BVN (entered by the client only), DOB, full-name confirmation, source of funds, payment purpose, 5 consents (purpose, Canta to process, use of B&C-shared KYC, terms, privacy), the FX quote must still be valid, and required documents confirmed.",
-      "Baron & Cabot users can never enter BVN on behalf of the client and never see the full BVN — only BVN Pending / Submitted / Verified / Failed.",
+      "Kingsbridge Property Partners users can never enter BVN on behalf of the client and never see the full BVN — only BVN Pending / Submitted / Verified / Failed.",
       "On funding the client confirms amount, payer name and reference. Mismatches automatically classify the case as Funding Review with sub-status Amount Mismatch, Name Mismatch, or Payment Reference Missing. A clean match transitions to Ready for FX Conversion.",
     ],
   },
@@ -136,8 +136,8 @@ const SECTIONS: { h: string; body: string[] }[] = [
   {
     h: "B&C document consent and audit trail (/partner/documents)",
     body: [
-      "Baron & Cabot can upload documents already collected from the client: international passport, national ID, driver's licence, proof of address, proof of funds, property/solicitor payment instructions, source-of-funds doc, and other supporting docs.",
-      "On the /pay link the client sees 'Documents already provided by Baron & Cabot', can view the list, upload missing files, and consent to Canta using the shared documents.",
+      "Kingsbridge Property Partners can upload documents already collected from the client: international passport, national ID, driver's licence, proof of address, proof of funds, property/solicitor payment instructions, source-of-funds doc, and other supporting docs.",
+      "On the /pay link the client sees 'Documents already provided by Kingsbridge Property Partners', can view the list, upload missing files, and consent to Canta using the shared documents.",
       "The audit trail records every event: uploaded by B&C / uploaded by client / viewed by client / consent completed / missing-document requested / approved / rejected — each entry stamped with document type, actor, role, time, linked case and consent status.",
     ],
   },

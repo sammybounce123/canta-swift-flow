@@ -1,4 +1,5 @@
 // Shared mock data + helpers
+import { demoEtaFor, type DemoStatus } from "@/lib/demo-clock";
 export const fmtNGN = (n: number) =>
   "₦" + n.toLocaleString(undefined, { maximumFractionDigits: 0 });
 export const fmtUSD = (n: number) =>
@@ -152,7 +153,7 @@ export type Shipment = {
 
 export const shippingLines = ["MSC", "Maersk", "CMA CGM", "COSCO", "OOCL", "Grimaldi", "Hapag-Lloyd", "Evergreen", "Emirates SkyCargo", "DHL"];
 
-export const shipments: Shipment[] = [
+const RAW_SHIPMENTS: Shipment[] = [
   { id: "SHP-10421", name: "Guangzhou → Lagos electronics", shipmentNumber: "CNT-2026-0421", type: "Container", shippingLine: "MSC", origin: "Guangzhou, CN", destination: "Apapa, LOS", eta: "2026-06-18", status: "On Vessel", importer: "ABC Electronics", supplier: "Guangzhou Tech Factory", forwarder: "Dragon Freight Nigeria", container: "MSCU7762213", bl: "BL-998211", vessel: "MSC ANTONIA", category: "Electronics", value: 184_000, ccy: "USD", documents: ["Commercial Invoice", "Packing List", "BL", "Form M"], notes: "Mixed consumer electronics, 240 cartons.", vertical: { kind: "Electronics", sku: "ELC-MIX-Q2", cartons: 240, units: 6480, productCategory: "Consumer Electronics", supplierInvoice: "INV-GZTF-2241" } },
   { id: "SHP-10422", name: "Yiwu → Lagos fashion bales", shipmentNumber: "CNT-2026-0422", type: "Container", shippingLine: "COSCO", origin: "Yiwu, CN", destination: "Tin Can, LOS", eta: "2026-06-22", status: "Loaded", importer: "Balogun Trade Hub", supplier: "Yiwu General Trading", forwarder: "Lagos-China Cargo", container: "TGHU4421021", bl: "BL-998244", vessel: "COSCO SHIPPING ARIES", category: "Fashion", value: 67_400, ccy: "USD", documents: ["Commercial Invoice", "Packing List", "BL"], notes: "Mixed fashion bales for retail market.", vertical: { kind: "Fashion", bales: 180, sizeMix: "S 25% · M 40% · L 25% · XL 10%", productCategory: "Mixed Apparel" } },
   { id: "SHP-10423", name: "Dubai → Lagos auto spares", shipmentNumber: "CNT-2026-0423", type: "Container", shippingLine: "CMA CGM", origin: "Jebel Ali, AE", destination: "Apapa, LOS", eta: "2026-06-14", status: "Customs", importer: "Dav Excel Autos", supplier: "Dubai Auto Parts Hub", forwarder: "SwiftPort Logistics", container: "DUBU1102234", bl: "BL-998191", vessel: "CMA CGM IVANHOE", category: "Auto Parts", value: 41_900, ccy: "USD", documents: ["Commercial Invoice", "Packing List", "BL", "SONCAP"], notes: "Spare parts mostly for Toyota & Honda.", vertical: { kind: "Electronics", sku: "AUTO-SP-088", cartons: 88, units: 1320, productCategory: "Auto Spare Parts", supplierInvoice: "INV-DAPH-1190" } },
@@ -163,6 +164,14 @@ export const shipments: Shipment[] = [
   { id: "SHP-10428", name: "Long Beach → Lagos vehicles", shipmentNumber: "RORO-2026-0428", type: "RORO", shippingLine: "Grimaldi", origin: "Long Beach, US", destination: "Tin Can, LOS", eta: "2026-07-11", status: "Booked", importer: "Dav Excel Autos", supplier: "Manheim Auctions", forwarder: "Global Route Freight", vessel: "GRANDE LAGOS", category: "Vehicles", value: 28_400, ccy: "USD", documents: ["Bill of Sale", "Title"], notes: "Single vehicle — Lexus RX350.", vertical: { kind: "Vehicles", vin: "2T2HK31U68C083421", make: "Lexus", model: "RX 350", year: 2019, color: "Obsidian Black", image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=600", source: "Manheim · Long Beach Lot #44120", vehicleStatus: "Awaiting loading" } },
   { id: "SHP-10429", name: "Hamburg → Lagos courier parcels", shipmentNumber: "CUR-2026-0429", type: "Courier", shippingLine: "DHL", origin: "Hamburg, DE", destination: "MMIA Lagos", eta: "2026-06-10", status: "Released", importer: "ABC Electronics", supplier: "Berlin Tech Supply", forwarder: "SwiftPort Logistics", category: "Samples", value: 1_240, ccy: "EUR", documents: ["AWB", "Commercial Invoice"], notes: "Sample units for QA before bulk order.", vertical: { kind: "General", productCategory: "Samples" } },
 ];
+
+// Enforce demo-date consistency: every shipment's ETA/arrival is derived
+// from its status relative to "now", so an "On Vessel" cargo never appears
+// to have arrived weeks ago.
+export const shipments: Shipment[] = RAW_SHIPMENTS.map((s, i) => ({
+  ...s,
+  eta: demoEtaFor(s.status as DemoStatus, i),
+}));
 
 export type TradeFile = {
   id: string;

@@ -41,7 +41,7 @@ const WHO_FOR: Partial<Record<WorkspaceType, string>> = {
   freight_workspace: "Freight forwarders, clearing agents, logistics operators",
   supplier_dashboard: "Foreign suppliers & exporters selling to African buyers",
   global_collections: "Universities, hospitals, airlines, travel, e-commerce",
-  partner_property: "Property partners like Baron & Cabot referring clients",
+  partner_property: "Property partners like Kingsbridge Property Partners referring clients",
 };
 const DO_BULLETS: Partial<Record<WorkspaceType, string[]>> = {
   enterprise_treasury: ["FX & multi-currency wallets", "Approvals & beneficiaries", "Treasury reports & compliance"],

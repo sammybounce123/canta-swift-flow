@@ -11,7 +11,7 @@ import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { formatGBP } from "@/lib/partner";
 
 export const Route = createFileRoute("/partner/commissions")({
-  head: () => ({ meta: [{ title: "Commissions — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "Commissions — Kingsbridge Property Partners" }] }),
   component: CommissionsPage,
 });
 
@@ -51,7 +51,7 @@ function CommissionsPage() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold flex items-center gap-2"><Percent className="h-5 w-5 text-primary" /> Commissions</h1>
-          <p className="text-sm text-muted-foreground mt-1">{isMarketer ? "Your attributed commission across closed cases." : "Partner & marketer commissions across all Baron & Cabot cases."}</p>
+          <p className="text-sm text-muted-foreground mt-1">{isMarketer ? "Your attributed commission across closed cases." : "Partner & marketer commissions across all Kingsbridge Property Partners cases."}</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={exportCSV}><Download className="h-4 w-4 mr-1.5" /> CSV</Button>

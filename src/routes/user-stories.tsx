@@ -86,7 +86,7 @@ const GROUPS: Group[] = [
     ],
   },
   {
-    persona: "Partner Property — Baron & Cabot",
+    persona: "Partner Property — Kingsbridge Property Partners",
     route: "/partner",
     tagline: "B&C marketers, admins, finance and compliance routing African property buyers through Canta to UK solicitors.",
     stories: [

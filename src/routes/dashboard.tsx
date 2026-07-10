@@ -28,22 +28,27 @@ export const Route = createFileRoute("/dashboard")({
     if (typeof window === "undefined") return;
     try {
       const raw = window.localStorage.getItem("canta:profile");
-      if (!raw) return;
-      const p = JSON.parse(raw) as { workspace_type?: string };
+      const p = raw ? (JSON.parse(raw) as { workspace_type?: string }) : null;
       const map: Record<string, string> = {
         enterprise_treasury: "/treasury",
         importer_portal: "/importer",
         freight_workspace: "/freight",
         supplier_dashboard: "/supplier-portal",
         global_collections: "/collections",
-        global_spend_cards: "/welcome",
         partner_property: "/partner",
+        canta_ops: "/ops",
       };
-      const to = p.workspace_type ? map[p.workspace_type] : undefined;
-      if (to && window.location.pathname === "/dashboard") {
+      const to = p?.workspace_type ? map[p.workspace_type] : undefined;
+      if (window.location.pathname !== "/dashboard") return;
+      if (to) {
         window.location.replace(to);
+      } else {
+        // Workspace unresolved — never default silently to treasury.
+        window.location.replace("/welcome");
       }
-    } catch {}
+    } catch {
+      window.location.replace("/welcome");
+    }
   },
   component: Dashboard,
 });

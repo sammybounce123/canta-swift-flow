@@ -18,7 +18,7 @@ import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/leads")({
-  head: () => ({ meta: [{ title: "Referral Leads — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "Referral Leads — Kingsbridge Property Partners" }] }),
   component: Leads,
 });
 
@@ -48,7 +48,7 @@ function Leads() {
         <div>
           <h1 className="text-2xl font-semibold">Referral leads</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {role === "marketer" ? "Your referral pipeline — work each lead to a payment case." : "All Baron & Cabot referral leads across the team."}
+            {role === "marketer" ? "Your referral pipeline — work each lead to a payment case." : "All Kingsbridge Property Partners referral leads across the team."}
           </p>
         </div>
         <Button asChild className="bg-primary">

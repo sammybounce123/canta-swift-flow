@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/fx-quotes")({
-  head: () => ({ meta: [{ title: "FX Quotes — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "FX Quotes — Kingsbridge Property Partners" }] }),
   component: FxQuotesPage,
 });
 

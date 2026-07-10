@@ -7,7 +7,7 @@ import { marketerPerformance, formatGBP, PARTNER_ROLES, MARKETERS, canSeeAllMark
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 
 export const Route = createFileRoute("/partner/marketers")({
-  head: () => ({ meta: [{ title: "Marketers — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "Marketers — Kingsbridge Property Partners" }] }),
   component: Marketers,
 });
 
@@ -37,7 +37,7 @@ function Marketers() {
       <div>
         <h1 className="text-2xl font-semibold flex items-center gap-2"><Users className="h-5 w-5" /> Marketer performance</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          {role === "partner_manager" ? "Your assigned marketers and their pipelines." : "Every marketer at Baron & Cabot — referrals, payouts and conversion."}
+          {role === "partner_manager" ? "Your assigned marketers and their pipelines." : "Every marketer at Kingsbridge Property Partners — referrals, payouts and conversion."}
         </p>
       </div>
 

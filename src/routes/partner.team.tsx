@@ -5,7 +5,7 @@ import { Users } from "lucide-react";
 import { MARKETERS, PARTNER_ROLES, PARTNER_ORG } from "@/lib/partner";
 
 export const Route = createFileRoute("/partner/team")({
-  head: () => ({ meta: [{ title: "Team — Baron & Cabot" }] }),
+  head: () => ({ meta: [{ title: "Team — Kingsbridge Property Partners" }] }),
   component: TeamPage,
 });
 
