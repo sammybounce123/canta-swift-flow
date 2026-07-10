@@ -109,6 +109,7 @@ import { Route as PartnerDisputesRouteImport } from './routes/partner.disputes'
 import { Route as PartnerCommissionsRouteImport } from './routes/partner.commissions'
 import { Route as PartnerClientsRouteImport } from './routes/partner.clients'
 import { Route as PartnerCasesRouteImport } from './routes/partner.cases'
+import { Route as PartnerActivityLogRouteImport } from './routes/partner.activity-log'
 import { Route as PLinkIdRouteImport } from './routes/p.$linkId'
 import { Route as MerchantProfileRouteImport } from './routes/merchant.profile'
 import { Route as MerchantKybRouteImport } from './routes/merchant.kyb'
@@ -625,6 +626,11 @@ const PartnerCasesRoute = PartnerCasesRouteImport.update({
   path: '/cases',
   getParentRoute: () => PartnerRoute,
 } as any)
+const PartnerActivityLogRoute = PartnerActivityLogRouteImport.update({
+  id: '/activity-log',
+  path: '/activity-log',
+  getParentRoute: () => PartnerRoute,
+} as any)
 const PLinkIdRoute = PLinkIdRouteImport.update({
   id: '/p/$linkId',
   path: '/p/$linkId',
@@ -728,6 +734,7 @@ export interface FileRoutesByFullPath {
   '/merchant/kyb': typeof MerchantKybRoute
   '/merchant/profile': typeof MerchantProfileRoute
   '/p/$linkId': typeof PLinkIdRoute
+  '/partner/activity-log': typeof PartnerActivityLogRoute
   '/partner/cases': typeof PartnerCasesRouteWithChildren
   '/partner/clients': typeof PartnerClientsRoute
   '/partner/commissions': typeof PartnerCommissionsRoute
@@ -835,6 +842,7 @@ export interface FileRoutesByTo {
   '/merchant/kyb': typeof MerchantKybRoute
   '/merchant/profile': typeof MerchantProfileRoute
   '/p/$linkId': typeof PLinkIdRoute
+  '/partner/activity-log': typeof PartnerActivityLogRoute
   '/partner/clients': typeof PartnerClientsRoute
   '/partner/commissions': typeof PartnerCommissionsRoute
   '/partner/disputes': typeof PartnerDisputesRoute
@@ -945,6 +953,7 @@ export interface FileRoutesById {
   '/merchant/kyb': typeof MerchantKybRoute
   '/merchant/profile': typeof MerchantProfileRoute
   '/p/$linkId': typeof PLinkIdRoute
+  '/partner/activity-log': typeof PartnerActivityLogRoute
   '/partner/cases': typeof PartnerCasesRouteWithChildren
   '/partner/clients': typeof PartnerClientsRoute
   '/partner/commissions': typeof PartnerCommissionsRoute
@@ -1057,6 +1066,7 @@ export interface FileRouteTypes {
     | '/merchant/kyb'
     | '/merchant/profile'
     | '/p/$linkId'
+    | '/partner/activity-log'
     | '/partner/cases'
     | '/partner/clients'
     | '/partner/commissions'
@@ -1164,6 +1174,7 @@ export interface FileRouteTypes {
     | '/merchant/kyb'
     | '/merchant/profile'
     | '/p/$linkId'
+    | '/partner/activity-log'
     | '/partner/clients'
     | '/partner/commissions'
     | '/partner/disputes'
@@ -1273,6 +1284,7 @@ export interface FileRouteTypes {
     | '/merchant/kyb'
     | '/merchant/profile'
     | '/p/$linkId'
+    | '/partner/activity-log'
     | '/partner/cases'
     | '/partner/clients'
     | '/partner/commissions'
@@ -2089,6 +2101,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PartnerCasesRouteImport
       parentRoute: typeof PartnerRoute
     }
+    '/partner/activity-log': {
+      id: '/partner/activity-log'
+      path: '/activity-log'
+      fullPath: '/partner/activity-log'
+      preLoaderRoute: typeof PartnerActivityLogRouteImport
+      parentRoute: typeof PartnerRoute
+    }
     '/p/$linkId': {
       id: '/p/$linkId'
       path: '/p/$linkId'
@@ -2198,6 +2217,7 @@ const PartnerCasesRouteWithChildren = PartnerCasesRoute._addFileChildren(
 )
 
 interface PartnerRouteChildren {
+  PartnerActivityLogRoute: typeof PartnerActivityLogRoute
   PartnerCasesRoute: typeof PartnerCasesRouteWithChildren
   PartnerClientsRoute: typeof PartnerClientsRoute
   PartnerCommissionsRoute: typeof PartnerCommissionsRoute
@@ -2217,6 +2237,7 @@ interface PartnerRouteChildren {
 }
 
 const PartnerRouteChildren: PartnerRouteChildren = {
+  PartnerActivityLogRoute: PartnerActivityLogRoute,
   PartnerCasesRoute: PartnerCasesRouteWithChildren,
   PartnerClientsRoute: PartnerClientsRoute,
   PartnerCommissionsRoute: PartnerCommissionsRoute,
