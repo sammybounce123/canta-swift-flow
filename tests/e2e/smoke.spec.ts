@@ -18,10 +18,43 @@ async function seedWorkspace(page: Page, workspace: string, mode: string) {
     ({ workspace, mode }) => {
       window.localStorage.setItem("canta:active_workspace", workspace);
       window.localStorage.setItem("canta:mode", mode);
+      // Simulate a KYB-completed workspace so the AppShell KYB gate does not
+      // bounce warm navigation into /kyb-onboarding.
+      window.localStorage.setItem("canta:kyb:" + workspace, "done");
     },
     { workspace, mode }
   );
 }
+
+/**
+ * Seed the pre-verified investor-demo Supplier persona (Li Wei /
+ * Guangzhou Tech Factory). Mirrors what src/lib/demo-supplier.ts writes
+ * when a visitor picks Supplier on /welcome.
+ */
+async function seedDemoSupplier(page: Page) {
+  await page.goto("/");
+  await page.evaluate(() => {
+    window.localStorage.setItem("canta:active_workspace", "supplier_dashboard");
+    window.localStorage.setItem("canta:mode", "Supplier");
+    window.localStorage.setItem("canta:kyb:supplier_dashboard", "done");
+    window.localStorage.setItem("canta:payout:supplier_dashboard", "verified");
+    window.localStorage.setItem("canta:persona", "supplier_demo");
+  });
+}
+
+/**
+ * Seed a genuinely unverified Supplier workspace — active workspace is set,
+ * but no KYB approval flag is present. AppShell should redirect this
+ * visitor to /kyb-onboarding?workspace=supplier_dashboard.
+ */
+async function seedUnverifiedSupplier(page: Page) {
+  await page.goto("/");
+  await page.evaluate(() => {
+    window.localStorage.setItem("canta:active_workspace", "supplier_dashboard");
+    window.localStorage.setItem("canta:mode", "Supplier");
+  });
+}
+
 
 async function assertAbsent(page: Page, texts: string[]) {
   const body = (await page.textContent("body")) ?? "";
