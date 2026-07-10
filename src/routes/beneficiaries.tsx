@@ -23,7 +23,7 @@ function Beneficiaries() {
   );
   return (
     <div className="space-y-6">
-      <ReadinessBar status="Live" cue="Verify beneficiary details before sending funds." />
+      <ReadinessBar status="Demo Preview" cue="Verify beneficiary details before sending funds." />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Beneficiaries</h1>

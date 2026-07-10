@@ -5,11 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { MessageCircle, ArrowRight } from "lucide-react";
-import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { toast } from "sonner";
 
 const searchSchema = z.object({
@@ -25,45 +22,30 @@ export const Route = createFileRoute("/track/whatsapp")({
   component: TrackWhatsAppPage,
 });
 
-const INDUSTRIES = [
-  "Importer / Trader",
-  "Manufacturer",
-  "Retail / E-commerce",
-  "Freight / Logistics",
-  "Agriculture",
-  "Automotive",
-  "Construction",
-  "Electronics",
-  "Fashion & Textiles",
-  "Food & Beverage",
-  "Other",
-];
-
 function TrackWhatsAppPage() {
   const nav = useNavigate();
-  const { ref, origin, destination, eta } = useSearch({ from: "/track/whatsapp" });
-  const [name, setName] = useState("");
-  const [industry, setIndustry] = useState("");
+  const { ref } = useSearch({ from: "/track/whatsapp" });
+  const [firstName, setFirstName] = useState("");
   const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
+  const [business, setBusiness] = useState("");
+  const [consent, setConsent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const schema = z.object({
-    name: z.string().trim().min(2, "Enter your name").max(100),
-    industry: z.string().min(1, "Select an industry"),
+    firstName: z.string().trim().min(2, "Enter your first name").max(60),
     phone: z.string().trim().min(6, "Enter your WhatsApp number").max(30),
-    email: z.string().trim().email("Enter a valid email").max(255),
+    business: z.string().trim().max(120).optional(),
+    consent: z.literal(true, { errorMap: () => ({ message: "Please confirm WhatsApp consent" }) }),
   });
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    const parsed = schema.safeParse({ name, industry, phone, email });
+    const parsed = schema.safeParse({ firstName, phone, business: business || undefined, consent });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0]?.message ?? "Please check your details");
       return;
     }
     setSubmitting(true);
-    // Assign a temporary tracking reference and register the lead locally.
     const reference = ref || `CTA-${Date.now().toString(36).toUpperCase().slice(-6)}`;
     try {
       const raw = window.localStorage.getItem("canta:leads");
@@ -73,11 +55,9 @@ function TrackWhatsAppPage() {
         reference,
         createdAt: new Date().toISOString(),
         ...parsed.data,
-        consent: true,
       });
       window.localStorage.setItem("canta:leads", JSON.stringify(arr.slice(0, 200)));
     } catch { /* ignore */ }
-    // Short prefilled message — details already captured in the lead.
     const text = `Hi Canta, I want to track my shipment. My tracking reference is ${reference}.`;
     const href = `https://wa.me/${(import.meta.env.VITE_CANTA_WHATSAPP_NUMBER as string | undefined)?.replace(/\D/g, "") || "2348000000000"}?text=${encodeURIComponent(text)}`;
     toast.success("Opening WhatsApp…", { description: `Reference ${reference}` });
@@ -107,33 +87,26 @@ function TrackWhatsAppPage() {
 
           <form onSubmit={submit} className="mt-5 space-y-3">
             <div>
-              <Label htmlFor="name" className="text-xs">Full name</Label>
-              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Jane Doe" maxLength={100} />
-            </div>
-            <div>
-              <Label className="text-xs">Industry</Label>
-              <Select value={industry} onValueChange={setIndustry}>
-                <SelectTrigger><SelectValue placeholder="Select industry" /></SelectTrigger>
-                <SelectContent>
-                  {INDUSTRIES.map((i) => (
-                    <SelectItem key={i} value={i}>{i}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor="firstName" className="text-xs">First name</Label>
+              <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Jane" maxLength={60} />
             </div>
             <div>
               <Label htmlFor="phone" className="text-xs">WhatsApp phone number</Label>
               <Input id="phone" type="tel" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+234 800 000 0000" maxLength={30} />
             </div>
             <div>
-              <Label htmlFor="email" className="text-xs">Email address</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.com" maxLength={255} />
+              <Label htmlFor="business" className="text-xs">Business or trading name <span className="text-muted-foreground">(optional)</span></Label>
+              <Input id="business" value={business} onChange={(e) => setBusiness(e.target.value)} placeholder="Optional" maxLength={120} />
             </div>
+            <label className="flex items-start gap-2 text-[12px] text-muted-foreground pt-1">
+              <Checkbox checked={consent} onCheckedChange={(v) => setConsent(v === true)} className="mt-0.5" />
+              <span>I agree to be contacted by Canta on WhatsApp about my shipment.</span>
+            </label>
             <Button type="submit" disabled={submitting} className="w-full bg-[#25D366] hover:bg-[#1FB855] text-white">
               Continue to WhatsApp <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
             <p className="text-[11px] text-muted-foreground text-center">
-              By continuing you agree to be contacted on WhatsApp about your shipment.
+              Industry and email are collected later on your full profile.
             </p>
           </form>
         </Card>

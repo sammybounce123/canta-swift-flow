@@ -48,8 +48,8 @@ function OverviewPanel() {
           <div className="text-sm flex-1">
             <div className="font-semibold">Action needed</div>
             <ul className="text-xs mt-1 list-disc pl-4 space-y-0.5">
-              {!verified && <li>Verification incomplete — RMB settlement is on hold until verification is approved.</li>}
-              <li>2 documents required: Factory address proof, Bank statement.</li>
+              {!verified && <li>Verification incomplete — RMB settlement is paused until verification is approved.</li>}
+              {!verified && <li>2 documents required: Factory address proof, Bank statement.</li>}
               {REQUESTS.some((r) => r.status === "Compliance Review") && <li>1 payment request under compliance review.</li>}
             </ul>
           </div>

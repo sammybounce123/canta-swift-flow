@@ -123,7 +123,15 @@ export const SUPPLIER_TABS: Array<{ to: string; label: string }> = [
 
 // --- Verification store ------------------------------------------------------
 
-let verified = false;
+function initialVerified(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    if (window.localStorage.getItem("canta:persona") === "supplier_demo") return true;
+    if (window.localStorage.getItem("canta:kyb:supplier_dashboard") === "done") return true;
+  } catch { /* ignore */ }
+  return false;
+}
+let verified = initialVerified();
 const verifiedSubs = new Set<() => void>();
 export const verifiedStore = {
   get: () => verified,
@@ -131,7 +139,12 @@ export const verifiedStore = {
   subscribe: (f: () => void) => { verifiedSubs.add(f); return () => verifiedSubs.delete(f); },
 };
 export function useVerified() {
-  return useSyncExternalStore(verifiedStore.subscribe, verifiedStore.get, verifiedStore.get);
+  return useSyncExternalStore(verifiedStore.subscribe, verifiedStore.get, () => false);
+}
+
+export function isDemoApproved(): boolean {
+  if (typeof window === "undefined") return false;
+  try { return window.localStorage.getItem("canta:persona") === "supplier_demo"; } catch { return false; }
 }
 
 // --- FX quote store ----------------------------------------------------------
