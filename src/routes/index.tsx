@@ -119,7 +119,7 @@ function Landing() {
             <ShieldCheck className="h-3.5 w-3.5" /> KYB · Audit trail · Compliance review on every settlement
           </div>
 
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto w-full">
+          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto w-full items-start">
             {[
               { v: "Pay China suppliers in RMB", l: "Nigerian buyers fund locally in NGN" },
               { v: "4 connected workspaces", l: "Importer · Supplier · Treasury · Partner" },
