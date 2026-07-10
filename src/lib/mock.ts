@@ -23,13 +23,13 @@ export const wallets = [
 
 export const transactions = [
   { id: "TXN-948213", date: "2026-05-11 09:42", type: "FX Conversion", desc: "USD → NGN", amount: 1_250_000, ccy: "USD", status: "Completed" },
-  { id: "TXN-948210", date: "2026-05-11 08:15", type: "Outgoing", desc: "Schlumberger Ltd · Houston", amount: 487_300, ccy: "USD", status: "Completed" },
-  { id: "TXN-948205", date: "2026-05-10 17:01", type: "Funding", desc: "GTBank inflow", amount: 850_000_000, ccy: "NGN", status: "Completed" },
-  { id: "TXN-948199", date: "2026-05-10 14:22", type: "Outgoing", desc: "Halliburton Energy · UK", amount: 92_400, ccy: "GBP", status: "Pending" },
+  { id: "TXN-948210", date: "2026-05-11 08:15", type: "Outgoing", desc: "Northwind Trading Co · Houston", amount: 487_300, ccy: "USD", status: "Completed" },
+  { id: "TXN-948205", date: "2026-05-10 17:01", type: "Funding", desc: "Local bank inflow", amount: 850_000_000, ccy: "NGN", status: "Completed" },
+  { id: "TXN-948199", date: "2026-05-10 14:22", type: "Outgoing", desc: "Meridian Supplies Ltd · UK", amount: 92_400, ccy: "GBP", status: "Pending" },
   { id: "TXN-948188", date: "2026-05-10 11:08", type: "FX Conversion", desc: "EUR → USD", amount: 215_000, ccy: "EUR", status: "Completed" },
-  { id: "TXN-948170", date: "2026-05-09 16:45", type: "Outgoing", desc: "Total Energies · Paris", amount: 380_000, ccy: "EUR", status: "Completed" },
+  { id: "TXN-948170", date: "2026-05-09 16:45", type: "Outgoing", desc: "Contoso Industries · Paris", amount: 380_000, ccy: "EUR", status: "Completed" },
   { id: "TXN-948161", date: "2026-05-09 12:30", type: "Funding", desc: "Returned bank funding attempt", amount: 50_000_000, ccy: "NGN", status: "Failed" },
-  { id: "TXN-948150", date: "2026-05-09 10:12", type: "Outgoing", desc: "Baker Hughes · Aberdeen", amount: 145_200, ccy: "GBP", status: "Completed" },
+  { id: "TXN-948150", date: "2026-05-09 10:12", type: "Outgoing", desc: "Fabrikam Global · Aberdeen", amount: 145_200, ccy: "GBP", status: "Completed" },
 ];
 
 export const cashFlow = [
@@ -43,11 +43,11 @@ export const cashFlow = [
 ];
 
 export const beneficiaries = [
-  { name: "Schlumberger Ltd", country: "USA", bank: "JPMorgan Chase", account: "•••• 8821", ccy: "USD" },
-  { name: "Halliburton Energy", country: "UK", bank: "Barclays", account: "•••• 4412", ccy: "GBP" },
-  { name: "Total Energies", country: "France", bank: "BNP Paribas", account: "•••• 7790", ccy: "EUR" },
-  { name: "Baker Hughes", country: "UK", bank: "HSBC", account: "•••• 1230", ccy: "GBP" },
-  { name: "ExxonMobil", country: "USA", bank: "Citibank", account: "•••• 5566", ccy: "USD" },
+  { name: "Northwind Trading Co", country: "USA", bank: "Demo Bank NA", account: "•••• 8821", ccy: "USD" },
+  { name: "Meridian Supplies Ltd", country: "UK", bank: "Demo Bank UK", account: "•••• 4412", ccy: "GBP" },
+  { name: "Contoso Industries", country: "France", bank: "Demo Bank EU", account: "•••• 7790", ccy: "EUR" },
+  { name: "Fabrikam Global", country: "UK", bank: "Demo Bank UK", account: "•••• 1230", ccy: "GBP" },
+  { name: "Adventure Works", country: "USA", bank: "Demo Bank NA", account: "•••• 5566", ccy: "USD" },
 ];
 
 export const team = [

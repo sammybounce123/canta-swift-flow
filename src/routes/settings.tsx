@@ -164,7 +164,7 @@ function Settings() {
           <ul className="space-y-3 text-sm">
             {[
               { a: "Signed in", t: "2 minutes ago", who: "Adaeze O. · Lagos, NG" },
-              { a: "Approved $487,300 to Schlumberger", t: "1 hour ago", who: "Kunle A." },
+              { a: "Approved $487,300 to Northwind Trading Co", t: "1 hour ago", who: "Kunle A." },
               { a: "Generated Live API key", t: "Yesterday", who: "Adaeze O." },
               { a: "Updated permissions for Finance role", t: "2 days ago", who: "Adaeze O." },
             ].map((e) => (
