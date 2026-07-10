@@ -122,14 +122,14 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-5 items-start">
-        <Card className="p-4 bg-gradient-card text-primary-foreground border-none shadow-elevated overflow-hidden relative w-fit min-w-0 self-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
+        <Card className="p-5 sm:p-6 bg-gradient-card text-primary-foreground border-none shadow-elevated overflow-hidden relative min-w-0 h-full flex flex-col">
           <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-accent/15 blur-3xl" />
           <div className="absolute -left-12 -bottom-12 h-28 w-28 rounded-full bg-primary/20 blur-3xl" />
-          <div className="relative flex flex-col gap-4">
-            <div className="flex items-start gap-5">
-              <div>
-                <div className="flex items-center gap-2">
+          <div className="relative flex flex-col gap-5 flex-1">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-[10px] uppercase tracking-widest text-primary-foreground/60">
                     Total balance
                   </span>
@@ -137,14 +137,14 @@ function Dashboard() {
                     NGN equivalent
                   </Badge>
                 </div>
-                <div className="text-3xl font-semibold tabular-nums tracking-tight mt-1.5">
+                <div className="text-3xl sm:text-4xl font-semibold tabular-nums tracking-tight mt-1.5 break-all">
                   {hidden ? `₦${MASK}` : fmtNGN(totalNGN)}
                 </div>
                 <div className="mt-2 inline-flex items-center gap-1 bg-success/20 text-success px-2 py-0.5 rounded-full text-[11px] font-medium">
                   <ArrowUpRight className="h-3 w-3" /> +4.8% this week
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-2 min-w-[168px] self-start">
+              <div className="grid grid-cols-2 gap-2 sm:min-w-[200px] sm:self-start">
                 {wallets.map((w) => (
                   <button
                     key={w.ccy}
@@ -155,13 +155,15 @@ function Dashboard() {
                     <div className="flex items-center gap-1 text-[9px] text-primary-foreground/60 uppercase tracking-wider">
                       <span className="text-sm leading-none">{w.flag}</span> {w.ccy}
                     </div>
-                    <div className="text-xs font-semibold tabular-nums mt-1">
+                    <div className="text-xs font-semibold tabular-nums mt-1 truncate">
                       {hidden ? MASK : fmtMoney(w.balance, w.ccy)}
                     </div>
                   </button>
                 ))}
               </div>
             </div>
+
+            <div className="flex-1" />
 
             <div>
               <div className="flex justify-between text-[10px] text-primary-foreground/50 uppercase tracking-wider mb-1.5">
