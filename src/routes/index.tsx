@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 import { setActiveMode, type Mode } from "@/components/ModeProvider";
+import { seedDemoSupplierPersona } from "@/lib/demo-supplier";
 import {
   ArrowRight, Zap, Shield, Sparkles, TrendingUp, CheckCircle2,
   Building2, Lock, Ship, Brain, FileText,
@@ -11,8 +12,13 @@ import {
 } from "lucide-react";
 
 // Set workspace on click so the destination renders its correct shell, sidebar
-// and topbar from the very first paint.
-const pickWorkspace = (m: Mode) => () => setActiveMode(m);
+// and topbar from the very first paint. When the visitor picks Supplier, also
+// seed the pre-verified investor-demo persona so /supplier-portal opens
+// directly (mirroring the /welcome flow).
+const pickWorkspace = (m: Mode) => () => {
+  setActiveMode(m);
+  if (m === "Supplier") seedDemoSupplierPersona();
+};
 
 export const Route = createFileRoute("/")({
   head: () => ({

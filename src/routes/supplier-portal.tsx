@@ -67,7 +67,7 @@ function SupplierPortalLayout() {
         <>
           <ReadinessBar
             status="Demo Preview"
-            cue="Interactive demo — buyers, invoices, FX quotes and RMB wallet shown here are illustrative. 演示环境"
+            cue="Interactive demo — buyers, invoices, FX quotes and RMB Settlement shown here are illustrative. 演示环境"
           />
 
           <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
@@ -80,7 +80,7 @@ function SupplierPortalLayout() {
               <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
                 Your Nigerian buyer pays in <strong>NGN</strong> to Canta's designated NGN collection account. Canta reviews compliance, converts at the locked FX rate, and settles you in <strong>RMB</strong> to your verified RMB payout account. You never make outbound payments here — this portal is receive-only.
                 <br />
-                <span className="text-xs">尼日利亚买家用奈拉付款至 Canta 合规收款账户，Canta 审核合规后按锁定汇率换汇，将人民币直接结算至您的钱包。</span>
+                <span className="text-xs">人民币结算至您已认证的收款银行账户 — 尼日利亚买家用奈拉付款至 Canta 合规收款账户，Canta 审核合规后按锁定汇率换汇。</span>
               </p>
               <div className="flex flex-wrap items-center gap-2 mt-2">
                 <Badge className="text-xs bg-primary/10 text-primary border-primary/30">Li Wei · Supplier Admin</Badge>
@@ -104,8 +104,8 @@ function SupplierPortalLayout() {
             <Card className="p-4 border-amber-300 bg-amber-50 text-amber-900 flex items-start gap-3">
               <Lock className="h-5 w-5 shrink-0 mt-0.5" />
               <div className="text-sm flex-1">
-                <div className="font-semibold">Verify your business to unlock RMB payouts · 完成认证以解锁人民币结算</div>
-                <div className="text-xs mt-1">You can view requests and upload documents now. RMB wallet payouts unlock after verification.</div>
+                <div className="font-semibold">Verify your business to unlock RMB Settlement · 完成认证以解锁人民币结算</div>
+                <div className="text-xs mt-1">You can view requests and upload documents now. Transfer to verified bank account unlocks after verification.</div>
               </div>
               <Button size="sm" variant="outline" onClick={() => { verifiedStore.set(true); toast.success("Verification simulated — RMB payouts enabled"); }}>
                 Verify now

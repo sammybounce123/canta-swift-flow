@@ -79,7 +79,8 @@ function nextAction(s: Shipment): { text: string; tone: "primary" | "warn" | "ok
   if (s.status === "Arrived") return { text: "Pay duty so we can release your goods", tone: "warn" };
   if (s.status === "Delayed") return { text: "Wait — we'll send a new ETA on WhatsApp", tone: "warn" };
   if (s.status === "At Origin") return { text: "Confirm payment so supplier can load", tone: "primary" };
-  if (s.status === "Delivered" || s.status === "Released") return { text: "Nothing to do — goods delivered", tone: "ok" };
+  if (s.status === "Delivered") return { text: "Nothing to do — goods delivered", tone: "ok" };
+  if (s.status === "Released") return { text: "Goods released — arrange or track final delivery", tone: "ok" };
   return { text: "Sit back — we'll update you as your goods move", tone: "primary" };
 }
 
@@ -112,7 +113,7 @@ function ImporterPortal() {
         <Badge variant="outline" className="text-[10px]">Demo persona</Badge>
       </div>
       <p className="text-sm text-muted-foreground -mt-4">
-        Here's a simple view of your goods, suppliers and payments. You pay your supplier in USD, EUR, RMB or AED — Canta handles the FX, escrow option, documents and audit trail.
+        Here's a simple view of your goods, suppliers and payments. You pay your supplier in USD, EUR, RMB or AED — Canta connects your shipment, supplier invoice, FX, documents, payment and settlement trail in one workspace.
       </p>
 
 
