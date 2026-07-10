@@ -164,7 +164,7 @@ export function ImporterActions({
   // -- which buttons per variant --------------------------------------------
   const buttons: { label: string; icon: typeof MessageSquare; onClick: () => void; primary?: boolean; show: boolean }[] = [
     { label: "Request Quote",          icon: MessageSquare, onClick: () => setOpen("quote"),         primary: variant === "supplier", show: DEMO_EXTRAS || variant === "supplier" },
-    { label: "Start Trade File",       icon: FilePlus,      onClick: startTradeFile,                 primary: variant === "supplier", show: variant !== "tradefile" },
+    { label: "New Trade File (planned)", icon: FilePlus, onClick: startTradeFile,             primary: false,                  show: DEMO_EXTRAS && variant !== "tradefile" },
     { label: "Verify Supplier",        icon: BadgeCheck,    onClick: () => setOpen("verify"),        show: true },
     { label: "Save Supplier",          icon: Bookmark,      onClick: saveSupplier,                   show: variant === "supplier" },
     { label: "Request Escrow",         icon: Lock,          onClick: () => setOpen("escrow"),        show: DEMO_EXTRAS },
