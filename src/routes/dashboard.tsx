@@ -119,7 +119,7 @@ function Dashboard() {
               ? "Review pending approvals and audit recent activity."
               : role === "Viewer"
               ? "Read-only view of treasury activity."
-              : "Here's what's happening with your treasury today."}
+              : `Here's what's happening in your ${mode} workspace today.`}
           </p>
         </div>
         <div className="flex items-center gap-2">
