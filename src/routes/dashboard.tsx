@@ -51,16 +51,23 @@ function resolveDashboardTarget(): string {
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Canta" }] }),
   beforeLoad: () => {
-    // On the server there is no localStorage — send unresolved visitors to
-    // /welcome so the SSR shell never contains Enterprise Treasury copy.
-    if (typeof window === "undefined") {
-      throw redirect({ to: "/welcome" });
-    }
+    // Only redirect on the client — the workspace lives in localStorage,
+    // which is unavailable during SSR. On the server we render a tiny
+    // placeholder; the client remounts and performs the redirect below.
+    if (typeof window === "undefined") return;
     const target = resolveDashboardTarget();
     throw redirect({ to: target });
   },
-  component: Dashboard,
+  component: DashboardRedirect,
 });
+
+function DashboardRedirect() {
+  useEffect(() => {
+    const target = resolveDashboardTarget();
+    window.location.replace(target);
+  }, []);
+  return null;
+}
 
 
 const MASK = "•••••••";
