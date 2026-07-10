@@ -215,22 +215,8 @@ export type SidebarItem = {
   search?: Record<string, string>;
 };
 
-/** Exact per-workspace sidebar. Each workspace sees ONLY its own menus. */
-const WORKSPACE_HOME: Record<WorkspaceType, string> = {
-  enterprise_treasury: "/treasury",
-  importer_portal: "/importer",
-  freight_workspace: "/freight",
-  supplier_dashboard: "/supplier-portal",
-  global_collections: "/collections",
-  global_spend_cards: "/welcome",
-  partner_property: "/partner",
-  canta_ops: "/ops",
-};
 export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: FeatureFlags): SidebarItem[] {
-  // Point Dashboard directly at the workspace home so the click always navigates
-  // (the /dashboard route only redirects; if the user is already on the home
-  // route, clicking a `/dashboard` link is a no-op and feels "unclickable").
-  const D: SidebarItem = { to: WORKSPACE_HOME[workspace] ?? "/dashboard", label: "Dashboard", iconKey: "dashboard", group: "Overview", exact: true };
+  const D: SidebarItem = { to: "/dashboard", label: "Dashboard", iconKey: "dashboard", group: "Overview", exact: true };
   const Settings: SidebarItem = { to: "/settings", label: "Settings", iconKey: "settings", group: "Workspace" };
   const Team: SidebarItem = { to: "/team", label: "Team", iconKey: "team", group: "Workspace" };
 
@@ -323,7 +309,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         try { const raw = window.localStorage.getItem("canta:partner:settings:v1"); if (raw) commissionsEnabled = JSON.parse(raw).commissionsEnabled !== false; } catch { /* keep default */ }
       }
       const items: SidebarItem[] = [
-        { to: "/partner", label: "Dashboard", iconKey: "dashboard", group: "Overview", exact: true },
+        D,
         { to: "/partner/clients", label: "Partner Clients", iconKey: "users", group: "Referrals" },
         { to: "/partner/leads", label: "Referral Leads", iconKey: "sparkles", group: "Referrals" },
         { to: "/partner/cases", label: "Client Payment Cases", iconKey: "file", group: "Referrals" },
