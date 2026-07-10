@@ -191,13 +191,27 @@ export type TradeFile = {
   escrow: "Inactive" | "Held" | "Released";
 };
 
-export const tradeFiles: TradeFile[] = [
+const TRADE_STATUS_TO_DEMO: Record<TradeFile["status"], DemoStatus> = {
+  Drafting: "Booked",
+  "In Transit": "On Vessel",
+  Arrived: "Arrived",
+  Cleared: "Released",
+  Delivered: "Delivered",
+};
+
+const RAW_TRADE_FILES: TradeFile[] = [
   { id: "TF-2026-0214", name: "ABC Electronics · GZ container Q2", importer: "ABC Electronics", supplier: "Guangzhou Tech Factory", forwarder: "Dragon Freight Nigeria", origin: "Guangzhou, CN", destination: "Lagos, NG", goods: "Mixed consumer electronics, 240 cartons", invoiceValue: 184_000, ccy: "USD", status: "In Transit", eta: "2026-06-18", risk: "Low", paymentStatus: "Partial", escrow: "Held" },
   { id: "TF-2026-0218", name: "Balogun Trade · fashion bales", importer: "Balogun Trade Hub", supplier: "Yiwu General Trading", forwarder: "Lagos-China Cargo", origin: "Yiwu, CN", destination: "Lagos, NG", goods: "Mixed fashion bales, 180 bales", invoiceValue: 67_400, ccy: "USD", status: "In Transit", eta: "2026-06-22", risk: "Low", paymentStatus: "Paid", escrow: "Released" },
   { id: "TF-2026-0221", name: "Dav Excel · Dubai spares", importer: "Dav Excel Autos", supplier: "Dubai Auto Parts Hub", forwarder: "SwiftPort Logistics", origin: "Dubai, AE", destination: "Lagos, NG", goods: "Auto spare parts, 88 cartons", invoiceValue: 41_900, ccy: "USD", status: "Arrived", eta: "2026-06-14", risk: "Medium", paymentStatus: "Paid", escrow: "Released" },
   { id: "TF-2026-0224", name: "Global Motors · US auctions", importer: "Global Motors", supplier: "BidCar Auctions LLC", forwarder: "Global Route Freight", origin: "Houston, US", destination: "Lagos, NG", goods: "12 vehicles, mixed makes", invoiceValue: 312_500, ccy: "USD", status: "In Transit", eta: "2026-06-29", risk: "Medium", paymentStatus: "Partial", escrow: "Held" },
   { id: "TF-2026-0229", name: "Trade Fair · furniture lot", importer: "Trade Fair Imports", supplier: "Foshan Furniture Works", forwarder: "Lagos-China Cargo", origin: "Foshan, CN", destination: "Lagos, NG", goods: "Office furniture, 60 cartons", invoiceValue: 28_700, ccy: "USD", status: "Drafting", eta: "2026-07-02", risk: "Low", paymentStatus: "Pending", escrow: "Inactive" },
 ];
+
+// Enforce demo-date consistency on trade files as well.
+export const tradeFiles: TradeFile[] = RAW_TRADE_FILES.map((t, i) => ({
+  ...t,
+  eta: demoEtaFor(TRADE_STATUS_TO_DEMO[t.status], i + 100),
+}));
 
 export const shipmentMilestones = [
   "Invoice received", "Supplier confirmed", "Goods picked up", "At origin warehouse",
