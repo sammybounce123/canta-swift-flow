@@ -207,7 +207,8 @@ function Dashboard() {
             <div className="text-sm font-semibold">Illustrative FX rates</div>
             <div className="text-[10px] text-muted-foreground">Demo data</div>
           </div>
-          <div className="mt-4 space-y-3">
+          <div className="mt-4 space-y-3 flex-1">
+
             {[
               { p: "USD/NGN", r: "1,612.45", c: "+0.32%", up: true },
               { p: "EUR/NGN", r: "1,745.10", c: "-0.18%", up: false },
