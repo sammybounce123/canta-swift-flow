@@ -119,16 +119,16 @@ function Landing() {
             <ShieldCheck className="h-3.5 w-3.5" /> KYB · Audit trail · Compliance review on every settlement
           </div>
 
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto w-full">
+          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto w-full items-start">
             {[
               { v: "Pay China suppliers in RMB", l: "Nigerian buyers fund locally in NGN" },
               { v: "4 connected workspaces", l: "Importer · Supplier · Treasury · Partner" },
               { v: "One trade operating system", l: "Shipments, invoices, FX, payments and documents" },
               { v: "Audit-ready by design", l: "Every action, approval, payment and receipt recorded" },
             ].map((s) => (
-              <div key={s.l}>
-                <div className="text-2xl md:text-3xl font-semibold tabular-nums">{s.v}</div>
-                <div className="text-xs text-primary-foreground/60 mt-1">{s.l}</div>
+              <div key={s.l} className="text-center">
+                <div className="text-2xl md:text-3xl font-semibold tabular-nums text-balance">{s.v}</div>
+                <div className="text-xs text-primary-foreground/60 mt-1 text-balance">{s.l}</div>
               </div>
             ))}
           </div>
