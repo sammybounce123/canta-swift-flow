@@ -47,15 +47,31 @@ function simpleStatus(s: Shipment): string {
   }
 }
 
-function daysUntil(eta: string): number {
-  return Math.ceil((new Date(eta).getTime() - Date.now()) / 86400000);
+function daysUntil(eta: string | undefined | null): number | null {
+  if (!eta) return null;
+  const t = new Date(eta).getTime();
+  if (!Number.isFinite(t) || t <= 0) return null;
+  const diff = Math.ceil((t - Date.now()) / 86400000);
+  if (!Number.isFinite(diff) || Math.abs(diff) > 365) return null;
+  return diff;
 }
 
 function etaPhrase(s: Shipment): string {
   const d = daysUntil(s.eta);
-  if (d < 0) return `Arrived ${Math.abs(d)} day${Math.abs(d) === 1 ? "" : "s"} ago`;
-  if (d === 0) return "Arriving today";
-  return `Expected to arrive in ${s.destination.split(",")[0]} in ${d} day${d === 1 ? "" : "s"}`;
+  if (d === null) return "Arrival date not available";
+  const status = s.status;
+  if (["Booked", "At Origin", "Loaded", "On Vessel"].includes(status)) {
+    if (d <= 0) return `ETA ${s.eta}`;
+    return `ETA in ${d} day${d === 1 ? "" : "s"}`;
+  }
+  if (status === "Delayed") return `Revised ETA ${s.eta}`;
+  if (status === "Delivered") {
+    if (d >= 0) return `Delivered on ${s.eta}`;
+    return `Delivered ${Math.abs(d)} day${Math.abs(d) === 1 ? "" : "s"} ago`;
+  }
+  // Arrived / Customs / Released
+  if (d >= 0) return `Arrived on ${s.eta}`;
+  return `Arrived ${Math.abs(d)} day${Math.abs(d) === 1 ? "" : "s"} ago`;
 }
 
 function nextAction(s: Shipment): { text: string; tone: "primary" | "warn" | "ok" } {
@@ -80,7 +96,7 @@ function ImporterPortal() {
   const inTransit = mine.filter((s) => !["Delivered", "Released"].includes(s.status));
   const soon = mine.filter((s) => {
     const d = daysUntil(s.eta);
-    return d >= 0 && d <= 10;
+    return d !== null && d >= 0 && d <= 10;
   });
   const missingDocs = mine.reduce((n, s) => n + docState(s).missing.length, 0);
   const outstanding = freightInvoices
@@ -114,11 +130,11 @@ function ImporterPortal() {
 
       <Card className="p-5 shadow-card">
         <div className="text-xs uppercase tracking-widest text-muted-foreground mb-1">Importer quick actions</div>
-        <p className="text-sm text-muted-foreground mb-3">Send RFQs, verify suppliers, link shipments and documents, request escrow, and invite forwarders.</p>
+        <p className="text-sm text-muted-foreground mb-3">Track shipments, upload BLs, add supplier invoices, pay suppliers, and follow settlement.</p>
         <ImporterActions variant="toolbar" />
       </Card>
 
-      <EscrowSection />
+      {import.meta.env.VITE_CANTA_DEMO_EXTRAS === "1" && <EscrowSection />}
 
 
 
@@ -477,7 +493,8 @@ function MyAlerts({ shipments: list }: { shipments: Shipment[] }) {
     if (d.missing.length) items.push({ tone: "bg-amber-500/10 text-amber-800 border-amber-500/20", icon: AlertCircle, text: `${d.missing[0]} is missing for ${s.shipmentNumber}.` });
     if (s.status === "Customs") items.push({ tone: "bg-orange-500/10 text-orange-800 border-orange-500/20", icon: Package, text: `Prepare clearing documents for ${s.shipmentNumber}.` });
     if (s.status === "Delayed") items.push({ tone: "bg-destructive/10 text-destructive border-destructive/20", icon: AlertCircle, text: `${s.shipmentNumber} is delayed — we're confirming the new ETA.` });
-    if (daysUntil(s.eta) >= 0 && daysUntil(s.eta) <= 7) items.push({ tone: "bg-primary/10 text-primary border-primary/20", icon: Truck, text: `${s.shipmentNumber} arriving in ${daysUntil(s.eta)} day${daysUntil(s.eta) === 1 ? "" : "s"}.` });
+    const du = daysUntil(s.eta);
+    if (du !== null && du >= 0 && du <= 7) items.push({ tone: "bg-primary/10 text-primary border-primary/20", icon: Truck, text: `${s.shipmentNumber} arriving in ${du} day${du === 1 ? "" : "s"}.` });
   });
   const invs = freightInvoices.filter((i) => i.customer === ME && i.status !== "Paid");
   invs.forEach((i) => items.push({ tone: "bg-amber-500/10 text-amber-800 border-amber-500/20", icon: Receipt, text: `Freight payment of ${fmtMoney(i.amount, i.ccy)} is pending for ${i.shipment}.` }));

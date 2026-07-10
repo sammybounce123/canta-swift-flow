@@ -91,7 +91,7 @@ function InvoicesPage() {
 
   return (
     <div className="space-y-6">
-      <ReadinessBar status="Live" cue="KYC/KYB and supporting documents may be required before payout." />
+      <ReadinessBar status="Demo Preview" cue="KYC/KYB and supporting documents may be required before payout." />
       <div className="flex items-end justify-between flex-wrap gap-3">
         <div className="min-w-0">
           <Badge variant="outline" className="gap-1"><Receipt className="h-3 w-3" /> Invoices</Badge>

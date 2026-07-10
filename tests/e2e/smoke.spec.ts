@@ -207,3 +207,55 @@ test("Shipments page has no illogical status/date pairings", async ({ page }) =>
     expect(body, `shipments page contains inconsistency: ${label}`).not.toMatch(re);
   }
 });
+
+/* ------------------------------------------------------------------ */
+/* Date sanity — importer & shipments                                  */
+/* ------------------------------------------------------------------ */
+async function assertDateSanity(page: Page, url: string) {
+  await clearStorage(page);
+  await seedWorkspace(page, "importer_portal", "Importer");
+  await page.goto(url);
+  await page.waitForLoadState("networkidle");
+  const body = (await page.textContent("body")) ?? "";
+
+  // No NaN / Invalid Date / 1970 / 5-digit day count
+  expect(body, `${url} contains NaN`).not.toMatch(/\bNaN\b/);
+  expect(body, `${url} contains Invalid Date`).not.toMatch(/Invalid Date/i);
+  expect(body, `${url} contains 1970 timestamp`).not.toMatch(/\b1970\b/);
+  expect(body, `${url} contains 5-digit day count`).not.toMatch(/\b\d{5,}\s*days?\b/i);
+
+  // No day count > 365
+  const dayMatches = [...body.matchAll(/(\d{1,6})\s*days?\b/gi)];
+  for (const m of dayMatches) {
+    const n = parseInt(m[1], 10);
+    expect(n, `${url}: day count ${n} exceeds 365`).toBeLessThanOrEqual(365);
+  }
+}
+
+test("Importer dashboard date sanity", async ({ page }) => {
+  await assertDateSanity(page, "/importer");
+});
+test("Shipments page date sanity", async ({ page }) => {
+  await assertDateSanity(page, "/shipments");
+});
+
+/* ------------------------------------------------------------------ */
+/* Demo supplier: Demo approved & no on-hold warnings                  */
+/* ------------------------------------------------------------------ */
+test("Demo supplier verification shows Demo approved", async ({ page }) => {
+  await clearStorage(page);
+  await seedDemoSupplier(page);
+  await page.goto("/supplier-portal/verification");
+  await page.waitForLoadState("networkidle");
+  await assertPresent(page, ["Demo approved"]);
+  await assertAbsent(page, ["Verification incomplete", "RMB settlement is on hold"]);
+});
+
+test("Demo supplier RMB settlement page has no on-hold warning", async ({ page }) => {
+  await clearStorage(page);
+  await seedDemoSupplier(page);
+  await page.goto("/supplier-portal/rmb-wallet");
+  await page.waitForLoadState("networkidle");
+  await assertAbsent(page, ["Withdrawals are on hold"]);
+});
+

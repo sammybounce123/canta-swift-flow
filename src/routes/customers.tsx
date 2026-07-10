@@ -109,7 +109,7 @@ function CustomersPage() {
 
   return (
     <div className="space-y-6">
-      <ReadinessBar status="Live" cue="WhatsApp updates should match the latest shipment status and available documents." />
+      <ReadinessBar status="Demo Preview" cue="WhatsApp updates should match the latest shipment status and available documents." />
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:flex-wrap sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">

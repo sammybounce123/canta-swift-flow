@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Building2, FileText, UserCheck, Landmark, Upload, Lock } from "lucide-react";
 import { toast } from "sonner";
-import { Check, useVerified, verifiedStore } from "@/lib/supplier-data";
+import { Check, useVerified, verifiedStore, isDemoApproved } from "@/lib/supplier-data";
 
 export const Route = createFileRoute("/supplier-portal/verification")({
   head: () => ({ meta: [{ title: "Verification — Supplier Portal — Canta" }] }),
@@ -13,8 +13,19 @@ export const Route = createFileRoute("/supplier-portal/verification")({
 
 function VerificationPanel() {
   const verified = useVerified();
+  const demo = isDemoApproved();
   return (
     <div className="space-y-4">
+      {demo ? (
+        <Card className="p-4 border-emerald-300 bg-emerald-50 text-emerald-900 flex items-start gap-3">
+          <UserCheck className="h-5 w-5 shrink-0 mt-0.5" />
+          <div className="text-sm flex-1">
+            <div className="font-semibold">Demo approved</div>
+            <div className="text-xs mt-1">This supplier persona is pre-verified for the investor demo. Payout account status: Demo verified.</div>
+          </div>
+          <Badge className="bg-emerald-100 text-emerald-800">Demo approved</Badge>
+        </Card>
+      ) : (
       <Card className="p-4 border-amber-300 bg-amber-50 text-amber-900 flex items-start gap-3">
         <Lock className="h-5 w-5 shrink-0 mt-0.5" />
         <div className="text-sm flex-1">
@@ -25,6 +36,7 @@ function VerificationPanel() {
           {verified ? "Verified" : "Incomplete"}
         </Badge>
       </Card>
+      )}
 
 
       <div className="grid gap-4 md:grid-cols-2">

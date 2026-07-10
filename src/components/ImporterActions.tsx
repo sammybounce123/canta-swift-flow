@@ -163,22 +163,29 @@ export function ImporterActions({
 
   // -- which buttons per variant --------------------------------------------
   const buttons: { label: string; icon: typeof MessageSquare; onClick: () => void; primary?: boolean; show: boolean }[] = [
-    { label: "Request Quote",          icon: MessageSquare, onClick: () => setOpen("quote"),         primary: variant === "supplier", show: DEMO_EXTRAS || variant === "supplier" },
-    { label: "New Trade File (planned)", icon: FilePlus, onClick: startTradeFile,             primary: false,                  show: DEMO_EXTRAS && variant !== "tradefile" },
+    // Primary investor-demo importer journey
+    { label: "Track Shipment",         icon: Ship,          onClick: () => { const id = ctx.shipmentId; if (id) navigate({ to: "/track/$id", params: { id } }); else navigate({ to: "/shipments" }); }, primary: true, show: variant === "toolbar" },
+    { label: "Upload Bill of Lading",  icon: Paperclip,     onClick: () => setOpen("linkDocs"),      primary: true, show: variant === "toolbar" || variant === "tradefile" },
+    { label: "Add Supplier Invoice",   icon: FilePlus,      onClick: () => { navigate({ to: "/supplier-portal/invoices" }); }, primary: true, show: variant === "toolbar" },
+    { label: "Pay Supplier",           icon: Send,          onClick: () => { navigate({ to: "/supplier-portal/payment-requests" }); }, primary: true, show: variant === "toolbar" },
+    { label: "Track Settlement",       icon: Eye,           onClick: () => { navigate({ to: "/supplier-portal/rmb-wallet" }); }, primary: true, show: variant === "toolbar" },
+    // Secondary — always useful
     { label: "Verify Supplier",        icon: BadgeCheck,    onClick: () => setOpen("verify"),        show: true },
-    { label: "Save Supplier",          icon: Bookmark,      onClick: saveSupplier,                   show: variant === "supplier" },
-    { label: "Request Escrow",         icon: Lock,          onClick: () => setOpen("escrow"),        show: DEMO_EXTRAS },
-    { label: "Request Clearing Quotes", icon: Calculator,   onClick: () => navigate({ to: "/clearing-quotes", search: { file: ctx.tradeFileId, request: undefined } }), show: true },
     { label: "Estimate Landed Cost",   icon: Calculator,    onClick: () => setOpen("landed"),        show: true },
-    { label: "Link Shipment",          icon: Ship,          onClick: () => setOpen("linkShipment"),  show: variant !== "supplier" },
-    { label: "Link Documents",         icon: Paperclip,     onClick: () => setOpen("linkDocs"),      show: variant === "tradefile" },
+    { label: "Save Supplier",          icon: Bookmark,      onClick: saveSupplier,                   show: variant === "supplier" },
+    { label: "Request Quote",          icon: MessageSquare, onClick: () => setOpen("quote"),         primary: variant === "supplier", show: variant === "supplier" || DEMO_EXTRAS },
+    { label: "Send WhatsApp Update",   icon: MessageCircle, onClick: () => setOpen("whatsapp"),      show: true },
+    // Secondary — legacy/extras, hidden from investor demo unless enabled
+    { label: "New Trade File (planned)", icon: FilePlus,    onClick: startTradeFile,                 show: DEMO_EXTRAS && variant !== "tradefile" },
+    { label: "Request Escrow",         icon: Lock,          onClick: () => setOpen("escrow"),        show: DEMO_EXTRAS },
+    { label: "Request Clearing Quotes", icon: Calculator,   onClick: () => navigate({ to: "/clearing-quotes", search: { file: ctx.tradeFileId, request: undefined } }), show: DEMO_EXTRAS || variant === "tradefile" },
+    { label: "Link Shipment",          icon: Ship,          onClick: () => setOpen("linkShipment"),  show: DEMO_EXTRAS && variant !== "supplier" },
     { label: "Share Tracking Link",    icon: LinkIcon,      onClick: () => setOpen("share"),         show: !!ctx.shipmentId || variant === "tradefile" },
-    { label: "Invite Clearing Agent", icon: Truck,       onClick: () => setOpen("forwarder"),     show: DEMO_EXTRAS && variant !== "supplier" },
-    { label: "Add Supplier",              icon: UserPlus,    onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Opening Supplier Portal — add a Chinese supplier"); }, show: true },
-    { label: "Invite Supplier",           icon: Mail,        onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Invite supplier from the Supplier Portal"); }, show: true },
-    { label: "Link Supplier Payment Request", icon: Send,    onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Send a payment request to a Chinese supplier"); }, show: variant === "tradefile" || variant === "toolbar" },
-    { label: "View Supplier Payment Status", icon: Eye,      onClick: () => { navigate({ to: "/supplier-portal" }); }, show: true },
-    { label: "Send WhatsApp Update",      icon: MessageCircle, onClick: () => setOpen("whatsapp"),    show: true },
+    { label: "Invite Clearing Agent",  icon: Truck,         onClick: () => setOpen("forwarder"),     show: DEMO_EXTRAS && variant !== "supplier" },
+    { label: "Add Supplier",           icon: UserPlus,      onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Opening Supplier Portal — add a Chinese supplier"); }, show: DEMO_EXTRAS },
+    { label: "Invite Supplier",        icon: Mail,          onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Invite supplier from the Supplier Portal"); }, show: DEMO_EXTRAS },
+    { label: "Link Supplier Payment Request", icon: Send,   onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Send a payment request to a Chinese supplier"); }, show: DEMO_EXTRAS && (variant === "tradefile" || variant === "toolbar") },
+    { label: "View Supplier Payment Status", icon: Eye,     onClick: () => { navigate({ to: "/supplier-portal" }); }, show: DEMO_EXTRAS },
   ];
 
   return (

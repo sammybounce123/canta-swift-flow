@@ -112,7 +112,7 @@ function Approvals() {
 
   return (
     <div className="space-y-6">
-      <ReadinessBar status="Live" cue="Approvals enforce dual control on high-value actions." />
+      <ReadinessBar status="Demo Preview" cue="Approvals enforce dual control on high-value actions." />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Approvals</h1>

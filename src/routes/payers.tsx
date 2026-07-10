@@ -67,7 +67,7 @@ function PayersPage() {
 
   return (
     <div className="space-y-6">
-      <ReadinessBar status="Live" cue="Payer details are stored for reconciliation and audit." />
+      <ReadinessBar status="Demo Preview" cue="Payer details are stored for reconciliation and audit." />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Payers</h1>

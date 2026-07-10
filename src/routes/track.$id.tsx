@@ -38,8 +38,25 @@ const TIMELINE: { key: Shipment["status"]; label: string; copy: string }[] = [
 
 const REQUIRED_DOCS = ["Commercial Invoice", "Packing List", "Bill of Lading", "Form M", "SONCAP"];
 
-function daysUntil(eta: string) {
-  return Math.ceil((new Date(eta).getTime() - Date.now()) / 86400000);
+function daysUntil(eta: string | undefined | null): number | null {
+  if (!eta) return null;
+  const t = new Date(eta).getTime();
+  if (!Number.isFinite(t) || t <= 0) return null;
+  const diff = Math.ceil((t - Date.now()) / 86400000);
+  if (!Number.isFinite(diff) || Math.abs(diff) > 365) return null;
+  return diff;
+}
+
+function etaHeadline(s: Shipment): string {
+  const d = daysUntil(s.eta);
+  if (d === null) return "Arrival date not available";
+  const st = s.status;
+  if (["Booked", "At Origin", "Loaded", "On Vessel"].includes(st)) {
+    return d <= 0 ? `ETA ${s.eta}` : `ETA in ${d} day${d === 1 ? "" : "s"}`;
+  }
+  if (st === "Delayed") return `Revised ETA ${s.eta}`;
+  if (st === "Delivered") return d >= 0 ? `Delivered on ${s.eta}` : `Delivered ${Math.abs(d)} day${Math.abs(d) === 1 ? "" : "s"} ago`;
+  return d >= 0 ? `Arrived on ${s.eta}` : `Arrived ${Math.abs(d)} day${Math.abs(d) === 1 ? "" : "s"} ago`;
 }
 
 function nextActionText(s: Shipment) {
@@ -54,7 +71,7 @@ function nextActionText(s: Shipment) {
 function TrackPage() {
   const s = Route.useLoaderData() as Shipment;
   const currentIdx = TIMELINE.findIndex((t) => t.key === s.status);
-  const days = daysUntil(s.eta);
+  
   const missing = REQUIRED_DOCS.filter((d) => !s.documents.includes(d));
   const invoice = freightInvoices.find((i) => i.shipment === s.id);
   const delayed = s.status === "Delayed";
@@ -78,11 +95,11 @@ function TrackPage() {
             <Calendar className="h-8 w-8 text-primary shrink-0" />
             <div>
               <div className="text-2xl font-semibold tabular-nums">
-                {days < 0 ? `Arrived ${Math.abs(days)} day${Math.abs(days) === 1 ? "" : "s"} ago`
-                  : days === 0 ? "Arriving today"
-                  : `${days} day${days === 1 ? "" : "s"} to go`}
+                {etaHeadline(s)}
               </div>
-              <div className="text-sm text-muted-foreground">Expected in {s.destination.split(",")[0]} on {s.eta}</div>
+              {daysUntil(s.eta) !== null && (
+                <div className="text-sm text-muted-foreground">Expected in {s.destination.split(",")[0]} on {s.eta}</div>
+              )}
             </div>
           </div>
 
