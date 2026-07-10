@@ -216,8 +216,21 @@ export type SidebarItem = {
 };
 
 /** Exact per-workspace sidebar. Each workspace sees ONLY its own menus. */
+const WORKSPACE_HOME: Record<WorkspaceType, string> = {
+  enterprise_treasury: "/treasury",
+  importer_portal: "/importer",
+  freight_workspace: "/freight",
+  supplier_dashboard: "/supplier-portal",
+  global_collections: "/collections",
+  global_spend_cards: "/welcome",
+  partner_property: "/partner",
+  canta_ops: "/ops",
+};
 export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: FeatureFlags): SidebarItem[] {
-  const D: SidebarItem = { to: "/dashboard", label: "Dashboard", iconKey: "dashboard", group: "Overview", exact: true };
+  // Point Dashboard directly at the workspace home so the click always navigates
+  // (the /dashboard route only redirects; if the user is already on the home
+  // route, clicking a `/dashboard` link is a no-op and feels "unclickable").
+  const D: SidebarItem = { to: WORKSPACE_HOME[workspace] ?? "/dashboard", label: "Dashboard", iconKey: "dashboard", group: "Overview", exact: true };
   const Settings: SidebarItem = { to: "/settings", label: "Settings", iconKey: "settings", group: "Workspace" };
   const Team: SidebarItem = { to: "/team", label: "Team", iconKey: "team", group: "Workspace" };
 
