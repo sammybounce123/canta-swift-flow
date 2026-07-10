@@ -144,7 +144,7 @@ function Dashboard() {
                   <ArrowUpRight className="h-3 w-3" /> +4.8% this week
                 </div>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-2 gap-2 xl:min-w-[220px] xl:self-start">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {wallets.map((w) => (
                   <button
                     key={w.ccy}
