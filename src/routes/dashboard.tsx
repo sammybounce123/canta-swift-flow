@@ -127,7 +127,7 @@ function Dashboard() {
           <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-accent/15 blur-3xl" />
           <div className="absolute -left-12 -bottom-12 h-28 w-28 rounded-full bg-primary/20 blur-3xl" />
           <div className="relative flex flex-col gap-5 flex-1">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5">
+            <div className="flex flex-col gap-5">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-[10px] uppercase tracking-widest text-primary-foreground/60">
@@ -137,14 +137,14 @@ function Dashboard() {
                     NGN equivalent
                   </Badge>
                 </div>
-                <div className="text-3xl sm:text-4xl font-semibold tabular-nums tracking-tight mt-1.5 break-all">
+                <div className="text-2xl sm:text-3xl xl:text-4xl font-semibold tabular-nums tracking-tight mt-1.5 break-words">
                   {hidden ? `₦${MASK}` : fmtNGN(totalNGN)}
                 </div>
                 <div className="mt-2 inline-flex items-center gap-1 bg-success/20 text-success px-2 py-0.5 rounded-full text-[11px] font-medium">
                   <ArrowUpRight className="h-3 w-3" /> +4.8% this week
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-2 sm:min-w-[200px] sm:self-start">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {wallets.map((w) => (
                   <button
                     key={w.ccy}
