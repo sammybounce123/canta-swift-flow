@@ -100,7 +100,7 @@ function ClearingQuotesPage() {
           scopedToFile={search.file}
           onCreate={() => setFormOpen(true)}
           onSeed={() => { loadDemoData(); const seeded = getRequests(); setRequests(seeded); setActiveReqId(seeded[0]?.id ?? null); setTick((t) => t + 1); toast.success("Demo data loaded"); }}
-          onClearFilter={() => navigate({ to: "/clearing-quotes" })}
+          onClearFilter={() => navigate({ to: "/clearing-quotes", search: {} })}
         />
 
       ) : (
