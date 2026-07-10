@@ -227,7 +227,7 @@ function Dashboard() {
               </div>
             ))}
           </div>
-          <Button asChild variant="outline" className="w-full mt-4">
+          <Button asChild variant="outline" className="w-full mt-auto pt-0">
             <Link to="/fx">Open Exchange</Link>
           </Button>
         </Card>
