@@ -8,7 +8,7 @@ import { REQUESTS, STATUS_TONE, COMPLIANCE_DISCLAIMER, useVerified } from "@/lib
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/supplier-portal/rmb-wallet")({
-  head: () => ({ meta: [{ title: "RMB Wallet — Supplier Portal — Canta" }] }),
+  head: () => ({ meta: [{ title: "RMB Settlement — Supplier Portal — Canta" }] }),
   component: RmbWalletPanel,
 });
 
