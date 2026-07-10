@@ -57,6 +57,12 @@ function WelcomePage() {
   const choose = (id: WorkspaceType) => {
     const segment = SEGMENTS.find((s) => s.id === id)!;
     saveProfile(segment);
+    // Investor-demo persona: the Supplier workspace ships pre-verified so
+    // the /supplier-portal dashboard opens directly. Genuine unverified
+    // suppliers arrive with no seeded flags and still hit KYB below.
+    if (id === "supplier_dashboard") {
+      seedDemoSupplierPersona();
+    }
     const kybDone = typeof window !== "undefined"
       && window.localStorage.getItem("canta:kyb:" + id) === "done";
     if (kybDone) {
@@ -67,6 +73,7 @@ function WelcomePage() {
       setTimeout(() => navigate({ to: "/kyb-onboarding", search: { workspace: id } as never }), 250);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-background">
