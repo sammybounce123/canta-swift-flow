@@ -202,7 +202,7 @@ function Dashboard() {
         </Card>
 
         {mode === "Supplier" ? <SupplierFxQuoteCard /> : (
-        <Card className="p-6 shadow-card">
+        <Card className="p-6 shadow-card h-full flex flex-col">
           <div className="flex items-center justify-between">
             <div className="text-sm font-semibold">Illustrative FX rates</div>
             <div className="text-[10px] text-muted-foreground">Demo data</div>
