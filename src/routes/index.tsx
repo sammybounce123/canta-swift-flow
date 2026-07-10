@@ -121,10 +121,10 @@ function Landing() {
 
           <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto w-full">
             {[
-              { v: "NGN → RMB", l: "China supplier settlement" },
-              { v: "4 workspaces", l: "Importer · Supplier · Treasury · Partner" },
-              { v: "1 platform", l: "Trade files, FX, payouts, docs" },
-              { v: "Full audit", l: "Every action reviewable" },
+              { v: "Pay China suppliers in RMB", l: "Nigerian buyers fund locally in NGN" },
+              { v: "4 connected workspaces", l: "Importer · Supplier · Treasury · Partner" },
+              { v: "One trade operating system", l: "Shipments, invoices, FX, payments and documents" },
+              { v: "Audit-ready by design", l: "Every action, approval, payment and receipt recorded" },
             ].map((s) => (
               <div key={s.l}>
                 <div className="text-2xl md:text-3xl font-semibold tabular-nums">{s.v}</div>
