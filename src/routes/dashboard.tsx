@@ -137,7 +137,7 @@ function Dashboard() {
                     NGN equivalent
                   </Badge>
                 </div>
-                <div className="text-3xl sm:text-4xl font-semibold tabular-nums tracking-tight mt-1.5 break-all">
+                <div className="text-2xl sm:text-3xl xl:text-4xl font-semibold tabular-nums tracking-tight mt-1.5 break-words">
                   {hidden ? `₦${MASK}` : fmtNGN(totalNGN)}
                 </div>
                 <div className="mt-2 inline-flex items-center gap-1 bg-success/20 text-success px-2 py-0.5 rounded-full text-[11px] font-medium">
