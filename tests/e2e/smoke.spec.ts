@@ -122,13 +122,19 @@ test.describe("Cold shared-route navigation redirects to /welcome", () => {
 /* ------------------------------------------------------------------ */
 /* Generic dashboard cold visit                                        */
 /* ------------------------------------------------------------------ */
-test("Cold /dashboard should not leak Enterprise Treasury identity", async ({ page }) => {
+test("Cold /dashboard redirects to /welcome without flashing Treasury identity", async ({ page }) => {
   await clearStorage(page);
   await page.goto("/dashboard");
-  await page.waitForLoadState("networkidle");
-  // Spec: expect redirect to /welcome, and Treasury/Adaeze absent.
-  await assertAbsent(page, ["Adaeze Okonkwo", "Treasury Mode"]);
-  expect(page.url(), "cold /dashboard should redirect to /welcome").toContain("/welcome");
+  await page.waitForURL("**/welcome", { timeout: 5000 });
+  expect(page.url()).toContain("/welcome");
+  await assertAbsent(page, [
+    "Adaeze Okonkwo",
+    "Enterprise Treasury Mode",
+    "Treasury Mode",
+    // Treasury dashboard-specific hero copy — must never appear on cold visit.
+    "Bulk Payouts",
+    "Total balance",
+  ]);
 });
 
 /* ------------------------------------------------------------------ */
@@ -148,7 +154,7 @@ test("Partner Activity Log keeps Partner context", async ({ page }) => {
 /* ------------------------------------------------------------------ */
 /* Supplier routes                                                     */
 /* ------------------------------------------------------------------ */
-test.describe("Supplier navigation keeps supplier context", () => {
+test.describe("Demo supplier navigation keeps supplier context", () => {
   const paths = [
     "/supplier-portal",
     "/supplier-portal/payment-requests",
@@ -159,16 +165,27 @@ test.describe("Supplier navigation keeps supplier context", () => {
   ];
 
   for (const p of paths) {
-    test(`Supplier ${p}`, async ({ page }) => {
+    test(`Demo supplier ${p}`, async ({ page }) => {
       await clearStorage(page);
-      await seedWorkspace(page, "supplier_dashboard", "Supplier");
+      await seedDemoSupplier(page);
       await page.goto(p);
       await page.waitForLoadState("networkidle");
+      expect(page.url(), `should not bounce demo supplier to KYB from ${p}`)
+        .not.toContain("/kyb-onboarding");
       await assertPresent(page, ["Li Wei", "Supplier Mode"]);
       await assertAbsent(page, ["Adaeze Okonkwo", "Enterprise Treasury Mode"]);
     });
   }
 });
+
+test("Unverified supplier is redirected to KYB onboarding", async ({ page }) => {
+  await clearStorage(page);
+  await seedUnverifiedSupplier(page);
+  await page.goto("/supplier-portal");
+  await page.waitForURL(/\/kyb-onboarding/, { timeout: 5000 });
+  expect(page.url()).toContain("workspace=supplier_dashboard");
+});
+
 
 /* ------------------------------------------------------------------ */
 /* Shipment date consistency                                           */
