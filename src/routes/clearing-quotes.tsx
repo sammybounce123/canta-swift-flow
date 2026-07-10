@@ -76,7 +76,7 @@ function ClearingQuotesPage() {
           {search.file ? (
             <div className="text-xs text-muted-foreground mt-2">
               Filtered to trade file <span className="font-semibold text-foreground">{search.file}</span> ·{" "}
-              <button onClick={() => navigate({ to: "/clearing-quotes" })} className="text-primary underline">Clear filter</button>
+              <button onClick={() => navigate({ to: "/clearing-quotes", search: {} })} className="text-primary underline">Clear filter</button>
             </div>
           ) : null}
         </div>
