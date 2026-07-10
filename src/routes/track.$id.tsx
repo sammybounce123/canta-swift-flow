@@ -52,7 +52,7 @@ function nextActionText(s: Shipment) {
 }
 
 function TrackPage() {
-  const s = Route.useLoaderData();
+  const s = Route.useLoaderData() as Shipment;
   const currentIdx = TIMELINE.findIndex((t) => t.key === s.status);
   const days = daysUntil(s.eta);
   const missing = REQUIRED_DOCS.filter((d) => !s.documents.includes(d));
