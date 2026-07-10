@@ -127,7 +127,7 @@ function Dashboard() {
           <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-accent/15 blur-3xl" />
           <div className="absolute -left-12 -bottom-12 h-28 w-28 rounded-full bg-primary/20 blur-3xl" />
           <div className="relative flex flex-col gap-5 flex-1">
-            <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-5">
+            <div className="flex flex-col gap-5">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-[10px] uppercase tracking-widest text-primary-foreground/60">
