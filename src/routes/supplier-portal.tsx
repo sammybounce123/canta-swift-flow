@@ -114,7 +114,7 @@ function SupplierPortalLayout() {
           )}
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <KPI label="RMB Wallet Balance · 钱包余额" value="¥128,400" icon={Wallet} />
+            <KPI label="RMB Settlement Balance · 待结算余额" value="¥128,400" icon={Wallet} />
             <KPI label="Awaiting Settlement · 待结算" value={`¥${(totals.ngnHeld / 204).toLocaleString(undefined,{maximumFractionDigits:0})}`} icon={Clock} />
             <KPI label="Active Payment Requests · 收款中" value={String(totals.pending + activeQuoteCount)} icon={Receipt} />
             <KPI label="Nigerian Buyers · 买家" value={String(totals.buyers)} icon={Users} />
