@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useRequireWorkspace } from "@/lib/workspace-guard";
 import { useMemo, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,7 @@ function tone(s: DocStatus) {
 }
 
 function DocumentsPage() {
+  useRequireWorkspace();
   const [q, setQ] = useState("");
   const [type, setType] = useState("All");
   const [status, setStatus] = useState<"All" | DocStatus>("All");
