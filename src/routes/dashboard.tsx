@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,43 +22,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileText, TrendingUp } from "lucide-react";
 
-// Cold /dashboard must never render the Enterprise Treasury shell as a
-// fallback. Resolve the active workspace from localStorage and redirect;
-// with no saved workspace, send the visitor to /welcome to pick one.
-const WORKSPACE_TO_ROUTE: Record<string, string> = {
-  enterprise_treasury: "/treasury",
-  importer_portal: "/importer",
-  freight_workspace: "/freight",
-  supplier_dashboard: "/supplier-portal",
-  global_collections: "/collections",
-  partner_property: "/partner",
-  canta_ops: "/ops",
-};
-
-function resolveDashboardTarget(): string {
-  if (typeof window === "undefined") return "/welcome";
-  try {
-    const ws = window.localStorage.getItem("canta:active_workspace");
-    if (ws && WORKSPACE_TO_ROUTE[ws]) return WORKSPACE_TO_ROUTE[ws];
-    const raw = window.localStorage.getItem("canta:profile");
-    const p = raw ? (JSON.parse(raw) as { workspace_type?: string }) : null;
-    const to = p?.workspace_type ? WORKSPACE_TO_ROUTE[p.workspace_type] : undefined;
-    if (to) return to;
-  } catch {}
-  return "/welcome";
-}
-
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Canta" }] }),
-  beforeLoad: () => {
-    // On the server there is no localStorage — send unresolved visitors to
-    // /welcome so the SSR shell never contains Enterprise Treasury copy.
-    if (typeof window === "undefined") {
-      throw redirect({ to: "/welcome" });
-    }
-    const target = resolveDashboardTarget();
-    throw redirect({ to: target });
-  },
   component: Dashboard,
 });
 

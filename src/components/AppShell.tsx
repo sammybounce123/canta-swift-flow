@@ -295,7 +295,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const dashPath = WORKSPACE_DASHBOARD_PATHS[activeWorkspace];
     if (!dashPath) return;
-    if (pathname !== dashPath && pathname !== "/dashboard") return;
+    if (pathname !== dashPath) return;
     const done = typeof window !== "undefined"
       && window.localStorage.getItem("canta:kyb:" + activeWorkspace) === "done";
     if (!done) {
