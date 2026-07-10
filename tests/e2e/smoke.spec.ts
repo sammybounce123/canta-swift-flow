@@ -18,10 +18,43 @@ async function seedWorkspace(page: Page, workspace: string, mode: string) {
     ({ workspace, mode }) => {
       window.localStorage.setItem("canta:active_workspace", workspace);
       window.localStorage.setItem("canta:mode", mode);
+      // Simulate a KYB-completed workspace so the AppShell KYB gate does not
+      // bounce warm navigation into /kyb-onboarding.
+      window.localStorage.setItem("canta:kyb:" + workspace, "done");
     },
     { workspace, mode }
   );
 }
+
+/**
+ * Seed the pre-verified investor-demo Supplier persona (Li Wei /
+ * Guangzhou Tech Factory). Mirrors what src/lib/demo-supplier.ts writes
+ * when a visitor picks Supplier on /welcome.
+ */
+async function seedDemoSupplier(page: Page) {
+  await page.goto("/");
+  await page.evaluate(() => {
+    window.localStorage.setItem("canta:active_workspace", "supplier_dashboard");
+    window.localStorage.setItem("canta:mode", "Supplier");
+    window.localStorage.setItem("canta:kyb:supplier_dashboard", "done");
+    window.localStorage.setItem("canta:payout:supplier_dashboard", "verified");
+    window.localStorage.setItem("canta:persona", "supplier_demo");
+  });
+}
+
+/**
+ * Seed a genuinely unverified Supplier workspace — active workspace is set,
+ * but no KYB approval flag is present. AppShell should redirect this
+ * visitor to /kyb-onboarding?workspace=supplier_dashboard.
+ */
+async function seedUnverifiedSupplier(page: Page) {
+  await page.goto("/");
+  await page.evaluate(() => {
+    window.localStorage.setItem("canta:active_workspace", "supplier_dashboard");
+    window.localStorage.setItem("canta:mode", "Supplier");
+  });
+}
+
 
 async function assertAbsent(page: Page, texts: string[]) {
   const body = (await page.textContent("body")) ?? "";
@@ -89,13 +122,19 @@ test.describe("Cold shared-route navigation redirects to /welcome", () => {
 /* ------------------------------------------------------------------ */
 /* Generic dashboard cold visit                                        */
 /* ------------------------------------------------------------------ */
-test("Cold /dashboard should not leak Enterprise Treasury identity", async ({ page }) => {
+test("Cold /dashboard redirects to /welcome without flashing Treasury identity", async ({ page }) => {
   await clearStorage(page);
   await page.goto("/dashboard");
-  await page.waitForLoadState("networkidle");
-  // Spec: expect redirect to /welcome, and Treasury/Adaeze absent.
-  await assertAbsent(page, ["Adaeze Okonkwo", "Treasury Mode"]);
-  expect(page.url(), "cold /dashboard should redirect to /welcome").toContain("/welcome");
+  await page.waitForURL("**/welcome", { timeout: 5000 });
+  expect(page.url()).toContain("/welcome");
+  await assertAbsent(page, [
+    "Adaeze Okonkwo",
+    "Enterprise Treasury Mode",
+    "Treasury Mode",
+    // Treasury dashboard-specific hero copy — must never appear on cold visit.
+    "Bulk Payouts",
+    "Total balance",
+  ]);
 });
 
 /* ------------------------------------------------------------------ */
@@ -115,7 +154,7 @@ test("Partner Activity Log keeps Partner context", async ({ page }) => {
 /* ------------------------------------------------------------------ */
 /* Supplier routes                                                     */
 /* ------------------------------------------------------------------ */
-test.describe("Supplier navigation keeps supplier context", () => {
+test.describe("Demo supplier navigation keeps supplier context", () => {
   const paths = [
     "/supplier-portal",
     "/supplier-portal/payment-requests",
@@ -126,16 +165,27 @@ test.describe("Supplier navigation keeps supplier context", () => {
   ];
 
   for (const p of paths) {
-    test(`Supplier ${p}`, async ({ page }) => {
+    test(`Demo supplier ${p}`, async ({ page }) => {
       await clearStorage(page);
-      await seedWorkspace(page, "supplier_dashboard", "Supplier");
+      await seedDemoSupplier(page);
       await page.goto(p);
       await page.waitForLoadState("networkidle");
+      expect(page.url(), `should not bounce demo supplier to KYB from ${p}`)
+        .not.toContain("/kyb-onboarding");
       await assertPresent(page, ["Li Wei", "Supplier Mode"]);
       await assertAbsent(page, ["Adaeze Okonkwo", "Enterprise Treasury Mode"]);
     });
   }
 });
+
+test("Unverified supplier is redirected to KYB onboarding", async ({ page }) => {
+  await clearStorage(page);
+  await seedUnverifiedSupplier(page);
+  await page.goto("/supplier-portal");
+  await page.waitForURL(/\/kyb-onboarding/, { timeout: 5000 });
+  expect(page.url()).toContain("workspace=supplier_dashboard");
+});
+
 
 /* ------------------------------------------------------------------ */
 /* Shipment date consistency                                           */
