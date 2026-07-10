@@ -1,5 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+
+// Investor-demo flag: hide secondary/legacy quick actions unless explicitly
+// enabled via VITE_CANTA_DEMO_EXTRAS=1. Primary journey stays lean:
+// Track Shipment · Add Supplier Invoice · Complete Trade File · Pay Supplier · Track Settlement.
+const DEMO_EXTRAS = import.meta.env.VITE_CANTA_DEMO_EXTRAS === "1";
 import { Button } from "@/components/ui/button";
 import { ActionButton, ActionGroup } from "@/components/ui/action-group";
 import {
@@ -158,17 +163,17 @@ export function ImporterActions({
 
   // -- which buttons per variant --------------------------------------------
   const buttons: { label: string; icon: typeof MessageSquare; onClick: () => void; primary?: boolean; show: boolean }[] = [
-    { label: "Request Quote",          icon: MessageSquare, onClick: () => setOpen("quote"),         primary: variant === "supplier", show: true },
+    { label: "Request Quote",          icon: MessageSquare, onClick: () => setOpen("quote"),         primary: variant === "supplier", show: DEMO_EXTRAS || variant === "supplier" },
     { label: "Start Trade File",       icon: FilePlus,      onClick: startTradeFile,                 primary: variant === "supplier", show: variant !== "tradefile" },
     { label: "Verify Supplier",        icon: BadgeCheck,    onClick: () => setOpen("verify"),        show: true },
     { label: "Save Supplier",          icon: Bookmark,      onClick: saveSupplier,                   show: variant === "supplier" },
-    { label: "Request Escrow",         icon: Lock,          onClick: () => setOpen("escrow"),        show: true },
+    { label: "Request Escrow",         icon: Lock,          onClick: () => setOpen("escrow"),        show: DEMO_EXTRAS },
     { label: "Request Clearing Quotes", icon: Calculator,   onClick: () => navigate({ to: "/clearing-quotes", search: { file: ctx.tradeFileId, request: undefined } }), show: true },
     { label: "Estimate Landed Cost",   icon: Calculator,    onClick: () => setOpen("landed"),        show: true },
     { label: "Link Shipment",          icon: Ship,          onClick: () => setOpen("linkShipment"),  show: variant !== "supplier" },
     { label: "Link Documents",         icon: Paperclip,     onClick: () => setOpen("linkDocs"),      show: variant === "tradefile" },
     { label: "Share Tracking Link",    icon: LinkIcon,      onClick: () => setOpen("share"),         show: !!ctx.shipmentId || variant === "tradefile" },
-    { label: "Invite Clearing Agent", icon: Truck,       onClick: () => setOpen("forwarder"),     show: variant !== "supplier" },
+    { label: "Invite Clearing Agent", icon: Truck,       onClick: () => setOpen("forwarder"),     show: DEMO_EXTRAS && variant !== "supplier" },
     { label: "Add Supplier",              icon: UserPlus,    onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Opening Supplier Portal — add a Chinese supplier"); }, show: true },
     { label: "Invite Supplier",           icon: Mail,        onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Invite supplier from the Supplier Portal"); }, show: true },
     { label: "Link Supplier Payment Request", icon: Send,    onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Send a payment request to a Chinese supplier"); }, show: variant === "tradefile" || variant === "toolbar" },
