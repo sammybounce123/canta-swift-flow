@@ -1,5 +1,8 @@
-// Canta official WhatsApp support number (placeholder — replace with live number)
-export const CANTA_WHATSAPP_NUMBER = "234XXXXXXXXXX";
+// Canta official WhatsApp support number.
+// Configure via VITE_CANTA_WHATSAPP_NUMBER (E.164 digits only, no + sign).
+export const CANTA_WHATSAPP_NUMBER =
+  (import.meta.env.VITE_CANTA_WHATSAPP_NUMBER as string | undefined)?.replace(/\D/g, "") ||
+  "2348000000000";
 
 export type WhatsAppTemplateKey =
   | "sendInvoice"

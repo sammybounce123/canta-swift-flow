@@ -63,17 +63,24 @@ function TrackWhatsAppPage() {
       return;
     }
     setSubmitting(true);
-    const href = buildWhatsAppUrl("trackShipment", {
-      reference: ref,
-      origin,
-      destination,
-      eta,
-      name: parsed.data.name,
-      industry: parsed.data.industry,
-      phone: parsed.data.phone,
-      email: parsed.data.email,
-    });
-    toast.success("Opening WhatsApp…");
+    // Assign a temporary tracking reference and register the lead locally.
+    const reference = ref || `CTA-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+    try {
+      const raw = window.localStorage.getItem("canta:leads");
+      const arr = raw ? JSON.parse(raw) : [];
+      arr.unshift({
+        source: "whatsapp_track_cta",
+        reference,
+        createdAt: new Date().toISOString(),
+        ...parsed.data,
+        consent: true,
+      });
+      window.localStorage.setItem("canta:leads", JSON.stringify(arr.slice(0, 200)));
+    } catch { /* ignore */ }
+    // Short prefilled message — details already captured in the lead.
+    const text = `Hi Canta, I want to track my shipment. My tracking reference is ${reference}.`;
+    const href = `https://wa.me/${(import.meta.env.VITE_CANTA_WHATSAPP_NUMBER as string | undefined)?.replace(/\D/g, "") || "2348000000000"}?text=${encodeURIComponent(text)}`;
+    toast.success("Opening WhatsApp…", { description: `Reference ${reference}` });
     window.open(href, "_blank", "noopener,noreferrer");
     setSubmitting(false);
     nav({ to: "/track" });
@@ -95,7 +102,7 @@ function TrackWhatsAppPage() {
           </div>
           <h1 className="text-xl font-semibold mt-2">A few quick details</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            We'll open WhatsApp with your shipment context so we can reply faster.
+            We'll assign a tracking reference and open WhatsApp so we can help you faster.
           </p>
 
           <form onSubmit={submit} className="mt-5 space-y-3">

@@ -116,7 +116,7 @@ function WhatsAppCustomer() {
           <ActionButton onClick={() => openWhatsApp("trackShipment")}><Ship className="h-3.5 w-3.5" /> Request Shipment Update</ActionButton>
           <ActionButton onClick={() => openWhatsApp("landedCost")}><DollarSign className="h-3.5 w-3.5" /> Request Landed Cost</ActionButton>
           <ActionButton onClick={() => openWhatsApp("missingDocumentReminder")}><Bell className="h-3.5 w-3.5" /> Send Reminder</ActionButton>
-          <ActionButton asChild><Link to="/trade-desk" search={{ new: "1" } as never}><FilePlus2 className="h-3.5 w-3.5" /> Create Trade File</Link></ActionButton>
+          <ActionButton asChild><Link to="/trade-desk"><FilePlus2 className="h-3.5 w-3.5" /> Upload Bill of Lading</Link></ActionButton>
           <ActionButton asChild><Link to="/shipments"><Link2 className="h-3.5 w-3.5" /> Link to Shipment</Link></ActionButton>
           <ActionButton asChild><Link to="/support"><LifeBuoy className="h-3.5 w-3.5" /> Contact Support</Link></ActionButton>
         </ActionGroup>

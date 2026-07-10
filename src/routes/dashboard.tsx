@@ -222,10 +222,8 @@ function Dashboard() {
         {mode === "Supplier" ? <SupplierFxQuoteCard /> : (
         <Card className="p-6 shadow-card">
           <div className="flex items-center justify-between">
-            <div className="text-sm font-semibold">Live FX Rates</div>
-            <div className="flex items-center gap-1 text-[10px] text-success">
-              <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" /> Live
-            </div>
+            <div className="text-sm font-semibold">Illustrative FX rates</div>
+            <div className="text-[10px] text-muted-foreground">Demo data</div>
           </div>
           <div className="mt-4 space-y-3">
             {[
@@ -364,7 +362,7 @@ function Dashboard() {
           </div>
           <div>
             <div className="text-sm font-semibold">Smart routing active</div>
-            <div className="text-xs text-muted-foreground">Best corridor selected automatically · Avg savings 0.8%</div>
+            <div className="text-xs text-muted-foreground">Sample routing output · Demo data</div>
           </div>
         </div>
         <Badge className="bg-success/15 text-success border-success/30 hover:bg-success/15">Settlement tracking</Badge>
