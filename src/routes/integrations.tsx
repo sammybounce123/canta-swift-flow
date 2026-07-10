@@ -48,6 +48,9 @@ function IntegrationsPage() {
         <div>
           <h1 className="text-2xl font-semibold flex items-center gap-2"><Plug className="h-5 w-5 text-primary" /> Integrations</h1>
           <p className="text-sm text-muted-foreground mt-1">External providers powering Canta — payments, FX, tracking, KYC, AI, messaging, CRM and more.</p>
+          <div className="mt-2 inline-flex items-center gap-2 text-[11px] px-2 py-0.5 rounded-full border border-warning/30 bg-warning/10 text-warning">
+            <span className="h-1.5 w-1.5 rounded-full bg-warning" /> Demo integrations · not live connections
+          </div>
         </div>
         <Button onClick={() => toast.success("Integration request submitted")}>Request integration</Button>
       </div>

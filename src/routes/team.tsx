@@ -10,7 +10,7 @@ import { useActions } from "@/components/ActionsProvider";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { useMemo, useState, Fragment } from "react";
-import { useActiveWorkspace } from "@/lib/workspace-guard";
+import { useActiveWorkspace, useRequireWorkspace } from "@/lib/workspace-guard";
 
 
 export const Route = createFileRoute("/team")({
@@ -58,6 +58,7 @@ const defaults: Record<string, string[]> = {
 };
 
 function Team() {
+  useRequireWorkspace();
   const { openInvite } = useActions();
   const { workspace, workspaceLabel } = useActiveWorkspace();
   const activeGroup =

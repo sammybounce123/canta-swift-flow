@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useRequireWorkspace } from "@/lib/workspace-guard";
 import { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -57,6 +58,7 @@ const KIND_ICON: Record<Payment["kind"], typeof Building2> = {
 };
 
 function PaymentsPage() {
+  useRequireWorkspace();
   const [q, setQ] = useState("");
   const [tab, setTab] = useState<"all" | PayStatus>("all");
   const [kind, setKind] = useState<"All" | Payment["kind"]>("All");

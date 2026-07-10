@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Shield, Key, Building2, Activity, Copy, Workflow, ArrowRight, RefreshCw, ShieldCheck, FileText, UserCheck, Landmark, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { useMode } from "@/components/ModeProvider";
+import { useRequireWorkspace } from "@/lib/workspace-guard";
 import { useVerified, verifiedStore } from "@/lib/supplier-data";
 
 export const Route = createFileRoute("/settings")({
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/settings")({
 
 
 function Settings() {
+  useRequireWorkspace();
   const navigate = useNavigate();
   const { mode } = useMode();
   const isSupplier = mode === "Supplier";
