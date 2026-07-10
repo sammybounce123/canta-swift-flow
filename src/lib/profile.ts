@@ -217,17 +217,7 @@ export type SidebarItem = {
 
 /** Exact per-workspace sidebar. Each workspace sees ONLY its own menus. */
 export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: FeatureFlags): SidebarItem[] {
-  const WORKSPACE_HOME: Record<WorkspaceType, string> = {
-    enterprise_treasury: "/treasury",
-    importer_portal: "/importer",
-    freight_workspace: "/freight",
-    supplier_dashboard: "/supplier-portal",
-    global_collections: "/collections",
-    global_spend_cards: "/welcome",
-    partner_property: "/partner",
-    canta_ops: "/ops",
-  };
-  const D: SidebarItem = { to: WORKSPACE_HOME[workspace] ?? "/dashboard", label: "Dashboard", iconKey: "dashboard", group: "Overview", exact: true };
+  const D: SidebarItem = { to: "/dashboard", label: "Dashboard", iconKey: "dashboard", group: "Overview", exact: true };
   const Settings: SidebarItem = { to: "/settings", label: "Settings", iconKey: "settings", group: "Workspace" };
   const Team: SidebarItem = { to: "/team", label: "Team", iconKey: "team", group: "Workspace" };
 
