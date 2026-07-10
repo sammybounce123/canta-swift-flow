@@ -78,7 +78,7 @@ function SupplierPortalLayout() {
                 <Badge variant="outline" className="text-[10px]">Demo persona · 演示账户</Badge>
               </div>
               <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-                Your Nigerian buyer pays in <strong>NGN</strong> to Canta's regulated NGN collection account. Canta reviews compliance, converts at the locked FX rate, and settles you in <strong>RMB</strong> directly into your RMB wallet. You never make outbound payments here — this portal is receive-only.
+                Your Nigerian buyer pays in <strong>NGN</strong> to Canta's designated NGN collection account. Canta reviews compliance, converts at the locked FX rate, and settles you in <strong>RMB</strong> to your verified RMB payout account. You never make outbound payments here — this portal is receive-only.
                 <br />
                 <span className="text-xs">尼日利亚买家用奈拉付款至 Canta 合规收款账户，Canta 审核合规后按锁定汇率换汇，将人民币直接结算至您的钱包。</span>
               </p>
