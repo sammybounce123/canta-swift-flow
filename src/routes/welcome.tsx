@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { SEGMENTS, saveProfile, type WorkspaceType } from "@/lib/profile";
+import { seedDemoSupplierPersona } from "@/lib/demo-supplier";
 
 export const Route = createFileRoute("/welcome")({
   head: () => ({ meta: [{ title: "Welcome to Canta — Choose your workspace" }] }),
