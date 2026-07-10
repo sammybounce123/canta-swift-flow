@@ -151,7 +151,7 @@ function OpsConsole() {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Ops Console is an internal Canta view. Supplier RMB wallet balances and importer Trade File details are only referenced here at an operational level and remain owned by their respective workspaces.
+        Ops Console is an internal Canta view. Supplier RMB Settlement balances and importer Trade File details are only referenced here at an operational level and remain owned by their respective workspaces.
       </p>
     </div>
   );

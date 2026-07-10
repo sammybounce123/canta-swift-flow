@@ -64,7 +64,8 @@ function nextActionText(s: Shipment) {
   if (s.status === "Arrived") return "Pay duty so we can release your goods.";
   if (s.status === "Delayed") return "Wait — we'll send a new ETA on WhatsApp.";
   if (s.status === "At Origin") return "Confirm payment so supplier can load.";
-  if (s.status === "Delivered" || s.status === "Released") return "Nothing to do — goods delivered.";
+  if (s.status === "Delivered") return "Nothing to do — goods delivered.";
+  if (s.status === "Released") return "Goods released — arrange or track final delivery.";
   return "Sit back — we'll update you as your goods move.";
 }
 

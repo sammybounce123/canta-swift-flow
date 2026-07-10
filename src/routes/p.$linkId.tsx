@@ -302,7 +302,7 @@ function BankInstructions({ ref_, amount, ccy, merchantName, linkId }: { ref_: s
       <Field label="Amount" value={amount} />
       <Field label="Reference" value={ref_} copyable />
       <div className="col-span-2 text-[11px] text-muted-foreground">
-        This virtual account is dedicated to this payment link. Funds land in {merchantName}'s Canta wallet automatically — use the reference exactly so we can match your transfer instantly.
+        This virtual account is dedicated to this payment link. Funds are matched to {merchantName}'s Canta settlement account automatically — use the reference exactly so we can match your transfer instantly.
       </div>
     </div>
   );

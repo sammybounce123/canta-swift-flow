@@ -259,3 +259,78 @@ test("Demo supplier RMB settlement page has no on-hold warning", async ({ page }
   await assertAbsent(page, ["Withdrawals are on hold"]);
 });
 
+
+/* ------------------------------------------------------------------ */
+/* No 1969/1970 dates anywhere on shipments (raw string check)         */
+/* ------------------------------------------------------------------ */
+test("Shipments page contains no 1969 or 1970 dates", async ({ page }) => {
+  await clearStorage(page);
+  await seedWorkspace(page, "importer_portal", "Importer");
+  await page.goto("/shipments");
+  await page.waitForLoadState("networkidle");
+  const body = (await page.textContent("body")) ?? "";
+  expect(body).not.toMatch(/\b19(69|70)-\d{2}-\d{2}\b/);
+  expect(body).not.toMatch(/\b19(69|70)\b/);
+});
+
+/* ------------------------------------------------------------------ */
+/* Released never says "goods delivered"                                */
+/* ------------------------------------------------------------------ */
+test("Released shipment next step says 'arrange or track final delivery'", async ({ page }) => {
+  await clearStorage(page);
+  await seedWorkspace(page, "importer_portal", "Importer");
+  // SHP-10429 is a Released shipment in the mock; visit its track page.
+  await page.goto("/track/SHP-10429");
+  await page.waitForLoadState("networkidle");
+  await assertPresent(page, ["Goods released — arrange or track final delivery"]);
+  await assertAbsent(page, ["Nothing to do — goods delivered"]);
+});
+
+/* ------------------------------------------------------------------ */
+/* Landing → Supplier Portal card seeds demo persona                    */
+/* ------------------------------------------------------------------ */
+test("Landing page Supplier Portal card shows Demo approved on entry", async ({ page }) => {
+  await clearStorage(page);
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  // Click the Supplier Portal entry-card CTA.
+  await page.getByRole("link", { name: /Enter Supplier Portal/i }).first().click();
+  await page.waitForURL(/\/supplier-portal/, { timeout: 5000 });
+  await page.waitForLoadState("networkidle");
+  expect(page.url(), "landing → supplier must not bounce to KYB").not.toContain("/kyb-onboarding");
+  await assertPresent(page, ["Li Wei"]);
+  await assertAbsent(page, [
+    "Verification incomplete",
+    "RMB settlement is paused",
+    "RMB wallet payouts unlock",
+  ]);
+});
+
+/* ------------------------------------------------------------------ */
+/* Supplier pages contain no obsolete wallet wording                    */
+/* ------------------------------------------------------------------ */
+test("Supplier pages have no 'Canta wallet' or obsolete Chinese wallet wording", async ({ page }) => {
+  await clearStorage(page);
+  await seedDemoSupplier(page);
+  for (const p of ["/supplier-portal", "/supplier-portal/rmb-wallet"]) {
+    await page.goto(p);
+    await page.waitForLoadState("networkidle");
+    const body = (await page.textContent("body")) ?? "";
+    expect(body, `${p} contains "Canta wallet"`).not.toContain("Canta wallet");
+    expect(body, `${p} contains "RMB wallet"`).not.toMatch(/RMB wallet/i);
+    expect(body, `${p} contains "lands in your"`).not.toContain("lands in your");
+    expect(body, `${p} still uses 结算至您的钱包`).not.toContain("结算至您的钱包");
+  }
+});
+
+/* ------------------------------------------------------------------ */
+/* Importer overview contains no 'escrow option'                        */
+/* ------------------------------------------------------------------ */
+test("Importer overview contains no 'escrow option'", async ({ page }) => {
+  await clearStorage(page);
+  await seedWorkspace(page, "importer_portal", "Importer");
+  await page.goto("/importer");
+  await page.waitForLoadState("networkidle");
+  const body = (await page.textContent("body")) ?? "";
+  expect(body).not.toContain("escrow option");
+});

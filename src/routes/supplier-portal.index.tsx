@@ -30,7 +30,7 @@ function OverviewPanel() {
           {[
             { icon: Send, t: "1. Send payment request", d: "Attach invoice and RMB amount. Buyer sees NGN they owe using the current FX quote.", cn: "1. 发送收款请求" },
             { icon: Landmark, t: "2. Buyer pays in NGN", d: "Nigerian buyer pays locally via bank transfer. Canta reviews compliance and processes FX.", cn: "2. 买家在尼日利亚以奈拉付款" },
-            { icon: Wallet, t: "3. You receive RMB", d: "RMB lands in your Canta wallet. Full receipt and audit trail attached to the request.", cn: "3. 人民币结算至您的钱包" },
+            { icon: Wallet, t: "3. You receive RMB", d: "Settlement awaiting payout, then transfer to verified bank account. Full receipt and audit trail attached to the request.", cn: "3. 人民币结算至您已认证的收款银行账户" },
           ].map((s) => (
             <div key={s.t} className="rounded-lg border p-3">
               <div className="flex items-center gap-2 text-sm font-semibold"><s.icon className="h-4 w-4 text-primary" /> {s.t}</div>
@@ -83,7 +83,7 @@ function OverviewPanel() {
       </Card>
 
       <Card className="p-4 text-xs text-muted-foreground">
-        You only see your own buyers, invoices, payment requests, documents, messages, FX quotes, RMB wallet, and settlement status.
+        You only see your own buyers, invoices, payment requests, documents, messages, FX quotes, RMB Settlement, and settlement status.
       </Card>
 
     </div>
