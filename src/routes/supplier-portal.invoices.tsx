@@ -52,7 +52,7 @@ function InvoicesPanel() {
       <div className="text-sm font-semibold">Invoices &amp; shipping documents</div>
       <div className="text-xs text-muted-foreground">Invoices link to each payment request. Generate a new invoice or upload proforma, commercial and packing list documents for each buyer payment.</div>
       <ButtonGroup label="Invoice actions">
-        <Button size="sm" onClick={generate}><FileText className="h-4 w-4 mr-2" /> Generate invoice</Button>
+        <Button size="sm" onClick={generate}><FileText className="h-4 w-4 mr-2" /> Generate invoice draft from FX quote</Button>
         <Button size="sm" variant="outline" onClick={() => toast.success("Proforma invoice uploaded")}><Upload className="h-4 w-4 mr-2" /> Upload proforma invoice</Button>
         <Button size="sm" variant="outline" onClick={() => toast.success("Commercial invoice uploaded")}><Upload className="h-4 w-4 mr-2" /> Upload commercial invoice</Button>
         <Button size="sm" variant="outline" onClick={() => toast.success("Packing list uploaded")}><Upload className="h-4 w-4 mr-2" /> Upload packing list</Button>
