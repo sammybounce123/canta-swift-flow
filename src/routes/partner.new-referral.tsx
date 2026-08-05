@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,16 +23,47 @@ function NewReferral() {
   const navigate = useNavigate();
   const { role, userId, user } = usePartnerRole();
   const canAssign = canSeeAllMarketers(role);
-  const [form, setForm] = useState({
+  const DRAFT_KEY = "canta:partner:new-referral-draft:v1";
+  type DraftForm = {
+    clientName: string; clientEmail: string; clientPhone: string;
+    property: string; location: string; amount: string; currency: string;
+    purpose: string; solicitor: string; deadline: string; notes: string;
+    assignedMarketerId: string;
+  };
+  const defaultForm = (): DraftForm => ({
     clientName: "", clientEmail: "", clientPhone: "",
     property: "", location: "", amount: "", currency: "GBP",
     purpose: "Property completion",
     solicitor: SOLICITORS[0]?.id ?? "",
     deadline: "", notes: "",
     assignedMarketerId: userId,
-    file: undefined as File | undefined,
+  });
+  // Lazy-init: restore any in-progress draft from localStorage so the form
+  // survives re-renders/remounts instead of resetting to blank defaults.
+  const [form, setForm] = useState<DraftForm & { file: File | undefined }>(() => {
+    if (typeof window === "undefined") return { ...defaultForm(), file: undefined };
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) return { ...defaultForm(), ...JSON.parse(raw), file: undefined };
+    } catch { /* noop */ }
+    return { ...defaultForm(), file: undefined };
   });
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => setForm((p) => ({ ...p, [k]: v }));
+
+  // Persist the draft (excluding the File object, which cannot be serialized)
+  // on every change, so typed values are never lost.
+  const hydrated = useRef(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const { file: _file, ...serializable } = form;
+    void _file;
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(serializable)); } catch { /* noop */ }
+  }, [form]);
+
+  function clearDraft() {
+    try { localStorage.removeItem(DRAFT_KEY); } catch { /* noop */ }
+  }
+  void hydrated;
 
   const validate = () => {
     const missing: string[] = [];
@@ -77,6 +108,7 @@ function NewReferral() {
     if (!validate()) return;
     const created = buildCase();
     toast.success("Payment case created", { description: `${created.ref} — ${created.clientName}` });
+    clearDraft();
     setTimeout(() => navigate({ to: "/partner/cases/$caseId", params: { caseId: created.id } }), 400);
   };
 
@@ -84,6 +116,7 @@ function NewReferral() {
     if (!form.clientName.trim()) { toast.error("Add at least a client name to save a draft"); return; }
     const created = buildCase("draft");
     toast.success("Draft saved", { description: `${created.ref} kept as draft — you can finish it from Cases.` });
+    clearDraft();
     setTimeout(() => navigate({ to: "/partner/cases" }), 500);
   };
 
@@ -93,6 +126,7 @@ function NewReferral() {
     toast.success("Client payment link sent", {
       description: `Sent to ${created.clientEmail} for ${created.ref} (£${Number(form.amount).toLocaleString()}).`,
     });
+    clearDraft();
     setTimeout(() => navigate({ to: "/partner/cases/$caseId", params: { caseId: created.id } }), 500);
   };
   void MARKETERS; void user;
