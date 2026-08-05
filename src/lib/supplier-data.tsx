@@ -274,7 +274,9 @@ export function useSelectedQuoteId() {
 export function useActiveQuote() {
   const quotes = useFxQuotes();
   const selectedId = useSelectedQuoteId();
-  return quotes.find((q) => q.id === selectedId) ?? quotes.find((q) => q.status === "Quote Generated") ?? quotes[0];
+  const selected = quotes.find((q) => q.id === selectedId);
+  if (selected && isQuoteSelectable(selected)) return selected;
+  return quotes.find((q) => isQuoteSelectable(q));
 }
 export function formatCountdown(ts: number) {
   const ms = Math.max(0, ts - Date.now());
