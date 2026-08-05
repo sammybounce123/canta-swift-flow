@@ -194,31 +194,63 @@ let selectedQuoteId: string | null = null;
 const fxSubs = new Set<() => void>();
 const notify = () => fxSubs.forEach((f) => f());
 
+/** Statuses that are past the quote window — expiry no longer applies to them. */
+export const POST_QUOTE_STATUSES: FxQuoteStatus[] = [
+  "Buyer Paid", "Processing Settlement", "Settled", "Cancelled",
+];
+
+/** A quote is expired once its window lapses, unless the buyer already paid. */
+export function isQuoteExpired(q: FxQuote): boolean {
+  if (POST_QUOTE_STATUSES.includes(q.status)) return false;
+  return Date.now() > q.expiresAt;
+}
+
+/** Expired is terminal for display until the quote is refreshed. */
+export function effectiveQuoteStatus(q: FxQuote): FxQuoteStatus {
+  return isQuoteExpired(q) ? "Expired" : q.status;
+}
+
+/** Expired quotes may not be selected, locked or sent. */
+export function isQuoteSelectable(q: FxQuote): boolean {
+  return !isQuoteExpired(q) && !POST_QUOTE_STATUSES.includes(q.status);
+}
+
 export const fxQuoteStore = {
   getQuotes: () => fxQuotes,
   getSelectedId: () => selectedQuoteId,
   subscribe: (f: () => void) => { fxSubs.add(f); return () => fxSubs.delete(f); },
-  select: (id: string) => { selectedQuoteId = id; notify(); },
+  select: (id: string) => {
+    const q = fxQuotes.find((x) => x.id === id);
+    if (!q || !isQuoteSelectable(q)) return false;
+    selectedQuoteId = id; notify(); return true;
+  },
   generate: () => {
     const nextIndex = fxQuotes.length;
     const source = REQUESTS[nextIndex % REQUESTS.length];
     const quote = buildQuote(source, nextIndex);
+    quote.expiresAt = Date.now() + 15 * 60 * 1000;
     fxQuotes = [quote, ...fxQuotes];
     selectedQuoteId = quote.id;
     notify();
     return quote;
   },
   lock: (id: string) => {
+    const target = fxQuotes.find((q) => q.id === id);
+    if (!target || isQuoteExpired(target)) return false;
     fxQuotes = fxQuotes.map((q) => q.id === id
       ? { ...q, status: "Rate Locked", lockedUntil: Date.now() + 15 * 60 * 1000, expiresAt: Date.now() + 15 * 60 * 1000 }
       : q);
     notify();
+    return true;
   },
   send: (id: string) => {
+    const target = fxQuotes.find((q) => q.id === id);
+    if (!target || isQuoteExpired(target)) return false;
     fxQuotes = fxQuotes.map((q) => q.id === id
       ? { ...q, status: q.status === "Rate Locked" ? "Rate Locked" : "Sent to Buyer", sentAt: Date.now() }
       : q);
     notify();
+    return true;
   },
   refresh: (id: string) => {
     fxQuotes = fxQuotes.map((q) => {
@@ -227,7 +259,9 @@ export const fxQuoteStore = {
       const newRate = +(q.rate + jitter).toFixed(2);
       return { ...q, rate: newRate, ngnTotal: Math.round(q.invoiceAmount * newRate), expiresAt: Date.now() + 15 * 60 * 1000, status: "Quote Generated" };
     });
+    selectedQuoteId = id;
     notify();
+    return true;
   },
 };
 
