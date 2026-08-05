@@ -9,397 +9,122 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WhatsappRouteImport } from './routes/whatsapp'
-import { Route as WelcomeRouteImport } from './routes/welcome'
-import { Route as WalletsRouteImport } from './routes/wallets'
-import { Route as VerifiedSuppliersRouteImport } from './routes/verified-suppliers'
-import { Route as VerifiedBuyersRouteImport } from './routes/verified-buyers'
-import { Route as VerificationCenterRouteImport } from './routes/verification-center'
-import { Route as VerificationRouteImport } from './routes/verification'
-import { Route as UserStoriesRouteImport } from './routes/user-stories'
-import { Route as TreasuryRouteImport } from './routes/treasury'
-import { Route as TransactionsRouteImport } from './routes/transactions'
-import { Route as TradeNetworkRouteImport } from './routes/trade-network'
-import { Route as TradeDeskRouteImport } from './routes/trade-desk'
-import { Route as TeamRouteImport } from './routes/team'
-import { Route as SupportRouteImport } from './routes/support'
-import { Route as SuppliersRouteImport } from './routes/suppliers'
-import { Route as SupplierPortalRouteImport } from './routes/supplier-portal'
-import { Route as ShipmentsRouteImport } from './routes/shipments'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as ReportsRouteImport } from './routes/reports'
-import { Route as ReconciliationRouteImport } from './routes/reconciliation'
-import { Route as PaymentsRouteImport } from './routes/payments'
-import { Route as PaymentLinksRouteImport } from './routes/payment-links'
-import { Route as PayersRouteImport } from './routes/payers'
-import { Route as PartnerRouteImport } from './routes/partner'
-import { Route as OrganizationRouteImport } from './routes/organization'
-import { Route as OpsRouteImport } from './routes/ops'
-import { Route as OnboardingRouteImport } from './routes/onboarding'
-import { Route as MySuppliersRouteImport } from './routes/my-suppliers'
-import { Route as MessagesRouteImport } from './routes/messages'
-import { Route as LandedCostRouteImport } from './routes/landed-cost'
-import { Route as KybOnboardingRouteImport } from './routes/kyb-onboarding'
-import { Route as InvoicesRouteImport } from './routes/invoices'
-import { Route as IntegrationsRouteImport } from './routes/integrations'
-import { Route as ImporterRouteImport } from './routes/importer'
-import { Route as FxRouteImport } from './routes/fx'
-import { Route as FreightReportsRouteImport } from './routes/freight-reports'
-import { Route as FreightPipelineRouteImport } from './routes/freight-pipeline'
-import { Route as FreightInvoicesRouteImport } from './routes/freight-invoices'
-import { Route as FreightCustomersRouteImport } from './routes/freight-customers'
-import { Route as FreightRouteImport } from './routes/freight'
-import { Route as EscrowRouteImport } from './routes/escrow'
-import { Route as DocumentsRouteImport } from './routes/documents'
-import { Route as DocsRouteImport } from './routes/docs'
-import { Route as DataModelRouteImport } from './routes/data-model'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as CustomersRouteImport } from './routes/customers'
-import { Route as ComplianceRouteImport } from './routes/compliance'
-import { Route as CollectionsRouteImport } from './routes/collections'
-import { Route as ClearingQuotesRouteImport } from './routes/clearing-quotes'
-import { Route as CardsRouteImport } from './routes/cards'
-import { Route as BuyersRouteImport } from './routes/buyers'
-import { Route as BeneficiariesRouteImport } from './routes/beneficiaries'
-import { Route as AuditLogsRouteImport } from './routes/audit-logs'
-import { Route as ApprovalsRouteImport } from './routes/approvals'
-import { Route as AiInsightsRouteImport } from './routes/ai-insights'
-import { Route as AiGrowthRouteImport } from './routes/ai-growth'
-import { Route as AiDocumentExtractionRouteImport } from './routes/ai-document-extraction'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TradeDeskIndexRouteImport } from './routes/trade-desk.index'
-import { Route as TrackIndexRouteImport } from './routes/track.index'
-import { Route as SupplierPortalIndexRouteImport } from './routes/supplier-portal.index'
-import { Route as PartnerIndexRouteImport } from './routes/partner.index'
-import { Route as TreasuryCardsRouteImport } from './routes/treasury.cards'
-import { Route as TradeDeskFileIdRouteImport } from './routes/trade-desk.$fileId'
-import { Route as TrackWhatsappRouteImport } from './routes/track.whatsapp'
-import { Route as TrackIdRouteImport } from './routes/track.$id'
-import { Route as SuppliersProfileRouteImport } from './routes/suppliers.profile'
-import { Route as SuppliersKybRouteImport } from './routes/suppliers.kyb'
-import { Route as SupplierPortalWalletRouteImport } from './routes/supplier-portal.wallet'
-import { Route as SupplierPortalVerificationRouteImport } from './routes/supplier-portal.verification'
-import { Route as SupplierPortalTradeFilesRouteImport } from './routes/supplier-portal.trade-files'
-import { Route as SupplierPortalTeamRouteImport } from './routes/supplier-portal.team'
-import { Route as SupplierPortalSupportRouteImport } from './routes/supplier-portal.support'
-import { Route as SupplierPortalSettlementsRouteImport } from './routes/supplier-portal.settlements'
-import { Route as SupplierPortalSettlementRouteImport } from './routes/supplier-portal.settlement'
-import { Route as SupplierPortalSettingsRouteImport } from './routes/supplier-portal.settings'
-import { Route as SupplierPortalRmbWalletRouteImport } from './routes/supplier-portal.rmb-wallet'
-import { Route as SupplierPortalRequestsRouteImport } from './routes/supplier-portal.requests'
-import { Route as SupplierPortalReportsRouteImport } from './routes/supplier-portal.reports'
-import { Route as SupplierPortalPayoutAccountsRouteImport } from './routes/supplier-portal.payout-accounts'
-import { Route as SupplierPortalPaymentRequestsRouteImport } from './routes/supplier-portal.payment-requests'
-import { Route as SupplierPortalNgnDetailsRouteImport } from './routes/supplier-portal.ngn-details'
-import { Route as SupplierPortalMessagesRouteImport } from './routes/supplier-portal.messages'
-import { Route as SupplierPortalInvoicesRouteImport } from './routes/supplier-portal.invoices'
-import { Route as SupplierPortalFxQuotesRouteImport } from './routes/supplier-portal.fx-quotes'
-import { Route as SupplierPortalDocumentsRouteImport } from './routes/supplier-portal.documents'
-import { Route as SupplierPortalBuyersRouteImport } from './routes/supplier-portal.buyers'
-import { Route as PayLinkIdRouteImport } from './routes/pay.$linkId'
-import { Route as PartnerTeamRouteImport } from './routes/partner.team'
-import { Route as PartnerSolicitorsRouteImport } from './routes/partner.solicitors'
-import { Route as PartnerSettingsRouteImport } from './routes/partner.settings'
-import { Route as PartnerReportsRouteImport } from './routes/partner.reports'
-import { Route as PartnerPayoutsRouteImport } from './routes/partner.payouts'
-import { Route as PartnerPaymentLinksRouteImport } from './routes/partner.payment-links'
-import { Route as PartnerNewReferralRouteImport } from './routes/partner.new-referral'
-import { Route as PartnerMarketersRouteImport } from './routes/partner.marketers'
-import { Route as PartnerLeadsRouteImport } from './routes/partner.leads'
-import { Route as PartnerFxQuotesRouteImport } from './routes/partner.fx-quotes'
-import { Route as PartnerDocumentsRouteImport } from './routes/partner.documents'
-import { Route as PartnerDisputesRouteImport } from './routes/partner.disputes'
-import { Route as PartnerCommissionsRouteImport } from './routes/partner.commissions'
-import { Route as PartnerClientsRouteImport } from './routes/partner.clients'
-import { Route as PartnerCasesRouteImport } from './routes/partner.cases'
-import { Route as PartnerActivityLogRouteImport } from './routes/partner.activity-log'
-import { Route as PLinkIdRouteImport } from './routes/p.$linkId'
-import { Route as MerchantProfileRouteImport } from './routes/merchant.profile'
-import { Route as MerchantKybRouteImport } from './routes/merchant.kyb'
-import { Route as ImporterCardsRouteImport } from './routes/importer.cards'
-import { Route as FreightCardsRouteImport } from './routes/freight.cards'
+import { Route as AiDocumentExtractionRouteImport } from './routes/ai-document-extraction'
+import { Route as AiGrowthRouteImport } from './routes/ai-growth'
+import { Route as AiInsightsRouteImport } from './routes/ai-insights'
+import { Route as ApprovalsRouteImport } from './routes/approvals'
+import { Route as AuditLogsRouteImport } from './routes/audit-logs'
+import { Route as BeneficiariesRouteImport } from './routes/beneficiaries'
+import { Route as BuyersRouteImport } from './routes/buyers'
+import { Route as CardsRouteImport } from './routes/cards'
+import { Route as ClearingQuotesRouteImport } from './routes/clearing-quotes'
+import { Route as CollectionsRouteImport } from './routes/collections'
+import { Route as ComplianceRouteImport } from './routes/compliance'
+import { Route as CustomersRouteImport } from './routes/customers'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DataModelRouteImport } from './routes/data-model'
+import { Route as DocsRouteImport } from './routes/docs'
+import { Route as DocumentsRouteImport } from './routes/documents'
+import { Route as EscrowRouteImport } from './routes/escrow'
+import { Route as FreightRouteImport } from './routes/freight'
+import { Route as FreightCustomersRouteImport } from './routes/freight-customers'
+import { Route as FreightInvoicesRouteImport } from './routes/freight-invoices'
+import { Route as FreightPipelineRouteImport } from './routes/freight-pipeline'
+import { Route as FreightReportsRouteImport } from './routes/freight-reports'
+import { Route as FxRouteImport } from './routes/fx'
+import { Route as ImporterRouteImport } from './routes/importer'
+import { Route as IntegrationsRouteImport } from './routes/integrations'
+import { Route as InvoicesRouteImport } from './routes/invoices'
+import { Route as KybOnboardingRouteImport } from './routes/kyb-onboarding'
+import { Route as LandedCostRouteImport } from './routes/landed-cost'
+import { Route as MessagesRouteImport } from './routes/messages'
+import { Route as MySuppliersRouteImport } from './routes/my-suppliers'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as OpsRouteImport } from './routes/ops'
+import { Route as OrganizationRouteImport } from './routes/organization'
+import { Route as PartnerRouteImport } from './routes/partner'
+import { Route as PayersRouteImport } from './routes/payers'
+import { Route as PaymentLinksRouteImport } from './routes/payment-links'
+import { Route as PaymentsRouteImport } from './routes/payments'
+import { Route as ReconciliationRouteImport } from './routes/reconciliation'
+import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ShipmentsRouteImport } from './routes/shipments'
+import { Route as SupplierPortalRouteImport } from './routes/supplier-portal'
+import { Route as SuppliersRouteImport } from './routes/suppliers'
+import { Route as SupportRouteImport } from './routes/support'
+import { Route as TeamRouteImport } from './routes/team'
+import { Route as TradeDeskRouteImport } from './routes/trade-desk'
+import { Route as TradeNetworkRouteImport } from './routes/trade-network'
+import { Route as TransactionsRouteImport } from './routes/transactions'
+import { Route as TreasuryRouteImport } from './routes/treasury'
+import { Route as UserStoriesRouteImport } from './routes/user-stories'
+import { Route as VerificationRouteImport } from './routes/verification'
+import { Route as VerificationCenterRouteImport } from './routes/verification-center'
+import { Route as VerifiedBuyersRouteImport } from './routes/verified-buyers'
+import { Route as VerifiedSuppliersRouteImport } from './routes/verified-suppliers'
+import { Route as WalletsRouteImport } from './routes/wallets'
+import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as WhatsappRouteImport } from './routes/whatsapp'
 import { Route as CollectionsNewRouteImport } from './routes/collections.new'
+import { Route as FreightCardsRouteImport } from './routes/freight.cards'
+import { Route as ImporterCardsRouteImport } from './routes/importer.cards'
+import { Route as MerchantKybRouteImport } from './routes/merchant.kyb'
+import { Route as MerchantProfileRouteImport } from './routes/merchant.profile'
+import { Route as PLinkIdRouteImport } from './routes/p.$linkId'
+import { Route as PartnerIndexRouteImport } from './routes/partner.index'
+import { Route as PartnerActivityLogRouteImport } from './routes/partner.activity-log'
+import { Route as PartnerCasesRouteImport } from './routes/partner.cases'
+import { Route as PartnerClientsRouteImport } from './routes/partner.clients'
+import { Route as PartnerCommissionsRouteImport } from './routes/partner.commissions'
+import { Route as PartnerDisputesRouteImport } from './routes/partner.disputes'
+import { Route as PartnerDocumentsRouteImport } from './routes/partner.documents'
+import { Route as PartnerFxQuotesRouteImport } from './routes/partner.fx-quotes'
+import { Route as PartnerLeadsRouteImport } from './routes/partner.leads'
+import { Route as PartnerMarketersRouteImport } from './routes/partner.marketers'
+import { Route as PartnerNewReferralRouteImport } from './routes/partner.new-referral'
+import { Route as PartnerPaymentLinksRouteImport } from './routes/partner.payment-links'
+import { Route as PartnerPayoutsRouteImport } from './routes/partner.payouts'
+import { Route as PartnerReportsRouteImport } from './routes/partner.reports'
+import { Route as PartnerSettingsRouteImport } from './routes/partner.settings'
+import { Route as PartnerSolicitorsRouteImport } from './routes/partner.solicitors'
+import { Route as PartnerTeamRouteImport } from './routes/partner.team'
+import { Route as PayLinkIdRouteImport } from './routes/pay.$linkId'
+import { Route as SupplierPortalIndexRouteImport } from './routes/supplier-portal.index'
+import { Route as SupplierPortalBuyersRouteImport } from './routes/supplier-portal.buyers'
+import { Route as SupplierPortalDocumentsRouteImport } from './routes/supplier-portal.documents'
+import { Route as SupplierPortalFxQuotesRouteImport } from './routes/supplier-portal.fx-quotes'
+import { Route as SupplierPortalInvoicesRouteImport } from './routes/supplier-portal.invoices'
+import { Route as SupplierPortalMessagesRouteImport } from './routes/supplier-portal.messages'
+import { Route as SupplierPortalNgnDetailsRouteImport } from './routes/supplier-portal.ngn-details'
+import { Route as SupplierPortalPaymentRequestsRouteImport } from './routes/supplier-portal.payment-requests'
+import { Route as SupplierPortalPayoutAccountsRouteImport } from './routes/supplier-portal.payout-accounts'
+import { Route as SupplierPortalReportsRouteImport } from './routes/supplier-portal.reports'
+import { Route as SupplierPortalRequestsRouteImport } from './routes/supplier-portal.requests'
+import { Route as SupplierPortalRmbWalletRouteImport } from './routes/supplier-portal.rmb-wallet'
+import { Route as SupplierPortalSettingsRouteImport } from './routes/supplier-portal.settings'
+import { Route as SupplierPortalSettlementRouteImport } from './routes/supplier-portal.settlement'
+import { Route as SupplierPortalSettlementsRouteImport } from './routes/supplier-portal.settlements'
+import { Route as SupplierPortalSupportRouteImport } from './routes/supplier-portal.support'
+import { Route as SupplierPortalTeamRouteImport } from './routes/supplier-portal.team'
+import { Route as SupplierPortalTradeFilesRouteImport } from './routes/supplier-portal.trade-files'
+import { Route as SupplierPortalVerificationRouteImport } from './routes/supplier-portal.verification'
+import { Route as SupplierPortalWalletRouteImport } from './routes/supplier-portal.wallet'
+import { Route as SuppliersKybRouteImport } from './routes/suppliers.kyb'
+import { Route as SuppliersProfileRouteImport } from './routes/suppliers.profile'
+import { Route as TrackIndexRouteImport } from './routes/track.index'
+import { Route as TrackIdRouteImport } from './routes/track.$id'
+import { Route as TrackWhatsappRouteImport } from './routes/track.whatsapp'
+import { Route as TradeDeskIndexRouteImport } from './routes/trade-desk.index'
+import { Route as TradeDeskFileIdRouteImport } from './routes/trade-desk.$fileId'
+import { Route as TreasuryCardsRouteImport } from './routes/treasury.cards'
 import { Route as PartnerCasesIndexRouteImport } from './routes/partner.cases.index'
 import { Route as PartnerCasesCaseIdRouteImport } from './routes/partner.cases.$caseId'
 
-const WhatsappRoute = WhatsappRouteImport.update({
-  id: '/whatsapp',
-  path: '/whatsapp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WelcomeRoute = WelcomeRouteImport.update({
-  id: '/welcome',
-  path: '/welcome',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WalletsRoute = WalletsRouteImport.update({
-  id: '/wallets',
-  path: '/wallets',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VerifiedSuppliersRoute = VerifiedSuppliersRouteImport.update({
-  id: '/verified-suppliers',
-  path: '/verified-suppliers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VerifiedBuyersRoute = VerifiedBuyersRouteImport.update({
-  id: '/verified-buyers',
-  path: '/verified-buyers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VerificationCenterRoute = VerificationCenterRouteImport.update({
-  id: '/verification-center',
-  path: '/verification-center',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VerificationRoute = VerificationRouteImport.update({
-  id: '/verification',
-  path: '/verification',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UserStoriesRoute = UserStoriesRouteImport.update({
-  id: '/user-stories',
-  path: '/user-stories',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TreasuryRoute = TreasuryRouteImport.update({
-  id: '/treasury',
-  path: '/treasury',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TransactionsRoute = TransactionsRouteImport.update({
-  id: '/transactions',
-  path: '/transactions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TradeNetworkRoute = TradeNetworkRouteImport.update({
-  id: '/trade-network',
-  path: '/trade-network',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TradeDeskRoute = TradeDeskRouteImport.update({
-  id: '/trade-desk',
-  path: '/trade-desk',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TeamRoute = TeamRouteImport.update({
-  id: '/team',
-  path: '/team',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SupportRoute = SupportRouteImport.update({
-  id: '/support',
-  path: '/support',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SuppliersRoute = SuppliersRouteImport.update({
-  id: '/suppliers',
-  path: '/suppliers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SupplierPortalRoute = SupplierPortalRouteImport.update({
-  id: '/supplier-portal',
-  path: '/supplier-portal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ShipmentsRoute = ShipmentsRouteImport.update({
-  id: '/shipments',
-  path: '/shipments',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReportsRoute = ReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReconciliationRoute = ReconciliationRouteImport.update({
-  id: '/reconciliation',
-  path: '/reconciliation',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PaymentsRoute = PaymentsRouteImport.update({
-  id: '/payments',
-  path: '/payments',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PaymentLinksRoute = PaymentLinksRouteImport.update({
-  id: '/payment-links',
-  path: '/payment-links',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PayersRoute = PayersRouteImport.update({
-  id: '/payers',
-  path: '/payers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PartnerRoute = PartnerRouteImport.update({
-  id: '/partner',
-  path: '/partner',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OrganizationRoute = OrganizationRouteImport.update({
-  id: '/organization',
-  path: '/organization',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OpsRoute = OpsRouteImport.update({
-  id: '/ops',
-  path: '/ops',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingRoute = OnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MySuppliersRoute = MySuppliersRouteImport.update({
-  id: '/my-suppliers',
-  path: '/my-suppliers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MessagesRoute = MessagesRouteImport.update({
-  id: '/messages',
-  path: '/messages',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LandedCostRoute = LandedCostRouteImport.update({
-  id: '/landed-cost',
-  path: '/landed-cost',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KybOnboardingRoute = KybOnboardingRouteImport.update({
-  id: '/kyb-onboarding',
-  path: '/kyb-onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InvoicesRoute = InvoicesRouteImport.update({
-  id: '/invoices',
-  path: '/invoices',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IntegrationsRoute = IntegrationsRouteImport.update({
-  id: '/integrations',
-  path: '/integrations',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ImporterRoute = ImporterRouteImport.update({
-  id: '/importer',
-  path: '/importer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FxRoute = FxRouteImport.update({
-  id: '/fx',
-  path: '/fx',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FreightReportsRoute = FreightReportsRouteImport.update({
-  id: '/freight-reports',
-  path: '/freight-reports',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FreightPipelineRoute = FreightPipelineRouteImport.update({
-  id: '/freight-pipeline',
-  path: '/freight-pipeline',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FreightInvoicesRoute = FreightInvoicesRouteImport.update({
-  id: '/freight-invoices',
-  path: '/freight-invoices',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FreightCustomersRoute = FreightCustomersRouteImport.update({
-  id: '/freight-customers',
-  path: '/freight-customers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FreightRoute = FreightRouteImport.update({
-  id: '/freight',
-  path: '/freight',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EscrowRoute = EscrowRouteImport.update({
-  id: '/escrow',
-  path: '/escrow',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DocumentsRoute = DocumentsRouteImport.update({
-  id: '/documents',
-  path: '/documents',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DocsRoute = DocsRouteImport.update({
-  id: '/docs',
-  path: '/docs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DataModelRoute = DataModelRouteImport.update({
-  id: '/data-model',
-  path: '/data-model',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CustomersRoute = CustomersRouteImport.update({
-  id: '/customers',
-  path: '/customers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ComplianceRoute = ComplianceRouteImport.update({
-  id: '/compliance',
-  path: '/compliance',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CollectionsRoute = CollectionsRouteImport.update({
-  id: '/collections',
-  path: '/collections',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ClearingQuotesRoute = ClearingQuotesRouteImport.update({
-  id: '/clearing-quotes',
-  path: '/clearing-quotes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CardsRoute = CardsRouteImport.update({
-  id: '/cards',
-  path: '/cards',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BuyersRoute = BuyersRouteImport.update({
-  id: '/buyers',
-  path: '/buyers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BeneficiariesRoute = BeneficiariesRouteImport.update({
-  id: '/beneficiaries',
-  path: '/beneficiaries',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuditLogsRoute = AuditLogsRouteImport.update({
-  id: '/audit-logs',
-  path: '/audit-logs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApprovalsRoute = ApprovalsRouteImport.update({
-  id: '/approvals',
-  path: '/approvals',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AiInsightsRoute = AiInsightsRouteImport.update({
-  id: '/ai-insights',
-  path: '/ai-insights',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AiGrowthRoute = AiGrowthRouteImport.update({
-  id: '/ai-growth',
-  path: '/ai-growth',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AiDocumentExtractionRoute = AiDocumentExtractionRouteImport.update({
@@ -407,19 +132,404 @@ const AiDocumentExtractionRoute = AiDocumentExtractionRouteImport.update({
   path: '/ai-document-extraction',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AiGrowthRoute = AiGrowthRouteImport.update({
+  id: '/ai-growth',
+  path: '/ai-growth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TradeDeskIndexRoute = TradeDeskIndexRouteImport.update({
+const AiInsightsRoute = AiInsightsRouteImport.update({
+  id: '/ai-insights',
+  path: '/ai-insights',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApprovalsRoute = ApprovalsRouteImport.update({
+  id: '/approvals',
+  path: '/approvals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuditLogsRoute = AuditLogsRouteImport.update({
+  id: '/audit-logs',
+  path: '/audit-logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BeneficiariesRoute = BeneficiariesRouteImport.update({
+  id: '/beneficiaries',
+  path: '/beneficiaries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyersRoute = BuyersRouteImport.update({
+  id: '/buyers',
+  path: '/buyers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CardsRoute = CardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClearingQuotesRoute = ClearingQuotesRouteImport.update({
+  id: '/clearing-quotes',
+  path: '/clearing-quotes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectionsRoute = CollectionsRouteImport.update({
+  id: '/collections',
+  path: '/collections',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComplianceRoute = ComplianceRouteImport.update({
+  id: '/compliance',
+  path: '/compliance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustomersRoute = CustomersRouteImport.update({
+  id: '/customers',
+  path: '/customers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DataModelRoute = DataModelRouteImport.update({
+  id: '/data-model',
+  path: '/data-model',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocumentsRoute = DocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EscrowRoute = EscrowRouteImport.update({
+  id: '/escrow',
+  path: '/escrow',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FreightRoute = FreightRouteImport.update({
+  id: '/freight',
+  path: '/freight',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FreightCustomersRoute = FreightCustomersRouteImport.update({
+  id: '/freight-customers',
+  path: '/freight-customers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FreightInvoicesRoute = FreightInvoicesRouteImport.update({
+  id: '/freight-invoices',
+  path: '/freight-invoices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FreightPipelineRoute = FreightPipelineRouteImport.update({
+  id: '/freight-pipeline',
+  path: '/freight-pipeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FreightReportsRoute = FreightReportsRouteImport.update({
+  id: '/freight-reports',
+  path: '/freight-reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FxRoute = FxRouteImport.update({
+  id: '/fx',
+  path: '/fx',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImporterRoute = ImporterRouteImport.update({
+  id: '/importer',
+  path: '/importer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntegrationsRoute = IntegrationsRouteImport.update({
+  id: '/integrations',
+  path: '/integrations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvoicesRoute = InvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KybOnboardingRoute = KybOnboardingRouteImport.update({
+  id: '/kyb-onboarding',
+  path: '/kyb-onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LandedCostRoute = LandedCostRouteImport.update({
+  id: '/landed-cost',
+  path: '/landed-cost',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MySuppliersRoute = MySuppliersRouteImport.update({
+  id: '/my-suppliers',
+  path: '/my-suppliers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpsRoute = OpsRouteImport.update({
+  id: '/ops',
+  path: '/ops',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrganizationRoute = OrganizationRouteImport.update({
+  id: '/organization',
+  path: '/organization',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartnerRoute = PartnerRouteImport.update({
+  id: '/partner',
+  path: '/partner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PayersRoute = PayersRouteImport.update({
+  id: '/payers',
+  path: '/payers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentLinksRoute = PaymentLinksRouteImport.update({
+  id: '/payment-links',
+  path: '/payment-links',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentsRoute = PaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReconciliationRoute = ReconciliationRouteImport.update({
+  id: '/reconciliation',
+  path: '/reconciliation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShipmentsRoute = ShipmentsRouteImport.update({
+  id: '/shipments',
+  path: '/shipments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupplierPortalRoute = SupplierPortalRouteImport.update({
+  id: '/supplier-portal',
+  path: '/supplier-portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuppliersRoute = SuppliersRouteImport.update({
+  id: '/suppliers',
+  path: '/suppliers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamRoute = TeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TradeDeskRoute = TradeDeskRouteImport.update({
+  id: '/trade-desk',
+  path: '/trade-desk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TradeNetworkRoute = TradeNetworkRouteImport.update({
+  id: '/trade-network',
+  path: '/trade-network',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransactionsRoute = TransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TreasuryRoute = TreasuryRouteImport.update({
+  id: '/treasury',
+  path: '/treasury',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UserStoriesRoute = UserStoriesRouteImport.update({
+  id: '/user-stories',
+  path: '/user-stories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerificationRoute = VerificationRouteImport.update({
+  id: '/verification',
+  path: '/verification',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerificationCenterRoute = VerificationCenterRouteImport.update({
+  id: '/verification-center',
+  path: '/verification-center',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifiedBuyersRoute = VerifiedBuyersRouteImport.update({
+  id: '/verified-buyers',
+  path: '/verified-buyers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifiedSuppliersRoute = VerifiedSuppliersRouteImport.update({
+  id: '/verified-suppliers',
+  path: '/verified-suppliers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WalletsRoute = WalletsRouteImport.update({
+  id: '/wallets',
+  path: '/wallets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WhatsappRoute = WhatsappRouteImport.update({
+  id: '/whatsapp',
+  path: '/whatsapp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectionsNewRoute = CollectionsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => CollectionsRoute,
+} as any)
+const FreightCardsRoute = FreightCardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => FreightRoute,
+} as any)
+const ImporterCardsRoute = ImporterCardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => ImporterRoute,
+} as any)
+const MerchantKybRoute = MerchantKybRouteImport.update({
+  id: '/merchant/kyb',
+  path: '/merchant/kyb',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MerchantProfileRoute = MerchantProfileRouteImport.update({
+  id: '/merchant/profile',
+  path: '/merchant/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PLinkIdRoute = PLinkIdRouteImport.update({
+  id: '/p/$linkId',
+  path: '/p/$linkId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartnerIndexRoute = PartnerIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => TradeDeskRoute,
+  getParentRoute: () => PartnerRoute,
 } as any)
-const TrackIndexRoute = TrackIndexRouteImport.update({
-  id: '/track/',
-  path: '/track/',
+const PartnerActivityLogRoute = PartnerActivityLogRouteImport.update({
+  id: '/activity-log',
+  path: '/activity-log',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerCasesRoute = PartnerCasesRouteImport.update({
+  id: '/cases',
+  path: '/cases',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerClientsRoute = PartnerClientsRouteImport.update({
+  id: '/clients',
+  path: '/clients',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerCommissionsRoute = PartnerCommissionsRouteImport.update({
+  id: '/commissions',
+  path: '/commissions',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerDisputesRoute = PartnerDisputesRouteImport.update({
+  id: '/disputes',
+  path: '/disputes',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerDocumentsRoute = PartnerDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerFxQuotesRoute = PartnerFxQuotesRouteImport.update({
+  id: '/fx-quotes',
+  path: '/fx-quotes',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerLeadsRoute = PartnerLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerMarketersRoute = PartnerMarketersRouteImport.update({
+  id: '/marketers',
+  path: '/marketers',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerNewReferralRoute = PartnerNewReferralRouteImport.update({
+  id: '/new-referral',
+  path: '/new-referral',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerPaymentLinksRoute = PartnerPaymentLinksRouteImport.update({
+  id: '/payment-links',
+  path: '/payment-links',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerPayoutsRoute = PartnerPayoutsRouteImport.update({
+  id: '/payouts',
+  path: '/payouts',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerReportsRoute = PartnerReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerSettingsRoute = PartnerSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerSolicitorsRoute = PartnerSolicitorsRouteImport.update({
+  id: '/solicitors',
+  path: '/solicitors',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerTeamRoute = PartnerTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PayLinkIdRoute = PayLinkIdRouteImport.update({
+  id: '/pay/$linkId',
+  path: '/pay/$linkId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SupplierPortalIndexRoute = SupplierPortalIndexRouteImport.update({
@@ -427,104 +537,35 @@ const SupplierPortalIndexRoute = SupplierPortalIndexRouteImport.update({
   path: '/',
   getParentRoute: () => SupplierPortalRoute,
 } as any)
-const PartnerIndexRoute = PartnerIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => PartnerRoute,
-} as any)
-const TreasuryCardsRoute = TreasuryCardsRouteImport.update({
-  id: '/cards',
-  path: '/cards',
-  getParentRoute: () => TreasuryRoute,
-} as any)
-const TradeDeskFileIdRoute = TradeDeskFileIdRouteImport.update({
-  id: '/$fileId',
-  path: '/$fileId',
-  getParentRoute: () => TradeDeskRoute,
-} as any)
-const TrackWhatsappRoute = TrackWhatsappRouteImport.update({
-  id: '/track/whatsapp',
-  path: '/track/whatsapp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TrackIdRoute = TrackIdRouteImport.update({
-  id: '/track/$id',
-  path: '/track/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SuppliersProfileRoute = SuppliersProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => SuppliersRoute,
-} as any)
-const SuppliersKybRoute = SuppliersKybRouteImport.update({
-  id: '/kyb',
-  path: '/kyb',
-  getParentRoute: () => SuppliersRoute,
-} as any)
-const SupplierPortalWalletRoute = SupplierPortalWalletRouteImport.update({
-  id: '/wallet',
-  path: '/wallet',
+const SupplierPortalBuyersRoute = SupplierPortalBuyersRouteImport.update({
+  id: '/buyers',
+  path: '/buyers',
   getParentRoute: () => SupplierPortalRoute,
 } as any)
-const SupplierPortalVerificationRoute =
-  SupplierPortalVerificationRouteImport.update({
-    id: '/verification',
-    path: '/verification',
-    getParentRoute: () => SupplierPortalRoute,
-  } as any)
-const SupplierPortalTradeFilesRoute =
-  SupplierPortalTradeFilesRouteImport.update({
-    id: '/trade-files',
-    path: '/trade-files',
-    getParentRoute: () => SupplierPortalRoute,
-  } as any)
-const SupplierPortalTeamRoute = SupplierPortalTeamRouteImport.update({
-  id: '/team',
-  path: '/team',
+const SupplierPortalDocumentsRoute = SupplierPortalDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
   getParentRoute: () => SupplierPortalRoute,
 } as any)
-const SupplierPortalSupportRoute = SupplierPortalSupportRouteImport.update({
-  id: '/support',
-  path: '/support',
+const SupplierPortalFxQuotesRoute = SupplierPortalFxQuotesRouteImport.update({
+  id: '/fx-quotes',
+  path: '/fx-quotes',
   getParentRoute: () => SupplierPortalRoute,
 } as any)
-const SupplierPortalSettlementsRoute =
-  SupplierPortalSettlementsRouteImport.update({
-    id: '/settlements',
-    path: '/settlements',
-    getParentRoute: () => SupplierPortalRoute,
-  } as any)
-const SupplierPortalSettlementRoute =
-  SupplierPortalSettlementRouteImport.update({
-    id: '/settlement',
-    path: '/settlement',
-    getParentRoute: () => SupplierPortalRoute,
-  } as any)
-const SupplierPortalSettingsRoute = SupplierPortalSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
+const SupplierPortalInvoicesRoute = SupplierPortalInvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
   getParentRoute: () => SupplierPortalRoute,
 } as any)
-const SupplierPortalRmbWalletRoute = SupplierPortalRmbWalletRouteImport.update({
-  id: '/rmb-wallet',
-  path: '/rmb-wallet',
+const SupplierPortalMessagesRoute = SupplierPortalMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => SupplierPortalRoute,
 } as any)
-const SupplierPortalRequestsRoute = SupplierPortalRequestsRouteImport.update({
-  id: '/requests',
-  path: '/requests',
-  getParentRoute: () => SupplierPortalRoute,
-} as any)
-const SupplierPortalReportsRoute = SupplierPortalReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
-  getParentRoute: () => SupplierPortalRoute,
-} as any)
-const SupplierPortalPayoutAccountsRoute =
-  SupplierPortalPayoutAccountsRouteImport.update({
-    id: '/payout-accounts',
-    path: '/payout-accounts',
+const SupplierPortalNgnDetailsRoute =
+  SupplierPortalNgnDetailsRouteImport.update({
+    id: '/ngn-details',
+    path: '/ngn-details',
     getParentRoute: () => SupplierPortalRoute,
   } as any)
 const SupplierPortalPaymentRequestsRoute =
@@ -533,151 +574,110 @@ const SupplierPortalPaymentRequestsRoute =
     path: '/payment-requests',
     getParentRoute: () => SupplierPortalRoute,
   } as any)
-const SupplierPortalNgnDetailsRoute =
-  SupplierPortalNgnDetailsRouteImport.update({
-    id: '/ngn-details',
-    path: '/ngn-details',
+const SupplierPortalPayoutAccountsRoute =
+  SupplierPortalPayoutAccountsRouteImport.update({
+    id: '/payout-accounts',
+    path: '/payout-accounts',
     getParentRoute: () => SupplierPortalRoute,
   } as any)
-const SupplierPortalMessagesRoute = SupplierPortalMessagesRouteImport.update({
-  id: '/messages',
-  path: '/messages',
-  getParentRoute: () => SupplierPortalRoute,
-} as any)
-const SupplierPortalInvoicesRoute = SupplierPortalInvoicesRouteImport.update({
-  id: '/invoices',
-  path: '/invoices',
-  getParentRoute: () => SupplierPortalRoute,
-} as any)
-const SupplierPortalFxQuotesRoute = SupplierPortalFxQuotesRouteImport.update({
-  id: '/fx-quotes',
-  path: '/fx-quotes',
-  getParentRoute: () => SupplierPortalRoute,
-} as any)
-const SupplierPortalDocumentsRoute = SupplierPortalDocumentsRouteImport.update({
-  id: '/documents',
-  path: '/documents',
-  getParentRoute: () => SupplierPortalRoute,
-} as any)
-const SupplierPortalBuyersRoute = SupplierPortalBuyersRouteImport.update({
-  id: '/buyers',
-  path: '/buyers',
-  getParentRoute: () => SupplierPortalRoute,
-} as any)
-const PayLinkIdRoute = PayLinkIdRouteImport.update({
-  id: '/pay/$linkId',
-  path: '/pay/$linkId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PartnerTeamRoute = PartnerTeamRouteImport.update({
-  id: '/team',
-  path: '/team',
-  getParentRoute: () => PartnerRoute,
-} as any)
-const PartnerSolicitorsRoute = PartnerSolicitorsRouteImport.update({
-  id: '/solicitors',
-  path: '/solicitors',
-  getParentRoute: () => PartnerRoute,
-} as any)
-const PartnerSettingsRoute = PartnerSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => PartnerRoute,
-} as any)
-const PartnerReportsRoute = PartnerReportsRouteImport.update({
+const SupplierPortalReportsRoute = SupplierPortalReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
-  getParentRoute: () => PartnerRoute,
+  getParentRoute: () => SupplierPortalRoute,
 } as any)
-const PartnerPayoutsRoute = PartnerPayoutsRouteImport.update({
-  id: '/payouts',
-  path: '/payouts',
-  getParentRoute: () => PartnerRoute,
+const SupplierPortalRequestsRoute = SupplierPortalRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
+  getParentRoute: () => SupplierPortalRoute,
 } as any)
-const PartnerPaymentLinksRoute = PartnerPaymentLinksRouteImport.update({
-  id: '/payment-links',
-  path: '/payment-links',
-  getParentRoute: () => PartnerRoute,
+const SupplierPortalRmbWalletRoute = SupplierPortalRmbWalletRouteImport.update({
+  id: '/rmb-wallet',
+  path: '/rmb-wallet',
+  getParentRoute: () => SupplierPortalRoute,
 } as any)
-const PartnerNewReferralRoute = PartnerNewReferralRouteImport.update({
-  id: '/new-referral',
-  path: '/new-referral',
-  getParentRoute: () => PartnerRoute,
+const SupplierPortalSettingsRoute = SupplierPortalSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => SupplierPortalRoute,
 } as any)
-const PartnerMarketersRoute = PartnerMarketersRouteImport.update({
-  id: '/marketers',
-  path: '/marketers',
-  getParentRoute: () => PartnerRoute,
+const SupplierPortalSettlementRoute =
+  SupplierPortalSettlementRouteImport.update({
+    id: '/settlement',
+    path: '/settlement',
+    getParentRoute: () => SupplierPortalRoute,
+  } as any)
+const SupplierPortalSettlementsRoute =
+  SupplierPortalSettlementsRouteImport.update({
+    id: '/settlements',
+    path: '/settlements',
+    getParentRoute: () => SupplierPortalRoute,
+  } as any)
+const SupplierPortalSupportRoute = SupplierPortalSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => SupplierPortalRoute,
 } as any)
-const PartnerLeadsRoute = PartnerLeadsRouteImport.update({
-  id: '/leads',
-  path: '/leads',
-  getParentRoute: () => PartnerRoute,
+const SupplierPortalTeamRoute = SupplierPortalTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => SupplierPortalRoute,
 } as any)
-const PartnerFxQuotesRoute = PartnerFxQuotesRouteImport.update({
-  id: '/fx-quotes',
-  path: '/fx-quotes',
-  getParentRoute: () => PartnerRoute,
+const SupplierPortalTradeFilesRoute =
+  SupplierPortalTradeFilesRouteImport.update({
+    id: '/trade-files',
+    path: '/trade-files',
+    getParentRoute: () => SupplierPortalRoute,
+  } as any)
+const SupplierPortalVerificationRoute =
+  SupplierPortalVerificationRouteImport.update({
+    id: '/verification',
+    path: '/verification',
+    getParentRoute: () => SupplierPortalRoute,
+  } as any)
+const SupplierPortalWalletRoute = SupplierPortalWalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => SupplierPortalRoute,
 } as any)
-const PartnerDocumentsRoute = PartnerDocumentsRouteImport.update({
-  id: '/documents',
-  path: '/documents',
-  getParentRoute: () => PartnerRoute,
+const SuppliersKybRoute = SuppliersKybRouteImport.update({
+  id: '/kyb',
+  path: '/kyb',
+  getParentRoute: () => SuppliersRoute,
 } as any)
-const PartnerDisputesRoute = PartnerDisputesRouteImport.update({
-  id: '/disputes',
-  path: '/disputes',
-  getParentRoute: () => PartnerRoute,
+const SuppliersProfileRoute = SuppliersProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => SuppliersRoute,
 } as any)
-const PartnerCommissionsRoute = PartnerCommissionsRouteImport.update({
-  id: '/commissions',
-  path: '/commissions',
-  getParentRoute: () => PartnerRoute,
-} as any)
-const PartnerClientsRoute = PartnerClientsRouteImport.update({
-  id: '/clients',
-  path: '/clients',
-  getParentRoute: () => PartnerRoute,
-} as any)
-const PartnerCasesRoute = PartnerCasesRouteImport.update({
-  id: '/cases',
-  path: '/cases',
-  getParentRoute: () => PartnerRoute,
-} as any)
-const PartnerActivityLogRoute = PartnerActivityLogRouteImport.update({
-  id: '/activity-log',
-  path: '/activity-log',
-  getParentRoute: () => PartnerRoute,
-} as any)
-const PLinkIdRoute = PLinkIdRouteImport.update({
-  id: '/p/$linkId',
-  path: '/p/$linkId',
+const TrackIndexRoute = TrackIndexRouteImport.update({
+  id: '/track/',
+  path: '/track/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MerchantProfileRoute = MerchantProfileRouteImport.update({
-  id: '/merchant/profile',
-  path: '/merchant/profile',
+const TrackIdRoute = TrackIdRouteImport.update({
+  id: '/track/$id',
+  path: '/track/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MerchantKybRoute = MerchantKybRouteImport.update({
-  id: '/merchant/kyb',
-  path: '/merchant/kyb',
+const TrackWhatsappRoute = TrackWhatsappRouteImport.update({
+  id: '/track/whatsapp',
+  path: '/track/whatsapp',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ImporterCardsRoute = ImporterCardsRouteImport.update({
+const TradeDeskIndexRoute = TradeDeskIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TradeDeskRoute,
+} as any)
+const TradeDeskFileIdRoute = TradeDeskFileIdRouteImport.update({
+  id: '/$fileId',
+  path: '/$fileId',
+  getParentRoute: () => TradeDeskRoute,
+} as any)
+const TreasuryCardsRoute = TreasuryCardsRouteImport.update({
   id: '/cards',
   path: '/cards',
-  getParentRoute: () => ImporterRoute,
-} as any)
-const FreightCardsRoute = FreightCardsRouteImport.update({
-  id: '/cards',
-  path: '/cards',
-  getParentRoute: () => FreightRoute,
-} as any)
-const CollectionsNewRoute = CollectionsNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => CollectionsRoute,
+  getParentRoute: () => TreasuryRoute,
 } as any)
 const PartnerCasesIndexRoute = PartnerCasesIndexRouteImport.update({
   id: '/',
@@ -1440,396 +1440,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/whatsapp': {
-      id: '/whatsapp'
-      path: '/whatsapp'
-      fullPath: '/whatsapp'
-      preLoaderRoute: typeof WhatsappRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/welcome': {
-      id: '/welcome'
-      path: '/welcome'
-      fullPath: '/welcome'
-      preLoaderRoute: typeof WelcomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/wallets': {
-      id: '/wallets'
-      path: '/wallets'
-      fullPath: '/wallets'
-      preLoaderRoute: typeof WalletsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/verified-suppliers': {
-      id: '/verified-suppliers'
-      path: '/verified-suppliers'
-      fullPath: '/verified-suppliers'
-      preLoaderRoute: typeof VerifiedSuppliersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/verified-buyers': {
-      id: '/verified-buyers'
-      path: '/verified-buyers'
-      fullPath: '/verified-buyers'
-      preLoaderRoute: typeof VerifiedBuyersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/verification-center': {
-      id: '/verification-center'
-      path: '/verification-center'
-      fullPath: '/verification-center'
-      preLoaderRoute: typeof VerificationCenterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/verification': {
-      id: '/verification'
-      path: '/verification'
-      fullPath: '/verification'
-      preLoaderRoute: typeof VerificationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/user-stories': {
-      id: '/user-stories'
-      path: '/user-stories'
-      fullPath: '/user-stories'
-      preLoaderRoute: typeof UserStoriesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/treasury': {
-      id: '/treasury'
-      path: '/treasury'
-      fullPath: '/treasury'
-      preLoaderRoute: typeof TreasuryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/transactions': {
-      id: '/transactions'
-      path: '/transactions'
-      fullPath: '/transactions'
-      preLoaderRoute: typeof TransactionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/trade-network': {
-      id: '/trade-network'
-      path: '/trade-network'
-      fullPath: '/trade-network'
-      preLoaderRoute: typeof TradeNetworkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/trade-desk': {
-      id: '/trade-desk'
-      path: '/trade-desk'
-      fullPath: '/trade-desk'
-      preLoaderRoute: typeof TradeDeskRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/team': {
-      id: '/team'
-      path: '/team'
-      fullPath: '/team'
-      preLoaderRoute: typeof TeamRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/support': {
-      id: '/support'
-      path: '/support'
-      fullPath: '/support'
-      preLoaderRoute: typeof SupportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/suppliers': {
-      id: '/suppliers'
-      path: '/suppliers'
-      fullPath: '/suppliers'
-      preLoaderRoute: typeof SuppliersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/supplier-portal': {
-      id: '/supplier-portal'
-      path: '/supplier-portal'
-      fullPath: '/supplier-portal'
-      preLoaderRoute: typeof SupplierPortalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/shipments': {
-      id: '/shipments'
-      path: '/shipments'
-      fullPath: '/shipments'
-      preLoaderRoute: typeof ShipmentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reports': {
-      id: '/reports'
-      path: '/reports'
-      fullPath: '/reports'
-      preLoaderRoute: typeof ReportsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reconciliation': {
-      id: '/reconciliation'
-      path: '/reconciliation'
-      fullPath: '/reconciliation'
-      preLoaderRoute: typeof ReconciliationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/payments': {
-      id: '/payments'
-      path: '/payments'
-      fullPath: '/payments'
-      preLoaderRoute: typeof PaymentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/payment-links': {
-      id: '/payment-links'
-      path: '/payment-links'
-      fullPath: '/payment-links'
-      preLoaderRoute: typeof PaymentLinksRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/payers': {
-      id: '/payers'
-      path: '/payers'
-      fullPath: '/payers'
-      preLoaderRoute: typeof PayersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/partner': {
-      id: '/partner'
-      path: '/partner'
-      fullPath: '/partner'
-      preLoaderRoute: typeof PartnerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/organization': {
-      id: '/organization'
-      path: '/organization'
-      fullPath: '/organization'
-      preLoaderRoute: typeof OrganizationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ops': {
-      id: '/ops'
-      path: '/ops'
-      fullPath: '/ops'
-      preLoaderRoute: typeof OpsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding': {
-      id: '/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof OnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/my-suppliers': {
-      id: '/my-suppliers'
-      path: '/my-suppliers'
-      fullPath: '/my-suppliers'
-      preLoaderRoute: typeof MySuppliersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/messages': {
-      id: '/messages'
-      path: '/messages'
-      fullPath: '/messages'
-      preLoaderRoute: typeof MessagesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/landed-cost': {
-      id: '/landed-cost'
-      path: '/landed-cost'
-      fullPath: '/landed-cost'
-      preLoaderRoute: typeof LandedCostRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/kyb-onboarding': {
-      id: '/kyb-onboarding'
-      path: '/kyb-onboarding'
-      fullPath: '/kyb-onboarding'
-      preLoaderRoute: typeof KybOnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/invoices': {
-      id: '/invoices'
-      path: '/invoices'
-      fullPath: '/invoices'
-      preLoaderRoute: typeof InvoicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/integrations': {
-      id: '/integrations'
-      path: '/integrations'
-      fullPath: '/integrations'
-      preLoaderRoute: typeof IntegrationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/importer': {
-      id: '/importer'
-      path: '/importer'
-      fullPath: '/importer'
-      preLoaderRoute: typeof ImporterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/fx': {
-      id: '/fx'
-      path: '/fx'
-      fullPath: '/fx'
-      preLoaderRoute: typeof FxRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/freight-reports': {
-      id: '/freight-reports'
-      path: '/freight-reports'
-      fullPath: '/freight-reports'
-      preLoaderRoute: typeof FreightReportsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/freight-pipeline': {
-      id: '/freight-pipeline'
-      path: '/freight-pipeline'
-      fullPath: '/freight-pipeline'
-      preLoaderRoute: typeof FreightPipelineRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/freight-invoices': {
-      id: '/freight-invoices'
-      path: '/freight-invoices'
-      fullPath: '/freight-invoices'
-      preLoaderRoute: typeof FreightInvoicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/freight-customers': {
-      id: '/freight-customers'
-      path: '/freight-customers'
-      fullPath: '/freight-customers'
-      preLoaderRoute: typeof FreightCustomersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/freight': {
-      id: '/freight'
-      path: '/freight'
-      fullPath: '/freight'
-      preLoaderRoute: typeof FreightRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/escrow': {
-      id: '/escrow'
-      path: '/escrow'
-      fullPath: '/escrow'
-      preLoaderRoute: typeof EscrowRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/documents': {
-      id: '/documents'
-      path: '/documents'
-      fullPath: '/documents'
-      preLoaderRoute: typeof DocumentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/docs': {
-      id: '/docs'
-      path: '/docs'
-      fullPath: '/docs'
-      preLoaderRoute: typeof DocsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/data-model': {
-      id: '/data-model'
-      path: '/data-model'
-      fullPath: '/data-model'
-      preLoaderRoute: typeof DataModelRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/customers': {
-      id: '/customers'
-      path: '/customers'
-      fullPath: '/customers'
-      preLoaderRoute: typeof CustomersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/compliance': {
-      id: '/compliance'
-      path: '/compliance'
-      fullPath: '/compliance'
-      preLoaderRoute: typeof ComplianceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/collections': {
-      id: '/collections'
-      path: '/collections'
-      fullPath: '/collections'
-      preLoaderRoute: typeof CollectionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/clearing-quotes': {
-      id: '/clearing-quotes'
-      path: '/clearing-quotes'
-      fullPath: '/clearing-quotes'
-      preLoaderRoute: typeof ClearingQuotesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cards': {
-      id: '/cards'
-      path: '/cards'
-      fullPath: '/cards'
-      preLoaderRoute: typeof CardsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/buyers': {
-      id: '/buyers'
-      path: '/buyers'
-      fullPath: '/buyers'
-      preLoaderRoute: typeof BuyersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/beneficiaries': {
-      id: '/beneficiaries'
-      path: '/beneficiaries'
-      fullPath: '/beneficiaries'
-      preLoaderRoute: typeof BeneficiariesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/audit-logs': {
-      id: '/audit-logs'
-      path: '/audit-logs'
-      fullPath: '/audit-logs'
-      preLoaderRoute: typeof AuditLogsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/approvals': {
-      id: '/approvals'
-      path: '/approvals'
-      fullPath: '/approvals'
-      preLoaderRoute: typeof ApprovalsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ai-insights': {
-      id: '/ai-insights'
-      path: '/ai-insights'
-      fullPath: '/ai-insights'
-      preLoaderRoute: typeof AiInsightsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ai-growth': {
-      id: '/ai-growth'
-      path: '/ai-growth'
-      fullPath: '/ai-growth'
-      preLoaderRoute: typeof AiGrowthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ai-document-extraction': {
@@ -1839,340 +1454,424 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AiDocumentExtractionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/ai-growth': {
+      id: '/ai-growth'
+      path: '/ai-growth'
+      fullPath: '/ai-growth'
+      preLoaderRoute: typeof AiGrowthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/trade-desk/': {
-      id: '/trade-desk/'
-      path: '/'
-      fullPath: '/trade-desk/'
-      preLoaderRoute: typeof TradeDeskIndexRouteImport
-      parentRoute: typeof TradeDeskRoute
-    }
-    '/track/': {
-      id: '/track/'
-      path: '/track'
-      fullPath: '/track/'
-      preLoaderRoute: typeof TrackIndexRouteImport
+    '/ai-insights': {
+      id: '/ai-insights'
+      path: '/ai-insights'
+      fullPath: '/ai-insights'
+      preLoaderRoute: typeof AiInsightsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/supplier-portal/': {
-      id: '/supplier-portal/'
-      path: '/'
-      fullPath: '/supplier-portal/'
-      preLoaderRoute: typeof SupplierPortalIndexRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/partner/': {
-      id: '/partner/'
-      path: '/'
-      fullPath: '/partner/'
-      preLoaderRoute: typeof PartnerIndexRouteImport
-      parentRoute: typeof PartnerRoute
-    }
-    '/treasury/cards': {
-      id: '/treasury/cards'
-      path: '/cards'
-      fullPath: '/treasury/cards'
-      preLoaderRoute: typeof TreasuryCardsRouteImport
-      parentRoute: typeof TreasuryRoute
-    }
-    '/trade-desk/$fileId': {
-      id: '/trade-desk/$fileId'
-      path: '/$fileId'
-      fullPath: '/trade-desk/$fileId'
-      preLoaderRoute: typeof TradeDeskFileIdRouteImport
-      parentRoute: typeof TradeDeskRoute
-    }
-    '/track/whatsapp': {
-      id: '/track/whatsapp'
-      path: '/track/whatsapp'
-      fullPath: '/track/whatsapp'
-      preLoaderRoute: typeof TrackWhatsappRouteImport
+    '/approvals': {
+      id: '/approvals'
+      path: '/approvals'
+      fullPath: '/approvals'
+      preLoaderRoute: typeof ApprovalsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/track/$id': {
-      id: '/track/$id'
-      path: '/track/$id'
-      fullPath: '/track/$id'
-      preLoaderRoute: typeof TrackIdRouteImport
+    '/audit-logs': {
+      id: '/audit-logs'
+      path: '/audit-logs'
+      fullPath: '/audit-logs'
+      preLoaderRoute: typeof AuditLogsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/suppliers/profile': {
-      id: '/suppliers/profile'
-      path: '/profile'
-      fullPath: '/suppliers/profile'
-      preLoaderRoute: typeof SuppliersProfileRouteImport
-      parentRoute: typeof SuppliersRoute
+    '/beneficiaries': {
+      id: '/beneficiaries'
+      path: '/beneficiaries'
+      fullPath: '/beneficiaries'
+      preLoaderRoute: typeof BeneficiariesRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/suppliers/kyb': {
-      id: '/suppliers/kyb'
-      path: '/kyb'
-      fullPath: '/suppliers/kyb'
-      preLoaderRoute: typeof SuppliersKybRouteImport
-      parentRoute: typeof SuppliersRoute
-    }
-    '/supplier-portal/wallet': {
-      id: '/supplier-portal/wallet'
-      path: '/wallet'
-      fullPath: '/supplier-portal/wallet'
-      preLoaderRoute: typeof SupplierPortalWalletRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/verification': {
-      id: '/supplier-portal/verification'
-      path: '/verification'
-      fullPath: '/supplier-portal/verification'
-      preLoaderRoute: typeof SupplierPortalVerificationRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/trade-files': {
-      id: '/supplier-portal/trade-files'
-      path: '/trade-files'
-      fullPath: '/supplier-portal/trade-files'
-      preLoaderRoute: typeof SupplierPortalTradeFilesRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/team': {
-      id: '/supplier-portal/team'
-      path: '/team'
-      fullPath: '/supplier-portal/team'
-      preLoaderRoute: typeof SupplierPortalTeamRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/support': {
-      id: '/supplier-portal/support'
-      path: '/support'
-      fullPath: '/supplier-portal/support'
-      preLoaderRoute: typeof SupplierPortalSupportRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/settlements': {
-      id: '/supplier-portal/settlements'
-      path: '/settlements'
-      fullPath: '/supplier-portal/settlements'
-      preLoaderRoute: typeof SupplierPortalSettlementsRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/settlement': {
-      id: '/supplier-portal/settlement'
-      path: '/settlement'
-      fullPath: '/supplier-portal/settlement'
-      preLoaderRoute: typeof SupplierPortalSettlementRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/settings': {
-      id: '/supplier-portal/settings'
-      path: '/settings'
-      fullPath: '/supplier-portal/settings'
-      preLoaderRoute: typeof SupplierPortalSettingsRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/rmb-wallet': {
-      id: '/supplier-portal/rmb-wallet'
-      path: '/rmb-wallet'
-      fullPath: '/supplier-portal/rmb-wallet'
-      preLoaderRoute: typeof SupplierPortalRmbWalletRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/requests': {
-      id: '/supplier-portal/requests'
-      path: '/requests'
-      fullPath: '/supplier-portal/requests'
-      preLoaderRoute: typeof SupplierPortalRequestsRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/reports': {
-      id: '/supplier-portal/reports'
-      path: '/reports'
-      fullPath: '/supplier-portal/reports'
-      preLoaderRoute: typeof SupplierPortalReportsRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/payout-accounts': {
-      id: '/supplier-portal/payout-accounts'
-      path: '/payout-accounts'
-      fullPath: '/supplier-portal/payout-accounts'
-      preLoaderRoute: typeof SupplierPortalPayoutAccountsRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/payment-requests': {
-      id: '/supplier-portal/payment-requests'
-      path: '/payment-requests'
-      fullPath: '/supplier-portal/payment-requests'
-      preLoaderRoute: typeof SupplierPortalPaymentRequestsRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/ngn-details': {
-      id: '/supplier-portal/ngn-details'
-      path: '/ngn-details'
-      fullPath: '/supplier-portal/ngn-details'
-      preLoaderRoute: typeof SupplierPortalNgnDetailsRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/messages': {
-      id: '/supplier-portal/messages'
-      path: '/messages'
-      fullPath: '/supplier-portal/messages'
-      preLoaderRoute: typeof SupplierPortalMessagesRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/invoices': {
-      id: '/supplier-portal/invoices'
-      path: '/invoices'
-      fullPath: '/supplier-portal/invoices'
-      preLoaderRoute: typeof SupplierPortalInvoicesRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/fx-quotes': {
-      id: '/supplier-portal/fx-quotes'
-      path: '/fx-quotes'
-      fullPath: '/supplier-portal/fx-quotes'
-      preLoaderRoute: typeof SupplierPortalFxQuotesRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/documents': {
-      id: '/supplier-portal/documents'
-      path: '/documents'
-      fullPath: '/supplier-portal/documents'
-      preLoaderRoute: typeof SupplierPortalDocumentsRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/supplier-portal/buyers': {
-      id: '/supplier-portal/buyers'
+    '/buyers': {
+      id: '/buyers'
       path: '/buyers'
-      fullPath: '/supplier-portal/buyers'
-      preLoaderRoute: typeof SupplierPortalBuyersRouteImport
-      parentRoute: typeof SupplierPortalRoute
-    }
-    '/pay/$linkId': {
-      id: '/pay/$linkId'
-      path: '/pay/$linkId'
-      fullPath: '/pay/$linkId'
-      preLoaderRoute: typeof PayLinkIdRouteImport
+      fullPath: '/buyers'
+      preLoaderRoute: typeof BuyersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/partner/team': {
-      id: '/partner/team'
-      path: '/team'
-      fullPath: '/partner/team'
-      preLoaderRoute: typeof PartnerTeamRouteImport
-      parentRoute: typeof PartnerRoute
+    '/cards': {
+      id: '/cards'
+      path: '/cards'
+      fullPath: '/cards'
+      preLoaderRoute: typeof CardsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/partner/solicitors': {
-      id: '/partner/solicitors'
-      path: '/solicitors'
-      fullPath: '/partner/solicitors'
-      preLoaderRoute: typeof PartnerSolicitorsRouteImport
-      parentRoute: typeof PartnerRoute
+    '/clearing-quotes': {
+      id: '/clearing-quotes'
+      path: '/clearing-quotes'
+      fullPath: '/clearing-quotes'
+      preLoaderRoute: typeof ClearingQuotesRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/partner/settings': {
-      id: '/partner/settings'
-      path: '/settings'
-      fullPath: '/partner/settings'
-      preLoaderRoute: typeof PartnerSettingsRouteImport
-      parentRoute: typeof PartnerRoute
+    '/collections': {
+      id: '/collections'
+      path: '/collections'
+      fullPath: '/collections'
+      preLoaderRoute: typeof CollectionsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/partner/reports': {
-      id: '/partner/reports'
-      path: '/reports'
-      fullPath: '/partner/reports'
-      preLoaderRoute: typeof PartnerReportsRouteImport
-      parentRoute: typeof PartnerRoute
+    '/compliance': {
+      id: '/compliance'
+      path: '/compliance'
+      fullPath: '/compliance'
+      preLoaderRoute: typeof ComplianceRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/partner/payouts': {
-      id: '/partner/payouts'
-      path: '/payouts'
-      fullPath: '/partner/payouts'
-      preLoaderRoute: typeof PartnerPayoutsRouteImport
-      parentRoute: typeof PartnerRoute
+    '/customers': {
+      id: '/customers'
+      path: '/customers'
+      fullPath: '/customers'
+      preLoaderRoute: typeof CustomersRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/partner/payment-links': {
-      id: '/partner/payment-links'
-      path: '/payment-links'
-      fullPath: '/partner/payment-links'
-      preLoaderRoute: typeof PartnerPaymentLinksRouteImport
-      parentRoute: typeof PartnerRoute
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/partner/new-referral': {
-      id: '/partner/new-referral'
-      path: '/new-referral'
-      fullPath: '/partner/new-referral'
-      preLoaderRoute: typeof PartnerNewReferralRouteImport
-      parentRoute: typeof PartnerRoute
+    '/data-model': {
+      id: '/data-model'
+      path: '/data-model'
+      fullPath: '/data-model'
+      preLoaderRoute: typeof DataModelRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/partner/marketers': {
-      id: '/partner/marketers'
-      path: '/marketers'
-      fullPath: '/partner/marketers'
-      preLoaderRoute: typeof PartnerMarketersRouteImport
-      parentRoute: typeof PartnerRoute
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/partner/leads': {
-      id: '/partner/leads'
-      path: '/leads'
-      fullPath: '/partner/leads'
-      preLoaderRoute: typeof PartnerLeadsRouteImport
-      parentRoute: typeof PartnerRoute
-    }
-    '/partner/fx-quotes': {
-      id: '/partner/fx-quotes'
-      path: '/fx-quotes'
-      fullPath: '/partner/fx-quotes'
-      preLoaderRoute: typeof PartnerFxQuotesRouteImport
-      parentRoute: typeof PartnerRoute
-    }
-    '/partner/documents': {
-      id: '/partner/documents'
+    '/documents': {
+      id: '/documents'
       path: '/documents'
-      fullPath: '/partner/documents'
-      preLoaderRoute: typeof PartnerDocumentsRouteImport
-      parentRoute: typeof PartnerRoute
+      fullPath: '/documents'
+      preLoaderRoute: typeof DocumentsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/partner/disputes': {
-      id: '/partner/disputes'
-      path: '/disputes'
-      fullPath: '/partner/disputes'
-      preLoaderRoute: typeof PartnerDisputesRouteImport
-      parentRoute: typeof PartnerRoute
+    '/escrow': {
+      id: '/escrow'
+      path: '/escrow'
+      fullPath: '/escrow'
+      preLoaderRoute: typeof EscrowRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/partner/commissions': {
-      id: '/partner/commissions'
-      path: '/commissions'
-      fullPath: '/partner/commissions'
-      preLoaderRoute: typeof PartnerCommissionsRouteImport
-      parentRoute: typeof PartnerRoute
+    '/freight': {
+      id: '/freight'
+      path: '/freight'
+      fullPath: '/freight'
+      preLoaderRoute: typeof FreightRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/partner/clients': {
-      id: '/partner/clients'
-      path: '/clients'
-      fullPath: '/partner/clients'
-      preLoaderRoute: typeof PartnerClientsRouteImport
-      parentRoute: typeof PartnerRoute
+    '/freight-customers': {
+      id: '/freight-customers'
+      path: '/freight-customers'
+      fullPath: '/freight-customers'
+      preLoaderRoute: typeof FreightCustomersRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/partner/cases': {
-      id: '/partner/cases'
-      path: '/cases'
-      fullPath: '/partner/cases'
-      preLoaderRoute: typeof PartnerCasesRouteImport
-      parentRoute: typeof PartnerRoute
+    '/freight-invoices': {
+      id: '/freight-invoices'
+      path: '/freight-invoices'
+      fullPath: '/freight-invoices'
+      preLoaderRoute: typeof FreightInvoicesRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/partner/activity-log': {
-      id: '/partner/activity-log'
-      path: '/activity-log'
-      fullPath: '/partner/activity-log'
-      preLoaderRoute: typeof PartnerActivityLogRouteImport
-      parentRoute: typeof PartnerRoute
+    '/freight-pipeline': {
+      id: '/freight-pipeline'
+      path: '/freight-pipeline'
+      fullPath: '/freight-pipeline'
+      preLoaderRoute: typeof FreightPipelineRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/p/$linkId': {
-      id: '/p/$linkId'
-      path: '/p/$linkId'
-      fullPath: '/p/$linkId'
-      preLoaderRoute: typeof PLinkIdRouteImport
+    '/freight-reports': {
+      id: '/freight-reports'
+      path: '/freight-reports'
+      fullPath: '/freight-reports'
+      preLoaderRoute: typeof FreightReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fx': {
+      id: '/fx'
+      path: '/fx'
+      fullPath: '/fx'
+      preLoaderRoute: typeof FxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/importer': {
+      id: '/importer'
+      path: '/importer'
+      fullPath: '/importer'
+      preLoaderRoute: typeof ImporterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/integrations': {
+      id: '/integrations'
+      path: '/integrations'
+      fullPath: '/integrations'
+      preLoaderRoute: typeof IntegrationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invoices': {
+      id: '/invoices'
+      path: '/invoices'
+      fullPath: '/invoices'
+      preLoaderRoute: typeof InvoicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kyb-onboarding': {
+      id: '/kyb-onboarding'
+      path: '/kyb-onboarding'
+      fullPath: '/kyb-onboarding'
+      preLoaderRoute: typeof KybOnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/landed-cost': {
+      id: '/landed-cost'
+      path: '/landed-cost'
+      fullPath: '/landed-cost'
+      preLoaderRoute: typeof LandedCostRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-suppliers': {
+      id: '/my-suppliers'
+      path: '/my-suppliers'
+      fullPath: '/my-suppliers'
+      preLoaderRoute: typeof MySuppliersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ops': {
+      id: '/ops'
+      path: '/ops'
+      fullPath: '/ops'
+      preLoaderRoute: typeof OpsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/organization': {
+      id: '/organization'
+      path: '/organization'
+      fullPath: '/organization'
+      preLoaderRoute: typeof OrganizationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/partner': {
+      id: '/partner'
+      path: '/partner'
+      fullPath: '/partner'
+      preLoaderRoute: typeof PartnerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payers': {
+      id: '/payers'
+      path: '/payers'
+      fullPath: '/payers'
+      preLoaderRoute: typeof PayersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-links': {
+      id: '/payment-links'
+      path: '/payment-links'
+      fullPath: '/payment-links'
+      preLoaderRoute: typeof PaymentLinksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payments': {
+      id: '/payments'
+      path: '/payments'
+      fullPath: '/payments'
+      preLoaderRoute: typeof PaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reconciliation': {
+      id: '/reconciliation'
+      path: '/reconciliation'
+      fullPath: '/reconciliation'
+      preLoaderRoute: typeof ReconciliationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shipments': {
+      id: '/shipments'
+      path: '/shipments'
+      fullPath: '/shipments'
+      preLoaderRoute: typeof ShipmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/supplier-portal': {
+      id: '/supplier-portal'
+      path: '/supplier-portal'
+      fullPath: '/supplier-portal'
+      preLoaderRoute: typeof SupplierPortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/suppliers': {
+      id: '/suppliers'
+      path: '/suppliers'
+      fullPath: '/suppliers'
+      preLoaderRoute: typeof SuppliersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team': {
+      id: '/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof TeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trade-desk': {
+      id: '/trade-desk'
+      path: '/trade-desk'
+      fullPath: '/trade-desk'
+      preLoaderRoute: typeof TradeDeskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trade-network': {
+      id: '/trade-network'
+      path: '/trade-network'
+      fullPath: '/trade-network'
+      preLoaderRoute: typeof TradeNetworkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transactions': {
+      id: '/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof TransactionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/treasury': {
+      id: '/treasury'
+      path: '/treasury'
+      fullPath: '/treasury'
+      preLoaderRoute: typeof TreasuryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user-stories': {
+      id: '/user-stories'
+      path: '/user-stories'
+      fullPath: '/user-stories'
+      preLoaderRoute: typeof UserStoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verification': {
+      id: '/verification'
+      path: '/verification'
+      fullPath: '/verification'
+      preLoaderRoute: typeof VerificationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verification-center': {
+      id: '/verification-center'
+      path: '/verification-center'
+      fullPath: '/verification-center'
+      preLoaderRoute: typeof VerificationCenterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verified-buyers': {
+      id: '/verified-buyers'
+      path: '/verified-buyers'
+      fullPath: '/verified-buyers'
+      preLoaderRoute: typeof VerifiedBuyersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verified-suppliers': {
+      id: '/verified-suppliers'
+      path: '/verified-suppliers'
+      fullPath: '/verified-suppliers'
+      preLoaderRoute: typeof VerifiedSuppliersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wallets': {
+      id: '/wallets'
+      path: '/wallets'
+      fullPath: '/wallets'
+      preLoaderRoute: typeof WalletsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/whatsapp': {
+      id: '/whatsapp'
+      path: '/whatsapp'
+      fullPath: '/whatsapp'
+      preLoaderRoute: typeof WhatsappRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collections/new': {
+      id: '/collections/new'
+      path: '/new'
+      fullPath: '/collections/new'
+      preLoaderRoute: typeof CollectionsNewRouteImport
+      parentRoute: typeof CollectionsRoute
+    }
+    '/freight/cards': {
+      id: '/freight/cards'
+      path: '/cards'
+      fullPath: '/freight/cards'
+      preLoaderRoute: typeof FreightCardsRouteImport
+      parentRoute: typeof FreightRoute
+    }
+    '/importer/cards': {
+      id: '/importer/cards'
+      path: '/cards'
+      fullPath: '/importer/cards'
+      preLoaderRoute: typeof ImporterCardsRouteImport
+      parentRoute: typeof ImporterRoute
+    }
+    '/merchant/kyb': {
+      id: '/merchant/kyb'
+      path: '/merchant/kyb'
+      fullPath: '/merchant/kyb'
+      preLoaderRoute: typeof MerchantKybRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merchant/profile': {
@@ -2182,33 +1881,334 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MerchantProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/merchant/kyb': {
-      id: '/merchant/kyb'
-      path: '/merchant/kyb'
-      fullPath: '/merchant/kyb'
-      preLoaderRoute: typeof MerchantKybRouteImport
+    '/p/$linkId': {
+      id: '/p/$linkId'
+      path: '/p/$linkId'
+      fullPath: '/p/$linkId'
+      preLoaderRoute: typeof PLinkIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/importer/cards': {
-      id: '/importer/cards'
-      path: '/cards'
-      fullPath: '/importer/cards'
-      preLoaderRoute: typeof ImporterCardsRouteImport
-      parentRoute: typeof ImporterRoute
+    '/partner/': {
+      id: '/partner/'
+      path: '/'
+      fullPath: '/partner/'
+      preLoaderRoute: typeof PartnerIndexRouteImport
+      parentRoute: typeof PartnerRoute
     }
-    '/freight/cards': {
-      id: '/freight/cards'
-      path: '/cards'
-      fullPath: '/freight/cards'
-      preLoaderRoute: typeof FreightCardsRouteImport
-      parentRoute: typeof FreightRoute
+    '/partner/activity-log': {
+      id: '/partner/activity-log'
+      path: '/activity-log'
+      fullPath: '/partner/activity-log'
+      preLoaderRoute: typeof PartnerActivityLogRouteImport
+      parentRoute: typeof PartnerRoute
     }
-    '/collections/new': {
-      id: '/collections/new'
-      path: '/new'
-      fullPath: '/collections/new'
-      preLoaderRoute: typeof CollectionsNewRouteImport
-      parentRoute: typeof CollectionsRoute
+    '/partner/cases': {
+      id: '/partner/cases'
+      path: '/cases'
+      fullPath: '/partner/cases'
+      preLoaderRoute: typeof PartnerCasesRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/clients': {
+      id: '/partner/clients'
+      path: '/clients'
+      fullPath: '/partner/clients'
+      preLoaderRoute: typeof PartnerClientsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/commissions': {
+      id: '/partner/commissions'
+      path: '/commissions'
+      fullPath: '/partner/commissions'
+      preLoaderRoute: typeof PartnerCommissionsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/disputes': {
+      id: '/partner/disputes'
+      path: '/disputes'
+      fullPath: '/partner/disputes'
+      preLoaderRoute: typeof PartnerDisputesRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/documents': {
+      id: '/partner/documents'
+      path: '/documents'
+      fullPath: '/partner/documents'
+      preLoaderRoute: typeof PartnerDocumentsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/fx-quotes': {
+      id: '/partner/fx-quotes'
+      path: '/fx-quotes'
+      fullPath: '/partner/fx-quotes'
+      preLoaderRoute: typeof PartnerFxQuotesRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/leads': {
+      id: '/partner/leads'
+      path: '/leads'
+      fullPath: '/partner/leads'
+      preLoaderRoute: typeof PartnerLeadsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/marketers': {
+      id: '/partner/marketers'
+      path: '/marketers'
+      fullPath: '/partner/marketers'
+      preLoaderRoute: typeof PartnerMarketersRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/new-referral': {
+      id: '/partner/new-referral'
+      path: '/new-referral'
+      fullPath: '/partner/new-referral'
+      preLoaderRoute: typeof PartnerNewReferralRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/payment-links': {
+      id: '/partner/payment-links'
+      path: '/payment-links'
+      fullPath: '/partner/payment-links'
+      preLoaderRoute: typeof PartnerPaymentLinksRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/payouts': {
+      id: '/partner/payouts'
+      path: '/payouts'
+      fullPath: '/partner/payouts'
+      preLoaderRoute: typeof PartnerPayoutsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/reports': {
+      id: '/partner/reports'
+      path: '/reports'
+      fullPath: '/partner/reports'
+      preLoaderRoute: typeof PartnerReportsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/settings': {
+      id: '/partner/settings'
+      path: '/settings'
+      fullPath: '/partner/settings'
+      preLoaderRoute: typeof PartnerSettingsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/solicitors': {
+      id: '/partner/solicitors'
+      path: '/solicitors'
+      fullPath: '/partner/solicitors'
+      preLoaderRoute: typeof PartnerSolicitorsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/team': {
+      id: '/partner/team'
+      path: '/team'
+      fullPath: '/partner/team'
+      preLoaderRoute: typeof PartnerTeamRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/pay/$linkId': {
+      id: '/pay/$linkId'
+      path: '/pay/$linkId'
+      fullPath: '/pay/$linkId'
+      preLoaderRoute: typeof PayLinkIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/supplier-portal/': {
+      id: '/supplier-portal/'
+      path: '/'
+      fullPath: '/supplier-portal/'
+      preLoaderRoute: typeof SupplierPortalIndexRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/buyers': {
+      id: '/supplier-portal/buyers'
+      path: '/buyers'
+      fullPath: '/supplier-portal/buyers'
+      preLoaderRoute: typeof SupplierPortalBuyersRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/documents': {
+      id: '/supplier-portal/documents'
+      path: '/documents'
+      fullPath: '/supplier-portal/documents'
+      preLoaderRoute: typeof SupplierPortalDocumentsRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/fx-quotes': {
+      id: '/supplier-portal/fx-quotes'
+      path: '/fx-quotes'
+      fullPath: '/supplier-portal/fx-quotes'
+      preLoaderRoute: typeof SupplierPortalFxQuotesRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/invoices': {
+      id: '/supplier-portal/invoices'
+      path: '/invoices'
+      fullPath: '/supplier-portal/invoices'
+      preLoaderRoute: typeof SupplierPortalInvoicesRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/messages': {
+      id: '/supplier-portal/messages'
+      path: '/messages'
+      fullPath: '/supplier-portal/messages'
+      preLoaderRoute: typeof SupplierPortalMessagesRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/ngn-details': {
+      id: '/supplier-portal/ngn-details'
+      path: '/ngn-details'
+      fullPath: '/supplier-portal/ngn-details'
+      preLoaderRoute: typeof SupplierPortalNgnDetailsRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/payment-requests': {
+      id: '/supplier-portal/payment-requests'
+      path: '/payment-requests'
+      fullPath: '/supplier-portal/payment-requests'
+      preLoaderRoute: typeof SupplierPortalPaymentRequestsRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/payout-accounts': {
+      id: '/supplier-portal/payout-accounts'
+      path: '/payout-accounts'
+      fullPath: '/supplier-portal/payout-accounts'
+      preLoaderRoute: typeof SupplierPortalPayoutAccountsRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/reports': {
+      id: '/supplier-portal/reports'
+      path: '/reports'
+      fullPath: '/supplier-portal/reports'
+      preLoaderRoute: typeof SupplierPortalReportsRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/requests': {
+      id: '/supplier-portal/requests'
+      path: '/requests'
+      fullPath: '/supplier-portal/requests'
+      preLoaderRoute: typeof SupplierPortalRequestsRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/rmb-wallet': {
+      id: '/supplier-portal/rmb-wallet'
+      path: '/rmb-wallet'
+      fullPath: '/supplier-portal/rmb-wallet'
+      preLoaderRoute: typeof SupplierPortalRmbWalletRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/settings': {
+      id: '/supplier-portal/settings'
+      path: '/settings'
+      fullPath: '/supplier-portal/settings'
+      preLoaderRoute: typeof SupplierPortalSettingsRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/settlement': {
+      id: '/supplier-portal/settlement'
+      path: '/settlement'
+      fullPath: '/supplier-portal/settlement'
+      preLoaderRoute: typeof SupplierPortalSettlementRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/settlements': {
+      id: '/supplier-portal/settlements'
+      path: '/settlements'
+      fullPath: '/supplier-portal/settlements'
+      preLoaderRoute: typeof SupplierPortalSettlementsRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/support': {
+      id: '/supplier-portal/support'
+      path: '/support'
+      fullPath: '/supplier-portal/support'
+      preLoaderRoute: typeof SupplierPortalSupportRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/team': {
+      id: '/supplier-portal/team'
+      path: '/team'
+      fullPath: '/supplier-portal/team'
+      preLoaderRoute: typeof SupplierPortalTeamRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/trade-files': {
+      id: '/supplier-portal/trade-files'
+      path: '/trade-files'
+      fullPath: '/supplier-portal/trade-files'
+      preLoaderRoute: typeof SupplierPortalTradeFilesRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/verification': {
+      id: '/supplier-portal/verification'
+      path: '/verification'
+      fullPath: '/supplier-portal/verification'
+      preLoaderRoute: typeof SupplierPortalVerificationRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/supplier-portal/wallet': {
+      id: '/supplier-portal/wallet'
+      path: '/wallet'
+      fullPath: '/supplier-portal/wallet'
+      preLoaderRoute: typeof SupplierPortalWalletRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
+    '/suppliers/kyb': {
+      id: '/suppliers/kyb'
+      path: '/kyb'
+      fullPath: '/suppliers/kyb'
+      preLoaderRoute: typeof SuppliersKybRouteImport
+      parentRoute: typeof SuppliersRoute
+    }
+    '/suppliers/profile': {
+      id: '/suppliers/profile'
+      path: '/profile'
+      fullPath: '/suppliers/profile'
+      preLoaderRoute: typeof SuppliersProfileRouteImport
+      parentRoute: typeof SuppliersRoute
+    }
+    '/track/': {
+      id: '/track/'
+      path: '/track'
+      fullPath: '/track/'
+      preLoaderRoute: typeof TrackIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/track/$id': {
+      id: '/track/$id'
+      path: '/track/$id'
+      fullPath: '/track/$id'
+      preLoaderRoute: typeof TrackIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/track/whatsapp': {
+      id: '/track/whatsapp'
+      path: '/track/whatsapp'
+      fullPath: '/track/whatsapp'
+      preLoaderRoute: typeof TrackWhatsappRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trade-desk/': {
+      id: '/trade-desk/'
+      path: '/'
+      fullPath: '/trade-desk/'
+      preLoaderRoute: typeof TradeDeskIndexRouteImport
+      parentRoute: typeof TradeDeskRoute
+    }
+    '/trade-desk/$fileId': {
+      id: '/trade-desk/$fileId'
+      path: '/$fileId'
+      fullPath: '/trade-desk/$fileId'
+      preLoaderRoute: typeof TradeDeskFileIdRouteImport
+      parentRoute: typeof TradeDeskRoute
+    }
+    '/treasury/cards': {
+      id: '/treasury/cards'
+      path: '/cards'
+      fullPath: '/treasury/cards'
+      preLoaderRoute: typeof TreasuryCardsRouteImport
+      parentRoute: typeof TreasuryRoute
     }
     '/partner/cases/': {
       id: '/partner/cases/'
