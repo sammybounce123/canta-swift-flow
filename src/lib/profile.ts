@@ -240,6 +240,10 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       return [
         D,
         { to: "/freight", label: "Assigned Clearing Jobs", iconKey: "freight", group: "My Workspace" },
+        { to: "/freight-customers", label: "Customers", iconKey: "users", group: "My Workspace" },
+        { to: "/freight-pipeline", label: "Shipment Pipeline", iconKey: "ship", group: "Operations" },
+        { to: "/freight-invoices", label: "Freight Invoices", iconKey: "receipt", group: "Operations" },
+        { to: "/freight-reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
         { to: "/whatsapp", label: "Messages", iconKey: "whatsapp", group: "Updates" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
