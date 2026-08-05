@@ -23,7 +23,7 @@ export type Invoice = {
   invoiceDate: string;
   dueDate: string;
   poNumber?: string;
-  tradeFileRef?: string;
+  shipmentRef?: string;
   buyerReference?: string;
   currency: "RMB" | "USD" | "NGN";
   supplier: { company: string; address: string };

@@ -69,7 +69,7 @@ export function GenerateInvoiceWizard({ open, onOpenChange, presetQuoteId, prese
   const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().slice(0, 10));
   const [dueDate, setDueDate] = useState("");
   const [poNumber, setPoNumber] = useState("");
-  const [tradeFileRef, setTradeFileRef] = useState("");
+  const [shipmentRef, setShipmentRef] = useState("");
   const [buyerReference, setBuyerReference] = useState("");
   const [buyerAddress, setBuyerAddress] = useState("Lagos, Nigeria");
   const [origin, setOrigin] = useState("Shenzhen, CN");
@@ -129,7 +129,7 @@ export function GenerateInvoiceWizard({ open, onOpenChange, presetQuoteId, prese
         invoiceDate,
         dueDate: dueDate || invoiceDate,
         poNumber: poNumber || undefined,
-        tradeFileRef: tradeFileRef || undefined,
+        shipmentRef: shipmentRef || undefined,
         buyerReference: buyerReference || undefined,
         currency,
         supplier: SUPPLIER,
@@ -167,7 +167,7 @@ export function GenerateInvoiceWizard({ open, onOpenChange, presetQuoteId, prese
     try {
       const inv = invoiceStore.add({
         invoiceNumber, invoiceDate, dueDate: dueDate || invoiceDate,
-        poNumber: poNumber || undefined, tradeFileRef: tradeFileRef || undefined,
+        poNumber: poNumber || undefined, shipmentRef: shipmentRef || undefined,
         buyerReference: buyerReference || undefined, currency,
         supplier: SUPPLIER,
         buyer: { company: buyer.company, email: buyer.email, phone: buyer.phone, address: buyerAddress },
@@ -265,7 +265,7 @@ export function GenerateInvoiceWizard({ open, onOpenChange, presetQuoteId, prese
                 <Field label="Invoice date"><Input type="date" value={invoiceDate} onChange={(e) => setInvoiceDate(e.target.value)} /></Field>
                 <Field label="Payment due date"><Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} /></Field>
                 <Field label="PO number (optional)"><Input value={poNumber} onChange={(e) => setPoNumber(e.target.value)} /></Field>
-                <Field label="Trade File (optional)"><Input value={tradeFileRef} onChange={(e) => setTradeFileRef(e.target.value)} placeholder="TR-1234" /></Field>
+                <Field label="Shipment / container ref (optional)"><Input value={shipmentRef} onChange={(e) => setShipmentRef(e.target.value)} placeholder="MSCU1234567" /></Field>
                 <Field label="Buyer reference (optional)"><Input value={buyerReference} onChange={(e) => setBuyerReference(e.target.value)} /></Field>
                 <Field label="Incoterm (optional)"><Input value={incoterm} onChange={(e) => setIncoterm(e.target.value)} /></Field>
                 <Field label="Supplier company"><Input value={SUPPLIER.company} disabled /></Field>
@@ -338,7 +338,7 @@ export function GenerateInvoiceWizard({ open, onOpenChange, presetQuoteId, prese
                 <Row k="Est. supplier receivable" v={`${estReceivable.toLocaleString()} ${selectedQuote?.settlementCurrency ?? currency}`} />
                 <Row k="Quote expires" v={selectedQuote ? formatCountdown(selectedQuote.expiresAt) : "—"} />
                 <Row k="Payout account" v={PAYOUT_ACCOUNT.label} />
-                <Row k="Trade File" v={tradeFileRef || "—"} />
+                <Row k="Shipment ref" v={shipmentRef || "—"} />
               </Card>
               <div className="text-xs bg-amber-50 text-amber-800 border border-amber-200 rounded p-2">
                 The buyer&apos;s NGN payment details will not be generated at this stage. They will be generated only after the buyer opens the payment request, completes verification, accepts the current quote, and confirms payment.

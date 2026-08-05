@@ -19,6 +19,7 @@ import { ReadinessBar } from "@/components/ReadinessBar";
 import { getRequests as getClearingRequests, getBids as getClearingBids, getBidsForRequest as getClearingBidsForRequest, CLEARING_DISCLAIMER, getAgentVerified, setAgentVerified, submitBid as submitClearingBid, withdrawBid as withdrawClearingBid, markUnableToProceed as markBidUnable, SERVICE_SCOPES, type ServiceScope } from "@/lib/clearing-store";
 import { Switch } from "@/components/ui/switch";
 import { ShieldCheck, Lock as LockIcon } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/freight")({
   head: () => ({ meta: [{ title: "Clearing Agent Portal — Canta" }] }),
@@ -161,15 +162,18 @@ function Freight() {
           </div>
         </TabsContent>
 
-        <TabsContent value="customers" className="mt-6">
+        <TabsContent value="customers" className="mt-6 space-y-3">
+          <FreightPageLink to="/freight-customers" label="Open full Customer Records module" />
           <CustomersTable onWhatsApp={setWaCustomer} onCreate={() => setCreateOpen(true)} />
         </TabsContent>
 
-        <TabsContent value="pipeline" className="mt-6">
+        <TabsContent value="pipeline" className="mt-6 space-y-3">
+          <FreightPageLink to="/freight-pipeline" label="Open full Shipment Pipeline (bulk actions, staff assignment)" />
           <PipelineBoard />
         </TabsContent>
 
-        <TabsContent value="arriving" className="mt-6">
+        <TabsContent value="arriving" className="mt-6 space-y-3">
+          <FreightPageLink to="/freight-pipeline" label="Open Shipment Pipeline for arriving shipments & ETAs" />
           <ArrivingShipments />
         </TabsContent>
 
@@ -177,7 +181,8 @@ function Freight() {
           <DocumentsManager />
         </TabsContent>
 
-        <TabsContent value="invoices" className="mt-6">
+        <TabsContent value="invoices" className="mt-6 space-y-3">
+          <FreightPageLink to="/freight-invoices" label="Open full Freight Invoices module" />
           <InvoicesTable />
         </TabsContent>
 
@@ -190,7 +195,8 @@ function Freight() {
           <WhatsAppPanel onCompose={(s) => setWaShipment(s)} />
         </TabsContent>
 
-        <TabsContent value="reports" className="mt-6">
+        <TabsContent value="reports" className="mt-6 space-y-3">
+          <FreightPageLink to="/freight-reports" label="Open full Reports (by customer, route, volume, revenue)" />
           <ReportsPanel />
         </TabsContent>
       </Tabs>
@@ -217,6 +223,16 @@ function SparkBars({ data, tone }: { data: { label: string; value: number }[]; t
           <div className="text-[10px] text-muted-foreground">{d.label}</div>
         </div>
       ))}
+    </div>
+  );
+}
+
+function FreightPageLink({ to, label }: { to: string; label: string }) {
+  return (
+    <div className="flex justify-end">
+      <Button size="sm" variant="outline" asChild>
+        <Link to={to}>{label}</Link>
+      </Button>
     </div>
   );
 }

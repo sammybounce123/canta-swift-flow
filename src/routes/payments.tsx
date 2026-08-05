@@ -16,7 +16,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Receipt, Plus, Search, Filter, Download, ArrowRight, CheckCircle2,
-  Clock, AlertCircle, Building2, Truck, FileText, Wallet,
+  Clock, AlertCircle, Building2, Truck, FileText, Wallet, Trash2, Send,
 } from "lucide-react";
 import { fmtMoney } from "@/lib/mock";
 import { toast } from "sonner";
@@ -26,14 +26,14 @@ export const Route = createFileRoute("/payments")({
   component: PaymentsPage,
 });
 
-type PayStatus = "Paid" | "Scheduled" | "Pending approval" | "Failed";
+type PayStatus = "Paid" | "Scheduled" | "Pending approval" | "Failed" | "Draft";
 type Payment = {
   id: string; beneficiary: string; kind: "Supplier" | "Forwarder" | "Customs" | "Other";
   reference: string; amount: number; ccy: string; date: string; status: PayStatus;
-  tradeFile?: string; shipment?: string;
+  tradeFile?: string; shipment?: string; purpose?: string; account?: string;
 };
 
-const PAYMENTS: Payment[] = [
+const SEED_PAYMENTS: Payment[] = [
   { id: "PAY-9041", beneficiary: "Yiwu Fashion Co.",      kind: "Supplier",  reference: "INV-CN-7042", amount: 67_400,  ccy: "USD", date: "2026-06-18", status: "Paid",             tradeFile: "TR-2042", shipment: "SH-9012" },
   { id: "PAY-9040", beneficiary: "Guangzhou Electronics", kind: "Supplier",  reference: "INV-CN-7041", amount: 184_000, ccy: "USD", date: "2026-06-17", status: "Scheduled",        tradeFile: "TR-2031", shipment: "SH-9012" },
   { id: "PAY-9039", beneficiary: "ABC Freight Lagos",     kind: "Forwarder", reference: "FRT-4408",    amount: 12_800,  ccy: "USD", date: "2026-06-16", status: "Pending approval", shipment: "SH-9012" },
@@ -47,6 +47,7 @@ function tone(s: PayStatus) {
   if (s === "Paid") return "bg-success/15 text-success border-success/30";
   if (s === "Scheduled") return "bg-primary/10 text-primary border-primary/20";
   if (s === "Pending approval") return "bg-amber-500/15 text-amber-700 border-amber-500/30";
+  if (s === "Draft") return "bg-secondary text-foreground border-border";
   return "bg-destructive/15 text-destructive border-destructive/30";
 }
 
@@ -57,21 +58,25 @@ const KIND_ICON: Record<Payment["kind"], typeof Building2> = {
   Other: Wallet,
 };
 
+let payoutCounter = 9042;
+const nextPayoutId = () => `PAY-${payoutCounter++}`;
+
 function PaymentsPage() {
   useRequireWorkspace();
+  const [payments, setPayments] = useState<Payment[]>(SEED_PAYMENTS);
   const [q, setQ] = useState("");
   const [tab, setTab] = useState<"all" | PayStatus>("all");
   const [kind, setKind] = useState<"All" | Payment["kind"]>("All");
   const [open, setOpen] = useState(false);
 
-  const filtered = useMemo(() => PAYMENTS.filter((p) =>
+  const filtered = useMemo(() => payments.filter((p) =>
     (tab === "all" || p.status === tab) &&
     (kind === "All" || p.kind === kind) &&
     (!q || p.beneficiary.toLowerCase().includes(q.toLowerCase()) || p.reference.toLowerCase().includes(q.toLowerCase()) || p.id.toLowerCase().includes(q.toLowerCase()))
-  ), [q, tab, kind]);
+  ), [payments, q, tab, kind]);
 
   const stats = useMemo(() => {
-    const supplierPayments = PAYMENTS.filter((p) => p.kind === "Supplier");
+    const supplierPayments = payments.filter((p) => p.kind === "Supplier");
     const ngnPaid = supplierPayments
       .filter((p) => p.status === "Paid")
       .reduce((a, b) => a + b.amount * 1600, 0);
@@ -83,28 +88,40 @@ function PaymentsPage() {
       .reduce((a, b) => a + b.amount * 7.2, 0);
     const receiptsAvailable = supplierPayments.filter((p) => p.status === "Paid").length;
     return { ngnPaid, rmbProcessing, rmbPaidToSupplier, receiptsAvailable };
-  }, []);
+  }, [payments]);
+
+  function addPayments(newRows: Payment[]) {
+    setPayments((cur) => [...newRows, ...cur]);
+  }
+
+  function submitForApproval(id: string) {
+    setPayments((cur) => cur.map((p) => p.id === id ? { ...p, status: "Pending approval" } : p));
+    toast.success(`${id} submitted for approval`);
+  }
 
   return (
     <div className="space-y-6">
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:flex-wrap sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
-            <Receipt className="h-5 w-5 text-primary shrink-0" /> Supplier Payments
+            <Receipt className="h-5 w-5 text-primary shrink-0" /> Payouts
           </h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            Pay suppliers in RMB against each trade file. Track NGN funded, RMB processing, RMB paid to supplier, and receipts available.
+            Create payouts to suppliers, forwarders, customs and other beneficiaries. Track NGN funded, RMB processing, RMB paid to supplier, and receipts available.
           </p>
         </div>
         <div className="flex gap-2 shrink-0">
-          <Button variant="outline" onClick={() => toast.success("Exported supplier payments report")}>
+          <Button variant="outline" onClick={() => toast.success("Exported payments report")}>
             <Download className="h-4 w-4 mr-1.5" /> Export
           </Button>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button><Plus className="h-4 w-4 mr-1.5" /> Pay supplier</Button>
+              <Button><Plus className="h-4 w-4 mr-1.5" /> Create Payout</Button>
             </DialogTrigger>
-            <NewPaymentDialog onClose={() => setOpen(false)} />
+            <CreatePayoutDialog
+              onClose={() => setOpen(false)}
+              onCreate={(rows) => { addPayments(rows); setOpen(false); }}
+            />
           </Dialog>
         </div>
       </header>
@@ -135,6 +152,7 @@ function PaymentsPage() {
       <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
         <TabsList className="flex-wrap h-auto">
           <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="Draft">Draft</TabsTrigger>
           <TabsTrigger value="Paid">Paid</TabsTrigger>
           <TabsTrigger value="Scheduled">Scheduled</TabsTrigger>
           <TabsTrigger value="Pending approval">Pending approval</TabsTrigger>
@@ -155,6 +173,7 @@ function PaymentsPage() {
                     <th className="px-4 py-3 text-right">Amount</th>
                     <th className="px-4 py-3">Date</th>
                     <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -181,11 +200,18 @@ function PaymentsPage() {
                         <td className="px-4 py-3 text-right tabular-nums font-semibold">{fmtMoney(p.amount, p.ccy)}</td>
                         <td className="px-4 py-3 text-muted-foreground">{p.date}</td>
                         <td className="px-4 py-3"><Badge variant="outline" className={`text-[10px] ${tone(p.status)}`}>{p.status}</Badge></td>
+                        <td className="px-4 py-3 text-right">
+                          {p.status === "Draft" && (
+                            <Button size="sm" variant="outline" onClick={() => submitForApproval(p.id)}>
+                              <Send className="h-3.5 w-3.5 mr-1" /> Submit for approval
+                            </Button>
+                          )}
+                        </td>
                       </tr>
                     );
                   })}
                   {filtered.length === 0 && (
-                    <tr><td colSpan={7} className="px-4 py-10 text-center text-sm text-muted-foreground">No payments match your filters.</td></tr>
+                    <tr><td colSpan={8} className="px-4 py-10 text-center text-sm text-muted-foreground">No payments match your filters.</td></tr>
                   )}
                 </tbody>
               </table>
@@ -217,6 +243,11 @@ function PaymentsPage() {
                     {p.shipment && <Badge variant="outline" className="text-[10px]">{p.shipment}</Badge>}
                     <Badge variant="outline" className={`text-[10px] ${tone(p.status)} ml-auto`}>{p.status}</Badge>
                   </div>
+                  {p.status === "Draft" && (
+                    <Button size="sm" variant="outline" className="w-full mt-2" onClick={() => submitForApproval(p.id)}>
+                      <Send className="h-3.5 w-3.5 mr-1" /> Submit for approval
+                    </Button>
+                  )}
                 </Card>
               );
             })}
@@ -252,36 +283,142 @@ function Stat({ label, value, icon, tone }: { label: string; value: string; icon
   );
 }
 
-function NewPaymentDialog({ onClose }: { onClose: () => void }) {
+type SingleForm = {
+  beneficiary: string; kind: Payment["kind"]; ccy: string; amount: string;
+  reference: string; purpose: string; account: string; notes: string;
+};
+
+const emptySingle = (): SingleForm => ({
+  beneficiary: "", kind: "Supplier", ccy: "USD", amount: "", reference: "", purpose: "", account: "", notes: "",
+});
+
+type BulkRow = SingleForm & { rowId: string };
+
+function CreatePayoutDialog({ onClose, onCreate }: { onClose: () => void; onCreate: (rows: Payment[]) => void }) {
+  const [mode, setMode] = useState<"single" | "bulk">("single");
+  const [single, setSingle] = useState<SingleForm>(emptySingle());
+  const [bulkRows, setBulkRows] = useState<BulkRow[]>([{ ...emptySingle(), rowId: crypto.randomUUID() }]);
+
+  function validateRow(f: SingleForm): string | null {
+    if (!f.beneficiary.trim()) return "Beneficiary is required";
+    if (!f.amount || Number(f.amount) <= 0) return "Amount must be greater than zero";
+    if (!f.account.trim()) return "Payout account is required";
+    if (!f.purpose.trim()) return "Purpose is required";
+    return null;
+  }
+
+  function submitSingle() {
+    const err = validateRow(single);
+    if (err) { toast.error(err); return; }
+    const row: Payment = {
+      id: nextPayoutId(), beneficiary: single.beneficiary, kind: single.kind,
+      reference: single.reference || `REF-${Date.now().toString().slice(-6)}`,
+      amount: Number(single.amount), ccy: single.ccy,
+      date: new Date().toISOString().slice(0, 10), status: "Draft",
+      purpose: single.purpose, account: single.account,
+    };
+    onCreate([row]);
+    toast.success(`Payout ${row.id} created as draft`);
+  }
+
+  function addBulkRow() {
+    setBulkRows((r) => [...r, { ...emptySingle(), rowId: crypto.randomUUID() }]);
+  }
+  function removeBulkRow(rowId: string) {
+    setBulkRows((r) => r.filter((x) => x.rowId !== rowId));
+  }
+  function updateBulkRow(rowId: string, patch: Partial<SingleForm>) {
+    setBulkRows((r) => r.map((x) => x.rowId === rowId ? { ...x, ...patch } : x));
+  }
+  function submitBulk() {
+    const errors: string[] = [];
+    bulkRows.forEach((r, i) => { const e = validateRow(r); if (e) errors.push(`Row ${i + 1}: ${e}`); });
+    if (errors.length) { toast.error(errors[0], { description: errors.length > 1 ? `+${errors.length - 1} more issue(s)` : undefined }); return; }
+    const rows: Payment[] = bulkRows.map((r) => ({
+      id: nextPayoutId(), beneficiary: r.beneficiary, kind: r.kind,
+      reference: r.reference || `REF-${Date.now().toString().slice(-6)}`,
+      amount: Number(r.amount), ccy: r.ccy,
+      date: new Date().toISOString().slice(0, 10), status: "Draft",
+      purpose: r.purpose, account: r.account,
+    }));
+    onCreate(rows);
+    toast.success(`${rows.length} payouts created as drafts`);
+  }
+
   return (
-    <DialogContent className="max-w-lg">
-      <DialogHeader><DialogTitle>New payment</DialogTitle></DialogHeader>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div className="sm:col-span-2"><Label>Beneficiary</Label><Input placeholder="Yiwu Fashion Co." /></div>
-        <div>
-          <Label>Type</Label>
-          <Select defaultValue="Supplier">
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {(["Supplier", "Forwarder", "Customs", "Other"] as const).map((k) => <SelectItem key={k} value={k}>{k}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Label>Currency</Label>
-          <Select defaultValue="USD">
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>{["USD","EUR","GBP","RMB","AED"].map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
-          </Select>
-        </div>
-        <div><Label>Amount</Label><Input type="number" placeholder="12500" /></div>
-        <div><Label>Reference</Label><Input placeholder="INV-CN-7042" /></div>
-        <div className="sm:col-span-2"><Label>Notes</Label><Textarea placeholder="Trade file or shipment notes" /></div>
-      </div>
-      <DialogFooter>
-        <Button variant="ghost" onClick={onClose}>Cancel</Button>
-        <Button onClick={() => { onClose(); toast.success("Payment submitted for approval"); }}>Submit</Button>
-      </DialogFooter>
+    <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+      <DialogHeader><DialogTitle>Create Payout</DialogTitle></DialogHeader>
+      <Tabs value={mode} onValueChange={(v) => setMode(v as typeof mode)}>
+        <TabsList>
+          <TabsTrigger value="single">Single payout</TabsTrigger>
+          <TabsTrigger value="bulk">Bulk payout</TabsTrigger>
+        </TabsList>
+        <TabsContent value="single" className="mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="sm:col-span-2"><Label>Beneficiary *</Label><Input value={single.beneficiary} onChange={(e) => setSingle({ ...single, beneficiary: e.target.value })} placeholder="Yiwu Fashion Co." /></div>
+            <div>
+              <Label>Type</Label>
+              <Select value={single.kind} onValueChange={(v) => setSingle({ ...single, kind: v as Payment["kind"] })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {(["Supplier", "Forwarder", "Customs", "Other"] as const).map((k) => <SelectItem key={k} value={k}>{k}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Currency</Label>
+              <Select value={single.ccy} onValueChange={(v) => setSingle({ ...single, ccy: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>{["USD","EUR","GBP","RMB","AED"].map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div><Label>Amount *</Label><Input type="number" value={single.amount} onChange={(e) => setSingle({ ...single, amount: e.target.value })} placeholder="12500" /></div>
+            <div><Label>Reference</Label><Input value={single.reference} onChange={(e) => setSingle({ ...single, reference: e.target.value })} placeholder="INV-CN-7042" /></div>
+            <div className="sm:col-span-2"><Label>Purpose *</Label><Input value={single.purpose} onChange={(e) => setSingle({ ...single, purpose: e.target.value })} placeholder="Goods payment, freight, duty…" /></div>
+            <div className="sm:col-span-2"><Label>Payout account *</Label><Input value={single.account} onChange={(e) => setSingle({ ...single, account: e.target.value })} placeholder="USD treasury wallet · ****4821" /></div>
+            <div className="sm:col-span-2"><Label>Notes</Label><Textarea value={single.notes} onChange={(e) => setSingle({ ...single, notes: e.target.value })} placeholder="Trade file or shipment notes" /></div>
+          </div>
+          <DialogFooter className="mt-4">
+            <Button variant="ghost" onClick={onClose}>Cancel</Button>
+            <Button onClick={submitSingle}>Create payout</Button>
+          </DialogFooter>
+        </TabsContent>
+        <TabsContent value="bulk" className="mt-4 space-y-3">
+          <div className="text-xs text-muted-foreground">Add one row per beneficiary. All fields marked * are required per row.</div>
+          <div className="space-y-3 max-h-[45vh] overflow-y-auto pr-1">
+            {bulkRows.map((r, i) => (
+              <Card key={r.rowId} className="p-3 border-dashed">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs font-semibold text-muted-foreground">Row {i + 1}</div>
+                  {bulkRows.length > 1 && (
+                    <Button size="sm" variant="ghost" onClick={() => removeBulkRow(r.rowId)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  <Input value={r.beneficiary} onChange={(e) => updateBulkRow(r.rowId, { beneficiary: e.target.value })} placeholder="Beneficiary *" className="col-span-2 sm:col-span-1" />
+                  <Select value={r.kind} onValueChange={(v) => updateBulkRow(r.rowId, { kind: v as Payment["kind"] })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>{(["Supplier", "Forwarder", "Customs", "Other"] as const).map((k) => <SelectItem key={k} value={k}>{k}</SelectItem>)}</SelectContent>
+                  </Select>
+                  <Select value={r.ccy} onValueChange={(v) => updateBulkRow(r.rowId, { ccy: v })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>{["USD","EUR","GBP","RMB","AED"].map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                  </Select>
+                  <Input type="number" value={r.amount} onChange={(e) => updateBulkRow(r.rowId, { amount: e.target.value })} placeholder="Amount *" />
+                  <Input value={r.reference} onChange={(e) => updateBulkRow(r.rowId, { reference: e.target.value })} placeholder="Reference" />
+                  <Input value={r.purpose} onChange={(e) => updateBulkRow(r.rowId, { purpose: e.target.value })} placeholder="Purpose *" />
+                  <Input value={r.account} onChange={(e) => updateBulkRow(r.rowId, { account: e.target.value })} placeholder="Payout account *" className="col-span-2 sm:col-span-3" />
+                </div>
+              </Card>
+            ))}
+          </div>
+          <Button variant="outline" size="sm" onClick={addBulkRow}><Plus className="h-3.5 w-3.5 mr-1" /> Add row</Button>
+          <DialogFooter className="mt-2">
+            <Button variant="ghost" onClick={onClose}>Cancel</Button>
+            <Button onClick={submitBulk}>Create {bulkRows.length} payout{bulkRows.length > 1 ? "s" : ""}</Button>
+          </DialogFooter>
+        </TabsContent>
+      </Tabs>
     </DialogContent>
   );
 }

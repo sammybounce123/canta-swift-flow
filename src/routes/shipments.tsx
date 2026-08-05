@@ -9,7 +9,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { shipments, shippingLines, fmtMoney, type Shipment, type ShipmentVertical } from "@/lib/mock";
-import { Plus, Search, Ship, Anchor, Truck, Plane, Package, Calendar as CalendarIcon, List, FileText, ExternalLink } from "lucide-react";
+import { Plus, Search, Ship, Anchor, Truck, Plane, Package, Calendar as CalendarIcon, List, FileText, ExternalLink, PackageSearch } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
@@ -42,6 +42,8 @@ function ShipmentsPage() {
   const [fEta, setFEta] = useState("");
   const [selected, setSelected] = useState<Shipment | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
+  const [claimOpen, setClaimOpen] = useState(false);
+  const [claimedIds, setClaimedIds] = useState<Set<string>>(new Set());
 
   const uniq = (k: keyof Shipment) => Array.from(new Set(shipments.map((s) => s[k] as string).filter(Boolean)));
 
@@ -68,10 +70,19 @@ function ShipmentsPage() {
           <h1 className="text-2xl font-semibold">Shipments</h1>
           <p className="text-sm text-muted-foreground mt-1">Containers, RORO, air freight, courier & loose cargo — all in one operating view.</p>
         </div>
-        <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-          <DialogTrigger asChild><Button className="bg-primary"><Plus className="h-4 w-4 mr-1.5" /> New Shipment</Button></DialogTrigger>
-          <NewShipmentDialog onClose={() => setCreateOpen(false)} />
-        </Dialog>
+        <div className="flex items-center gap-2">
+          <Dialog open={claimOpen} onOpenChange={setClaimOpen}>
+            <DialogTrigger asChild><Button variant="outline"><PackageSearch className="h-4 w-4 mr-1.5" /> Claim shipment</Button></DialogTrigger>
+            <ClaimShipmentDialog
+              onClose={() => setClaimOpen(false)}
+              onClaim={(id) => setClaimedIds((prev) => new Set(prev).add(id))}
+            />
+          </Dialog>
+          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+            <DialogTrigger asChild><Button className="bg-primary"><Plus className="h-4 w-4 mr-1.5" /> New Shipment</Button></DialogTrigger>
+            <NewShipmentDialog onClose={() => setCreateOpen(false)} />
+          </Dialog>
+        </div>
       </div>
 
       {/* Status cards */}
@@ -118,7 +129,7 @@ function ShipmentsPage() {
       </Card>
 
       {view === "list" ? (
-        <ShipmentTable rows={filtered} onSelect={setSelected} />
+        <ShipmentTable rows={filtered} onSelect={setSelected} claimedIds={claimedIds} />
       ) : (
         <EtaCalendar rows={filtered} onSelect={setSelected} />
       )}
@@ -168,7 +179,7 @@ function StatusBadge({ status }: { status: string }) {
   return <span className={`text-[10px] px-2 py-0.5 rounded-full border ${tones[status] ?? "bg-secondary"}`}>{status}</span>;
 }
 
-function ShipmentTable({ rows, onSelect }: { rows: Shipment[]; onSelect: (s: Shipment) => void }) {
+function ShipmentTable({ rows, onSelect, claimedIds }: { rows: Shipment[]; onSelect: (s: Shipment) => void; claimedIds: Set<string> }) {
   return (
     <Card className="shadow-card overflow-hidden">
       <div className="overflow-x-auto">
@@ -181,6 +192,7 @@ function ShipmentTable({ rows, onSelect }: { rows: Shipment[]; onSelect: (s: Shi
               <th className="px-4 py-3">Client · Supplier</th>
               <th className="px-4 py-3">Forwarder</th>
               <th className="px-4 py-3">ETA</th>
+              <th className="px-4 py-3">ETA / Arrival</th>
               <th className="px-4 py-3 text-right">Value</th>
               <th className="px-4 py-3">Status</th>
             </tr>
@@ -193,18 +205,22 @@ function ShipmentTable({ rows, onSelect }: { rows: Shipment[]; onSelect: (s: Shi
                   <div className="text-xs text-muted-foreground truncate max-w-[280px]">{s.name}</div>
                   {s.container && <div className="text-[10px] font-mono text-muted-foreground">{s.container} · {s.bl}</div>}
                   {s.vertical.kind === "Vehicles" && <div className="text-[10px] font-mono text-muted-foreground">VIN {s.vertical.vin}</div>}
+                  {claimedIds.has(s.id) && <Badge variant="outline" className="text-[10px] mt-1 border-success/30 text-success">Claimed by you</Badge>}
                 </td>
                 <td className="px-4 py-3"><Badge variant="outline" className="text-[10px]">{s.type}</Badge><div className="text-xs text-muted-foreground mt-1">{s.shippingLine}</div></td>
                 <td className="px-4 py-3"><div>{s.origin}</div><div className="text-xs text-muted-foreground">→ {s.destination}</div></td>
                 <td className="px-4 py-3"><div className="truncate max-w-[180px]">{s.importer}</div><div className="text-xs text-muted-foreground truncate max-w-[180px]">{s.supplier}</div></td>
                 <td className="px-4 py-3 text-xs">{s.forwarder}</td>
-                <td className="px-4 py-3 tabular-nums text-xs">{s.eta}</td>
+                <td className="px-4 py-3 tabular-nums text-xs">
+                  <div>{s.eta}</div>
+                  <div className="text-[10px] text-muted-foreground">{s.status === "Delivered" ? "Delivered" : s.status === "Arrived" || s.status === "Customs" || s.status === "Released" ? "Arrived at port" : "Estimated arrival"}</div>
+                </td>
                 <td className="px-4 py-3 text-right tabular-nums font-semibold">{fmtMoney(s.value, s.ccy)}</td>
                 <td className="px-4 py-3"><StatusBadge status={s.status} /></td>
               </tr>
             ))}
             {rows.length === 0 && (
-              <tr><td colSpan={8} className="px-4 py-12 text-center text-sm text-muted-foreground">No shipments match these filters.</td></tr>
+              <tr><td colSpan={9} className="px-4 py-12 text-center text-sm text-muted-foreground">No shipments match these filters.</td></tr>
             )}
           </tbody>
         </table>
@@ -476,5 +492,48 @@ function FormField({ label, children }: { label: string; children: React.ReactNo
       <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</Label>
       <div className="mt-1">{children}</div>
     </div>
+  );
+}
+
+function ClaimShipmentDialog({ onClose, onClaim }: { onClose: () => void; onClaim: (id: string) => void }) {
+  const [ref, setRef] = useState("");
+  const [error, setError] = useState("");
+
+  function submit() {
+    const value = ref.trim();
+    if (!value) {
+      setError("Enter a BL or container number to claim your shipment.");
+      return;
+    }
+    const match = shipments.find(
+      (s) => s.bl?.toLowerCase() === value.toLowerCase() || s.container?.toLowerCase() === value.toLowerCase()
+    );
+    if (!match) {
+      setError("We couldn't find a shipment with that BL / container number. Check the details and try again.");
+      return;
+    }
+    onClaim(match.id);
+    toast.success(`Shipment ${match.shipmentNumber} claimed`);
+    setRef("");
+    setError("");
+    onClose();
+  }
+
+  return (
+    <DialogContent className="max-w-md">
+      <DialogHeader>
+        <DialogTitle>Claim shipment</DialogTitle>
+        <p className="text-xs text-muted-foreground">Enter your BL or container number to link an unassigned shipment to your account.</p>
+      </DialogHeader>
+      <div>
+        <Label className="text-xs">BL / Container number</Label>
+        <Input value={ref} onChange={(e) => { setRef(e.target.value); setError(""); }} placeholder="e.g. MSCU7762213 or BL-998211" aria-invalid={!!error} />
+        {error && <p className="text-[11px] text-destructive mt-1">{error}</p>}
+      </div>
+      <DialogFooter>
+        <Button variant="outline" onClick={onClose}>Cancel</Button>
+        <Button className="bg-primary" onClick={submit}>Claim shipment</Button>
+      </DialogFooter>
+    </DialogContent>
   );
 }

@@ -8,9 +8,16 @@ import { getLiveTransactions, subscribeTx } from "@/lib/tx-store";
 import { StatusPill } from "@/components/StatusPill";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
+import { useState as useState2 } from "react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Flag, ShieldAlert } from "lucide-react";
+import { addAuditEntry } from "@/lib/treasury-audit";
+import { useActiveWorkspace } from "@/lib/workspace-guard";
 
 export const Route = createFileRoute("/transactions")({
   head: () => ({ meta: [{ title: "Transactions — Canta" }] }),
@@ -29,6 +36,40 @@ function Transactions() {
   const [page, setPage] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
   const [active, setActive] = useState<(typeof transactions)[number] | null>(null);
+  const [flagged, setFlagged] = useState<Record<string, string>>({});
+  const [flagTarget, setFlagTarget] = useState<(typeof transactions)[number] | null>(null);
+  const [flagReason, setFlagReason] = useState("");
+  const ws = useActiveWorkspace();
+
+  function downloadReceipt(t: (typeof transactions)[number]) {
+    const lines = [
+      "CANTA — Transaction Receipt (Demo)",
+      `Reference: ${t.id}`,
+      `Date: ${t.date}`,
+      `Description: ${t.desc}`,
+      `Type: ${t.type}`,
+      `Amount: ${fmtMoney(t.amount, t.ccy)}`,
+      `Status: ${t.status}`,
+      "",
+      "This is a demo receipt generated locally — not a live financial document.",
+    ];
+    const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `receipt-${t.id}.txt`; a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Receipt downloaded");
+  }
+
+  function confirmFlag() {
+    if (!flagTarget) return;
+    if (!flagReason.trim()) { toast.error("A reason is required to flag a transaction"); return; }
+    setFlagged((f) => ({ ...f, [flagTarget.id]: flagReason }));
+    addAuditEntry({ actor: ws.name, workspace: ws.workspace, action: "Flagged transaction as high-risk", entity: flagTarget.id, result: "Success", detail: flagReason });
+    toast.success(`${flagTarget.id} flagged as high-risk`);
+    setFlagTarget(null);
+    setFlagReason("");
+  }
 
   const filtered = useMemo(() => {
     const days = Number(range);

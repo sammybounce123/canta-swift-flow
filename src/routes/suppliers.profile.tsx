@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { FlaskConical } from "lucide-react";
 
 export const Route = createFileRoute("/suppliers/profile")({
   head: () => ({ meta: [{ title: "Supplier Profile — Canta" }] }),
@@ -26,6 +27,8 @@ type Profile = {
   companyName: string; country: string; city: string;
   contactPerson: string; email: string; phone: string;
   productCategories: string[];
+  registrationNumber: string;
+  address: string;
   minOrderSize: string;
   settlementCurrencies: string[];
   registration: "Verified" | "Pending" | "Not started";
@@ -42,6 +45,8 @@ const DEFAULT: Profile = {
   email: "mei@yiwufashion.cn",
   phone: "+86 579 0001",
   productCategories: ["Apparel", "Accessories"],
+  registrationNumber: "91440101MA9XXX",
+  address: "88 Baiyun Rd, Guangzhou, China",
   minOrderSize: "USD 5,000",
   settlementCurrencies: ["USD", "RMB"],
   registration: "Verified",
@@ -81,6 +86,7 @@ function SupplierProfilePage() {
   return (
     <div className="space-y-6">
       <ReadinessBar status="Demo Preview" cue="Complete profile information helps buyers trust your business." />
+      <div className="flex justify-end"><Badge variant="outline" className="text-[10px] inline-flex items-center gap-1"><FlaskConical className="h-3 w-3" /> Demo data</Badge></div>
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:flex-wrap sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
@@ -106,6 +112,8 @@ function SupplierProfilePage() {
             <div className="text-xs text-muted-foreground">{p.city}, {p.country}</div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            <Field k="Business licence / registration number" v={p.registrationNumber} />
+            <Field k="Registered address" v={p.address} />
             <Field k="Contact person" v={p.contactPerson} />
             <Field k="Email" v={p.email} />
             <Field k="Phone" v={p.phone} />
@@ -208,6 +216,8 @@ function EditDialog({ open, onClose, profile, onSave }: { open: boolean; onClose
           <div><Label>Contact person</Label><Input value={f.contactPerson} onChange={(e) => setF({ ...f, contactPerson: e.target.value })} /></div>
           <div><Label>Email</Label><Input value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></div>
           <div><Label>Phone</Label><Input value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></div>
+          <div><Label>Business licence / registration number</Label><Input value={f.registrationNumber} onChange={(e) => setF({ ...f, registrationNumber: e.target.value })} /></div>
+          <div className="sm:col-span-2"><Label>Registered address</Label><Input value={f.address} onChange={(e) => setF({ ...f, address: e.target.value })} /></div>
           <div><Label>Minimum order size</Label><Input value={f.minOrderSize} onChange={(e) => setF({ ...f, minOrderSize: e.target.value })} /></div>
           <div className="sm:col-span-2"><Label>Settlement currencies (comma separated)</Label><Input value={f.settlementCurrencies.join(", ")} onChange={(e) => setF({ ...f, settlementCurrencies: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })} /></div>
         </div>
