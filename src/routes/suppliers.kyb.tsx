@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { isDemoApproved } from "@/lib/supplier-data";
 
 export const Route = createFileRoute("/suppliers/kyb")({
   head: () => ({ meta: [{ title: "Supplier KYB — Canta" }] }),
@@ -27,11 +28,10 @@ type KybStatus =
 type Doc = { key: string; label: string; required: boolean; status: "Missing" | "Uploaded" | "Approved" | "Expired"; uploadedAt?: string; fileName?: string };
 
 const SEED: Doc[] = [
-  { key: "registration",     label: "Company registration document", required: true, status: "Approved", uploadedAt: "2026-04-12", fileName: "BusinessLicense.pdf" },
-  { key: "director-id",      label: "Director / Owner ID",           required: true, status: "Approved", uploadedAt: "2026-04-12", fileName: "DirectorID.pdf" },
-  { key: "address",          label: "Proof of business address",     required: true, status: "Uploaded", uploadedAt: "2026-05-01", fileName: "UtilityBill.pdf" },
-  { key: "bank",             label: "Bank account proof",            required: true, status: "Approved", uploadedAt: "2026-04-12", fileName: "BankLetter.pdf" },
-  { key: "trade-refs",       label: "Trade references",              required: false, status: "Missing" },
+  { key: "business-licence", label: "Business licence",              required: true, status: "Approved", uploadedAt: "2026-04-12", fileName: "BusinessLicense.pdf" },
+  { key: "legal-rep-id",     label: "Legal representative ID",        required: true, status: "Approved", uploadedAt: "2026-04-12", fileName: "LegalRepID.pdf" },
+  { key: "bank-confirmation",label: "Bank confirmation letter",       required: true, status: "Approved", uploadedAt: "2026-04-12", fileName: "BankConfirmationLetter.pdf" },
+  { key: "export-licence",   label: "Export licence",                 required: true, status: "Approved", uploadedAt: "2026-04-12", fileName: "ExportLicence.pdf" },
 ];
 
 const KEY = "canta:supplier:kyb:v1";
@@ -41,9 +41,16 @@ function loadDocs(): Doc[] {
   try { const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : SEED; } catch { return SEED; }
 }
 
+function overallStatus(docs: Doc[]): "Incomplete" | "In Review" | "Approved" {
+  if (docs.every((d) => d.status === "Approved")) return "Approved";
+  if (docs.some((d) => d.status === "Uploaded")) return "In Review";
+  return "Incomplete";
+}
+
 function SupplierKybPage() {
+  const demo = isDemoApproved();
   const [docs, setDocs] = useState<Doc[]>(SEED);
-  const [status, setStatus] = useState<KybStatus>("Approved");
+  const [status, setStatus] = useState<KybStatus>(demo ? "Approved" : "Approved");
   const [uploadFor, setUploadFor] = useState<Doc | null>(null);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [comments] = useState<string[]>([
@@ -59,15 +66,17 @@ function SupplierKybPage() {
   }
 
   function uploaded(key: string, name: string) {
-    save(docs.map((d) => d.key === key ? { ...d, status: "Uploaded", uploadedAt: new Date().toISOString().slice(0, 10), fileName: name } : d));
+    const next = docs.map((d) => d.key === key ? { ...d, status: "Uploaded" as const, uploadedAt: new Date().toISOString().slice(0, 10), fileName: name } : d);
+    save(next);
     setUploadFor(null);
-    setStatus("In Progress");
+    setStatus(overallStatus(next) === "Approved" ? "Approved" : "In Progress");
     toast.success(`${name} uploaded`);
   }
 
   return (
     <div className="space-y-6">
       <ReadinessBar status="Demo Preview" cue="KYB verification helps improve trust and unlocks more features." />
+      <div className="flex justify-end"><Badge variant="outline" className="text-[10px]">Demo data</Badge></div>
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:flex-wrap sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
@@ -92,11 +101,15 @@ function SupplierKybPage() {
           <div>
             <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Current status</div>
             <div className="flex items-center gap-2 mt-1">
-              <Badge variant="outline" className={statusTone(status)}>{statusIcon(status)} {status}</Badge>
-              {status === "Approved" && <span className="text-xs text-muted-foreground">You can still update documents or download your summary.</span>}
+              <Badge variant="outline" className={statusTone(status)}>{statusIcon(status)} {overallStatus(docs)}</Badge>
+              {demo && <Badge className="bg-emerald-100 text-emerald-800 text-[10px]">Demo verified</Badge>}
+              {overallStatus(docs) === "Approved" && <span className="text-xs text-muted-foreground">You can still update documents or download your summary.</span>}
             </div>
           </div>
-          <div className="text-xs text-muted-foreground">Last update: {new Date().toISOString().slice(0, 10)}</div>
+          <div className="text-xs text-muted-foreground text-right">
+            <div>Last update: {new Date().toISOString().slice(0, 10)}</div>
+            <div>Reviewed within 1 business day — demo</div>
+          </div>
         </div>
       </Card>
 

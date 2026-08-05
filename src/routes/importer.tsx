@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { shipments, suppliers, freightInvoices, fmtMoney, type Shipment } from "@/lib/mock";
 import { buildWhatsAppUrl, type WhatsAppTemplateKey } from "@/lib/whatsapp";
@@ -16,10 +16,11 @@ import { TradeFileExplainer } from "@/components/TradeFileExplainer";
 import {
   MessageCircle, Upload, Sparkles, FileQuestion, Ship, Calendar, Truck, Bell, ShieldCheck,
   CheckCircle2, AlertCircle, ArrowRight, Receipt, Package, Send, Link as LinkIcon, Copy, Lock,
+  Download, TimerReset, CreditCard,
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
 import { ActionButton, ActionGroup, ButtonGroup } from "@/components/ui/action-group";
@@ -133,6 +134,25 @@ function ImporterPortal() {
         <div className="text-xs uppercase tracking-widest text-muted-foreground mb-1">Importer quick actions</div>
         <p className="text-sm text-muted-foreground mb-3">Track shipments, upload BLs, add supplier invoices, pay suppliers, and follow settlement.</p>
         <ImporterActions variant="toolbar" />
+      </Card>
+
+      <Card className="p-5 shadow-card">
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div className="flex items-start gap-3">
+            <div className="h-9 w-9 rounded-md bg-secondary grid place-items-center shrink-0">
+              <CreditCard className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <div>
+              <div className="text-sm font-semibold">Procurement & trade expense cards</div>
+              <p className="text-xs text-muted-foreground mt-1 max-w-xl">
+                Cards for procurement and trade expenses are managed in the Spend Card workspace and are not part of this demo phase.
+              </p>
+            </div>
+          </div>
+          <Button asChild size="sm" variant="outline">
+            <Link to="/cards">Learn more</Link>
+          </Button>
+        </div>
       </Card>
 
       {import.meta.env.VITE_CANTA_DEMO_EXTRAS === "1" && <EscrowSection />}
@@ -453,6 +473,123 @@ function LR({ l, r, bold }: { l: string; r: string; bold?: boolean }) {
   return <div className="flex justify-between"><span className="text-muted-foreground">{l}</span><span className={`tabular-nums ${bold ? "font-semibold" : ""}`}>{r}</span></div>;
 }
 
+type FxQuote = {
+  rate: number;
+  ngnAmount: number;
+  expiresAt: number;
+  accepted: boolean;
+};
+
+function makeQuote(usdAmount: number): FxQuote {
+  const rate = 1600 + Math.round(Math.random() * 40);
+  return {
+    rate,
+    ngnAmount: Math.round(usdAmount * rate),
+    expiresAt: Date.now() + 2 * 60 * 1000, // 2 minute demo window
+    accepted: false,
+  };
+}
+
+function downloadReceipt(invoice: { id: string; shipment: string; amount: number; ccy: string; due: string }) {
+  const lines = [
+    "CANTA — DEMO PAYMENT RECEIPT",
+    "This is a demo document generated locally. Not proof of a live financial transaction.",
+    "",
+    `Invoice: ${invoice.id}`,
+    `Shipment: ${invoice.shipment}`,
+    `Amount: ${fmtMoney(invoice.amount, invoice.ccy)}`,
+    `Due date: ${invoice.due}`,
+    `Status: Paid`,
+    `Generated: ${new Date().toLocaleString()}`,
+  ];
+  const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${invoice.id}-receipt.txt`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  toast.success("Receipt downloaded");
+}
+
+function FxQuoteAction({ invoice }: { invoice: { id: string; amount: number; ccy: string } }) {
+  const [open, setOpen] = useState(false);
+  const [quote, setQuote] = useState<FxQuote | null>(null);
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    if (!open) return;
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, [open]);
+
+  function openDialog() {
+    setQuote(makeQuote(invoice.amount));
+    setOpen(true);
+  }
+
+  const secondsLeft = quote ? Math.max(0, Math.ceil((quote.expiresAt - now) / 1000)) : 0;
+  const expired = !!quote && secondsLeft <= 0;
+
+  function accept() {
+    if (!quote) return;
+    if (expired) {
+      toast.error("This FX quote has expired — request a new quote");
+      return;
+    }
+    setQuote({ ...quote, accepted: true });
+    toast.success("FX quote accepted");
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setQuote(null); }}>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="outline" onClick={openDialog}>
+          <TimerReset className="h-3.5 w-3.5 mr-1" /> Accept FX quote
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>FX quote</DialogTitle>
+          <DialogDescription>Rate locked for a short window — accept before it expires to reveal payment details.</DialogDescription>
+        </DialogHeader>
+        {quote && (
+          <div className="space-y-3 text-sm">
+            <div className="grid grid-cols-2 gap-3">
+              <div><div className="text-[10px] uppercase tracking-widest text-muted-foreground">Amount</div><div className="font-semibold">{fmtMoney(invoice.amount, invoice.ccy)}</div></div>
+              <div><div className="text-[10px] uppercase tracking-widest text-muted-foreground">Rate</div><div className="font-semibold">₦{quote.rate.toLocaleString()} / {invoice.ccy}</div></div>
+              <div><div className="text-[10px] uppercase tracking-widest text-muted-foreground">You pay</div><div className="font-semibold">{fmtMoney(quote.ngnAmount, "NGN")}</div></div>
+              <div>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Expires in</div>
+                <div className={`font-semibold ${expired ? "text-destructive" : ""}`}>{expired ? "Expired" : `${secondsLeft}s`}</div>
+              </div>
+            </div>
+
+            {!quote.accepted ? (
+              <Button className="w-full bg-primary" disabled={expired} onClick={accept}>
+                {expired ? "Quote expired" : "Accept FX quote"}
+              </Button>
+            ) : (
+              <div className="p-3 rounded-lg border border-success/30 bg-success/10 text-xs space-y-1">
+                <div className="flex items-center gap-1.5 text-success font-medium"><CheckCircle2 className="h-3.5 w-3.5" /> Quote accepted — pay to these NGN details</div>
+                <div><span className="text-muted-foreground">Account name:</span> Canta Settlement — {invoice.id}</div>
+                <div><span className="text-muted-foreground">Account number:</span> 0123456789</div>
+                <div><span className="text-muted-foreground">Bank:</span> Canta Demo Bank</div>
+                <div><span className="text-muted-foreground">Reference:</span> {invoice.id}</div>
+              </div>
+            )}
+          </div>
+        )}
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>Close</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function MyPayments() {
   const mine = freightInvoices.filter((i) => i.customer === ME);
   return (
@@ -474,8 +611,11 @@ function MyPayments() {
                 <td className="px-4 py-3"><Badge variant="outline" className="text-[10px]">{i.status}</Badge></td>
                 <td className="px-4 py-3 text-right">
                   {i.status === "Paid"
-                    ? <span className="text-xs text-success">✓ Settled</span>
-                    : <Button size="sm" className="bg-primary" onClick={() => toast.success("Pay screen opened")}>Pay now</Button>}
+                    ? <Button size="sm" variant="outline" onClick={() => downloadReceipt(i)}><Download className="h-3.5 w-3.5 mr-1" /> Download receipt</Button>
+                    : <div className="flex justify-end gap-2">
+                        <FxQuoteAction invoice={i} />
+                        <Button size="sm" className="bg-primary" onClick={() => toast.success("Pay screen opened")}>Pay now</Button>
+                      </div>}
                 </td>
               </tr>
             ))}

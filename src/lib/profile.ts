@@ -225,11 +225,12 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       return [
         D,
         { to: "/importer", label: "Importer Dashboard", iconKey: "importer", group: "My Workspace" },
-        
+        { to: "/trade-desk", label: "Trade Files", iconKey: "trade", group: "Trade Ops" },
         { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Move Goods" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Trade Ops" },
         { to: "/landed-cost", label: "Landed Cost", iconKey: "calculator", group: "Trade Ops" },
         { to: "/payments", label: "Payments", iconKey: "receipt", group: "Money" },
+        { to: "/escrow", label: "Escrow", iconKey: "shield-check", group: "Money" },
         { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
@@ -239,6 +240,10 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       return [
         D,
         { to: "/freight", label: "Assigned Clearing Jobs", iconKey: "freight", group: "My Workspace" },
+        { to: "/freight-customers", label: "Customers", iconKey: "users", group: "My Workspace" },
+        { to: "/freight-pipeline", label: "Shipment Pipeline", iconKey: "ship", group: "Operations" },
+        { to: "/freight-invoices", label: "Freight Invoices", iconKey: "receipt", group: "Operations" },
+        { to: "/freight-reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
         { to: "/whatsapp", label: "Messages", iconKey: "whatsapp", group: "Updates" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
@@ -251,10 +256,14 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         D,
         { to: "/supplier-portal", label: "Overview", iconKey: "factory", group: "Supplier Portal", exact: true },
         { to: "/supplier-portal/buyers", label: "Nigerian Buyers", iconKey: "users", group: "Supplier Portal" },
-        { to: "/supplier-portal/payment-requests", label: "Payment Requests", iconKey: "receipt", group: "Supplier Portal" },
-        { to: "/supplier-portal/rmb-wallet", label: "RMB Settlement", iconKey: "globe", group: "Supplier Portal" },
         { to: "/supplier-portal/invoices", label: "Invoices", iconKey: "receipt", group: "Supplier Portal" },
+        { to: "/supplier-portal/fx-quotes", label: "FX Quotes", iconKey: "fx", group: "Supplier Portal" },
+        { to: "/supplier-portal/payment-requests", label: "Payment Requests", iconKey: "receipt", group: "Supplier Portal" },
+        { to: "/supplier-portal/settlement", label: "Settlement Tracking", iconKey: "check", group: "Settlement" },
+        { to: "/supplier-portal/rmb-wallet", label: "RMB Settlement", iconKey: "globe", group: "Settlement" },
+        { to: "/supplier-portal/payout-accounts", label: "Payout Accounts", iconKey: "wallet", group: "Settlement" },
         { to: "/supplier-portal/documents", label: "Documents", iconKey: "file", group: "Operations" },
+        { to: "/suppliers/profile", label: "Supplier Profile", iconKey: "building", group: "Operations" },
         { to: "/supplier-portal/verification", label: "Verification", iconKey: "shield-check", group: "Operations" },
         { to: "/supplier-portal/support", label: "Support", iconKey: "users", group: "Help" },
         { to: "/supplier-portal/reports", label: "Supplier Reports", iconKey: "chart", group: "Insights" },
@@ -293,6 +302,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/approvals", label: "Approvals", iconKey: "check", group: "Governance" },
         { to: "/transactions", label: "Transactions", iconKey: "receipt", group: "Money" },
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        { to: "/audit-logs", label: "Activity Log", iconKey: "shield", group: "Governance" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         Team, Settings,
       ];
@@ -339,6 +349,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/ai-insights", label: "AI Insights", iconKey: "brain", group: "Intelligence" },
         { to: "/trade-desk", label: "Trade Files", iconKey: "trade", group: "Ops" },
         { to: "/partner/cases", label: "Payment Cases", iconKey: "file", group: "Ops" },
+        { to: "/customers", label: "All Customers", iconKey: "users", group: "Ops" },
         { to: "/support", label: "Support Tickets", iconKey: "users", group: "Ops" },
         { to: "/verification-center", label: "Verification Center", iconKey: "shield-check", group: "Governance" },
         { to: "/compliance", label: "Compliance", iconKey: "shield", group: "Governance" },
@@ -368,6 +379,17 @@ export function loadProfile(): Profile | null {
   }
 }
 
+const WORKSPACE_TO_MODE: Record<WorkspaceType, string> = {
+  enterprise_treasury: "Enterprise Treasury",
+  importer_portal: "Importer",
+  freight_workspace: "Freight Forwarder",
+  supplier_dashboard: "Supplier",
+  global_collections: "Global Merchant",
+  global_spend_cards: "Enterprise Treasury",
+  partner_property: "Partner Property",
+  canta_ops: "Canta Ops",
+};
+
 export function saveProfile(segment: Segment): Profile {
   const profile: Profile = {
     account_type: segment.accountType,
@@ -381,54 +403,49 @@ export function saveProfile(segment: Segment): Profile {
     created_at: new Date().toISOString(),
     feature_flags: defaultFlagsFor(segment.id),
   };
-  if (typeof window !== "undefined") saveFlags(profile.feature_flags);
   if (typeof window !== "undefined") {
+    saveFlags(profile.feature_flags);
     window.localStorage.setItem(KEY, JSON.stringify(profile));
-    const WORKSPACE_TO_MODE: Record<WorkspaceType, string | undefined> = {
-      enterprise_treasury: "Enterprise Treasury",
-      importer_portal: "Importer",
-      freight_workspace: "Freight Forwarder",
-      supplier_dashboard: "Supplier",
-      global_collections: "Global Merchant",
-      partner_property: "Partner Property",
-      global_spend_cards: "Enterprise Treasury",
-      canta_ops: "Canta Ops",
-    };
+    window.localStorage.setItem("canta:active_workspace", segment.id);
     const mode = WORKSPACE_TO_MODE[segment.id];
     if (mode) {
-      if (segment.id !== "canta_ops" && segment.id !== "global_spend_cards") {
-        window.localStorage.setItem("canta:active_workspace", segment.id);
-      }
       window.localStorage.setItem("canta:mode", mode);
-      window.dispatchEvent(new CustomEvent("canta:mode-change", { detail: mode }));
+      window.dispatchEvent(new Event("canta:mode-change"));
     }
   }
   return profile;
 }
 
-export function getSegment(id: WorkspaceType): Segment | undefined {
-  return SEGMENTS.find((s) => s.id === id);
+export function clearProfile() {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(KEY);
+  window.localStorage.removeItem(FLAGS_KEY);
+  window.localStorage.removeItem("canta:active_workspace");
 }
 
-const WELCOME_DISMISS_KEY = "canta:welcome-dismissed";
+export function getSegment(workspace: WorkspaceType): Segment | undefined {
+  return SEGMENTS.find((s) => s.id === workspace);
+}
+
+const WELCOME_KEY = "canta:welcome_dismissed";
+
+function readDismissed(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(WELCOME_KEY);
+    return raw ? (JSON.parse(raw) as string[]) : [];
+  } catch {
+    return [];
+  }
+}
 
 export function isWelcomeDismissed(workspace: WorkspaceType): boolean {
-  if (typeof window === "undefined") return true;
-  try {
-    const raw = window.localStorage.getItem(WELCOME_DISMISS_KEY);
-    const list = raw ? (JSON.parse(raw) as WorkspaceType[]) : [];
-    return list.includes(workspace);
-  } catch {
-    return false;
-  }
+  return readDismissed().includes(workspace);
 }
 
 export function dismissWelcome(workspace: WorkspaceType) {
   if (typeof window === "undefined") return;
-  try {
-    const raw = window.localStorage.getItem(WELCOME_DISMISS_KEY);
-    const list = raw ? (JSON.parse(raw) as WorkspaceType[]) : [];
-    if (!list.includes(workspace)) list.push(workspace);
-    window.localStorage.setItem(WELCOME_DISMISS_KEY, JSON.stringify(list));
-  } catch {}
+  const list = readDismissed();
+  if (!list.includes(workspace)) list.push(workspace);
+  window.localStorage.setItem(WELCOME_KEY, JSON.stringify(list));
 }

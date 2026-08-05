@@ -7,7 +7,11 @@ import { Input } from "@/components/ui/input";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Download, Receipt, FileCheck2, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
+import { Download, Receipt, FileCheck2, CheckCircle2, Clock, AlertTriangle, Eye, Circle } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
+import { Badge as UiBadge } from "@/components/ui/badge";
 import {
   SOLICITORS, formatGBP, getSolicitor, statusTone, visibleCases, getMarketer,
   MARKETERS, canSeeAllMarketers,
@@ -23,6 +27,7 @@ export const Route = createFileRoute("/partner/payouts")({
 function Payouts() {
   const { role, userId } = usePartnerRole();
   const data = visibleCases(userId, role);
+  const [active, setActive] = useState<ReturnType<typeof visibleCases>[number] | null>(null);
 
   const [solicitor, setSolicitor] = useState<string>("all");
   const [status, setStatus] = useState<string>("all");
@@ -122,6 +127,7 @@ function Payouts() {
                 <th className="py-3 px-3">Currency</th>
                 <th className="py-3 px-3">Status</th>
                 <th className="py-3 px-3">Reference</th>
+                <th className="py-3 px-3"></th>
                 <th className="py-3 px-3">Receipt</th>
               </tr>
             </thead>
@@ -146,17 +152,89 @@ function Payouts() {
                         <Button size="sm" variant="ghost" className="text-success"><FileCheck2 className="h-3.5 w-3.5 mr-1" /> Download</Button>
                       ) : <span className="text-xs text-muted-foreground">—</span>}
                     </td>
+                    <td className="py-3 px-3 text-right">
+                      <Button size="sm" variant="ghost" onClick={() => setActive(c)}><Eye className="h-3.5 w-3.5 mr-1" /> Details</Button>
+                    </td>
                   </tr>
                 );
               })}
               {rows.length === 0 && (
-                <tr><td colSpan={showMarketerFilter ? 10 : 9} className="text-center text-sm text-muted-foreground py-10">No payouts match these filters.</td></tr>
+                <tr><td colSpan={showMarketerFilter ? 12 : 11} className="text-center text-sm text-muted-foreground py-10">No payouts match these filters.</td></tr>
               )}
             </tbody>
           </table>
         </div>
       </Card>
+
+      {active && <PayoutDetailDialog payout={active} onClose={() => setActive(null)} />}
     </div>
+  );
+}
+
+type TimelineStage = "Initiated" | "Compliance Check" | "Funds Sent" | "Confirmed by Solicitor";
+const STAGES: TimelineStage[] = ["Initiated", "Compliance Check", "Funds Sent", "Confirmed by Solicitor"];
+
+function stageIndexForStatus(status: string): number {
+  if (status === "Receipt Uploaded") return 4;
+  if (status === "Paid to Solicitor") return 3;
+  if (status === "Payout Processing") return 2;
+  if (status === "Failed / Returned") return 1;
+  return 0;
+}
+
+function PayoutDetailDialog({ payout, onClose }: { payout: ReturnType<typeof visibleCases>[number]; onClose: () => void }) {
+  const sol = getSolicitor(payout.solicitorId);
+  const completedCount = stageIndexForStatus(payout.status);
+  const base = new Date(payout.expectedPayout || Date.now());
+  const dateFor = (offsetDays: number) => {
+    const d = new Date(base);
+    d.setDate(d.getDate() - (STAGES.length - offsetDays));
+    return d.toISOString().slice(0, 10);
+  };
+
+  return (
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader><DialogTitle>Payout · {payout.clientName}</DialogTitle></DialogHeader>
+        <div className="text-xs text-muted-foreground">
+          {payout.property} · {sol?.firm} · {formatGBP(payout.amountGBP)}
+        </div>
+        <div className="flex items-center gap-2">
+          <UiBadge variant="outline" className={`text-[10px] ${statusTone(payout.status)}`}>{payout.status}</UiBadge>
+          <span className="text-[11px] text-muted-foreground">Ref: {payout.paymentReference ?? `BC/${payout.id}/COMPL`}</span>
+        </div>
+
+        <div className="space-y-0 mt-2">
+          {STAGES.map((stage, i) => {
+            const idx = i + 1;
+            const state: "completed" | "current" | "pending" =
+              idx < completedCount ? "completed" : idx === completedCount ? "current" : "pending";
+            const Icon = state === "completed" ? CheckCircle2 : state === "current" ? Clock : Circle;
+            const tone =
+              state === "completed" ? "text-success" : state === "current" ? "text-warning" : "text-muted-foreground";
+            return (
+              <div key={stage} className="flex gap-3">
+                <div className="flex flex-col items-center">
+                  <Icon className={`h-4 w-4 ${tone}`} />
+                  {i < STAGES.length - 1 && <div className={`w-px flex-1 min-h-[24px] ${idx < completedCount ? "bg-success/40" : "bg-border"}`} />}
+                </div>
+                <div className="pb-4">
+                  <div className={`text-sm font-medium ${state === "pending" ? "text-muted-foreground" : ""}`}>{stage}</div>
+                  <div className="text-[11px] text-muted-foreground">
+                    {state === "pending" ? "Pending" : dateFor(idx)}
+                    {state === "current" ? " · In progress" : ""}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <DialogFooter>
+          <Button onClick={onClose}>Close</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 

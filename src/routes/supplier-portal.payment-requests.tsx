@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Receipt, Upload, Bell, Clock, Download, FileText, RotateCcw, RefreshCw, Send, Lock } from "lucide-react";
+import { Receipt, Upload, Bell, Clock, Download, FileText, RotateCcw, RefreshCw, Send, Lock, Link2, Copy, MessageCircle, CheckCircle2, Circle, FlaskConical } from "lucide-react";
 import { toast } from "sonner";
 import { BUYERS, STATUS_TONE, fxQuoteStore, requestsStore, useRequests, type SupplierRequest } from "@/lib/supplier-data";
 
@@ -23,6 +23,45 @@ export const Route = createFileRoute("/supplier-portal/payment-requests")({
 const NGN_PER_RMB = 204.35;
 const RMB_PER_USD = 7.2; // indicative reference rate for USD equivalent display
 const FEE_BPS = 90; // ~0.9% platform fee for indicative preview
+
+const PR_TIMELINE_STEPS = [
+  "Payment Request Created",
+  "Buyer Viewed",
+  "Awaiting NGN Payment",
+  "NGN Received",
+  "Compliance Review",
+  "FX Processing",
+  "Payout Initiated",
+  "Supplier Paid",
+] as const;
+
+function timelineIndexForStatus(status: SupplierRequest["status"]): number {
+  switch (status) {
+    case "Awaiting Buyer Payment": return 2;
+    case "NGN Received": return 3;
+    case "Compliance Review": return 4;
+    case "FX Processing": return 5;
+    case "RMB Payout Initiated": return 6;
+    case "RMB Paid": return 7;
+    case "Failed":
+    case "On Hold":
+    case "Refunded": return 3;
+    default: return 0;
+  }
+}
+
+function buildTimeline(r: SupplierRequest) {
+  const currentIndex = timelineIndexForStatus(r.status);
+  const base = Date.parse(r.dueDate) || Date.now();
+  return PR_TIMELINE_STEPS.map((label, i) => {
+    const done = i < currentIndex || (i === currentIndex && r.status === "RMB Paid");
+    const current = i === currentIndex && r.status !== "RMB Paid";
+    const ts = done || current
+      ? new Date(base - (PR_TIMELINE_STEPS.length - i) * 24 * 60 * 60 * 1000).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })
+      : undefined;
+    return { label, done, current, ts };
+  });
+}
 
 function buildIndicativeQuote(amountRmb: number) {
   // Deterministic pseudo-jitter so SSR and client agree (avoids hydration mismatch)
@@ -42,6 +81,8 @@ function RequestsPanel() {
   const [open, setOpen] = useState(!!openNew);
   const navigate = useNavigate();
   const requests = useRequests();
+  const [linkFor, setLinkFor] = useState<SupplierRequest | null>(null);
+  const [timelineFor, setTimelineFor] = useState<SupplierRequest | null>(null);
 
 
   useEffect(() => {
@@ -68,6 +109,9 @@ function RequestsPanel() {
 
   return (
     <div className="space-y-3">
+      <div className="flex justify-end">
+        <Badge variant="outline" className="text-[10px] inline-flex items-center gap-1"><FlaskConical className="h-3 w-3" /> Demo data</Badge>
+      </div>
       <ButtonGroup label="Payment request actions">
         <Button size="sm" onClick={() => setOpen(true)}><Receipt className="h-4 w-4 mr-2" /> Create Payment Request</Button>
         <Button size="sm" variant="outline" onClick={() => toast.success("Invoice uploaded")}><Upload className="h-4 w-4 mr-2" /> Upload Invoice</Button>
@@ -88,7 +132,7 @@ function RequestsPanel() {
                 <th className="text-right py-2 px-3">NGN (buyer pays)</th>
                 <th className="text-right py-2 px-3">Rate</th>
                 <th className="text-left py-2 px-3">Due</th>
-                <th className="text-left py-2 px-3">Status</th>
+                <th className="text-left py-2 px-3">Buyer payment timeline</th>
                 <th className="text-left py-2 px-3">Invoice</th>
                 <th className="text-left py-2 px-3">Sender account</th>
                 <th className="text-right py-2 px-3">Actions</th>
@@ -105,7 +149,12 @@ function RequestsPanel() {
                     <td className="py-2 px-3 text-right tabular-nums">₦{r.amountNgn.toLocaleString()}</td>
                     <td className="py-2 px-3 text-right tabular-nums text-xs">{r.rate.toFixed(2)}</td>
                     <td className="py-2 px-3 text-xs">{r.dueDate}</td>
-                    <td className="py-2 px-3"><Badge className={STATUS_TONE[r.status]}>{r.status}</Badge></td>
+                    <td className="py-2 px-3">
+                      <button className="flex flex-col gap-1 text-left" onClick={() => setTimelineFor(r)}>
+                        <Badge className={STATUS_TONE[r.status]}>{r.status}</Badge>
+                        <span className="text-[10px] text-primary underline underline-offset-2">View timeline</span>
+                      </button>
+                    </td>
                     <td className="py-2 px-3 text-xs"><FileText className="h-3 w-3 inline mr-1" />{r.invoiceDoc}</td>
                     <td className="py-2 px-3 text-xs">
                       {r.senderAccount
@@ -117,7 +166,8 @@ function RequestsPanel() {
                         <Button size="sm" variant="outline" onClick={() => sendToBuyerWithQuote(r)}>
                           <Send className="h-3.5 w-3.5 mr-1" /> Send quote to buyer
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => toast.success(`Timeline for ${r.invoiceNumber}`)}><Clock className="h-3.5 w-3.5 mr-1" /> Timeline</Button>
+                        <Button size="sm" variant="outline" onClick={() => setTimelineFor(r)}><Clock className="h-3.5 w-3.5 mr-1" /> Timeline</Button>
+                        <Button size="sm" variant="outline" onClick={() => setLinkFor(r)}><Link2 className="h-3.5 w-3.5 mr-1" /> Send secure payment link</Button>
                         <Button size="sm" variant="outline" onClick={() => toast.success("Reminder sent with current FX quote")}><Bell className="h-3.5 w-3.5 mr-1" /> Remind</Button>
                         {r.status === "RMB Paid" && (
                           <Button size="sm" variant="outline" onClick={() => toast.success("Settlement receipt downloaded")}><Download className="h-3.5 w-3.5 mr-1" /> Receipt</Button>
@@ -140,7 +190,60 @@ function RequestsPanel() {
 
 
       <NewRequestDialog open={open} onOpenChange={setOpen} />
+      <PaymentLinkDialog request={linkFor} onClose={() => setLinkFor(null)} />
+      <TimelineDialog request={timelineFor} onClose={() => setTimelineFor(null)} />
     </div>
+  );
+}
+
+function PaymentLinkDialog({ request, onClose }: { request: SupplierRequest | null; onClose: () => void }) {
+  if (!request) return null;
+  const link = `https://pay.canta.app/r/${request.id.toLowerCase()}`;
+  return (
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Secure payment link</DialogTitle>
+          <DialogDescription>Share this link with {request.buyer} to view and pay Payment Request Ref {request.id}.</DialogDescription>
+        </DialogHeader>
+        <div className="rounded-md border bg-secondary/30 p-2 text-xs font-mono break-all">{link}</div>
+        <DialogFooter className="flex-wrap gap-2 sm:justify-start">
+          <Button size="sm" variant="outline" onClick={() => {
+            if (typeof navigator !== "undefined" && navigator.clipboard) navigator.clipboard.writeText(link);
+            toast.success("Payment link copied to clipboard");
+          }}><Copy className="h-3.5 w-3.5 mr-1" /> Copy link</Button>
+          <Button size="sm" variant="outline" onClick={() => {
+            const text = encodeURIComponent(`Please complete payment for ${request.invoiceNumber}: ${link}`);
+            window.open(`https://wa.me/?text=${text}`, "_blank");
+            toast.success("Opening WhatsApp share");
+          }}><MessageCircle className="h-3.5 w-3.5 mr-1" /> Share via WhatsApp</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function TimelineDialog({ request, onClose }: { request: SupplierRequest | null; onClose: () => void }) {
+  if (!request) return null;
+  const steps = buildTimeline(request);
+  return (
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Buyer payment timeline — {request.id}</DialogTitle>
+          <DialogDescription>Invoice Ref {request.invoiceNumber} · {request.buyer}</DialogDescription>
+        </DialogHeader>
+        <ol className="space-y-2">
+          {steps.map((s) => (
+            <li key={s.label} className={`flex items-center gap-2 rounded-md border p-2 text-sm ${s.current ? "border-primary bg-primary/5" : s.done ? "border-emerald-300 bg-emerald-50" : "border-border"}`}>
+              {s.done ? <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" /> : <Circle className={`h-4 w-4 shrink-0 ${s.current ? "text-primary" : "text-muted-foreground"}`} />}
+              <span className={`flex-1 ${s.done || s.current ? "font-medium" : "text-muted-foreground"}`}>{s.label}</span>
+              {s.ts && <span className="text-[11px] text-muted-foreground">{s.ts}</span>}
+            </li>
+          ))}
+        </ol>
+      </DialogContent>
+    </Dialog>
   );
 }
 

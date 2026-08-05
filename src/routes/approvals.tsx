@@ -13,6 +13,7 @@ import {
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { loadProfile } from "@/lib/profile";
 
 export const Route = createFileRoute("/approvals")({
   head: () => ({ meta: [{ title: "Approvals — Canta" }] }),
@@ -83,6 +84,8 @@ function statusTone(s: Status) {
 }
 
 function Approvals() {
+  const profile = loadProfile();
+  const canApprove = !profile || profile.permissions.includes("approve payment") || profile.permissions.includes("approve settlement") || profile.role.toLowerCase().includes("admin") || profile.role.toLowerCase().includes("owner") || profile.role.toLowerCase().includes("officer");
   const [items, setItems] = useState<Request[]>(seed);
   const [q, setQ] = useState("");
   const [openItem, setOpenItem] = useState<Request | null>(null);
@@ -209,14 +212,14 @@ function Approvals() {
 
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
                   <Badge variant="outline" className={`${statusTone(r.status)} text-[10px]`}>{r.status}</Badge>
-                  <div className="flex gap-1.5">
+                  <div className="flex gap-1.5" title={!canApprove ? "You do not have approval permission for this workspace" : undefined}>
                     <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); act(r.id, "Info Requested"); }}>
                       <MessageCircle className="h-3.5 w-3.5" />
                     </Button>
-                    <Button size="sm" variant="outline" className="border-destructive/30 text-destructive hover:bg-destructive/10" onClick={(e) => { e.stopPropagation(); act(r.id, "Rejected"); }}>
+                    <Button size="sm" variant="outline" disabled={!canApprove} className="border-destructive/30 text-destructive hover:bg-destructive/10" onClick={(e) => { e.stopPropagation(); act(r.id, "Rejected"); }}>
                       <ThumbsDown className="h-3.5 w-3.5" />
                     </Button>
-                    <Button size="sm" className="bg-success text-success-foreground hover:bg-success/90" onClick={(e) => { e.stopPropagation(); act(r.id, "Approved"); }}>
+                    <Button size="sm" disabled={!canApprove} className="bg-success text-success-foreground hover:bg-success/90" onClick={(e) => { e.stopPropagation(); act(r.id, "Approved"); }}>
                       <ThumbsUp className="h-3.5 w-3.5" />
                     </Button>
                   </div>
@@ -326,14 +329,19 @@ function Approvals() {
                 </div>
                 <Textarea className="mt-3" placeholder="Add a comment for the approval log…" value={comment} onChange={(e) => setComment(e.target.value)} />
               </div>
+              {!canApprove && (
+                <div className="text-xs text-amber-700 bg-amber-500/10 border border-amber-500/30 rounded-md px-3 py-2">
+                  Your role does not include approval permission. Approve/Reject are disabled — contact a workspace admin.
+                </div>
+              )}
               <DialogFooter className="gap-2">
                 <Button variant="outline" onClick={() => act(openItem.id, "Info Requested", comment || "More information requested")}>
                   <MessageCircle className="h-3.5 w-3.5 mr-1.5" /> Request info
                 </Button>
-                <Button variant="outline" className="border-destructive/30 text-destructive hover:bg-destructive/10" onClick={() => act(openItem.id, "Rejected", comment || "Rejected")}>
+                <Button variant="outline" disabled={!canApprove} title={!canApprove ? "You do not have approval permission" : undefined} className="border-destructive/30 text-destructive hover:bg-destructive/10" onClick={() => act(openItem.id, "Rejected", comment || "Rejected")}>
                   <ThumbsDown className="h-3.5 w-3.5 mr-1.5" /> Reject
                 </Button>
-                <Button className="bg-success text-success-foreground hover:bg-success/90" onClick={() => act(openItem.id, "Approved", comment || "Approved")}>
+                <Button disabled={!canApprove} title={!canApprove ? "You do not have approval permission" : undefined} className="bg-success text-success-foreground hover:bg-success/90" onClick={() => act(openItem.id, "Approved", comment || "Approved")}>
                   <ThumbsUp className="h-3.5 w-3.5 mr-1.5" /> Approve
                 </Button>
               </DialogFooter>

@@ -76,6 +76,14 @@ function KybOnboardingPage() {
   };
   const missingDocs = requiredDocs.filter((d) => !docs[d.key]);
 
+  const stepValid: Record<StepKey, boolean> = {
+    business: !errors.name && !errors.regNo && !errors.address,
+    directors: !errors.dirName && !errors.dirEmail,
+    documents: true,
+    review: true,
+  };
+  const currentStepValid = stepValid[step.key];
+
   function next() { setStepIdx((i) => Math.min(STEPS.length - 1, i + 1)); }
   function back() { setStepIdx((i) => Math.max(0, i - 1)); }
 
@@ -132,6 +140,7 @@ function KybOnboardingPage() {
             </div>
             <Button
               size="sm"
+              disabled={!currentStepValid}
               onClick={() => { if (step.key === "review") submit(); else next(); }}
             >
               Continue KYB <ArrowRight className="h-4 w-4 ml-1" />
@@ -261,7 +270,7 @@ function KybOnboardingPage() {
                 Submit & enter {segment.shortLabel} <ArrowRight className="h-4 w-4 ml-1" />
               </Button>
             ) : (
-              <Button onClick={next}>
+              <Button onClick={next} disabled={!currentStepValid}>
                 Continue <ArrowRight className="h-4 w-4 ml-1" />
               </Button>
             )}

@@ -1,11 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
   ShieldCheck, FileCheck2, Download, Upload, CheckCircle2,
-  Clock, AlertTriangle, FileText, Users,
+  Clock, AlertTriangle, FileText, Users, Settings2, BadgeCheck, ArrowRight,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useRequireWorkspace, useActiveWorkspace } from "@/lib/workspace-guard";
@@ -120,6 +120,46 @@ function CompliancePack() {
               </div>
             );
           })}
+        </div>
+      </Card>
+
+      {/* Settlement processing */}
+      <Card className="p-5 shadow-card">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Settings2 className="h-4 w-4 text-primary" />
+            <div>
+              <div className="text-sm font-semibold">Settlement processing</div>
+              <div className="text-xs text-muted-foreground mt-0.5">
+                Settlement batches, treasury sweeps and payout processing are managed from the Ops Console, not here.
+              </div>
+            </div>
+          </div>
+          <Button size="sm" variant="outline" asChild>
+            <Link to="/ops">
+              Open Ops Console <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
+            </Link>
+          </Button>
+        </div>
+      </Card>
+
+      {/* Buyer verification review queue */}
+      <Card className="p-5 shadow-card">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <BadgeCheck className="h-4 w-4 text-primary" />
+            <div>
+              <div className="text-sm font-semibold">Buyer verification review queue</div>
+              <div className="text-xs text-muted-foreground mt-0.5">
+                Review and action pending buyer identity/KYC checks in the Verification Center.
+              </div>
+            </div>
+          </div>
+          <Button size="sm" variant="outline" asChild>
+            <Link to="/verification-center">
+              Open Verification Center <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
+            </Link>
+          </Button>
         </div>
       </Card>
 

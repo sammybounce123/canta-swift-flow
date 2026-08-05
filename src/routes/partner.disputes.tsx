@@ -24,12 +24,12 @@ type DisputeStatus = "Open" | "Under Review" | "Waiting on Client" | "Waiting on
 type Dispute = {
   id: string; client: string; marketer: string; caseRef: string; solicitor: string;
   amount: number; issueType: string; status: DisputeStatus; owner: string;
-  createdAt: string; lastUpdate: string; notes: string[];
+  createdAt: string; lastUpdate: string; notes: string[]; evidence: string[];
 };
 
 const SEED: Dispute[] = [
-  { id: "DSP-001", client: "Mr. Adebayo", marketer: "Sade O.", caseRef: "BC-CASE-4082", solicitor: "Howell & Sons", amount: 245_000, issueType: "Funding mismatch", status: "Under Review", owner: "Canta Compliance", createdAt: "2026-06-10", lastUpdate: "2026-06-18", notes: ["2026-06-10 — Opened by marketer", "2026-06-12 — Bank statement requested"] },
-  { id: "DSP-002", client: "Mrs. Okonkwo", marketer: "Sade O.", caseRef: "BC-CASE-4101", solicitor: "Bryant Legal", amount: 88_500, issueType: "Document issue", status: "Waiting on Client", owner: "Sade O.", createdAt: "2026-06-15", lastUpdate: "2026-06-19", notes: ["2026-06-15 — Opened"] },
+  { id: "DSP-001", client: "Mr. Adebayo", marketer: "Sade O.", caseRef: "BC-CASE-4082", solicitor: "Howell & Sons", amount: 245_000, issueType: "Funding mismatch", status: "Under Review", owner: "Canta Compliance", createdAt: "2026-06-10", lastUpdate: "2026-06-18", notes: ["2026-06-10 — Opened by marketer", "2026-06-12 — Bank statement requested"], evidence: ["Bank_Statement_June.pdf"] },
+  { id: "DSP-002", client: "Mrs. Okonkwo", marketer: "Sade O.", caseRef: "BC-CASE-4101", solicitor: "Bryant Legal", amount: 88_500, issueType: "Document issue", status: "Waiting on Client", owner: "Sade O.", createdAt: "2026-06-15", lastUpdate: "2026-06-19", notes: ["2026-06-15 — Opened"], evidence: [] },
 ];
 
 const KEY = "canta:partner:disputes:v1";
@@ -62,10 +62,10 @@ function PartnerDisputesPage() {
     resolved: list.filter((d) => d.status === "Resolved").length,
   }), [list]);
 
-  function addDispute(d: Omit<Dispute, "id" | "createdAt" | "lastUpdate" | "notes" | "status" | "owner">) {
+  function addDispute(d: Omit<Dispute, "id" | "createdAt" | "lastUpdate" | "notes" | "status" | "owner" | "evidence">) {
     const id = `DSP-${String(list.length + 1).padStart(3, "0")}`;
     const today = new Date().toISOString().slice(0, 10);
-    const newD: Dispute = { ...d, id, status: "Open", owner: d.marketer, createdAt: today, lastUpdate: today, notes: [`${today} — Dispute opened`] };
+    const newD: Dispute = { ...d, id, status: "Open", owner: d.marketer, createdAt: today, lastUpdate: today, notes: [`${today} — Dispute opened`], evidence: [] };
     save([newD, ...list]);
     setOpen(false);
     toast.success(`${id} opened`);
@@ -154,7 +154,7 @@ function Stat({ label, value, tone }: { label: string; value: string; tone?: str
   );
 }
 
-function NewDisputeDialog({ onSubmit, onClose }: { onSubmit: (d: Omit<Dispute, "id" | "createdAt" | "lastUpdate" | "notes" | "status" | "owner">) => void; onClose: () => void }) {
+function NewDisputeDialog({ onSubmit, onClose }: { onSubmit: (d: Omit<Dispute, "id" | "createdAt" | "lastUpdate" | "notes" | "status" | "owner" | "evidence">) => void; onClose: () => void }) {
   const [f, setF] = useState({ client: "", marketer: "", caseRef: "", solicitor: "", amount: 0, issueType: "Funding mismatch" });
   return (
     <DialogContent className="max-w-lg">
@@ -193,20 +193,54 @@ function DisputeDetail({ dispute, onClose, onUpdate }: { dispute: Dispute; onClo
     toast.success("Note added");
   }
   function uploadEvidence() {
-    onUpdate({ ...dispute, notes: [...dispute.notes, `${today} — Evidence uploaded`], lastUpdate: today });
+    const fileName = `Evidence_${dispute.evidence.length + 1}.pdf`;
+    onUpdate({
+      ...dispute,
+      evidence: [...dispute.evidence, fileName],
+      notes: [...dispute.notes, `${today} — Evidence uploaded: ${fileName}`],
+      lastUpdate: today,
+    });
     toast.success("Evidence uploaded");
   }
   function setStatus(s: DisputeStatus) {
     onUpdate({ ...dispute, status: s, lastUpdate: today, notes: [...dispute.notes, `${today} — Status changed to ${s}`] });
     toast.success(`Status: ${s}`);
   }
+  function resolve() {
+    setStatus("Resolved");
+  }
+  function escalate() {
+    onUpdate({ ...dispute, status: "Waiting on Canta", owner: "Canta Compliance", lastUpdate: today, notes: [...dispute.notes, `${today} — Escalated to Canta Compliance`] });
+    toast.success("Escalated to Canta Compliance");
+  }
 
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-2xl">
         <DialogHeader><DialogTitle>{dispute.id} · {dispute.client}</DialogTitle></DialogHeader>
-        <div className="text-xs text-muted-foreground">{dispute.caseRef} · {dispute.solicitor} · £{dispute.amount.toLocaleString()}</div>
-        <div className="flex items-center gap-2"><Badge variant="outline" className={`text-[10px] ${STATUS_TONE[dispute.status]}`}>{dispute.status}</Badge></div>
+        <div className="flex items-center gap-2"><Badge variant="outline" className={`text-[10px] ${STATUS_TONE[dispute.status]}`}>{dispute.status}</Badge><span className="text-xs text-muted-foreground">Owner: {dispute.owner}</span></div>
+
+        <div className="grid grid-cols-2 gap-3 text-xs border rounded-lg p-3 bg-secondary/30">
+          <div><div className="text-muted-foreground">Reason</div><div className="font-medium text-foreground">{dispute.issueType}</div></div>
+          <div><div className="text-muted-foreground">Amount</div><div className="font-medium text-foreground tabular-nums">£{dispute.amount.toLocaleString()}</div></div>
+          <div><div className="text-muted-foreground">Client</div><div className="font-medium text-foreground">{dispute.client}</div></div>
+          <div><div className="text-muted-foreground">Marketer</div><div className="font-medium text-foreground">{dispute.marketer}</div></div>
+          <div><div className="text-muted-foreground">Solicitor</div><div className="font-medium text-foreground">{dispute.solicitor}</div></div>
+          <div><div className="text-muted-foreground">Case ref</div><div className="font-medium text-foreground">{dispute.caseRef}</div></div>
+        </div>
+
+        <div className="space-y-2">
+          <div className="text-sm font-semibold">Evidence</div>
+          {dispute.evidence.length === 0 ? (
+            <div className="text-xs text-muted-foreground">No evidence uploaded yet.</div>
+          ) : (
+            <ul className="text-xs space-y-1">
+              {dispute.evidence.map((e, i) => (
+                <li key={i} className="flex items-center gap-2"><FileText className="h-3 w-3 text-muted-foreground" />{e}</li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         <div className="space-y-2">
           <div className="text-sm font-semibold">Activity</div>
@@ -224,12 +258,15 @@ function DisputeDetail({ dispute, onClose, onUpdate }: { dispute: Dispute; onClo
             <Button size="sm" onClick={addNote}>Add note</Button>
             <Button size="sm" variant="outline" onClick={uploadEvidence}><Upload className="h-3.5 w-3.5 mr-1" /> Upload evidence</Button>
             <Button size="sm" variant="outline" onClick={() => setStatus("Waiting on Client")}>Request more info</Button>
-            <Button size="sm" variant="outline" onClick={() => setStatus("Resolved")}><CheckCircle2 className="h-3.5 w-3.5 mr-1" /> Mark resolved</Button>
           </div>
         </div>
 
-        <DialogFooter>
-          <Button onClick={onClose}>Close</Button>
+        <DialogFooter className="sm:justify-between gap-2 flex-wrap">
+          <div className="flex gap-2">
+            <Button size="sm" variant="destructive" onClick={escalate}>Escalate</Button>
+            <Button size="sm" onClick={resolve}><CheckCircle2 className="h-3.5 w-3.5 mr-1" /> Resolve</Button>
+          </div>
+          <Button variant="outline" onClick={onClose}>Close</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

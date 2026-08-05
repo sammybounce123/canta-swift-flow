@@ -11,6 +11,12 @@ import { toast } from "sonner";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Flag, ShieldAlert } from "lucide-react";
+import { addAuditEntry } from "@/lib/treasury-audit";
+import { useActiveWorkspace } from "@/lib/workspace-guard";
 
 export const Route = createFileRoute("/transactions")({
   head: () => ({ meta: [{ title: "Transactions — Canta" }] }),
@@ -29,6 +35,40 @@ function Transactions() {
   const [page, setPage] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
   const [active, setActive] = useState<(typeof transactions)[number] | null>(null);
+  const [flagged, setFlagged] = useState<Record<string, string>>({});
+  const [flagTarget, setFlagTarget] = useState<(typeof transactions)[number] | null>(null);
+  const [flagReason, setFlagReason] = useState("");
+  const ws = useActiveWorkspace();
+
+  function downloadReceipt(t: (typeof transactions)[number]) {
+    const lines = [
+      "CANTA — Transaction Receipt (Demo)",
+      `Reference: ${t.id}`,
+      `Date: ${t.date}`,
+      `Description: ${t.desc}`,
+      `Type: ${t.type}`,
+      `Amount: ${fmtMoney(t.amount, t.ccy)}`,
+      `Status: ${t.status}`,
+      "",
+      "This is a demo receipt generated locally — not a live financial document.",
+    ];
+    const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `receipt-${t.id}.txt`; a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Receipt downloaded");
+  }
+
+  function confirmFlag() {
+    if (!flagTarget) return;
+    if (!flagReason.trim()) { toast.error("A reason is required to flag a transaction"); return; }
+    setFlagged((f) => ({ ...f, [flagTarget.id]: flagReason }));
+    addAuditEntry({ actor: ws.name, workspace: ws.workspace, action: "Flagged transaction as high-risk", entity: flagTarget.id, result: "Success", detail: flagReason });
+    toast.success(`${flagTarget.id} flagged as high-risk`);
+    setFlagTarget(null);
+    setFlagReason("");
+  }
 
   const filtered = useMemo(() => {
     const days = Number(range);
@@ -111,6 +151,7 @@ function Transactions() {
                 <th className="px-5 py-3 font-medium">Type</th>
                 <th className="px-5 py-3 font-medium text-right">Amount</th>
                 <th className="px-5 py-3 font-medium">Status</th>
+                <th className="px-5 py-3 font-medium text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -121,11 +162,34 @@ function Transactions() {
                   <td className="px-5 py-3 font-medium">{t.desc}</td>
                   <td className="px-5 py-3"><span className="text-xs px-2 py-0.5 rounded bg-secondary">{t.type}</span></td>
                   <td className="px-5 py-3 text-right font-semibold tabular-nums">{fmtMoney(t.amount, t.ccy)}</td>
-                  <td className="px-5 py-3"><StatusPill status={t.status} /></td>
+                  <td className="px-5 py-3">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <StatusPill status={t.status} />
+                      {flagged[t.id] && (
+                        <Badge variant="outline" className="text-[10px] bg-destructive/10 text-destructive border-destructive/30">
+                          <ShieldAlert className="h-3 w-3 mr-1" /> Flagged
+                        </Badge>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-5 py-3 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                    <Button size="sm" variant="ghost" onClick={() => downloadReceipt(t)}>
+                      <Download className="h-3.5 w-3.5 mr-1" /> Receipt
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-destructive hover:text-destructive"
+                      disabled={!!flagged[t.id]}
+                      onClick={() => { setFlagTarget(t); setFlagReason(""); }}
+                    >
+                      <Flag className="h-3.5 w-3.5 mr-1" /> {flagged[t.id] ? "Flagged" : "Flag high-risk"}
+                    </Button>
+                  </td>
                 </tr>
               ))}
               {pageRows.length === 0 && (
-                <tr><td colSpan={6} className="px-5 py-10 text-center text-sm text-muted-foreground">No transactions match your filters.</td></tr>
+                <tr><td colSpan={7} className="px-5 py-10 text-center text-sm text-muted-foreground">No transactions match your filters.</td></tr>
               )}
             </tbody>
           </table>
@@ -194,8 +258,32 @@ function Transactions() {
                 <Row k="Settlement" v="Fast rail · after compliance clears" />
               </div>
               <div className="flex gap-2 pt-2">
-                <Button variant="outline" className="flex-1" onClick={() => toast.success("Receipt downloaded")}>Download receipt</Button>
+                <Button variant="outline" className="flex-1" onClick={() => downloadReceipt(active)}>Download receipt</Button>
                 <Button className="flex-1" onClick={() => { setActive(null); toast.info("Opening dispute…"); }}>Raise dispute</Button>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Flag high-risk confirm dialog */}
+      <Dialog open={!!flagTarget} onOpenChange={(o) => { if (!o) { setFlagTarget(null); setFlagReason(""); } }}>
+        <DialogContent className="max-w-sm">
+          {flagTarget && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2"><ShieldAlert className="h-4 w-4 text-destructive" /> Flag as high-risk</DialogTitle>
+                <DialogDescription>
+                  Flagging {flagTarget.id} records an entry in the audit trail and marks it for compliance review. This is a demo action — no real risk system is triggered.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-2">
+                <Label>Reason</Label>
+                <Textarea value={flagReason} onChange={(e) => setFlagReason(e.target.value)} rows={3} placeholder="Describe why this transaction looks high-risk…" />
+              </div>
+              <div className="flex gap-2 pt-1">
+                <Button variant="ghost" className="flex-1" onClick={() => { setFlagTarget(null); setFlagReason(""); }}>Cancel</Button>
+                <Button variant="destructive" className="flex-1" onClick={confirmFlag}>Confirm flag</Button>
               </div>
             </>
           )}
