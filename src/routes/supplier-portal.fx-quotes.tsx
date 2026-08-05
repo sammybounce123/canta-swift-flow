@@ -29,22 +29,26 @@ function FxQuotesPanel() {
     toast.success(`FX quote ${q.id} generated · Rate ${q.rate} · Expires in 15m`);
   };
   const handleLock = () => {
-    if (!activeQuote) return toast.error("No quote to lock");
+    if (!activeQuote) return toast.error("No active quote to lock");
+    if (isQuoteExpired(activeQuote)) return toast.error(`${activeQuote.id} has expired — refresh the quote first`);
     if (activeQuote.status === "Rate Locked") return toast.info(`${activeQuote.id} already locked`);
     fxQuoteStore.lock(activeQuote.id);
     toast.success(`${activeQuote.id} locked at ${activeQuote.rate} for 15 minutes`);
   };
   const handleSend = () => {
-    if (!activeQuote) return toast.error("No quote to send");
+    if (!activeQuote) return toast.error("No active quote to send");
+    if (isQuoteExpired(activeQuote)) return toast.error(`${activeQuote.id} has expired — expired quotes cannot be sent to buyers`);
     fxQuoteStore.send(activeQuote.id);
     toast.success(`${activeQuote.id} sent to ${activeQuote.buyer}`);
     void navigate({ to: "/supplier-portal/ngn-details" });
   };
   const handleRefresh = () => {
-    if (!activeQuote) return toast.error("No quote to refresh");
-    if (activeQuote.status === "Rate Locked") return toast.error("Locked quote cannot be refreshed — generate a new quote");
+    if (!activeQuote) return toast.error("No active quote to refresh");
+    if (activeQuote.status === "Rate Locked" && !isQuoteExpired(activeQuote)) {
+      return toast.error("Locked quote cannot be refreshed — generate a new quote");
+    }
     fxQuoteStore.refresh(activeQuote.id);
-    toast.success(`${activeQuote.id} refreshed`);
+    toast.success(`${activeQuote.id} refreshed — new 15m window`);
   };
 
   return (
