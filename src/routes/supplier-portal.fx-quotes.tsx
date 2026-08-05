@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,7 @@ import { Receipt, Lock, ArrowRight, Clock } from "lucide-react";
 import { toast } from "sonner";
 import {
   useFxQuotes, useActiveQuote, fxQuoteStore, formatCountdown,
+  isQuoteExpired, isQuoteSelectable, effectiveQuoteStatus, POST_QUOTE_STATUSES,
   COMPLIANCE_DISCLAIMER, type FxQuoteStatus,
 } from "@/lib/supplier-data";
 
@@ -28,22 +29,26 @@ function FxQuotesPanel() {
     toast.success(`FX quote ${q.id} generated · Rate ${q.rate} · Expires in 15m`);
   };
   const handleLock = () => {
-    if (!activeQuote) return toast.error("No quote to lock");
+    if (!activeQuote) return toast.error("No active quote to lock");
+    if (isQuoteExpired(activeQuote)) return toast.error(`${activeQuote.id} has expired — refresh the quote first`);
     if (activeQuote.status === "Rate Locked") return toast.info(`${activeQuote.id} already locked`);
     fxQuoteStore.lock(activeQuote.id);
     toast.success(`${activeQuote.id} locked at ${activeQuote.rate} for 15 minutes`);
   };
   const handleSend = () => {
-    if (!activeQuote) return toast.error("No quote to send");
+    if (!activeQuote) return toast.error("No active quote to send");
+    if (isQuoteExpired(activeQuote)) return toast.error(`${activeQuote.id} has expired — expired quotes cannot be sent to buyers`);
     fxQuoteStore.send(activeQuote.id);
     toast.success(`${activeQuote.id} sent to ${activeQuote.buyer}`);
     void navigate({ to: "/supplier-portal/ngn-details" });
   };
   const handleRefresh = () => {
-    if (!activeQuote) return toast.error("No quote to refresh");
-    if (activeQuote.status === "Rate Locked") return toast.error("Locked quote cannot be refreshed — generate a new quote");
+    if (!activeQuote) return toast.error("No active quote to refresh");
+    if (activeQuote.status === "Rate Locked" && !isQuoteExpired(activeQuote)) {
+      return toast.error("Locked quote cannot be refreshed — generate a new quote");
+    }
     fxQuoteStore.refresh(activeQuote.id);
-    toast.success(`${activeQuote.id} refreshed`);
+    toast.success(`${activeQuote.id} refreshed — new 15m window`);
   };
 
   return (
@@ -96,11 +101,13 @@ function FxQuotesPanel() {
             <tbody>
               {quotes.map((q) => {
                 const isActive = activeQuote?.id === q.id;
-                const expired = q.status !== "Rate Locked" && Date.now() > q.expiresAt;
-                const shownStatus: FxQuoteStatus = expired && (q.status === "Quote Generated" || q.status === "Sent to Buyer") ? "Expired" : q.status;
+                const expired = isQuoteExpired(q);
+                const selectable = isQuoteSelectable(q);
+                const shownStatus: FxQuoteStatus = effectiveQuoteStatus(q);
+                const settled = POST_QUOTE_STATUSES.includes(q.status);
                 return (
-                  <tr key={q.id} className={`border-t cursor-pointer ${isActive ? "bg-primary/5" : "hover:bg-muted/40"}`}
-                    onClick={() => fxQuoteStore.select(q.id)}>
+                  <tr key={q.id} className={`border-t ${selectable ? "cursor-pointer" : "opacity-80"} ${isActive ? "bg-primary/5" : selectable ? "hover:bg-muted/40" : ""}`}
+                    onClick={() => { if (selectable) fxQuoteStore.select(q.id); }}>
                     <td className="py-2 px-3 font-mono text-xs">{q.id}</td>
                     <td className="py-2 px-3 font-mono text-xs">{q.invoiceNumber}</td>
                     <td className="py-2 px-3 text-right tabular-nums">¥{q.invoiceAmount.toLocaleString()} <span className="text-[10px] text-muted-foreground">{q.invoiceCurrency}</span></td>
@@ -113,8 +120,12 @@ function FxQuotesPanel() {
                     <td className="py-2 px-3 text-xs">{q.settlementCurrency}</td>
                     <td className="py-2 px-3 text-xs">{q.payoutAccount}</td>
                     <td className="py-2 px-3 text-xs tabular-nums">
-                      {q.status === "Rate Locked" && <Lock className="h-3 w-3 inline mr-1" />}
-                      {formatCountdown(q.expiresAt)}
+                      {settled ? <span className="text-muted-foreground">—</span> : (
+                        <>
+                          {q.status === "Rate Locked" && !expired && <Lock className="h-3 w-3 inline mr-1" />}
+                          {formatCountdown(q.expiresAt)}
+                        </>
+                      )}
                     </td>
                     <td className="py-2 px-3">
                       <Badge className={
@@ -125,9 +136,18 @@ function FxQuotesPanel() {
                       }>{shownStatus}</Badge>
                     </td>
                     <td className="py-2 px-3 text-right">
-                      {!isActive && (
+                      {expired ? (
+                        <Button size="sm" variant="ghost" className="text-destructive"
+                          onClick={(e) => { e.stopPropagation(); fxQuoteStore.refresh(q.id); toast.success(`${q.id} refreshed — new 15m window`); }}>
+                          Expired — refresh quote
+                        </Button>
+                      ) : settled ? (
+                        <Button size="sm" variant="ghost" asChild onClick={(e) => e.stopPropagation()}>
+                          <Link to="/supplier-portal/settlement">View settlement</Link>
+                        </Button>
+                      ) : !isActive ? (
                         <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); fxQuoteStore.select(q.id); }}>Select</Button>
-                      )}
+                      ) : null}
                     </td>
                   </tr>
                 );
