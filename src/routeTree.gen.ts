@@ -100,6 +100,7 @@ import { Route as SupplierPortalMessagesRouteImport } from './routes/supplier-po
 import { Route as SupplierPortalNgnDetailsRouteImport } from './routes/supplier-portal.ngn-details'
 import { Route as SupplierPortalPaymentRequestsRouteImport } from './routes/supplier-portal.payment-requests'
 import { Route as SupplierPortalPayoutAccountsRouteImport } from './routes/supplier-portal.payout-accounts'
+import { Route as SupplierPortalProfileRouteImport } from './routes/supplier-portal.profile'
 import { Route as SupplierPortalReportsRouteImport } from './routes/supplier-portal.reports'
 import { Route as SupplierPortalRequestsRouteImport } from './routes/supplier-portal.requests'
 import { Route as SupplierPortalRmbWalletRouteImport } from './routes/supplier-portal.rmb-wallet'
@@ -580,6 +581,11 @@ const SupplierPortalPayoutAccountsRoute =
     path: '/payout-accounts',
     getParentRoute: () => SupplierPortalRoute,
   } as any)
+const SupplierPortalProfileRoute = SupplierPortalProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => SupplierPortalRoute,
+} as any)
 const SupplierPortalReportsRoute = SupplierPortalReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -780,6 +786,7 @@ export interface FileRoutesByFullPath {
   '/supplier-portal/ngn-details': typeof SupplierPortalNgnDetailsRoute
   '/supplier-portal/payment-requests': typeof SupplierPortalPaymentRequestsRoute
   '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
+  '/supplier-portal/profile': typeof SupplierPortalProfileRoute
   '/supplier-portal/reports': typeof SupplierPortalReportsRoute
   '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
   '/supplier-portal/rmb-wallet': typeof SupplierPortalRmbWalletRoute
@@ -890,6 +897,7 @@ export interface FileRoutesByTo {
   '/supplier-portal/ngn-details': typeof SupplierPortalNgnDetailsRoute
   '/supplier-portal/payment-requests': typeof SupplierPortalPaymentRequestsRoute
   '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
+  '/supplier-portal/profile': typeof SupplierPortalProfileRoute
   '/supplier-portal/reports': typeof SupplierPortalReportsRoute
   '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
   '/supplier-portal/rmb-wallet': typeof SupplierPortalRmbWalletRoute
@@ -1005,6 +1013,7 @@ export interface FileRoutesById {
   '/supplier-portal/ngn-details': typeof SupplierPortalNgnDetailsRoute
   '/supplier-portal/payment-requests': typeof SupplierPortalPaymentRequestsRoute
   '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
+  '/supplier-portal/profile': typeof SupplierPortalProfileRoute
   '/supplier-portal/reports': typeof SupplierPortalReportsRoute
   '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
   '/supplier-portal/rmb-wallet': typeof SupplierPortalRmbWalletRoute
@@ -1121,6 +1130,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/ngn-details'
     | '/supplier-portal/payment-requests'
     | '/supplier-portal/payout-accounts'
+    | '/supplier-portal/profile'
     | '/supplier-portal/reports'
     | '/supplier-portal/requests'
     | '/supplier-portal/rmb-wallet'
@@ -1231,6 +1241,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/ngn-details'
     | '/supplier-portal/payment-requests'
     | '/supplier-portal/payout-accounts'
+    | '/supplier-portal/profile'
     | '/supplier-portal/reports'
     | '/supplier-portal/requests'
     | '/supplier-portal/rmb-wallet'
@@ -1345,6 +1356,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/ngn-details'
     | '/supplier-portal/payment-requests'
     | '/supplier-portal/payout-accounts'
+    | '/supplier-portal/profile'
     | '/supplier-portal/reports'
     | '/supplier-portal/requests'
     | '/supplier-portal/rmb-wallet'
@@ -2077,6 +2089,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SupplierPortalPayoutAccountsRouteImport
       parentRoute: typeof SupplierPortalRoute
     }
+    '/supplier-portal/profile': {
+      id: '/supplier-portal/profile'
+      path: '/profile'
+      fullPath: '/supplier-portal/profile'
+      preLoaderRoute: typeof SupplierPortalProfileRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
     '/supplier-portal/reports': {
       id: '/supplier-portal/reports'
       path: '/reports'
@@ -2328,6 +2347,7 @@ interface SupplierPortalRouteChildren {
   SupplierPortalNgnDetailsRoute: typeof SupplierPortalNgnDetailsRoute
   SupplierPortalPaymentRequestsRoute: typeof SupplierPortalPaymentRequestsRoute
   SupplierPortalPayoutAccountsRoute: typeof SupplierPortalPayoutAccountsRoute
+  SupplierPortalProfileRoute: typeof SupplierPortalProfileRoute
   SupplierPortalReportsRoute: typeof SupplierPortalReportsRoute
   SupplierPortalRequestsRoute: typeof SupplierPortalRequestsRoute
   SupplierPortalRmbWalletRoute: typeof SupplierPortalRmbWalletRoute
@@ -2351,6 +2371,7 @@ const SupplierPortalRouteChildren: SupplierPortalRouteChildren = {
   SupplierPortalNgnDetailsRoute: SupplierPortalNgnDetailsRoute,
   SupplierPortalPaymentRequestsRoute: SupplierPortalPaymentRequestsRoute,
   SupplierPortalPayoutAccountsRoute: SupplierPortalPayoutAccountsRoute,
+  SupplierPortalProfileRoute: SupplierPortalProfileRoute,
   SupplierPortalReportsRoute: SupplierPortalReportsRoute,
   SupplierPortalRequestsRoute: SupplierPortalRequestsRoute,
   SupplierPortalRmbWalletRoute: SupplierPortalRmbWalletRoute,

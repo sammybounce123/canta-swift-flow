@@ -263,7 +263,7 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/supplier-portal/rmb-wallet", label: "RMB Settlement", iconKey: "globe", group: "Settlement" },
         { to: "/supplier-portal/payout-accounts", label: "Payout Accounts", iconKey: "wallet", group: "Settlement" },
         { to: "/supplier-portal/documents", label: "Documents", iconKey: "file", group: "Operations" },
-        { to: "/suppliers/profile", label: "Supplier Profile", iconKey: "building", group: "Operations" },
+        { to: "/supplier-portal/profile", label: "Supplier Profile", iconKey: "building", group: "Operations" },
         { to: "/supplier-portal/verification", label: "Verification", iconKey: "shield-check", group: "Operations" },
         { to: "/supplier-portal/support", label: "Support", iconKey: "users", group: "Help" },
         { to: "/supplier-portal/reports", label: "Supplier Reports", iconKey: "chart", group: "Insights" },
