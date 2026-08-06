@@ -3,7 +3,6 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 export type Mode =
   | "Enterprise Treasury"
   | "Importer"
-  | "Freight Forwarder"
   | "Supplier"
   | "Global Merchant"
   | "Partner Property"
@@ -16,11 +15,9 @@ export const ALL_MODES: { id: Mode; tag: string; desc: string }[] = [
   { id: "Partner Property", tag: "PP", desc: "Property partner client referrals" },
 ];
 
-/** Display label override — "Freight Forwarder" mode id renders as "Clearing Agent". */
 export const MODE_DISPLAY_LABEL: Record<Mode, string> = {
   "Enterprise Treasury": "Enterprise Treasury",
   "Importer": "Importer Trade Desk",
-  "Freight Forwarder": "Clearing Agent",
   "Supplier": "Supplier Portal",
   "Global Merchant": "Global Merchant",
   "Partner Property": "Partner",
@@ -45,10 +42,6 @@ function normalizeMode(value?: string | null): Mode | null {
     case "Importer Trade Desk":
     case "Importer Trade Desk Mode":
       return "Importer";
-    case "Freight Forwarder":
-    case "Clearing Agent":
-    case "Clearing Agent Mode":
-      return "Freight Forwarder";
     case "Supplier":
     case "Supplier Mode":
     case "Supplier Portal":

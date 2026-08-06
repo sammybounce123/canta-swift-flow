@@ -55,7 +55,6 @@ function Dashboard() {
             <div className="text-sm font-semibold truncate">{mode} Mode</div>
             <div className="text-xs text-muted-foreground">
               {mode === "Importer" ? "Track shipments, documents, suppliers and landed cost."
-              : mode === "Freight Forwarder" ? "Invite-only clearing job workspace."
               : mode === "Supplier" ? "Issue invoices, escrow & global settlement."
               : mode === "Global Merchant" ? "Collect locally, settle globally."
               : "Move money, FX, wallets and settlements at enterprise scale."}
@@ -64,7 +63,6 @@ function Dashboard() {
         </div>
         <div className="flex flex-wrap gap-2">
           {mode === "Importer" && <Button asChild size="sm" variant="outline"><Link to="/importer">Open Importer Portal</Link></Button>}
-          {mode === "Freight Forwarder" && <Button asChild size="sm" variant="outline"><Link to="/freight">Open Workspace</Link></Button>}
           {mode === "Supplier" && <Button asChild size="sm" variant="outline"><Link to="/supplier-portal">Open Supplier Portal</Link></Button>}
           {mode === "Global Merchant" && <Button asChild size="sm" variant="outline"><Link to="/collections">Open Collections</Link></Button>}
           {mode === "Importer" && <Button asChild size="sm" variant="ghost"><Link to="/trade-desk">Trade Desk</Link></Button>}
@@ -108,7 +106,6 @@ function Dashboard() {
               "Importer": "Importer Mode",
               "Supplier": "Supplier Mode",
               "Canta Ops": "Ops Mode",
-              "Freight Forwarder": "Clearing Agent Mode",
               "Global Merchant": "Merchant Mode",
               "Partner Property": "Partner Mode",
             };

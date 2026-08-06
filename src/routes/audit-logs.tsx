@@ -35,12 +35,6 @@ const BY_WS: Record<string, Entry[]> = {
     { id: "A-1015", ts: "2026-06-22 16:02", module: "Suppliers",      action: "Supplier added",            target: "Shenzhen LedTech",        status: "Success" },
     { id: "A-1016", ts: "2026-06-22 15:10", module: "Support",        action: "Support ticket opened",     target: "SUP-9001",                status: "Success" },
   ],
-  freight_workspace: [
-    { id: "A-2001", ts: "2026-06-23 08:40", module: "Shipments",      action: "Shipment updated",          target: "SHP-10421",               status: "Success" },
-    { id: "A-2002", ts: "2026-06-23 09:55", module: "Invoices",       action: "Invoice created",           target: "INV-FF-2204",             status: "Success" },
-    { id: "A-2003", ts: "2026-06-23 10:20", module: "Documents",      action: "Document uploaded",         target: "POD-10388.pdf",           status: "Success" },
-    { id: "A-2004", ts: "2026-06-22 17:01", module: "Customers",      action: "Customer added",            target: "Balogun Trade",           status: "Success" },
-  ],
   global_collections: [
     { id: "A-3001", ts: "2026-06-23 09:01", module: "Payment Links",  action: "Payment link generated",    target: "CL-3318",                 status: "Success" },
     { id: "A-3002", ts: "2026-06-23 09:45", module: "Reconciliation", action: "Payment reconciled",        target: "INV-2034",                status: "Success" },

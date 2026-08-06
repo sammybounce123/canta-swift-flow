@@ -181,7 +181,6 @@ export function ImporterActions({
     { label: "Request Clearing Quotes", icon: Calculator,   onClick: () => navigate({ to: "/clearing-quotes", search: { file: ctx.tradeFileId, request: undefined } }), show: DEMO_EXTRAS || variant === "tradefile" },
     { label: "Link Shipment",          icon: Ship,          onClick: () => setOpen("linkShipment"),  show: DEMO_EXTRAS && variant !== "supplier" },
     { label: "Share Tracking Link",    icon: LinkIcon,      onClick: () => setOpen("share"),         show: !!ctx.shipmentId || variant === "tradefile" },
-    { label: "Invite Clearing Agent",  icon: Truck,         onClick: () => setOpen("forwarder"),     show: DEMO_EXTRAS && variant !== "supplier" },
     { label: "Add Supplier",           icon: UserPlus,      onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Opening Supplier Portal — add a Chinese supplier"); }, show: DEMO_EXTRAS },
     { label: "Invite Supplier",        icon: Mail,          onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Invite supplier from the Supplier Portal"); }, show: DEMO_EXTRAS },
     { label: "Link Supplier Payment Request", icon: Send,   onClick: () => { navigate({ to: "/supplier-portal" }); toast.message("Send a payment request to a Chinese supplier"); }, show: DEMO_EXTRAS && (variant === "tradefile" || variant === "toolbar") },

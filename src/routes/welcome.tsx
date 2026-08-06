@@ -32,7 +32,7 @@ const WHO_FOR: Partial<Record<WorkspaceType, string>> = {
 };
 const DO_BULLETS: Partial<Record<WorkspaceType, string[]>> = {
   enterprise_treasury: ["FX & multi-currency balances", "Bulk payouts & approvals", "Beneficiaries & treasury reports"],
-  importer_portal: ["Send BL & track shipments", "Organize goods & documents", "Compare clearing agents & pay"],
+  importer_portal: ["Send BL & track shipments", "Organize goods & documents", "Compare landed cost & pay suppliers"],
   supplier_dashboard: ["Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta", "Upload invoices & documents", "Track RMB settlement receipts"],
   partner_property: ["Refer property clients", "Track FX & solicitor payouts", "Download payout receipts"],
 };

@@ -36,14 +36,6 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
     { id: "sup",       name: "Suppliers",              desc: "Spend per supplier, on-time delivery, disputes" },
     { id: "payments",  name: "Payments",               desc: "Supplier deposits, escrow releases, duties and freight invoices" },
   ],
-  freight_workspace: [
-    { id: "vol",       name: "Shipment volume",        desc: "Shipments per lane, mode, month" },
-    { id: "cust",      name: "Customer report",        desc: "Revenue and outstanding per customer" },
-    { id: "inv",       name: "Freight invoice report", desc: "Issued, paid, overdue invoices" },
-    { id: "out",       name: "Outstanding invoices",   desc: "Aging and follow-up status" },
-    { id: "staff",     name: "Staff performance",      desc: "Shipments handled per staff member" },
-    { id: "route",     name: "Route report",           desc: "Profitability and delays per lane" },
-  ],
   global_collections: [
     { id: "coll",      name: "Collection report",      desc: "Links sent, paid, abandoned, by currency" },
     { id: "payer",     name: "Payer report",           desc: "Repeat payers, top sources, country mix" },
@@ -77,7 +69,6 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
 const WORKSPACE_LABELS: Record<WorkspaceType, string> = {
   enterprise_treasury: "Enterprise Treasury",
   importer_portal: "Importer Trade Desk",
-  freight_workspace: "Invite-only Clearing Agent",
   global_collections: "Global Collections / Merchant",
   supplier_dashboard: "Supplier Portal",
   partner_property: "Partner Mode",
@@ -88,7 +79,6 @@ const WORKSPACE_LABELS: Record<WorkspaceType, string> = {
 const REPORT_GROUP_LABELS: Record<WorkspaceType, string> = {
   enterprise_treasury: "Enterprise reports",
   importer_portal: "Importer reports",
-    freight_workspace: "Clearing agent job reports",
   global_collections: "Collection reports",
   supplier_dashboard: "Supplier reports",
     partner_property: "Partner Mode reports",
@@ -145,7 +135,6 @@ function ReportsPage() {
   const WS_IDENTITY: Record<WorkspaceType, { name: string; title: string; mode: string }> = {
     enterprise_treasury: { name: "Adaeze Okonkwo", title: "Treasury Admin",  mode: "Enterprise Treasury Mode" },
     importer_portal:     { name: "Tunde Bakare",   title: "Importer Owner",  mode: "Importer Mode" },
-    freight_workspace:   { name: "Chinedu Okafor", title: "Clearing Agent",  mode: "Invite-only Clearing Agent Mode" },
     global_collections:  { name: "Amaka Bello",    title: "Merchant Owner",  mode: "Global Collections Mode" },
     supplier_dashboard:  { name: "Li Wei",         title: "Supplier Admin",  mode: "Supplier Mode" },
     partner_property:    { name: "Charlotte Baron", title: "Partner Admin",  mode: "Partner Mode" },

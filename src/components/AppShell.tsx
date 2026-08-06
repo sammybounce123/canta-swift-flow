@@ -73,7 +73,6 @@ function FxTicker() {
 const WORKSPACE_TO_MODE: Record<import("@/lib/profile").WorkspaceType, Mode> = {
   enterprise_treasury: "Enterprise Treasury",
   importer_portal: "Importer",
-  freight_workspace: "Freight Forwarder",
   supplier_dashboard: "Supplier",
   global_collections: "Global Merchant",
   global_spend_cards: "Enterprise Treasury",
@@ -88,7 +87,6 @@ type WorkspaceProfile = { name: string; initials: string; title: string; badge: 
 const WORKSPACE_PROFILES: Record<import("@/lib/profile").WorkspaceType, WorkspaceProfile> = {
   enterprise_treasury: { name: "Adaeze Okonkwo", initials: "AO", title: "Treasury Admin",          badge: "Enterprise Treasury Mode" },
   importer_portal:     { name: "Tunde Bakare",   initials: "TB", title: "Importer Owner",          badge: "Importer Mode" },
-  freight_workspace:   { name: "Chinedu Okafor", initials: "CO", title: "Clearing Agent",          badge: "Invite-only Clearing Agent Mode" },
   global_collections:  { name: "Amaka Bello",    initials: "AB", title: "Merchant Owner",          badge: "Global Collections Mode" },
   supplier_dashboard:  { name: "Li Wei",         initials: "LW", title: "Supplier Admin",          badge: "Supplier Mode" },
   partner_property:    { name: "Charlotte Baron", initials: "CB", title: "Partner Admin",           badge: "Partner Mode" },
@@ -217,7 +215,6 @@ function ModeSwitcher({ displayMode }: { displayMode: Mode }) {
   const MODE_HOME: Record<Mode, string> = {
     "Enterprise Treasury": "/treasury",
     "Importer": "/importer",
-    "Freight Forwarder": "/freight",
     "Supplier": "/supplier-portal",
     "Global Merchant": "/collections",
     "Partner Property": "/partner",
@@ -265,7 +262,6 @@ const WORKSPACE_DASHBOARD_PATHS: Record<string, string> = {
   importer_portal: "/importer",
   supplier_dashboard: "/supplier-portal",
   partner_property: "/partner",
-  freight_workspace: "/freight",
   global_collections: "/collections",
 };
 
@@ -334,20 +330,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Menu className="h-5 w-5" />
             </button>
 
-            {activeWorkspace !== "freight_workspace" && <ModeSwitcher displayMode={displayMode} />}
+            <ModeSwitcher displayMode={displayMode} />
 
 
             {!isPartner && (
               <div className="hidden lg:flex items-center gap-2 flex-1 max-w-md ml-2">
                 <div className="relative w-full">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <input className="w-full pl-9 pr-3 py-2 text-sm bg-secondary/60 border border-transparent focus:border-ring focus:outline-none rounded-lg" placeholder={activeWorkspace === "freight_workspace" ? "Search quote requests, jobs, importers…" : activeWorkspace === "supplier_dashboard" ? "Search buyers, payment requests, invoices…" : "Search shipments, suppliers, trade files…"} />
+                  <input className="w-full pl-9 pr-3 py-2 text-sm bg-secondary/60 border border-transparent focus:border-ring focus:outline-none rounded-lg" placeholder={activeWorkspace === "supplier_dashboard" ? "Search buyers, payment requests, invoices…" : "Search shipments, suppliers, trade files…"} />
                 </div>
               </div>
             )}
 
             <div className="ml-auto flex items-center gap-2 sm:gap-3">
-              {activeWorkspace !== "freight_workspace" && <FxTicker />}
+              <FxTicker />
               <button className="relative h-9 w-9 grid place-items-center rounded-lg hover:bg-secondary flex-shrink-0">
 
                 <Bell className="h-4 w-4" />
@@ -388,12 +384,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                           {partner.userId === m.id && <Check className="h-4 w-4 text-accent" />}
                         </DropdownMenuItem>
                       ))}
-                    </>
-                  ) : activeWorkspace === "freight_workspace" ? (
-                    <>
-                      <DropdownMenuLabel className="flex items-center gap-2"><UserCog className="h-3.5 w-3.5" /> Clearing Agent</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <div className="px-2 py-1.5 text-xs text-muted-foreground">{wsProfile.name} · {wsProfile.title}</div>
                     </>
                   ) : (
                     <>

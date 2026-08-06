@@ -27,11 +27,6 @@ import { Route as DataModelRouteImport } from './routes/data-model'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as EscrowRouteImport } from './routes/escrow'
-import { Route as FreightRouteImport } from './routes/freight'
-import { Route as FreightCustomersRouteImport } from './routes/freight-customers'
-import { Route as FreightInvoicesRouteImport } from './routes/freight-invoices'
-import { Route as FreightPipelineRouteImport } from './routes/freight-pipeline'
-import { Route as FreightReportsRouteImport } from './routes/freight-reports'
 import { Route as FxRouteImport } from './routes/fx'
 import { Route as ImporterRouteImport } from './routes/importer'
 import { Route as IntegrationsRouteImport } from './routes/integrations'
@@ -68,7 +63,6 @@ import { Route as WalletsRouteImport } from './routes/wallets'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as WhatsappRouteImport } from './routes/whatsapp'
 import { Route as CollectionsNewRouteImport } from './routes/collections.new'
-import { Route as FreightCardsRouteImport } from './routes/freight.cards'
 import { Route as ImporterCardsRouteImport } from './routes/importer.cards'
 import { Route as MerchantKybRouteImport } from './routes/merchant.kyb'
 import { Route as MerchantProfileRouteImport } from './routes/merchant.profile'
@@ -214,31 +208,6 @@ const DocumentsRoute = DocumentsRouteImport.update({
 const EscrowRoute = EscrowRouteImport.update({
   id: '/escrow',
   path: '/escrow',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FreightRoute = FreightRouteImport.update({
-  id: '/freight',
-  path: '/freight',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FreightCustomersRoute = FreightCustomersRouteImport.update({
-  id: '/freight-customers',
-  path: '/freight-customers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FreightInvoicesRoute = FreightInvoicesRouteImport.update({
-  id: '/freight-invoices',
-  path: '/freight-invoices',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FreightPipelineRoute = FreightPipelineRouteImport.update({
-  id: '/freight-pipeline',
-  path: '/freight-pipeline',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FreightReportsRoute = FreightReportsRouteImport.update({
-  id: '/freight-reports',
-  path: '/freight-reports',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FxRoute = FxRouteImport.update({
@@ -420,11 +389,6 @@ const CollectionsNewRoute = CollectionsNewRouteImport.update({
   id: '/new',
   path: '/new',
   getParentRoute: () => CollectionsRoute,
-} as any)
-const FreightCardsRoute = FreightCardsRouteImport.update({
-  id: '/cards',
-  path: '/cards',
-  getParentRoute: () => FreightRoute,
 } as any)
 const ImporterCardsRoute = ImporterCardsRouteImport.update({
   id: '/cards',
@@ -736,11 +700,6 @@ export interface FileRoutesByFullPath {
   '/docs': typeof DocsRoute
   '/documents': typeof DocumentsRoute
   '/escrow': typeof EscrowRoute
-  '/freight': typeof FreightRouteWithChildren
-  '/freight-customers': typeof FreightCustomersRoute
-  '/freight-invoices': typeof FreightInvoicesRoute
-  '/freight-pipeline': typeof FreightPipelineRoute
-  '/freight-reports': typeof FreightReportsRoute
   '/fx': typeof FxRoute
   '/importer': typeof ImporterRouteWithChildren
   '/integrations': typeof IntegrationsRoute
@@ -777,7 +736,6 @@ export interface FileRoutesByFullPath {
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
   '/collections/new': typeof CollectionsNewRoute
-  '/freight/cards': typeof FreightCardsRoute
   '/importer/cards': typeof ImporterCardsRoute
   '/merchant/kyb': typeof MerchantKybRoute
   '/merchant/profile': typeof MerchantProfileRoute
@@ -854,11 +812,6 @@ export interface FileRoutesByTo {
   '/docs': typeof DocsRoute
   '/documents': typeof DocumentsRoute
   '/escrow': typeof EscrowRoute
-  '/freight': typeof FreightRouteWithChildren
-  '/freight-customers': typeof FreightCustomersRoute
-  '/freight-invoices': typeof FreightInvoicesRoute
-  '/freight-pipeline': typeof FreightPipelineRoute
-  '/freight-reports': typeof FreightReportsRoute
   '/fx': typeof FxRoute
   '/importer': typeof ImporterRouteWithChildren
   '/integrations': typeof IntegrationsRoute
@@ -892,7 +845,6 @@ export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
   '/collections/new': typeof CollectionsNewRoute
-  '/freight/cards': typeof FreightCardsRoute
   '/importer/cards': typeof ImporterCardsRoute
   '/merchant/kyb': typeof MerchantKybRoute
   '/merchant/profile': typeof MerchantProfileRoute
@@ -969,11 +921,6 @@ export interface FileRoutesById {
   '/docs': typeof DocsRoute
   '/documents': typeof DocumentsRoute
   '/escrow': typeof EscrowRoute
-  '/freight': typeof FreightRouteWithChildren
-  '/freight-customers': typeof FreightCustomersRoute
-  '/freight-invoices': typeof FreightInvoicesRoute
-  '/freight-pipeline': typeof FreightPipelineRoute
-  '/freight-reports': typeof FreightReportsRoute
   '/fx': typeof FxRoute
   '/importer': typeof ImporterRouteWithChildren
   '/integrations': typeof IntegrationsRoute
@@ -1010,7 +957,6 @@ export interface FileRoutesById {
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
   '/collections/new': typeof CollectionsNewRoute
-  '/freight/cards': typeof FreightCardsRoute
   '/importer/cards': typeof ImporterCardsRoute
   '/merchant/kyb': typeof MerchantKybRoute
   '/merchant/profile': typeof MerchantProfileRoute
@@ -1089,11 +1035,6 @@ export interface FileRouteTypes {
     | '/docs'
     | '/documents'
     | '/escrow'
-    | '/freight'
-    | '/freight-customers'
-    | '/freight-invoices'
-    | '/freight-pipeline'
-    | '/freight-reports'
     | '/fx'
     | '/importer'
     | '/integrations'
@@ -1130,7 +1071,6 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/whatsapp'
     | '/collections/new'
-    | '/freight/cards'
     | '/importer/cards'
     | '/merchant/kyb'
     | '/merchant/profile'
@@ -1207,11 +1147,6 @@ export interface FileRouteTypes {
     | '/docs'
     | '/documents'
     | '/escrow'
-    | '/freight'
-    | '/freight-customers'
-    | '/freight-invoices'
-    | '/freight-pipeline'
-    | '/freight-reports'
     | '/fx'
     | '/importer'
     | '/integrations'
@@ -1245,7 +1180,6 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/whatsapp'
     | '/collections/new'
-    | '/freight/cards'
     | '/importer/cards'
     | '/merchant/kyb'
     | '/merchant/profile'
@@ -1321,11 +1255,6 @@ export interface FileRouteTypes {
     | '/docs'
     | '/documents'
     | '/escrow'
-    | '/freight'
-    | '/freight-customers'
-    | '/freight-invoices'
-    | '/freight-pipeline'
-    | '/freight-reports'
     | '/fx'
     | '/importer'
     | '/integrations'
@@ -1362,7 +1291,6 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/whatsapp'
     | '/collections/new'
-    | '/freight/cards'
     | '/importer/cards'
     | '/merchant/kyb'
     | '/merchant/profile'
@@ -1440,11 +1368,6 @@ export interface RootRouteChildren {
   DocsRoute: typeof DocsRoute
   DocumentsRoute: typeof DocumentsRoute
   EscrowRoute: typeof EscrowRoute
-  FreightRoute: typeof FreightRouteWithChildren
-  FreightCustomersRoute: typeof FreightCustomersRoute
-  FreightInvoicesRoute: typeof FreightInvoicesRoute
-  FreightPipelineRoute: typeof FreightPipelineRoute
-  FreightReportsRoute: typeof FreightReportsRoute
   FxRoute: typeof FxRoute
   ImporterRoute: typeof ImporterRouteWithChildren
   IntegrationsRoute: typeof IntegrationsRoute
@@ -1615,41 +1538,6 @@ declare module '@tanstack/react-router' {
       path: '/escrow'
       fullPath: '/escrow'
       preLoaderRoute: typeof EscrowRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/freight': {
-      id: '/freight'
-      path: '/freight'
-      fullPath: '/freight'
-      preLoaderRoute: typeof FreightRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/freight-customers': {
-      id: '/freight-customers'
-      path: '/freight-customers'
-      fullPath: '/freight-customers'
-      preLoaderRoute: typeof FreightCustomersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/freight-invoices': {
-      id: '/freight-invoices'
-      path: '/freight-invoices'
-      fullPath: '/freight-invoices'
-      preLoaderRoute: typeof FreightInvoicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/freight-pipeline': {
-      id: '/freight-pipeline'
-      path: '/freight-pipeline'
-      fullPath: '/freight-pipeline'
-      preLoaderRoute: typeof FreightPipelineRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/freight-reports': {
-      id: '/freight-reports'
-      path: '/freight-reports'
-      fullPath: '/freight-reports'
-      preLoaderRoute: typeof FreightReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fx': {
@@ -1903,13 +1791,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/collections/new'
       preLoaderRoute: typeof CollectionsNewRouteImport
       parentRoute: typeof CollectionsRoute
-    }
-    '/freight/cards': {
-      id: '/freight/cards'
-      path: '/cards'
-      fullPath: '/freight/cards'
-      preLoaderRoute: typeof FreightCardsRouteImport
-      parentRoute: typeof FreightRoute
     }
     '/importer/cards': {
       id: '/importer/cards'
@@ -2318,17 +2199,6 @@ const CollectionsRouteWithChildren = CollectionsRoute._addFileChildren(
   CollectionsRouteChildren,
 )
 
-interface FreightRouteChildren {
-  FreightCardsRoute: typeof FreightCardsRoute
-}
-
-const FreightRouteChildren: FreightRouteChildren = {
-  FreightCardsRoute: FreightCardsRoute,
-}
-
-const FreightRouteWithChildren =
-  FreightRoute._addFileChildren(FreightRouteChildren)
-
 interface ImporterRouteChildren {
   ImporterCardsRoute: typeof ImporterCardsRoute
 }
@@ -2515,11 +2385,6 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRoute: DocsRoute,
   DocumentsRoute: DocumentsRoute,
   EscrowRoute: EscrowRoute,
-  FreightRoute: FreightRouteWithChildren,
-  FreightCustomersRoute: FreightCustomersRoute,
-  FreightInvoicesRoute: FreightInvoicesRoute,
-  FreightPipelineRoute: FreightPipelineRoute,
-  FreightReportsRoute: FreightReportsRoute,
   FxRoute: FxRoute,
   ImporterRoute: ImporterRouteWithChildren,
   IntegrationsRoute: IntegrationsRoute,
