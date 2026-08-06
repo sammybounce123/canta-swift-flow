@@ -12,7 +12,7 @@ import {
   quoteFor, simpleInvoiceStore, copyText, wechatMessage, formatExpiry,
   isInvoiceQuoteExpired, NGN_COLLECTION_ACCOUNT, type SimpleInvoice,
 } from "@/lib/supplier-simple";
-import { whatsappUrl } from "@/lib/whatsapp";
+
 
 export const Route = createFileRoute("/supplier-portal/create-invoice")({
   head: () => ({
@@ -164,7 +164,7 @@ function CreateInvoicePage() {
             <div className="flex flex-wrap gap-2">
               <Button size="sm" onClick={() => {
                 simpleInvoiceStore.update(invoice.id, { status: "Sent to Buyer", sentBy: "WhatsApp" });
-                window.open(whatsappUrl(wechatMessage(invoice), invoice.buyerWhatsapp), "_blank", "noopener");
+                window.open(`https://wa.me/${invoice.buyerWhatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(wechatMessage(invoice))}`, "_blank", "noopener");
                 toast.success("Opening WhatsApp");
               }}><MessageCircle className="mr-2 h-4 w-4" /> Send by WhatsApp</Button>
               <Button size="sm" variant="outline" onClick={() => {
