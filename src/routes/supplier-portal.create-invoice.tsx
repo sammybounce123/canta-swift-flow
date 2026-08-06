@@ -99,6 +99,15 @@ function CreateInvoicePage() {
             </div>
           </div>
 
+          {livePreview && (
+            <div className="grid gap-2 rounded-lg border bg-muted/30 p-3 text-sm sm:grid-cols-4">
+              <Kv k="RMB amount" v={`¥${rmb.toLocaleString()}`} />
+              <Kv k="FX rate" v={`₦${livePreview.rate} / ¥1`} />
+              <Kv k="Canta fee" v={`₦${livePreview.feeNgn.toLocaleString()}`} />
+              <Kv k="Buyer pays (NGN)" v={`₦${livePreview.amountNgn.toLocaleString()}`} />
+            </div>
+          )}
+
           {quote && (
             <div className="grid gap-2 rounded-lg border bg-muted/30 p-3 text-sm sm:grid-cols-4">
               <Kv k="Quote rate" v={`₦${quote.rate} / ¥1`} />
@@ -116,6 +125,7 @@ function CreateInvoicePage() {
           </div>
         </Card>
       )}
+
 
       {step === 2 && quote && (
         <Card className="space-y-3 p-4">
