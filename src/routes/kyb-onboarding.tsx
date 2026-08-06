@@ -189,7 +189,16 @@ function KybOnboardingPage() {
               </div>
               <div>
                 <Label>Country of incorporation</Label>
-                <Input value={biz.country} onChange={(e) => setBiz({ ...biz, country: e.target.value })} />
+                <Select value={biz.country} onValueChange={(v) => setBiz({ ...biz, country: v })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {COUNTRIES.map((c) => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label>Registered address</Label>
