@@ -34,6 +34,8 @@ function CreateInvoicePage() {
   const [invoice, setInvoice] = useState<SimpleInvoice | null>(null);
 
   const rmb = Number(amountRmb) || 0;
+  const livePreview = rmb > 0 ? quoteFor(rmb) : null;
+
 
   const generateQuote = () => {
     if (rmb <= 0) { toast.error("Enter the RMB amount you want to receive."); return; }
