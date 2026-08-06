@@ -45,9 +45,6 @@ const CTA: Partial<Record<WorkspaceType, string>> = {
 
 const VISIBLE: WorkspaceType[] = ["importer_portal", "supplier_dashboard", "enterprise_treasury", "partner_property"];
 
-const ROUTE_OVERRIDE: Partial<Record<WorkspaceType, string>> = {
-  supplier_dashboard: "/supplier-portal",
-};
 
 
 function WelcomePage() {
@@ -63,15 +60,8 @@ function WelcomePage() {
     if (id === "supplier_dashboard") {
       seedDemoSupplierPersona();
     }
-    const kybDone = typeof window !== "undefined"
-      && window.localStorage.getItem("canta:kyb:" + id) === "done";
-    if (kybDone) {
-      toast.success(`Workspace set: ${segment.shortLabel}`);
-      setTimeout(() => navigate({ to: (ROUTE_OVERRIDE[id] ?? segment.route) as never }), 250);
-    } else {
-      toast.success(`Let's verify your business for ${segment.shortLabel}`);
-      setTimeout(() => navigate({ to: "/kyb-onboarding", search: { workspace: id } as never }), 250);
-    }
+    toast.success(`Let's set up ${segment.shortLabel}`);
+    setTimeout(() => navigate({ to: "/kyb-onboarding", search: { workspace: id } as never }), 250);
   };
 
 
