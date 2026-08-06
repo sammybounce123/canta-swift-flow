@@ -93,6 +93,7 @@ import { Route as PartnerTeamRouteImport } from './routes/partner.team'
 import { Route as PayLinkIdRouteImport } from './routes/pay.$linkId'
 import { Route as SupplierPortalIndexRouteImport } from './routes/supplier-portal.index'
 import { Route as SupplierPortalBuyersRouteImport } from './routes/supplier-portal.buyers'
+import { Route as SupplierPortalCreateInvoiceRouteImport } from './routes/supplier-portal.create-invoice'
 import { Route as SupplierPortalDocumentsRouteImport } from './routes/supplier-portal.documents'
 import { Route as SupplierPortalFxQuotesRouteImport } from './routes/supplier-portal.fx-quotes'
 import { Route as SupplierPortalInvoicesRouteImport } from './routes/supplier-portal.invoices'
@@ -545,6 +546,12 @@ const SupplierPortalBuyersRoute = SupplierPortalBuyersRouteImport.update({
   path: '/buyers',
   getParentRoute: () => SupplierPortalRoute,
 } as any)
+const SupplierPortalCreateInvoiceRoute =
+  SupplierPortalCreateInvoiceRouteImport.update({
+    id: '/create-invoice',
+    path: '/create-invoice',
+    getParentRoute: () => SupplierPortalRoute,
+  } as any)
 const SupplierPortalDocumentsRoute = SupplierPortalDocumentsRouteImport.update({
   id: '/documents',
   path: '/documents',
@@ -793,6 +800,7 @@ export interface FileRoutesByFullPath {
   '/partner/team': typeof PartnerTeamRoute
   '/pay/$linkId': typeof PayLinkIdRoute
   '/supplier-portal/buyers': typeof SupplierPortalBuyersRoute
+  '/supplier-portal/create-invoice': typeof SupplierPortalCreateInvoiceRoute
   '/supplier-portal/documents': typeof SupplierPortalDocumentsRoute
   '/supplier-portal/fx-quotes': typeof SupplierPortalFxQuotesRoute
   '/supplier-portal/invoices': typeof SupplierPortalInvoicesRoute
@@ -906,6 +914,7 @@ export interface FileRoutesByTo {
   '/partner/team': typeof PartnerTeamRoute
   '/pay/$linkId': typeof PayLinkIdRoute
   '/supplier-portal/buyers': typeof SupplierPortalBuyersRoute
+  '/supplier-portal/create-invoice': typeof SupplierPortalCreateInvoiceRoute
   '/supplier-portal/documents': typeof SupplierPortalDocumentsRoute
   '/supplier-portal/fx-quotes': typeof SupplierPortalFxQuotesRoute
   '/supplier-portal/invoices': typeof SupplierPortalInvoicesRoute
@@ -1024,6 +1033,7 @@ export interface FileRoutesById {
   '/partner/team': typeof PartnerTeamRoute
   '/pay/$linkId': typeof PayLinkIdRoute
   '/supplier-portal/buyers': typeof SupplierPortalBuyersRoute
+  '/supplier-portal/create-invoice': typeof SupplierPortalCreateInvoiceRoute
   '/supplier-portal/documents': typeof SupplierPortalDocumentsRoute
   '/supplier-portal/fx-quotes': typeof SupplierPortalFxQuotesRoute
   '/supplier-portal/invoices': typeof SupplierPortalInvoicesRoute
@@ -1143,6 +1153,7 @@ export interface FileRouteTypes {
     | '/partner/team'
     | '/pay/$linkId'
     | '/supplier-portal/buyers'
+    | '/supplier-portal/create-invoice'
     | '/supplier-portal/documents'
     | '/supplier-portal/fx-quotes'
     | '/supplier-portal/invoices'
@@ -1256,6 +1267,7 @@ export interface FileRouteTypes {
     | '/partner/team'
     | '/pay/$linkId'
     | '/supplier-portal/buyers'
+    | '/supplier-portal/create-invoice'
     | '/supplier-portal/documents'
     | '/supplier-portal/fx-quotes'
     | '/supplier-portal/invoices'
@@ -1373,6 +1385,7 @@ export interface FileRouteTypes {
     | '/partner/team'
     | '/pay/$linkId'
     | '/supplier-portal/buyers'
+    | '/supplier-portal/create-invoice'
     | '/supplier-portal/documents'
     | '/supplier-portal/fx-quotes'
     | '/supplier-portal/invoices'
@@ -2066,6 +2079,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SupplierPortalBuyersRouteImport
       parentRoute: typeof SupplierPortalRoute
     }
+    '/supplier-portal/create-invoice': {
+      id: '/supplier-portal/create-invoice'
+      path: '/create-invoice'
+      fullPath: '/supplier-portal/create-invoice'
+      preLoaderRoute: typeof SupplierPortalCreateInvoiceRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
     '/supplier-portal/documents': {
       id: '/supplier-portal/documents'
       path: '/documents'
@@ -2380,6 +2400,7 @@ const PartnerRouteWithChildren =
 
 interface SupplierPortalRouteChildren {
   SupplierPortalBuyersRoute: typeof SupplierPortalBuyersRoute
+  SupplierPortalCreateInvoiceRoute: typeof SupplierPortalCreateInvoiceRoute
   SupplierPortalDocumentsRoute: typeof SupplierPortalDocumentsRoute
   SupplierPortalFxQuotesRoute: typeof SupplierPortalFxQuotesRoute
   SupplierPortalInvoicesRoute: typeof SupplierPortalInvoicesRoute
@@ -2406,6 +2427,7 @@ interface SupplierPortalRouteChildren {
 
 const SupplierPortalRouteChildren: SupplierPortalRouteChildren = {
   SupplierPortalBuyersRoute: SupplierPortalBuyersRoute,
+  SupplierPortalCreateInvoiceRoute: SupplierPortalCreateInvoiceRoute,
   SupplierPortalDocumentsRoute: SupplierPortalDocumentsRoute,
   SupplierPortalFxQuotesRoute: SupplierPortalFxQuotesRoute,
   SupplierPortalInvoicesRoute: SupplierPortalInvoicesRoute,
