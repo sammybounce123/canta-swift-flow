@@ -4,7 +4,6 @@
 export type WorkspaceType =
   | "enterprise_treasury"
   | "importer_portal"
-  | "freight_workspace"
   | "global_collections"
   | "supplier_dashboard"
   | "global_spend_cards"
@@ -51,19 +50,6 @@ export const SEGMENTS: Segment[] = [
     route: "/importer",
     welcome: "Track shipments, organize documents, calculate landed cost, manage suppliers, and control trade expenses.",
     tagline: "Buyers importing from China, UAE, Turkey, India and beyond",
-  },
-  {
-    id: "freight_workspace",
-    label: "Invite-only Clearing Agent",
-    shortLabel: "Clearing Agent",
-    accountType: "business",
-    customerSegment: "clearing_agent",
-    primaryUseCase: "Receive quote requests, submit bids, run clearing jobs",
-    defaultRole: "Clearing Agent",
-    defaultPermissions: ["view dashboard", "view quote requests", "submit bid", "update clearing job"],
-    route: "/freight",
-    welcome: "Hidden workspace for approved clearing agents invited to quote requests or assigned jobs.",
-    tagline: "Invite-only clearing access for verified agents",
   },
 
   {
@@ -172,8 +158,6 @@ export function defaultFlagsFor(workspace: WorkspaceType): FeatureFlags {
       return { ...ALL_OFF, treasury_module_enabled: true, compliance_module_enabled: true };
     case "importer_portal":
       return { ...ALL_OFF, trade_module_enabled: true };
-    case "freight_workspace":
-      return { ...ALL_OFF, freight_module_enabled: true };
     case "supplier_dashboard":
       return { ...ALL_OFF, supplier_module_enabled: true };
     case "global_collections":
@@ -235,19 +219,6 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         Team, Settings,
-      ];
-    case "freight_workspace":
-      return [
-        D,
-        { to: "/freight", label: "Assigned Clearing Jobs", iconKey: "freight", group: "My Workspace" },
-        { to: "/freight-customers", label: "Customers", iconKey: "users", group: "My Workspace" },
-        { to: "/freight-pipeline", label: "Shipment Pipeline", iconKey: "ship", group: "Operations" },
-        { to: "/freight-invoices", label: "Freight Invoices", iconKey: "receipt", group: "Operations" },
-        { to: "/freight-reports", label: "Reports", iconKey: "chart", group: "Insights" },
-        { to: "/documents", label: "Documents", iconKey: "file", group: "Operations" },
-        { to: "/whatsapp", label: "Messages", iconKey: "whatsapp", group: "Updates" },
-        { to: "/support", label: "Support", iconKey: "users", group: "Help" },
-        Settings,
       ];
 
 
@@ -376,7 +347,6 @@ export function loadProfile(): Profile | null {
 const WORKSPACE_TO_MODE: Record<WorkspaceType, string> = {
   enterprise_treasury: "Enterprise Treasury",
   importer_portal: "Importer",
-  freight_workspace: "Freight Forwarder",
   supplier_dashboard: "Supplier",
   global_collections: "Global Merchant",
   global_spend_cards: "Enterprise Treasury",
