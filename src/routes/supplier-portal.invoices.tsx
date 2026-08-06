@@ -1,109 +1,127 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/action-group";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { FileText, Upload, MoreHorizontal, Eye, Edit3, Send, Download, Copy, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useState } from "react";
-import { GenerateInvoiceWizard } from "@/components/GenerateInvoiceWizard";
-import { invoiceStore, useInvoices } from "@/lib/invoice-store";
-import { formatCountdown } from "@/lib/supplier-data";
+import { FileText } from "lucide-react";
+import {
+  useSimpleInvoices, simpleInvoiceStore, INVOICE_STATUS_TONE, isInvoiceQuoteExpired,
+  copyText, wechatMessage, type SimpleInvoice,
+} from "@/lib/supplier-simple";
+import { useT } from "@/lib/supplier-lang";
 
 export const Route = createFileRoute("/supplier-portal/invoices")({
-  head: () => ({ meta: [{ title: "Invoices — Supplier Portal — Canta" }] }),
-  component: InvoicesPanel,
+  head: () => ({
+    meta: [
+      { title: "Invoice History — Supplier Portal — Canta" },
+      { name: "description", content: "Every invoice you sent to Nigerian buyers, with payment, conversion and settlement status." },
+    ],
+  }),
+  component: InvoiceHistory,
 });
 
-const STATUS_TONE: Record<string, string> = {
-  Draft: "bg-muted text-foreground",
-  Issued: "bg-blue-100 text-blue-800",
-  "Payment Requested": "bg-amber-100 text-amber-800",
-  Paid: "bg-emerald-100 text-emerald-800",
-  Cancelled: "bg-destructive/10 text-destructive",
-};
+function actionsFor(inv: SimpleInvoice): Array<{ label: string; run: () => void }> {
+  const status = isInvoiceQuoteExpired(inv) && inv.status !== "Cancelled" ? "Expired" : inv.status;
+  switch (status) {
+    case "Draft":
+      return [
+        { label: "Continue", run: () => toast.info(`Continue ${inv.invoiceNumber}`) },
+        { label: "Delete", run: () => { simpleInvoiceStore.remove(inv.id); toast.success("Draft deleted"); } },
+      ];
+    case "Quote Locked":
+      return [
+        { label: "Send invoice", run: () => { copyText(wechatMessage(inv)); simpleInvoiceStore.update(inv.id, { status: "Sent to Buyer" }); toast.success("Invoice message copied and marked as sent"); } },
+        { label: "Download PDF", run: () => toast.success("Invoice PDF downloaded") },
+      ];
+    case "Sent to Buyer":
+    case "Buyer Viewed":
+      return [
+        { label: "Remind buyer", run: () => toast.success("Reminder sent to buyer") },
+        { label: "View", run: () => toast.info(`${inv.invoiceNumber} · ${inv.buyerCompany}`) },
+      ];
+    case "Awaiting NGN Payment":
+      return [
+        { label: "Copy payment link", run: () => { copyText(inv.paymentLink); toast.success("Payment link copied"); } },
+        { label: "Remind buyer", run: () => toast.success("Reminder sent to buyer") },
+      ];
+    case "NGN Received":
+      return [{ label: "View conversion status", run: () => toast.info("NGN received — awaiting compliance review before conversion") }];
+    case "Compliance Review":
+      return [{ label: "View review status", run: () => toast.info("Compliance review in progress") }];
+    case "Auto-Converting":
+      return [{ label: "View FX status", run: () => toast.info(`Converting at ₦${inv.fxRate} / ¥1`) }];
+    case "RMB Settlement Pending":
+      return [{ label: "View settlement", run: () => toast.info("Payout to your verified RMB bank account is queued") }];
+    case "RMB Paid":
+      return [{ label: "Download receipt", run: () => toast.success("Settlement receipt downloaded") }];
+    case "Expired":
+      return [{ label: "Refresh quote", run: () => { simpleInvoiceStore.refreshQuote(inv.id); toast.success("New rate locked"); } }];
+    case "Cancelled":
+      return [{ label: "Duplicate invoice", run: () => { simpleInvoiceStore.duplicate(inv.id); toast.success("Invoice duplicated"); } }];
+    default:
+      return [];
+  }
+}
 
-function InvoicesPanel() {
-  const invoices = useInvoices();
-  const [open, setOpen] = useState(false);
+function InvoiceHistory() {
+  const invoices = useSimpleInvoices();
+  const t = useT();
 
   return (
-    <Card className="p-4 space-y-3">
-      <div>
-        <div className="text-sm font-semibold">Invoices &amp; shipping documents</div>
-        <div className="text-xs text-muted-foreground">
-          Create invoices for Nigerian buyers linked to an active FX quote. Payment requests and NGN
-          collection are handled from the created invoice.
+    <Card className="space-y-3 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <div className="text-sm font-semibold">{t("invoiceHistory")}</div>
+          <div className="text-xs text-muted-foreground">Every invoice links to its buyer, payment request, FX rate, quote expiry and settlement status.</div>
         </div>
+        <Button size="sm" asChild><Link to="/supplier-portal/create-invoice"><FileText className="mr-2 h-4 w-4" /> {t("createInvoice")}</Link></Button>
       </div>
 
-      <ButtonGroup label="Invoice actions">
-        <Button size="sm" onClick={() => setOpen(true)}><FileText className="h-4 w-4 mr-2" /> Generate Invoice</Button>
-        <Button size="sm" variant="outline" onClick={() => toast.success("Proforma invoice uploaded")}><Upload className="h-4 w-4 mr-2" /> Upload proforma invoice</Button>
-        <Button size="sm" variant="outline" onClick={() => toast.success("Commercial invoice uploaded")}><Upload className="h-4 w-4 mr-2" /> Upload commercial invoice</Button>
-        <Button size="sm" variant="outline" onClick={() => toast.success("Packing list uploaded")}><Upload className="h-4 w-4 mr-2" /> Upload packing list</Button>
-      </ButtonGroup>
-
-      {invoices.length === 0 ? (
-        <div className="text-xs text-muted-foreground border rounded-md p-6 text-center">
-          No invoices yet. Click <strong>Generate Invoice</strong> to create one.
-        </div>
-      ) : (
-        <div className="overflow-x-auto rounded-lg border border-border">
-          <table className="w-full text-sm">
-            <thead className="bg-secondary/40">
-              <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
-                <th className="py-2 px-3">Invoice #</th>
-                <th className="py-2 px-3">Buyer</th>
-                <th className="py-2 px-3 text-right">Amount</th>
-                <th className="py-2 px-3">Ccy</th>
-                <th className="py-2 px-3">FX quote</th>
-                <th className="py-2 px-3">Quote expiry</th>
-                <th className="py-2 px-3">Payment request</th>
-                <th className="py-2 px-3">Status</th>
-                <th className="py-2 px-3">Created</th>
-                <th className="py-2 px-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoices.map((i) => (
-                <tr key={i.id} className="border-t">
-                  <td className="py-2 px-3 text-xs font-mono">{i.invoiceNumber}</td>
-                  <td className="py-2 px-3 text-xs">{i.buyer.company}</td>
-                  <td className="py-2 px-3 text-xs text-right tabular-nums">{i.total.toLocaleString()}</td>
-                  <td className="py-2 px-3 text-xs">{i.currency}</td>
-                  <td className="py-2 px-3 text-xs font-mono">{i.fxQuoteId ?? "—"}</td>
-                  <td className="py-2 px-3 text-xs">{i.quoteExpiresAt ? formatCountdown(i.quoteExpiresAt) : "—"}</td>
-                  <td className="py-2 px-3 text-xs">{i.paymentRequestStatus}</td>
-                  <td className="py-2 px-3"><Badge className={STATUS_TONE[i.status]}>{i.status}</Badge></td>
-                  <td className="py-2 px-3 text-xs">{i.createdAt.slice(0, 10)}</td>
-                  <td className="py-2 px-3 text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button size="icon" variant="ghost"><MoreHorizontal className="h-4 w-4" /></Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onSelect={() => toast.info(`Viewing ${i.invoiceNumber}`)}><Eye className="h-3.5 w-3.5 mr-2" /> View</DropdownMenuItem>
-                        <DropdownMenuItem disabled={i.status !== "Draft"} onSelect={() => toast.info("Edit draft")}><Edit3 className="h-3.5 w-3.5 mr-2" /> Edit Draft</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => { invoiceStore.update(i.id, { paymentRequestStatus: "Sent", status: "Payment Requested" }); toast.success("Payment request created"); }}><Send className="h-3.5 w-3.5 mr-2" /> Create Payment Request</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => toast.success("PDF downloaded")}><Download className="h-3.5 w-3.5 mr-2" /> Download PDF</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => { const d = invoiceStore.duplicate(i.id); if (d) toast.success(`Duplicated as ${d.invoiceNumber}`); }}><Copy className="h-3.5 w-3.5 mr-2" /> Duplicate</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem disabled={i.status !== "Draft"} className="text-destructive" onSelect={() => { invoiceStore.remove(i.id); toast.success("Draft deleted"); }}><Trash2 className="h-3.5 w-3.5 mr-2" /> Delete Draft</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+      <div className="overflow-x-auto rounded-lg border">
+        <table className="w-full text-sm">
+          <thead className="bg-secondary/40 text-[11px] uppercase tracking-wider text-muted-foreground">
+            <tr>
+              <th className="px-3 py-2 text-left">Invoice #</th>
+              <th className="px-3 py-2 text-left">Buyer</th>
+              <th className="px-3 py-2 text-right">RMB Amount</th>
+              <th className="px-3 py-2 text-right">NGN Amount</th>
+              <th className="px-3 py-2 text-left">Status</th>
+              <th className="px-3 py-2 text-left">Sent By</th>
+              <th className="px-3 py-2 text-left">Created</th>
+              <th className="px-3 py-2 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {invoices.map((i) => {
+              const status = isInvoiceQuoteExpired(i) && i.status !== "Cancelled" ? "Expired" : i.status;
+              return (
+                <tr key={i.id} className="border-t align-top">
+                  <td className="px-3 py-2 font-mono text-xs">
+                    {i.invoiceNumber}
+                    <div className="text-[10px] text-muted-foreground">{i.paymentRequestId}</div>
+                  </td>
+                  <td className="px-3 py-2 text-xs">{i.buyerCompany}</td>
+                  <td className="px-3 py-2 text-right text-xs tabular-nums">¥{i.amountRmb.toLocaleString()}</td>
+                  <td className="px-3 py-2 text-right text-xs tabular-nums">₦{i.amountNgn.toLocaleString()}</td>
+                  <td className="px-3 py-2"><Badge className={INVOICE_STATUS_TONE[status]}>{status}</Badge></td>
+                  <td className="px-3 py-2 text-xs">{i.sentBy}</td>
+                  <td className="px-3 py-2 text-xs">{i.createdAt}</td>
+                  <td className="px-3 py-2">
+                    <div className="flex flex-wrap justify-end gap-1.5">
+                      {actionsFor(i).map((a) => (
+                        <Button key={a.label} size="sm" variant="outline" className="h-7 text-xs" onClick={a.run}>{a.label}</Button>
+                      ))}
+                    </div>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      <GenerateInvoiceWizard open={open} onOpenChange={setOpen} />
+              );
+            })}
+            {invoices.length === 0 && (
+              <tr><td colSpan={8} className="px-3 py-8 text-center text-xs text-muted-foreground">No invoices yet.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </Card>
   );
 }
