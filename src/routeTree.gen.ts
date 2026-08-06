@@ -97,6 +97,7 @@ import { Route as SupplierPortalDocumentsRouteImport } from './routes/supplier-p
 import { Route as SupplierPortalFxQuotesRouteImport } from './routes/supplier-portal.fx-quotes'
 import { Route as SupplierPortalInvoicesRouteImport } from './routes/supplier-portal.invoices'
 import { Route as SupplierPortalMessagesRouteImport } from './routes/supplier-portal.messages'
+import { Route as SupplierPortalNgnBalanceRouteImport } from './routes/supplier-portal.ngn-balance'
 import { Route as SupplierPortalNgnDetailsRouteImport } from './routes/supplier-portal.ngn-details'
 import { Route as SupplierPortalPaymentRequestsRouteImport } from './routes/supplier-portal.payment-requests'
 import { Route as SupplierPortalPayoutAccountsRouteImport } from './routes/supplier-portal.payout-accounts'
@@ -563,6 +564,12 @@ const SupplierPortalMessagesRoute = SupplierPortalMessagesRouteImport.update({
   path: '/messages',
   getParentRoute: () => SupplierPortalRoute,
 } as any)
+const SupplierPortalNgnBalanceRoute =
+  SupplierPortalNgnBalanceRouteImport.update({
+    id: '/ngn-balance',
+    path: '/ngn-balance',
+    getParentRoute: () => SupplierPortalRoute,
+  } as any)
 const SupplierPortalNgnDetailsRoute =
   SupplierPortalNgnDetailsRouteImport.update({
     id: '/ngn-details',
@@ -783,6 +790,7 @@ export interface FileRoutesByFullPath {
   '/supplier-portal/fx-quotes': typeof SupplierPortalFxQuotesRoute
   '/supplier-portal/invoices': typeof SupplierPortalInvoicesRoute
   '/supplier-portal/messages': typeof SupplierPortalMessagesRoute
+  '/supplier-portal/ngn-balance': typeof SupplierPortalNgnBalanceRoute
   '/supplier-portal/ngn-details': typeof SupplierPortalNgnDetailsRoute
   '/supplier-portal/payment-requests': typeof SupplierPortalPaymentRequestsRoute
   '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
@@ -894,6 +902,7 @@ export interface FileRoutesByTo {
   '/supplier-portal/fx-quotes': typeof SupplierPortalFxQuotesRoute
   '/supplier-portal/invoices': typeof SupplierPortalInvoicesRoute
   '/supplier-portal/messages': typeof SupplierPortalMessagesRoute
+  '/supplier-portal/ngn-balance': typeof SupplierPortalNgnBalanceRoute
   '/supplier-portal/ngn-details': typeof SupplierPortalNgnDetailsRoute
   '/supplier-portal/payment-requests': typeof SupplierPortalPaymentRequestsRoute
   '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
@@ -1010,6 +1019,7 @@ export interface FileRoutesById {
   '/supplier-portal/fx-quotes': typeof SupplierPortalFxQuotesRoute
   '/supplier-portal/invoices': typeof SupplierPortalInvoicesRoute
   '/supplier-portal/messages': typeof SupplierPortalMessagesRoute
+  '/supplier-portal/ngn-balance': typeof SupplierPortalNgnBalanceRoute
   '/supplier-portal/ngn-details': typeof SupplierPortalNgnDetailsRoute
   '/supplier-portal/payment-requests': typeof SupplierPortalPaymentRequestsRoute
   '/supplier-portal/payout-accounts': typeof SupplierPortalPayoutAccountsRoute
@@ -1127,6 +1137,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/fx-quotes'
     | '/supplier-portal/invoices'
     | '/supplier-portal/messages'
+    | '/supplier-portal/ngn-balance'
     | '/supplier-portal/ngn-details'
     | '/supplier-portal/payment-requests'
     | '/supplier-portal/payout-accounts'
@@ -1238,6 +1249,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/fx-quotes'
     | '/supplier-portal/invoices'
     | '/supplier-portal/messages'
+    | '/supplier-portal/ngn-balance'
     | '/supplier-portal/ngn-details'
     | '/supplier-portal/payment-requests'
     | '/supplier-portal/payout-accounts'
@@ -1353,6 +1365,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/fx-quotes'
     | '/supplier-portal/invoices'
     | '/supplier-portal/messages'
+    | '/supplier-portal/ngn-balance'
     | '/supplier-portal/ngn-details'
     | '/supplier-portal/payment-requests'
     | '/supplier-portal/payout-accounts'
@@ -2068,6 +2081,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SupplierPortalMessagesRouteImport
       parentRoute: typeof SupplierPortalRoute
     }
+    '/supplier-portal/ngn-balance': {
+      id: '/supplier-portal/ngn-balance'
+      path: '/ngn-balance'
+      fullPath: '/supplier-portal/ngn-balance'
+      preLoaderRoute: typeof SupplierPortalNgnBalanceRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
     '/supplier-portal/ngn-details': {
       id: '/supplier-portal/ngn-details'
       path: '/ngn-details'
@@ -2344,6 +2364,7 @@ interface SupplierPortalRouteChildren {
   SupplierPortalFxQuotesRoute: typeof SupplierPortalFxQuotesRoute
   SupplierPortalInvoicesRoute: typeof SupplierPortalInvoicesRoute
   SupplierPortalMessagesRoute: typeof SupplierPortalMessagesRoute
+  SupplierPortalNgnBalanceRoute: typeof SupplierPortalNgnBalanceRoute
   SupplierPortalNgnDetailsRoute: typeof SupplierPortalNgnDetailsRoute
   SupplierPortalPaymentRequestsRoute: typeof SupplierPortalPaymentRequestsRoute
   SupplierPortalPayoutAccountsRoute: typeof SupplierPortalPayoutAccountsRoute
@@ -2368,6 +2389,7 @@ const SupplierPortalRouteChildren: SupplierPortalRouteChildren = {
   SupplierPortalFxQuotesRoute: SupplierPortalFxQuotesRoute,
   SupplierPortalInvoicesRoute: SupplierPortalInvoicesRoute,
   SupplierPortalMessagesRoute: SupplierPortalMessagesRoute,
+  SupplierPortalNgnBalanceRoute: SupplierPortalNgnBalanceRoute,
   SupplierPortalNgnDetailsRoute: SupplierPortalNgnDetailsRoute,
   SupplierPortalPaymentRequestsRoute: SupplierPortalPaymentRequestsRoute,
   SupplierPortalPayoutAccountsRoute: SupplierPortalPayoutAccountsRoute,
