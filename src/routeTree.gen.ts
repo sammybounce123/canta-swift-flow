@@ -104,6 +104,7 @@ import { Route as SupplierPortalPayoutAccountsRouteImport } from './routes/suppl
 import { Route as SupplierPortalProfileRouteImport } from './routes/supplier-portal.profile'
 import { Route as SupplierPortalReportsRouteImport } from './routes/supplier-portal.reports'
 import { Route as SupplierPortalRequestsRouteImport } from './routes/supplier-portal.requests'
+import { Route as SupplierPortalRmbBankAccountRouteImport } from './routes/supplier-portal.rmb-bank-account'
 import { Route as SupplierPortalRmbWalletRouteImport } from './routes/supplier-portal.rmb-wallet'
 import { Route as SupplierPortalSettingsRouteImport } from './routes/supplier-portal.settings'
 import { Route as SupplierPortalSettlementRouteImport } from './routes/supplier-portal.settlement'
@@ -603,6 +604,12 @@ const SupplierPortalRequestsRoute = SupplierPortalRequestsRouteImport.update({
   path: '/requests',
   getParentRoute: () => SupplierPortalRoute,
 } as any)
+const SupplierPortalRmbBankAccountRoute =
+  SupplierPortalRmbBankAccountRouteImport.update({
+    id: '/rmb-bank-account',
+    path: '/rmb-bank-account',
+    getParentRoute: () => SupplierPortalRoute,
+  } as any)
 const SupplierPortalRmbWalletRoute = SupplierPortalRmbWalletRouteImport.update({
   id: '/rmb-wallet',
   path: '/rmb-wallet',
@@ -797,6 +804,7 @@ export interface FileRoutesByFullPath {
   '/supplier-portal/profile': typeof SupplierPortalProfileRoute
   '/supplier-portal/reports': typeof SupplierPortalReportsRoute
   '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
+  '/supplier-portal/rmb-bank-account': typeof SupplierPortalRmbBankAccountRoute
   '/supplier-portal/rmb-wallet': typeof SupplierPortalRmbWalletRoute
   '/supplier-portal/settings': typeof SupplierPortalSettingsRoute
   '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
@@ -909,6 +917,7 @@ export interface FileRoutesByTo {
   '/supplier-portal/profile': typeof SupplierPortalProfileRoute
   '/supplier-portal/reports': typeof SupplierPortalReportsRoute
   '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
+  '/supplier-portal/rmb-bank-account': typeof SupplierPortalRmbBankAccountRoute
   '/supplier-portal/rmb-wallet': typeof SupplierPortalRmbWalletRoute
   '/supplier-portal/settings': typeof SupplierPortalSettingsRoute
   '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
@@ -1026,6 +1035,7 @@ export interface FileRoutesById {
   '/supplier-portal/profile': typeof SupplierPortalProfileRoute
   '/supplier-portal/reports': typeof SupplierPortalReportsRoute
   '/supplier-portal/requests': typeof SupplierPortalRequestsRoute
+  '/supplier-portal/rmb-bank-account': typeof SupplierPortalRmbBankAccountRoute
   '/supplier-portal/rmb-wallet': typeof SupplierPortalRmbWalletRoute
   '/supplier-portal/settings': typeof SupplierPortalSettingsRoute
   '/supplier-portal/settlement': typeof SupplierPortalSettlementRoute
@@ -1144,6 +1154,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/profile'
     | '/supplier-portal/reports'
     | '/supplier-portal/requests'
+    | '/supplier-portal/rmb-bank-account'
     | '/supplier-portal/rmb-wallet'
     | '/supplier-portal/settings'
     | '/supplier-portal/settlement'
@@ -1256,6 +1267,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/profile'
     | '/supplier-portal/reports'
     | '/supplier-portal/requests'
+    | '/supplier-portal/rmb-bank-account'
     | '/supplier-portal/rmb-wallet'
     | '/supplier-portal/settings'
     | '/supplier-portal/settlement'
@@ -1372,6 +1384,7 @@ export interface FileRouteTypes {
     | '/supplier-portal/profile'
     | '/supplier-portal/reports'
     | '/supplier-portal/requests'
+    | '/supplier-portal/rmb-bank-account'
     | '/supplier-portal/rmb-wallet'
     | '/supplier-portal/settings'
     | '/supplier-portal/settlement'
@@ -2130,6 +2143,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SupplierPortalRequestsRouteImport
       parentRoute: typeof SupplierPortalRoute
     }
+    '/supplier-portal/rmb-bank-account': {
+      id: '/supplier-portal/rmb-bank-account'
+      path: '/rmb-bank-account'
+      fullPath: '/supplier-portal/rmb-bank-account'
+      preLoaderRoute: typeof SupplierPortalRmbBankAccountRouteImport
+      parentRoute: typeof SupplierPortalRoute
+    }
     '/supplier-portal/rmb-wallet': {
       id: '/supplier-portal/rmb-wallet'
       path: '/rmb-wallet'
@@ -2371,6 +2391,7 @@ interface SupplierPortalRouteChildren {
   SupplierPortalProfileRoute: typeof SupplierPortalProfileRoute
   SupplierPortalReportsRoute: typeof SupplierPortalReportsRoute
   SupplierPortalRequestsRoute: typeof SupplierPortalRequestsRoute
+  SupplierPortalRmbBankAccountRoute: typeof SupplierPortalRmbBankAccountRoute
   SupplierPortalRmbWalletRoute: typeof SupplierPortalRmbWalletRoute
   SupplierPortalSettingsRoute: typeof SupplierPortalSettingsRoute
   SupplierPortalSettlementRoute: typeof SupplierPortalSettlementRoute
@@ -2396,6 +2417,7 @@ const SupplierPortalRouteChildren: SupplierPortalRouteChildren = {
   SupplierPortalProfileRoute: SupplierPortalProfileRoute,
   SupplierPortalReportsRoute: SupplierPortalReportsRoute,
   SupplierPortalRequestsRoute: SupplierPortalRequestsRoute,
+  SupplierPortalRmbBankAccountRoute: SupplierPortalRmbBankAccountRoute,
   SupplierPortalRmbWalletRoute: SupplierPortalRmbWalletRoute,
   SupplierPortalSettingsRoute: SupplierPortalSettingsRoute,
   SupplierPortalSettlementRoute: SupplierPortalSettlementRoute,
