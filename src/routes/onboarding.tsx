@@ -3,11 +3,12 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Building2, Ship, Truck, Globe, Factory, Home,
+  Building2, Ship, Globe, Factory, Home,
   ArrowRight, CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { SEGMENTS, saveProfile, type WorkspaceType } from "@/lib/profile";
+import { seedDemoSupplierPersona } from "@/lib/demo-supplier";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
@@ -22,7 +23,6 @@ export const Route = createFileRoute("/onboarding")({
 const ICONS: Partial<Record<WorkspaceType, typeof Building2>> = {
   enterprise_treasury: Building2,
   importer_portal: Ship,
-  freight_workspace: Truck,
   global_collections: Globe,
   supplier_dashboard: Factory,
   partner_property: Home,
@@ -30,7 +30,6 @@ const ICONS: Partial<Record<WorkspaceType, typeof Building2>> = {
 const TONES: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "bg-primary/10 text-primary",
   importer_portal: "bg-accent/15 text-accent",
-  freight_workspace: "bg-warning/15 text-warning",
   global_collections: "bg-success/10 text-success",
   supplier_dashboard: "bg-amber-500/15 text-amber-700",
   partner_property: "bg-primary/10 text-primary",
@@ -38,27 +37,25 @@ const TONES: Partial<Record<WorkspaceType, string>> = {
 const WHO_FOR: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "Multinationals, corporates, traders and large SMEs",
   importer_portal: "Importers buying from China, UAE, Turkey, India",
-  freight_workspace: "Freight forwarders, clearing agents, logistics operators",
-  supplier_dashboard: "Foreign suppliers & exporters selling to African buyers",
+  supplier_dashboard: "Suppliers and exporters receiving payments from buyers globally",
   global_collections: "Universities, hospitals, airlines, travel, e-commerce",
   partner_property: "Property partners like Kingsbridge Property Partners referring clients",
 };
 const DO_BULLETS: Partial<Record<WorkspaceType, string[]>> = {
   enterprise_treasury: ["FX & multi-currency wallets", "Approvals & beneficiaries", "Treasury reports & compliance"],
   importer_portal: ["Track shipments & landed cost", "Manage suppliers & documents", "Pay in any currency"],
-  freight_workspace: ["Run shipment pipeline", "Invoice customers & collect", "WhatsApp updates at scale"],
-  supplier_dashboard: ["Invoice African buyers", "Confirm funds via escrow", "Receive global settlement"],
+  supplier_dashboard: ["Invoice buyers in any market", "Receive payments globally", "Get settled in your local currency"],
   partner_property: ["Refer property clients", "Track FX & solicitor payouts", "Download payout receipts"],
 };
 
 const ROUTE_FOR: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "/treasury",
   importer_portal: "/importer",
-  freight_workspace: "/freight",
+  supplier_dashboard: "/supplier-portal",
   partner_property: "/partner",
 };
 
-const VISIBLE: WorkspaceType[] = ["importer_portal", "freight_workspace", "enterprise_treasury", "partner_property"];
+const VISIBLE: WorkspaceType[] = ["importer_portal", "supplier_dashboard", "enterprise_treasury", "partner_property"];
 
 function OnboardingPicker() {
   const navigate = useNavigate();
@@ -67,6 +64,7 @@ function OnboardingPicker() {
   const choose = (id: WorkspaceType) => {
     const segment = SEGMENTS.find((s) => s.id === id)!;
     saveProfile(segment);
+    if (id === "supplier_dashboard") seedDemoSupplierPersona();
     toast.success("Workspace selected successfully.", { description: segment.shortLabel });
     setTimeout(() => navigate({ to: ROUTE_FOR[id] as never }), 350);
   };
@@ -97,7 +95,7 @@ function OnboardingPicker() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {SEGMENTS.filter((s) => VISIBLE.includes(s.id)).map((s) => {
+          {SEGMENTS.filter((s) => VISIBLE.includes(s.id)).sort((a, b) => VISIBLE.indexOf(a.id) - VISIBLE.indexOf(b.id)).map((s) => {
             const Icon = ICONS[s.id] ?? Building2;
             const hot = hovered === s.id;
             return (
