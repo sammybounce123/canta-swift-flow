@@ -8,10 +8,36 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/card";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   ShieldCheck, Building2, FileText, Upload, CheckCircle2, ArrowRight, ArrowLeft,
 } from "lucide-react";
 import { toast } from "sonner";
 import { SEGMENTS, type WorkspaceType } from "@/lib/profile";
+
+const COUNTRIES = [
+  "China",
+  "Nigeria",
+  "United Kingdom",
+  "United States",
+  "Hong Kong",
+  "Singapore",
+  "United Arab Emirates",
+  "India",
+  "South Africa",
+  "Kenya",
+  "Ghana",
+  "Egypt",
+  "Turkey",
+  "Germany",
+  "France",
+  "Netherlands",
+];
 
 const searchSchema = z.object({
   workspace: z.string().optional(),
