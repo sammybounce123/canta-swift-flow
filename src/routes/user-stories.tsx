@@ -42,22 +42,7 @@ const GROUPS: Group[] = [
       { as: "an importer", want: "to start a trade file directly from a supplier profile", so: "the supplier is pre-linked to the trade" },
       { as: "an importer", want: "to request escrow on a trade file", so: "funds release only when shipment conditions are met" },
       { as: "an importer", want: "to request clearing quotes, link shipments and link documents to a trade file", so: "everything for a trade lives in one place" },
-      { as: "an importer", want: "to invite a freight forwarder to a trade file and send WhatsApp updates", so: "all parties stay in sync" },
-    ],
-  },
-  {
-    persona: "Freight Forwarder",
-    route: "/freight",
-    tagline: "Freight ops team running shipments, invoices and customer comms.",
-    stories: [
-      { as: "a freight forwarder", want: "to add an importer customer and create shipments for them", so: "I can onboard new accounts quickly" },
-      { as: "a freight forwarder", want: "to assign a shipment to staff with role, due date, note and status", so: "ownership is explicit" },
-      { as: "a freight forwarder", want: "to create a customer tracking link", so: "importers can monitor a shipment without logging in" },
-      { as: "a freight forwarder", want: "to send a WhatsApp shipment update from templates (container loaded, vessel sailed, arrived at port, clearing started, cleared customs, out for delivery, delivered, delay notice, missing document reminder, payment reminder)", so: "updates are consistent and fast" },
-      { as: "a freight forwarder", want: "to send a bulk WhatsApp customer update", so: "I can broadcast a delay or port advisory in one action" },
-      { as: "a freight forwarder", want: "to create freight invoices and mark them Paid, Unpaid, Partially Paid, Overdue or Cancelled", so: "AR is always accurate" },
-      { as: "a freight forwarder", want: "to view outstanding invoices and download invoice PDFs", so: "collections are simple" },
-      { as: "a freight forwarder", want: "to offer goods-in-transit insurance from quote → offer → bind → decline", so: "cargo risk is covered" },
+      { as: "an importer", want: "to send WhatsApp updates on a trade file", so: "all parties stay in sync" },
     ],
   },
   {

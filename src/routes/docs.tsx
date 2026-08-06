@@ -14,7 +14,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
     h: "Workspaces",
     body: [
       "Users pick a workspace on first sign-in. The sidebar, dashboard and default landing route are driven by the selected profile.",
-      "Available profiles in this focused demo: Importer Trade Desk (/importer), Supplier Portal (/supplier-portal), Enterprise Treasury (/treasury), and Partner Mode (/partner). Clearing agents access hidden invite-only quote and job links from Importer Trade Files.",
+      "Available profiles in this focused demo: Importer Trade Desk (/importer), Supplier Portal (/supplier-portal), Enterprise Treasury (/treasury), and Partner Mode (/partner).",
       "Switch workspace any time from the workspace switcher in the top bar.",
     ],
   },
@@ -55,14 +55,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
     h: "Importer Workspace",
     body: [
       "Lands at /importer. Sidebar: Importer Dashboard, Trade Desk, Shipments, Verified Suppliers, My Suppliers, Documents, Clearing Quotes, Payments, WhatsApp Updates, Reports, Support, Settings.",
-      "Importer actions: request quote from verified supplier, request supplier verification before payment, save verified supplier to My Suppliers, start a trade file from a supplier profile, request escrow on a trade file, request clearing quotes, link shipments and documents to a trade file, send WhatsApp updates and invite clearing agents to a trade file.",
-    ],
-  },
-  {
-    h: "Freight Workspace",
-    body: [
-      "Invite-only clearing job workspace for approved agents. Quote requests, bids, accepted jobs, documents, and messages are accessed from hidden invite or assignment links.",
-      "Freight actions: add importer customer, create shipment, update shipment status, assign shipment to staff (assignee, role, due date, note, status), create a customer tracking link, send single or bulk WhatsApp updates from 10+ templates (container loaded, vessel sailed, arrived at port, clearing started, cleared customs, out for delivery, delivered, delay notice, missing document reminder, payment reminder), create freight invoices and mark Paid / Unpaid / Overdue, download invoices, and offer goods-in-transit insurance.",
+      "Importer actions: request quote from verified supplier, request supplier verification before payment, save verified supplier to My Suppliers, start a trade file from a supplier profile, request escrow on a trade file, request clearing quotes, link shipments and documents to a trade file, and send WhatsApp updates.",
     ],
   },
   {
@@ -167,7 +160,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
   {
     h: "Embedded insurance hooks",
     body: [
-      "Optional placeholders ready to wire to AXA Mansard, Leadway, Old Mutual or AIICO. Surfaces on Importer Trade Files, invite-only clearing jobs, and Partner Mode cases.",
+      "Optional placeholders ready to wire to AXA Mansard, Leadway, Old Mutual or AIICO. Surfaces on Importer Trade Files, Supplier settlements, and Partner Mode cases.",
       "Each hook stores customer, linked entity, insured amount, risk type, partner, quote status and policy status.",
     ],
   },
@@ -254,7 +247,7 @@ function Docs() {
         <div>
           <p className="text-sm leading-relaxed text-muted-foreground">
             Canta is an enterprise cross-border payments, FX and trade platform for
-            corporates, importers, clearing agents and partner property firms.
+            corporates, importers, suppliers and partner property firms.
           </p>
         </div>
         {SECTIONS.map((s) => (
