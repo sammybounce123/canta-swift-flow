@@ -253,23 +253,17 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
 
     case "supplier_dashboard":
       return [
-        D,
-        { to: "/supplier-portal", label: "Overview", iconKey: "factory", group: "Supplier Portal", exact: true },
-        { to: "/supplier-portal/buyers", label: "Nigerian Buyers", iconKey: "users", group: "Supplier Portal" },
-        { to: "/supplier-portal/invoices", label: "Invoices", iconKey: "receipt", group: "Supplier Portal" },
-        { to: "/supplier-portal/fx-quotes", label: "FX Quotes", iconKey: "fx", group: "Supplier Portal" },
-        { to: "/supplier-portal/payment-requests", label: "Payment Requests", iconKey: "receipt", group: "Supplier Portal" },
-        { to: "/supplier-portal/settlement", label: "Settlement Tracking", iconKey: "check", group: "Settlement" },
-        { to: "/supplier-portal/rmb-wallet", label: "RMB Settlement", iconKey: "globe", group: "Settlement" },
-        { to: "/supplier-portal/payout-accounts", label: "Payout Accounts", iconKey: "wallet", group: "Settlement" },
-        { to: "/supplier-portal/documents", label: "Documents", iconKey: "file", group: "Operations" },
-        { to: "/supplier-portal/profile", label: "Supplier Profile", iconKey: "building", group: "Operations" },
-        { to: "/supplier-portal/verification", label: "Verification", iconKey: "shield-check", group: "Operations" },
-        { to: "/supplier-portal/support", label: "Support", iconKey: "users", group: "Help" },
-        { to: "/supplier-portal/reports", label: "Supplier Reports", iconKey: "chart", group: "Insights" },
-        { to: "/supplier-portal/team", label: "Supplier Team", iconKey: "team", group: "Workspace" },
-        { to: "/supplier-portal/settings", label: "Supplier Settings", iconKey: "settings", group: "Workspace" },
+        { to: "/supplier-portal", label: "Dashboard", iconKey: "factory", group: "Supplier Portal", exact: true },
+        { to: "/supplier-portal/create-invoice", label: "Create Invoice", iconKey: "receipt", group: "Supplier Portal" },
+        { to: "/supplier-portal/ngn-balance", label: "NGN Balance", iconKey: "wallet", group: "Money" },
+        { to: "/supplier-portal/rmb-bank-account", label: "RMB Bank Account", iconKey: "globe", group: "Money" },
+        { to: "/supplier-portal/invoices", label: "Invoice History", iconKey: "file", group: "Money" },
+        { to: "/supplier-portal/settlements", label: "Settlements", iconKey: "check", group: "Money" },
+        { to: "/supplier-portal/verification", label: "Verification", iconKey: "shield-check", group: "Account" },
+        { to: "/supplier-portal/support", label: "Support", iconKey: "users", group: "Account" },
+        { to: "/supplier-portal/settings", label: "Settings", iconKey: "settings", group: "Account" },
       ];
+
 
     case "global_collections":
       return [
