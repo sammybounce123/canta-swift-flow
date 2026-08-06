@@ -36,11 +36,6 @@ const SEED_BY_WS: Record<string, Convo[]> = {
     { id: "C-02", with: "Canta Support", kind: "Shipment", linked: "SHP-10421", last: "BL uploaded. Vessel ETA 18 Jun.", time: "1h ago", status: "Active" },
     { id: "C-03", with: "Yiwu PolyPack", kind: "Missing Document", linked: "TF-2026-0208", last: "Reminder: packing list still missing.", time: "Yesterday", status: "Awaiting reply" },
   ],
-  freight_workspace: [
-    { id: "C-01", with: "ABC Electronics", kind: "Shipment", linked: "SHP-10421", last: "ETA update sent to customer.", time: "20m ago", status: "Active" },
-    { id: "C-02", with: "Balogun Trade", kind: "Missing Document", linked: "SHP-10388", last: "Awaiting Form M from customer.", time: "2h ago", status: "Awaiting reply" },
-    { id: "C-03", with: "Dav Excel", kind: "Payment", linked: "INV-FF-2204", last: "Invoice paid. Receipt issued.", time: "Yesterday", status: "Resolved" },
-  ],
   global_collections: [
     { id: "C-01", with: "Lagos Med Clinic", kind: "Payment", linked: "INV-2034", last: "Payment link delivered.", time: "30m ago", status: "Active" },
     { id: "C-02", with: "Cambridge Int'l", kind: "Support", linked: "SUP-9008", last: "Need help reconciling payment.", time: "3h ago", status: "Awaiting reply" },
@@ -70,7 +65,6 @@ function WhatsAppCustomer() {
   const current = convos.find((c) => c.id === active);
 
   const pageTitle = ws.workspace === "importer_portal" ? "Importer WhatsApp Updates"
-    : ws.workspace === "freight_workspace" ? "Freight WhatsApp Updates"
     : ws.workspace === "global_collections" ? "Merchant WhatsApp Support"
     : ws.workspace === "supplier_dashboard" ? "Supplier WhatsApp Support"
     : "WhatsApp Updates";
