@@ -45,9 +45,6 @@ const CTA: Partial<Record<WorkspaceType, string>> = {
 
 const VISIBLE: WorkspaceType[] = ["importer_portal", "supplier_dashboard", "enterprise_treasury", "partner_property"];
 
-const ROUTE_OVERRIDE: Partial<Record<WorkspaceType, string>> = {
-  supplier_dashboard: "/supplier-portal",
-};
 
 
 function WelcomePage() {
