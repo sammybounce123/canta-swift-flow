@@ -6,7 +6,6 @@ import { loadProfile, type WorkspaceType } from "@/lib/profile";
 const MODE_TO_WORKSPACE: Record<Mode, WorkspaceType> = {
   "Enterprise Treasury": "enterprise_treasury",
   "Importer": "importer_portal",
-  "Freight Forwarder": "freight_workspace",
   "Supplier": "supplier_dashboard",
   "Global Merchant": "global_collections",
   "Partner Property": "partner_property",
@@ -16,7 +15,6 @@ const MODE_TO_WORKSPACE: Record<Mode, WorkspaceType> = {
 const WORKSPACE_TO_MODE: Record<WorkspaceType, Mode> = {
   enterprise_treasury: "Enterprise Treasury",
   importer_portal: "Importer",
-  freight_workspace: "Freight Forwarder",
   supplier_dashboard: "Supplier",
   global_collections: "Global Merchant",
   global_spend_cards: "Enterprise Treasury",
@@ -44,7 +42,6 @@ const SHARED_WORKSPACE_PATHS = new Set([
 const VALID_CUSTOMER_WORKSPACES = new Set<WorkspaceType>([
   "enterprise_treasury",
   "importer_portal",
-  "freight_workspace",
   "supplier_dashboard",
   "global_collections",
   "partner_property",
@@ -61,10 +58,6 @@ function normalizeMode(value?: string | null): Mode | null {
     case "Importer Trade Desk":
     case "Importer Trade Desk Mode":
       return "Importer";
-    case "Freight Forwarder":
-    case "Clearing Agent":
-    case "Clearing Agent Mode":
-      return "Freight Forwarder";
     case "Supplier":
     case "Supplier Mode":
     case "Supplier Portal":
@@ -95,7 +88,6 @@ function normalizeWorkspace(value?: string | null): WorkspaceType | null {
 const PROFILES: Record<WorkspaceType, { name: string; title: string; badge: string; workspaceLabel: string }> = {
   enterprise_treasury: { name: "Adaeze Okonkwo", title: "Treasury Admin",  badge: "Enterprise Treasury Mode", workspaceLabel: "Enterprise Treasury" },
   importer_portal:     { name: "Tunde Bakare",   title: "Importer Owner",  badge: "Importer Mode",            workspaceLabel: "Importer" },
-  freight_workspace:   { name: "Chinedu Okafor", title: "Clearing Agent",  badge: "Invite-only Clearing Agent Mode", workspaceLabel: "Clearing Agent" },
   global_collections:  { name: "Amaka Bello",    title: "Merchant Owner",  badge: "Global Collections Mode",  workspaceLabel: "Global Merchant" },
   supplier_dashboard:  { name: "Li Wei",         title: "Supplier Admin",  badge: "Supplier Mode",            workspaceLabel: "Supplier" },
   partner_property:    { name: "Charlotte Baron", title: "Partner Admin",   badge: "Partner Mode",             workspaceLabel: "Partner Mode" },
@@ -112,7 +104,6 @@ export function workspaceFromPath(pathname: string): WorkspaceType | null {
   if (pathname.startsWith("/collections") || pathname.startsWith("/merchant") || pathname.startsWith("/payment-links") || pathname.startsWith("/payers") || pathname.startsWith("/reconciliation")) return "global_collections";
   if (pathname.startsWith("/supplier-portal")) return "supplier_dashboard";
   if (pathname.startsWith("/importer") || pathname.startsWith("/trade-desk") || pathname.startsWith("/my-suppliers") || pathname.startsWith("/landed-cost") || pathname.startsWith("/clearing-quotes") || pathname.startsWith("/shipments")) return "importer_portal";
-  if (pathname.startsWith("/freight") || pathname.startsWith("/customers")) return "freight_workspace";
   if (pathname.startsWith("/suppliers") || pathname.startsWith("/buyers") || pathname.startsWith("/verified-buyers") || pathname.startsWith("/escrow")) return "supplier_dashboard";
   if (pathname === "/cards" || pathname.startsWith("/cards/")) return null;
   if (pathname.startsWith("/treasury") || pathname.startsWith("/wallets") || pathname.startsWith("/fx") || pathname.startsWith("/beneficiaries")) return "enterprise_treasury";
