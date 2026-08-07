@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import {
@@ -48,32 +48,7 @@ import { beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
 import { ngnRateOf, fmtAnyCcy } from "@/lib/importer-store";
 import { useRole } from "@/components/RoleProvider";
-
-type Ctx = {
-  openFund: (ccy?: string) => void;
-  openConvert: (from?: string, to?: string) => void;
-  openSend: (beneficiaryName?: string) => void;
-  openAddBeneficiary: () => void;
-  openSchedule: () => void;
-  openBulk: () => void;
-  openInvite: () => void;
-};
-// Share the context on globalThis so that if this module happens to be
-// evaluated in two parallel graphs (e.g. main bundle + a TanStack Start
-// code-split route chunk during dev), both instances still reference the
-// same React Context object. Otherwise useContext returns null in the
-// split chunk even though a Provider is mounted, which surfaces as a
-// hydration-time "useActions must be used within ActionsProvider" throw.
-const CTX_KEY = "__CANTA_ACTIONS_CTX__";
-const globalRef = globalThis as unknown as Record<string, unknown>;
-const ActionsCtx =
-  (globalRef[CTX_KEY] as React.Context<Ctx | null> | undefined) ??
-  ((globalRef[CTX_KEY] = createContext<Ctx | null>(null)) as React.Context<Ctx | null>);
-export const useActions = () => {
-  const c = useContext(ActionsCtx);
-  if (!c) throw new Error("useActions must be used within ActionsProvider");
-  return c;
-};
+import { ActionsContext, type ActionsContextValue } from "@/components/actions-context";
 
 const COUNTRIES = [
   { code: "US", name: "United States", ccy: "USD" },
@@ -106,7 +81,7 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
   const [bulk, setBulk] = useState(false);
   const [invite, setInvite] = useState(false);
 
-  const ctx: Ctx = {
+  const ctx: ActionsContextValue = {
     openFund: (ccy = "NGN") => setFund({ open: true, ccy }),
     openConvert: (from = "NGN", to = "USD") => setConv({ open: true, from, to }),
     openSend: (beneficiary = "") => setSend({ open: true, beneficiary }),
@@ -117,7 +92,7 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <ActionsCtx.Provider value={ctx}>
+    <ActionsContext.Provider value={ctx}>
       {children}
 
       {/* FUND */}
@@ -264,7 +239,7 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
           <InviteForm onClose={() => setInvite(false)} />
         </DialogContent>
       </Dialog>
-    </ActionsCtx.Provider>
+    </ActionsContext.Provider>
   );
 }
 

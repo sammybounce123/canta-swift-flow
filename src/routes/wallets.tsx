@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Building, Coins } from "lucide-react";
 import { wallets, fmtMoney } from "@/lib/mock";
-import { useActions } from "@/components/ActionsProvider";
+import { useActions } from "@/components/actions-context";
 import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/wallets")({

@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Send, Search } from "lucide-react";
 import { beneficiaries } from "@/lib/mock";
-import { useActions } from "@/components/ActionsProvider";
+import { useActions } from "@/components/actions-context";
 import { useState, useMemo } from "react";
 import { ReadinessBar } from "@/components/ReadinessBar";
 
