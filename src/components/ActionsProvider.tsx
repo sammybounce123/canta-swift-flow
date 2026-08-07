@@ -1028,16 +1028,21 @@ function SendForm({
           <input
             value={amount}
             onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
-            className="flex-1 bg-transparent text-xl font-semibold tabular-nums outline-none"
+            className="min-w-0 flex-1 bg-transparent text-lg sm:text-xl font-semibold tabular-nums outline-none"
           />
-          <span className="text-sm font-medium grid place-items-center px-2">{ben.ccy}</span>
+          <span className="text-sm font-medium grid place-items-center px-2 shrink-0">
+            {payCcy}
+          </span>
+        </div>
+        <div className="text-xs text-muted-foreground mt-1">
+          You pay in {payCcy}; {ben.name} is credited in {quoteCcy}.
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div>
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <div className="min-w-0">
           <Label className="text-xs">Convert from</Label>
           <Select value={payCcy} onValueChange={(v) => setPayCcy(v as FundingCcy)}>
-            <SelectTrigger className="mt-1">
+            <SelectTrigger className="mt-1 w-full">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -1049,11 +1054,11 @@ function SendForm({
             </SelectContent>
           </Select>
         </div>
-        <div>
+        <div className="min-w-0">
           <Label className="text-xs">Quote against</Label>
           <Select value={quoteCcy} onValueChange={setQuoteCcy}>
-            <SelectTrigger className="mt-1">
-              <SelectValue />
+            <SelectTrigger className="mt-1 w-full">
+              <SelectValue className="truncate" />
             </SelectTrigger>
             <SelectContent>
               {GLOBAL_SEND_CCYS.map((c) => (
@@ -1065,7 +1070,8 @@ function SendForm({
           </Select>
         </div>
       </div>
-      <FundFxQuote fundCcy={payCcy} target={quoteCcy} amount={sourceAmt} />
+      <FundFxQuote fundCcy={payCcy} target={quoteCcy} amount={amt} />
+
 
       <div>
         <Label className="text-xs">Reference</Label>
