@@ -213,6 +213,43 @@ export type ImporterNotification = {
   read: boolean;
 };
 
+/* --------------------------------------------------- wallet conversions */
+
+export type ConversionStatus =
+  | "Draft"
+  | "Quote ready"
+  | "Quote expired"
+  | "Conversion pending"
+  | "Converted"
+  | "Failed"
+  | "Cancelled";
+
+export type Conversion = {
+  id: string;
+  from: WalletCcy;
+  to: WalletCcy;
+  debit: number;
+  credit: number;
+  rate: number;
+  fee: number;
+  status: ConversionStatus;
+  at: string;
+  receiptNo?: string;
+};
+
+export type ConversionReceipt = {
+  receiptNo: string;
+  conversionRef: string;
+  from: WalletCcy;
+  to: WalletCcy;
+  debit: number;
+  credit: number;
+  rate: number;
+  fee: number;
+  at: string;
+  status: "Converted";
+};
+
 export type ImporterState = {
   ngnBalance: number;
   usdtBalance: number;
