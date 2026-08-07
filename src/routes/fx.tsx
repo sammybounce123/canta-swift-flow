@@ -253,11 +253,42 @@ function FX() {
           </div>
 
           <Button
-            onClick={confirm}
+            onClick={requestConfirm}
             className="w-full mt-5 bg-accent text-accent-foreground hover:bg-accent/90 h-11 font-semibold"
           >
             Confirm Conversion
           </Button>
+
+          <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Confirm this conversion?</AlertDialogTitle>
+                <AlertDialogDescription asChild>
+                  <div className="space-y-2 text-sm">
+                    <div>
+                      You are converting{" "}
+                      <strong className="text-foreground">{fmtMoney(num, from)}</strong> from your{" "}
+                      {from} wallet.
+                    </div>
+                    <div>
+                      Your {to} wallet will receive{" "}
+                      <strong className="text-foreground">{fmtMoney(out, to)}</strong> at 1 {from} ={" "}
+                      {rate.toFixed(7)} {to}.
+                    </div>
+                    <div className="text-xs">
+                      Rates are indicative and confirmed at settlement. This moves funds between your
+                      own wallets — no recipient involved.
+                    </div>
+                  </div>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={confirm}>Yes, convert</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
         </Card>
 
         <Card className="lg:col-span-3 p-6 shadow-card">
