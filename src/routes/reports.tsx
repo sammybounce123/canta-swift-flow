@@ -68,7 +68,7 @@ const REPORTS: Record<WorkspaceType, ReportDef[]> = {
 
 const WORKSPACE_LABELS: Record<WorkspaceType, string> = {
   enterprise_treasury: "Enterprise Treasury",
-  importer_portal: "Importer Trade Desk",
+  importer_portal: "Importer Mode",
   global_collections: "Global Collections / Merchant",
   supplier_dashboard: "Supplier Portal",
   partner_property: "Partner Mode",
