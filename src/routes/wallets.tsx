@@ -81,7 +81,6 @@ function Wallets() {
                 Convert &amp; Send
               </Button>
             </div>
-
           </Card>
         ))}
       </div>
@@ -111,7 +110,6 @@ function Wallets() {
             <button
               key={o.label}
               onClick={() => openFund(o.ccy)}
-
               className="text-left p-4 rounded-xl border border-border hover:border-accent hover:shadow-card transition"
             >
               <div className="flex items-start justify-between">

@@ -145,7 +145,6 @@ function FX() {
         </div>
       </div>
 
-
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
         <Card className="lg:col-span-2 p-6 shadow-card">
           <div className="flex items-center justify-between">

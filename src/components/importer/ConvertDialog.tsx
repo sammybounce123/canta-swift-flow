@@ -43,7 +43,12 @@ type Props = {
  * Convert = move money between the customer's own wallets.
  * No beneficiary, invoice or payout account is involved.
  */
-export function ConvertDialog({ open, onOpenChange, initialFrom = "NGN", initialTo = "USD" }: Props) {
+export function ConvertDialog({
+  open,
+  onOpenChange,
+  initialFrom = "NGN",
+  initialTo = "USD",
+}: Props) {
   const s = useImporter();
   const [from, setFrom] = useState<WalletCcy>(initialFrom);
   const [to, setTo] = useState<WalletCcy>(initialTo === initialFrom ? "USD" : initialTo);
@@ -265,10 +270,7 @@ export function ConvertDialog({ open, onOpenChange, initialFrom = "NGN", initial
                     v={`1 ${quote.from} = ${quote.rate.toLocaleString("en-US", { maximumFractionDigits: 6 })} ${quote.to}`}
                   />
                   <Row k="Canta fee" v={fmtWallet(quote.fee, quote.from)} />
-                  <Row
-                    k="Quote expiry"
-                    v={expired ? "Expired" : `${secondsLeft}s remaining`}
-                  />
+                  <Row k="Quote expiry" v={expired ? "Expired" : `${secondsLeft}s remaining`} />
                   <Row k="Estimated completion" v={quote.eta} />
                   {quote.complianceNote && <Row k="Compliance" v={quote.complianceNote} />}
                 </dl>

@@ -94,7 +94,6 @@ function BalancePage() {
     setConvOpen(true);
   };
 
-
   const pending = s.funding.filter((f) => FUNDING_OPEN.includes(f.status));
   const missing = WALLET_CCYS.filter((c) => !s.wallets.some((w) => w.ccy === c));
 
@@ -156,7 +155,6 @@ function BalancePage() {
           to a supplier or beneficiary after review.
         </span>
       </div>
-
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
         {s.wallets.map((w) => (
@@ -221,7 +219,6 @@ function BalancePage() {
               >
                 View transactions
               </Button>
-
             </div>
           </Card>
         ))}
