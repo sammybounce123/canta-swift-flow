@@ -6,7 +6,7 @@
 
 import { useSyncExternalStore } from "react";
 
-const KEY = "canta:importer:v1";
+const KEY = "canta:importer:v2";
 
 export type PaymentStatus =
   | "Draft"
@@ -78,13 +78,100 @@ export type SupplierPayment = {
   receiptNo?: string;
 };
 
+export type WalletCcy = "NGN" | "USDT" | "USD" | "GBP" | "EUR";
+
+export const WALLET_CCYS: WalletCcy[] = ["NGN", "USDT", "USD", "GBP", "EUR"];
+
+/** Only these rails can be funded directly today. */
+export const FUNDABLE_CCYS: WalletCcy[] = ["NGN", "USDT"];
+
+export const USDT_NETWORKS = ["TRC20", "ERC20", "BEP20"] as const;
+export type UsdtNetwork = (typeof USDT_NETWORKS)[number];
+
+export type ImporterWallet = {
+  ccy: WalletCcy;
+  available: number;
+  pending: number;
+  status: "Active" | "Pending" | "Disabled";
+  lastActivity: string;
+};
+
+export type FundingStatus =
+  | "Awaiting NGN Payment"
+  | "Awaiting USDT Transfer"
+  | "Payment confirmation submitted"
+  | "Transfer confirmation submitted"
+  | "Blockchain confirmation pending"
+  | "Provider confirmation pending"
+  | "Under review"
+  | "Wallet credited"
+  | "Failed"
+  | "Expired"
+  | "Cancelled";
+
+export const FUNDING_OPEN: FundingStatus[] = [
+  "Awaiting NGN Payment",
+  "Awaiting USDT Transfer",
+  "Payment confirmation submitted",
+  "Transfer confirmation submitted",
+  "Blockchain confirmation pending",
+  "Provider confirmation pending",
+  "Under review",
+];
+
 export type FundingEntry = {
   id: string;
   method: "NGN" | "USDT";
+  network?: UsdtNetwork;
   amount: number;
-  status: "Awaiting payment" | "Payment received" | "Under review" | "Balance credited" | "Failed";
+  purpose?: string;
+  reference: string;
+  address?: string;
+  status: FundingStatus;
   createdAt: string;
+  expiresAt?: string;
+  providerRef?: string;
+  receiptNo?: string;
 };
+
+export type WalletTxType =
+  | "Wallet funding"
+  | "Supplier payment"
+  | "FX conversion"
+  | "Refund"
+  | "Fee"
+  | "Receipt generated";
+
+export type WalletTx = {
+  id: string;
+  at: string;
+  ccy: WalletCcy;
+  type: WalletTxType;
+  amount: number;
+  status: "Completed" | "Pending" | "Failed";
+  reference: string;
+  receiptNo?: string;
+};
+
+export type FundingReceipt = {
+  receiptNo: string;
+  fundingRef: string;
+  ccy: WalletCcy;
+  amount: number;
+  method: string;
+  providerRef: string;
+  at: string;
+  status: "Wallet credited";
+};
+
+export type PaymentDraft = {
+  id: string;
+  at: string;
+  supplier: string;
+  amountLabel: string;
+  form: Record<string, unknown>;
+};
+
 
 export type ImporterDoc = {
   id: string;
@@ -130,6 +217,10 @@ export type ImporterNotification = {
 export type ImporterState = {
   ngnBalance: number;
   usdtBalance: number;
+  wallets: ImporterWallet[];
+  walletTx: WalletTx[];
+  fundingReceipts: FundingReceipt[];
+  drafts: PaymentDraft[];
   suppliers: SupplierRecord[];
   payments: SupplierPayment[];
   funding: FundingEntry[];
@@ -148,9 +239,13 @@ export type ImporterState = {
     fundingCurrency: "NGN" | "USDT";
     settlementCurrency: string;
     saveSupplierByDefault: boolean;
+    usdtWarnings: boolean;
+    emailFundingReceipts: boolean;
+    whatsappPaymentNotifications: boolean;
   };
   business: { name: string; contact: string; email: string; phone: string; address: string };
 };
+
 
 function iso(daysFromNow: number) {
   return new Date(Date.now() + daysFromNow * 86400000).toISOString().slice(0, 10);
@@ -171,7 +266,22 @@ function seed(): ImporterState {
   return {
     ngnBalance: 24_500_000,
     usdtBalance: 3_200,
+    wallets: [
+      { ccy: "NGN", available: 24_500_000, pending: 6_000_000, status: "Active", lastActivity: iso(-1) },
+      { ccy: "USDT", available: 3_200, pending: 0, status: "Active", lastActivity: iso(-5) },
+    ],
+    walletTx: [
+      { id: "WT-9001", at: iso(-9), ccy: "NGN", type: "Wallet funding", amount: 20_000_000, status: "Completed", reference: "FD-1042", receiptNo: "FR-1042" },
+      { id: "WT-9002", at: iso(-5), ccy: "USDT", type: "Wallet funding", amount: 3_200, status: "Completed", reference: "FD-1043", receiptNo: "FR-1043" },
+      { id: "WT-9003", at: iso(-1), ccy: "NGN", type: "Wallet funding", amount: 6_000_000, status: "Pending", reference: "FD-1044" },
+    ],
+    fundingReceipts: [
+      { receiptNo: "FR-1042", fundingRef: "FD-1042", ccy: "NGN", amount: 20_000_000, method: "NGN bank transfer", providerRef: "PRV-NGN-448120", at: iso(-9), status: "Wallet credited" },
+      { receiptNo: "FR-1043", fundingRef: "FD-1043", ccy: "USDT", amount: 3_200, method: "USDT transfer (TRC20)", providerRef: "PRV-USDT-771903", at: iso(-5), status: "Wallet credited" },
+    ],
+    drafts: [],
     suppliers: [
+
       { id: "SUP-001", name: "Yiwu Fashion Co.", country: "China", contact: "Mei Lin", contactChannel: "mei@yiwufashion.cn", bankName: "Bank of China", accountName: "Yiwu Fashion Co. Ltd", accountNumber: "6217 0021 8899 4410", swift: "BKCHCNBJ", currency: "RMB", status: "Details checked", lastPayment: iso(-12) },
       { id: "SUP-002", name: "Istanbul Textiles", country: "Turkey", contact: "Ahmet K.", contactChannel: "ahmet@istex.tr", bankName: "Ziraat Bankasi", accountName: "Istanbul Textiles A.S.", accountNumber: "TR33 0006 1005 1978 6457", swift: "TCZBTR2A", currency: "EUR", status: "Saved", lastPayment: iso(-40) },
       { id: "SUP-003", name: "Northwind Trading FZE", country: "United Arab Emirates", contact: "Sara N.", contactChannel: "sara@northwind.ae", bankName: "Emirates NBD", accountName: "Northwind Trading FZE", accountNumber: "AE07 0331 2345 6789 0123", swift: "EBILAEAD", currency: "USD", status: "Saved" },
@@ -182,10 +292,11 @@ function seed(): ImporterState {
       { id: "SP-2026-0141", supplier: "Northwind Trading FZE", country: "United Arab Emirates", bank: "Emirates NBD", accountNumber: "AE07 0331 2345 6789 0123", swift: "EBILAEAD", currency: "USD", amount: 32_000, ngnCost: 52_800_000, rate: 1650, fee: 61_000, description: "Generator parts", purpose: "Goods import payment", status: "Awaiting funding", createdAt: iso(-1), documents: [] },
     ],
     funding: [
-      { id: "FD-1042", method: "NGN", amount: 20_000_000, status: "Balance credited", createdAt: iso(-9) },
-      { id: "FD-1043", method: "USDT", amount: 3_200, status: "Balance credited", createdAt: iso(-5) },
-      { id: "FD-1044", method: "NGN", amount: 6_000_000, status: "Under review", createdAt: iso(-1) },
+      { id: "FD-1042", method: "NGN", amount: 20_000_000, reference: "CANTA-FD-1042", status: "Wallet credited", createdAt: iso(-9), providerRef: "PRV-NGN-448120", receiptNo: "FR-1042" },
+      { id: "FD-1043", method: "USDT", network: "TRC20", amount: 3_200, reference: "CANTA-FD-1043", status: "Wallet credited", createdAt: iso(-5), providerRef: "PRV-USDT-771903", receiptNo: "FR-1043" },
+      { id: "FD-1044", method: "NGN", amount: 6_000_000, reference: "CANTA-FD-1044", status: "Under review", createdAt: iso(-1) },
     ],
+
     documents: [
       { id: "DOC-2001", name: "Commercial invoice — Yiwu 2291.pdf", type: "Commercial invoice", linkedPayment: "SP-2026-0139", status: "Approved", uploadedAt: iso(-12) },
       { id: "DOC-2002", name: "Packing list — Yiwu 2291.pdf", type: "Packing list", linkedPayment: "SP-2026-0139", status: "Approved", uploadedAt: iso(-12) },
@@ -204,7 +315,7 @@ function seed(): ImporterState {
     ],
     notifySettings: { whatsapp: true, email: true, inApp: true },
     alerts: { paymentUpdates: true, fxExpiry: true, shipmentUpdates: true, receiptAvailable: true, blTracking: true },
-    prefs: { fundingCurrency: "NGN", settlementCurrency: "RMB", saveSupplierByDefault: true },
+    prefs: { fundingCurrency: "NGN", settlementCurrency: "RMB", saveSupplierByDefault: true, usdtWarnings: true, emailFundingReceipts: true, whatsappPaymentNotifications: true },
     business: { name: "Bakare Imports Ltd", contact: "Tunde Bakare", email: "tunde@bakareimports.ng", phone: "+234 803 000 0000", address: "12 Balogun Street, Lagos Island, Lagos" },
   };
 }
@@ -284,28 +395,166 @@ export function setPaymentStatus(id: string, status: PaymentStatus) {
   update((s) => ({ ...s, payments: s.payments.map((p) => (p.id === id ? { ...p, status } : p)) }));
 }
 
-export function debitBalance(amount: number) {
-  update((s) => ({ ...s, ngnBalance: Math.max(0, s.ngnBalance - amount) }));
+/* ---------------------------------------------------------------- wallets */
+
+export const NGN_COLLECTION_ACCOUNT = {
+  bank: "Providus Bank",
+  accountName: "Canta Collections / Bakare Imports Ltd",
+  accountNumber: "9901234567",
+};
+
+export const USDT_ADDRESSES: Record<UsdtNetwork, string> = {
+  TRC20: "TXk9QeDemoWalletAddressNotReal4421",
+  ERC20: "0xDemoWalletAddressNotReal00000000000a41c9",
+  BEP20: "0xDemoBep20AddressNotReal0000000000b7712d",
+};
+
+export const USDT_CONFIRMATIONS: Record<UsdtNetwork, number> = { TRC20: 19, ERC20: 12, BEP20: 15 };
+
+export const walletOf = (s: ImporterState, ccy: WalletCcy) => s.wallets.find((w) => w.ccy === ccy);
+
+export const fmtWallet = (n: number, ccy: WalletCcy) =>
+  ccy === "NGN" ? fmtNGN(n)
+    : ccy === "USDT" ? `${n.toLocaleString("en-US", { maximumFractionDigits: 2 })} USDT`
+    : `${ccy === "USD" ? "$" : ccy === "GBP" ? "£" : "€"}${n.toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
+
+const today = () => new Date().toISOString().slice(0, 10);
+
+export function createWallet(ccy: WalletCcy) {
+  update((s) =>
+    s.wallets.some((w) => w.ccy === ccy)
+      ? s
+      : {
+          ...s,
+          wallets: [...s.wallets, { ccy, available: 0, pending: 0, status: "Active", lastActivity: today() }],
+          walletTx: [
+            { id: `WT-${Date.now()}`, at: today(), ccy, type: "Wallet funding", amount: 0, status: "Completed", reference: `Wallet created — ${ccy}` },
+            ...s.walletTx,
+          ],
+        },
+  );
+  notify("Balance", `${ccy} wallet created.`);
 }
 
-export function addFunding(method: FundingEntry["method"], amount: number) {
+function applyWallet(s: ImporterState, ccy: WalletCcy, patch: (w: ImporterWallet) => ImporterWallet): ImporterState {
+  const wallets = s.wallets.map((w) => (w.ccy === ccy ? { ...patch(w), lastActivity: today() } : w));
+  const ngn = wallets.find((w) => w.ccy === "NGN");
+  const usdt = wallets.find((w) => w.ccy === "USDT");
+  return { ...s, wallets, ngnBalance: ngn?.available ?? s.ngnBalance, usdtBalance: usdt?.available ?? s.usdtBalance };
+}
+
+export function creditWallet(ccy: WalletCcy, amount: number) {
+  update((s) => applyWallet(s, ccy, (w) => ({ ...w, available: w.available + amount })));
+}
+
+export function debitWallet(ccy: WalletCcy, amount: number) {
+  update((s) => applyWallet(s, ccy, (w) => ({ ...w, available: Math.max(0, w.available - amount) })));
+}
+
+export function addWalletTx(tx: Omit<WalletTx, "id" | "at"> & { at?: string }) {
+  update((s) => ({ ...s, walletTx: [{ id: `WT-${Date.now()}-${Math.floor(Math.random() * 1000)}`, at: tx.at ?? today(), ...tx }, ...s.walletTx] }));
+}
+
+/* ---------------------------------------------------------------- funding */
+
+export function startFunding(input: {
+  method: "NGN" | "USDT";
+  amount: number;
+  network?: UsdtNetwork;
+  purpose?: string;
+}) {
   const id = `FD-${Math.floor(1100 + Math.random() * 800)}`;
-  update((s) => ({ ...s, funding: [{ id, method, amount, status: "Awaiting payment", createdAt: new Date().toISOString().slice(0, 10) }, ...s.funding] }));
-  notify("Balance", `Funding request ${id} created — awaiting payment.`);
+  const entry: FundingEntry = {
+    id,
+    method: input.method,
+    network: input.network,
+    amount: input.amount,
+    purpose: input.purpose,
+    reference: `CANTA-${id}`,
+    address: input.method === "USDT" && input.network ? USDT_ADDRESSES[input.network] : undefined,
+    status: input.method === "NGN" ? "Awaiting NGN Payment" : "Awaiting USDT Transfer",
+    createdAt: today(),
+    expiresAt: new Date(Date.now() + 2 * 3600_000).toISOString(),
+  };
+  update((s) => applyWallet({ ...s, funding: [entry, ...s.funding] }, input.method, (w) => ({ ...w, pending: w.pending + input.amount })));
+  addWalletTx({ ccy: input.method, type: "Wallet funding", amount: input.amount, status: "Pending", reference: id });
+  notify("Balance", `Funding request ${id} created — ${entry.status.toLowerCase()}.`);
   return id;
 }
 
-export function advanceFunding(id: string) {
-  const order: FundingEntry["status"][] = ["Awaiting payment", "Payment received", "Under review", "Balance credited"];
+export function confirmFundingSent(id: string) {
   update((s) => ({
     ...s,
-    funding: s.funding.map((f) => {
-      if (f.id !== id) return f;
-      const i = order.indexOf(f.status);
-      return { ...f, status: order[Math.min(i + 1, order.length - 1)] };
-    }),
+    funding: s.funding.map((f) =>
+      f.id === id
+        ? { ...f, status: f.method === "NGN" ? "Payment confirmation submitted" : "Transfer confirmation submitted" }
+        : f,
+    ),
   }));
 }
+
+/** Demo-only: stands in for the payment provider / blockchain callback. */
+export function simulateProviderConfirmation(id: string) {
+  const f = read().funding.find((x) => x.id === id);
+  if (!f || f.status === "Wallet credited") return;
+  const receiptNo = `FR-${id.replace("FD-", "")}`;
+  const providerRef = `PRV-${f.method}-${Math.floor(100000 + Math.random() * 899999)}`;
+  update((s) => {
+    const withWallet = applyWallet(s, f.method, (w) => ({
+      ...w,
+      available: w.available + f.amount,
+      pending: Math.max(0, w.pending - f.amount),
+    }));
+    return {
+      ...withWallet,
+      funding: withWallet.funding.map((x) => (x.id === id ? { ...x, status: "Wallet credited", providerRef, receiptNo } : x)),
+      fundingReceipts: [
+        {
+          receiptNo,
+          fundingRef: id,
+          ccy: f.method as WalletCcy,
+          amount: f.amount,
+          method: f.method === "NGN" ? "NGN bank transfer" : `USDT transfer (${f.network ?? "TRC20"})`,
+          providerRef,
+          at: today(),
+          status: "Wallet credited" as const,
+        },
+        ...withWallet.fundingReceipts,
+      ],
+      walletTx: withWallet.walletTx.map((t) =>
+        t.reference === id && t.type === "Wallet funding" ? { ...t, status: "Completed" as const, receiptNo } : t,
+      ),
+    };
+  });
+  notify("Balance", `${f.method} wallet credited — funding ${id} confirmed. Receipt ${receiptNo} is available.`);
+  return receiptNo;
+}
+
+export function cancelFunding(id: string) {
+  const f = read().funding.find((x) => x.id === id);
+  if (!f) return;
+  update((s) => {
+    const withWallet = applyWallet(s, f.method, (w) => ({ ...w, pending: Math.max(0, w.pending - f.amount) }));
+    return {
+      ...withWallet,
+      funding: withWallet.funding.map((x) => (x.id === id ? { ...x, status: "Cancelled" as const } : x)),
+      walletTx: withWallet.walletTx.filter((t) => t.reference !== id),
+    };
+  });
+}
+
+/* --------------------------------------------------------- payment drafts */
+
+export function saveDraft(d: Omit<PaymentDraft, "id" | "at">) {
+  const id = `DR-${Math.floor(1000 + Math.random() * 9000)}`;
+  update((s) => ({ ...s, drafts: [{ id, at: today(), ...d }, ...s.drafts] }));
+  return id;
+}
+
+export function removeDraft(id: string) {
+  update((s) => ({ ...s, drafts: s.drafts.filter((d) => d.id !== id) }));
+}
+
 
 export function addDocument(d: Omit<ImporterDoc, "id" | "uploadedAt" | "status"> & { status?: ImporterDoc["status"] }) {
   const id = `DOC-${Math.floor(3000 + Math.random() * 900)}`;
