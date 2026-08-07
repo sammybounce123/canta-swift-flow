@@ -9,7 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Ship, Upload, Bell } from "lucide-react";
+import { Ship, Upload, Bell, MessageCircle, Copy, ExternalLink } from "lucide-react";
+import { CANTA_WHATSAPP_BOT_NUMBER } from "@/lib/whatsapp";
 import { ReadinessBar } from "@/components/ReadinessBar";
 import {
   useImporter, addShipment, updateShipment, addDocument, notify,
@@ -47,6 +48,8 @@ function ShipmentsPage() {
         <BLDialog />
       </header>
 
+      <WhatsAppBotCard />
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {s.shipments.map((sh) => (
           <Card key={sh.id} className="p-4 shadow-card">
@@ -80,6 +83,9 @@ function ShipmentsPage() {
                 <Upload className="h-3.5 w-3.5" /> Upload document
               </Button>
               <Button size="sm" variant="ghost" onClick={() => { notify("Shipment", `Update requested for ${sh.blNumber}.`); toast.success("Update requested"); }}>Request update</Button>
+              <Button size="sm" variant="ghost" onClick={() => sendToBot(`${sh.blNumber} / ${sh.container}`)}>
+                <MessageCircle className="h-3.5 w-3.5" /> Send BL to WhatsApp
+              </Button>
               <label className="flex items-center gap-2 text-xs text-muted-foreground ml-auto">
                 <Bell className="h-3.5 w-3.5" /> Notifications
                 <Switch checked={sh.notify} onCheckedChange={(v) => updateShipment(sh.id, { notify: v })} />
@@ -134,5 +140,61 @@ function BLDialog() {
         <DialogFooter><Button onClick={save}>Upload BL</Button></DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function botMessage(reference: string) {
+  return `Hello Canta, please track my shipment.\nBL / container number: ${reference}`;
+}
+
+function sendToBot(reference: string) {
+  const msg = botMessage(reference);
+  if (!CANTA_WHATSAPP_BOT_NUMBER) {
+    void navigator.clipboard?.writeText(msg);
+    toast.info("WhatsApp bot number not configured in demo", { description: "Tracking message copied to your clipboard." });
+    return;
+  }
+  window.open(`https://wa.me/${CANTA_WHATSAPP_BOT_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+}
+
+function WhatsAppBotCard() {
+  const [ref, setRef] = useState("");
+  const [alerts, setAlerts] = useState(true);
+  const configured = Boolean(CANTA_WHATSAPP_BOT_NUMBER);
+
+  return (
+    <Card className="p-4 sm:p-5 shadow-card">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="font-semibold flex items-center gap-2"><MessageCircle className="h-4 w-4 text-primary" /> Track shipment on WhatsApp</h2>
+          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+            Send your BL or container number to Canta&apos;s WhatsApp bot to receive shipment updates.
+          </p>
+        </div>
+        <label className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Bell className="h-3.5 w-3.5" /> WhatsApp notifications
+          <Switch checked={alerts} onCheckedChange={(v) => { setAlerts(v); toast.success(v ? "WhatsApp notifications on" : "WhatsApp notifications off"); }} />
+        </label>
+      </div>
+
+      {!configured && (
+        <p className="mt-3 text-xs rounded-md border border-border bg-muted/40 px-3 py-2 text-muted-foreground">
+          WhatsApp bot number not configured in demo.
+        </p>
+      )}
+
+      <div className="mt-3 flex flex-col sm:flex-row gap-2">
+        <Input value={ref} onChange={(e) => setRef(e.target.value)} placeholder="BL number or container number" className="sm:max-w-xs" />
+        <Button onClick={() => sendToBot(ref || "—")} disabled={!ref.trim()}>
+          <ExternalLink className="h-4 w-4" /> Open WhatsApp bot
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => { void navigator.clipboard?.writeText(botMessage(ref || "BL / container number")); toast.success("Tracking message copied"); }}
+        >
+          <Copy className="h-4 w-4" /> Copy tracking message
+        </Button>
+      </div>
+    </Card>
   );
 }
