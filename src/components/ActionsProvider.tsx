@@ -46,7 +46,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
-import { ngnRateOf, fmtAnyCcy } from "@/lib/importer-store";
+import { ngnRateOf, fmtAnyCcy, WALLET_CCYS } from "@/lib/importer-store";
 import { useRole } from "@/components/RoleProvider";
 import { ActionsContext, type ActionsContextValue } from "@/components/actions-context";
 
@@ -352,6 +352,7 @@ function FundForm({
 }) {
   const { profile } = useRole();
   const [fundCcy, setFundCcy] = useState<FundingCcy>(ccy === "USDT" ? "USDT" : "NGN");
+  const [target, setTarget] = useState<string>(ccy);
   const [amount, setAmount] = useState(ccy === "USDT" ? "1000" : "1000000");
   const [method, setMethod] = useState<string | null>(null);
   const [stage, setStage] = useState<"form" | "vaccount" | "tracker">("form");
@@ -436,7 +437,22 @@ function FundForm({
           Funding as <span className="font-medium text-foreground">{profile.name}</span>
         </div>
       </div>
-      <FundFxQuote fundCcy={fundCcy} target={ccy} amount={amt} />
+      <div>
+        <Label className="text-xs">Quote against</Label>
+        <Select value={target} onValueChange={setTarget}>
+          <SelectTrigger className="mt-1">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {WALLET_CCYS.map((c) => (
+              <SelectItem key={c} value={c}>
+                {c}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <FundFxQuote fundCcy={fundCcy} target={target} amount={amt} />
       <div className="space-y-2">
         {methods.map((o) => (
           <button
