@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { useHydrated } from "@tanstack/react-router";
 
 // ---------------------------------------------------------------------------
 // Automatic Convert toggle
