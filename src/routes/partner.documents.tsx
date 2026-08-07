@@ -62,7 +62,7 @@ function DocumentsPage() {
       return;
     }
     addDocument(caseId, {
-      type: docType as any,
+      type: docType as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       name: docName,
       uploadedBy: userId,
       uploadedByName: user?.name ?? "Partner user",

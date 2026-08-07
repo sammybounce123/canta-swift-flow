@@ -1019,7 +1019,7 @@ function Stat({
   value,
   sub,
 }: {
-  icon: any;
+  icon: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   label: string;
   value: string;
   sub?: string;

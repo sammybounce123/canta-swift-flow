@@ -367,7 +367,7 @@ function Field({ label, value, copyable }: { label: string; value: string; copya
   );
 }
 
-function MethodPill({ icon: Icon, label, active, onClick }: any) {
+function MethodPill({ icon: Icon, label, active, onClick }: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
   return (
     <button
       onClick={onClick}

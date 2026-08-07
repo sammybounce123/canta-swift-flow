@@ -102,7 +102,7 @@ export function createDraftTradeFile(event: TradeFileEvent, ctx: Ctx = {}) {
   return { id, draft };
 }
 
-export function readDraftTradeFiles(): any[] {
+export function readDraftTradeFiles(): any[] { // eslint-disable-line @typescript-eslint/no-explicit-any
   try {
     const raw =
       typeof window !== "undefined" ? window.localStorage.getItem("canta:tradeFiles") : null;

@@ -33,7 +33,7 @@ export const Route = createFileRoute("/integrations")({
   component: IntegrationsPage,
 });
 
-const STATUS_ICON: Record<ConnStatus, any> = {
+const STATUS_ICON: Record<ConnStatus, any> = { // eslint-disable-line @typescript-eslint/no-explicit-any
   Connected: CheckCircle2,
   "Not Connected": XCircle,
   Pending: Clock,

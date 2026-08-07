@@ -37,7 +37,7 @@ export const Route = createFileRoute("/collections/new")({
   component: NewCollectionPage,
 });
 
-const ICON: Record<string, any> = {
+const ICON: Record<string, any> = { // eslint-disable-line @typescript-eslint/no-explicit-any
   tuition: GraduationCap,
   medical: Stethoscope,
   property: Home,
@@ -90,7 +90,7 @@ function NewCollectionPage() {
   );
 }
 
-function pushLS(key: string, value: any) {
+function pushLS(key: string, value: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
   try {
     const raw = localStorage.getItem(key);
     const arr = raw ? JSON.parse(raw) : [];
@@ -194,10 +194,10 @@ function TemplateForm({ tpl, onBack }: { tpl: CollectionTemplate; onBack: () => 
       description: `Invoice ${id}, payment link, payer, reconciliation ref ${reconRef} & settlement batch generated.`,
       action: {
         label: "View invoice",
-        onClick: () => nav({ to: "/invoices", search: { new: id } as any }),
+        onClick: () => nav({ to: "/invoices", search: { new: id } as any }), // eslint-disable-line @typescript-eslint/no-explicit-any
       },
     });
-    setTimeout(() => nav({ to: "/payment-links", search: { new: paymentLink.id } as any }), 700);
+    setTimeout(() => nav({ to: "/payment-links", search: { new: paymentLink.id } as any }), 700); // eslint-disable-line @typescript-eslint/no-explicit-any
   };
 
   return (
