@@ -190,17 +190,40 @@ export function resolveActiveWorkspace(pathname: string, mode: Mode): WorkspaceT
 }
 
 /**
+ * Shared/global routes that have a dedicated Importer-scoped equivalent.
+ * Importer users are sent to their own screens so they never see treasury
+ * context or internal payment-case language.
+ */
+const IMPORTER_SCOPED_ROUTES: Record<string, string> = {
+  "/payments": "/importer/payments",
+  "/documents": "/importer/documents",
+  "/support": "/importer/support",
+  "/settings": "/importer/settings",
+};
+
+/**
  * Customer-facing routes that should never default to "Canta Ops" or any
  * internal workspace. When the user has no saved workspace, send them to
- * /welcome to pick one.
+ * /welcome to pick one. Importer users are redirected to the importer-scoped
+ * version of the route when one exists.
  */
 export function useRequireWorkspace() {
   const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!getSavedCustomerWorkspace()) navigate({ to: "/welcome", replace: true });
-  }, [navigate]);
+    const saved = getSavedCustomerWorkspace();
+    if (!saved) {
+      navigate({ to: "/welcome", replace: true });
+      return;
+    }
+    const scoped = IMPORTER_SCOPED_ROUTES[pathname];
+    if (saved === "importer_portal" && scoped) {
+      navigate({ to: scoped, replace: true });
+    }
+  }, [navigate, pathname]);
 }
+
 
 export function useActiveWorkspace() {
   const { mode } = useMode();
