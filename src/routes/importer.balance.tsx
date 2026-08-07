@@ -256,6 +256,7 @@ function BalancePage() {
           <TabsTrigger value="funding">Funding requests</TabsTrigger>
           <TabsTrigger value="history">Transaction history</TabsTrigger>
           <TabsTrigger value="receipts">Funding receipts</TabsTrigger>
+          <TabsTrigger value="conversions">Conversions</TabsTrigger>
         </TabsList>
 
         <TabsContent value="funding" className="mt-4">
