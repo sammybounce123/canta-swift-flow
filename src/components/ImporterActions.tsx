@@ -178,7 +178,6 @@ export function ImporterActions({
     // Secondary — legacy/extras, hidden from investor demo unless enabled
     { label: "New Trade File (planned)", icon: FilePlus,    onClick: startTradeFile,                 show: DEMO_EXTRAS && variant !== "tradefile" },
     { label: "Request Escrow",         icon: Lock,          onClick: () => setOpen("escrow"),        show: DEMO_EXTRAS },
-    { label: "Request Clearing Quotes", icon: Calculator,   onClick: () => navigate({ to: "/clearing-quotes", search: { file: ctx.tradeFileId, request: undefined } }), show: DEMO_EXTRAS || variant === "tradefile" },
     { label: "Link Shipment",          icon: Ship,          onClick: () => setOpen("linkShipment"),  show: DEMO_EXTRAS && variant !== "supplier" },
     { label: "Share Tracking Link",    icon: LinkIcon,      onClick: () => setOpen("share"),         show: !!ctx.shipmentId || variant === "tradefile" },
     { label: "Add supplier details",   icon: UserPlus,      onClick: () => { navigate({ to: "/my-suppliers" }); toast.message("Add supplier company and bank details"); }, show: DEMO_EXTRAS },
@@ -267,7 +266,7 @@ export function ImporterActions({
       {/* Landed cost */}
       <Dialog open={open === "landed"} onOpenChange={(o) => !o && setOpen(null)}>
         <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>Estimated Landed Cost</DialogTitle><DialogDescription>Goods, freight, duty estimate and FX. Clearing fee comes from a selected agent quote — request bids in the Clearing Agent Marketplace.</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>Estimated Landed Cost</DialogTitle><DialogDescription>Goods, freight, duty estimate and FX, with your own clearing/handling estimate.</DialogDescription></DialogHeader>
           <div className="grid grid-cols-2 gap-3">
             <div><Label className="text-xs">Goods cost</Label><Input value={landed.goodsCost} onChange={(e) => setLanded({ ...landed, goodsCost: e.target.value })} /></div>
             <div><Label className="text-xs">Currency</Label>
@@ -277,11 +276,11 @@ export function ImporterActions({
               </Select>
             </div>
             <div><Label className="text-xs">Freight</Label><Input value={landed.freight} onChange={(e) => setLanded({ ...landed, freight: e.target.value })} /></div>
-            <div><Label className="text-xs">Agent-provided clearing quote</Label><Input value={landed.clearing} onChange={(e) => setLanded({ ...landed, clearing: e.target.value })} placeholder="From selected agent bid" /></div>
+            <div><Label className="text-xs">Clearing / handling estimate</Label><Input value={landed.clearing} onChange={(e) => setLanded({ ...landed, clearing: e.target.value })} placeholder="Your estimate" /></div>
             <div><Label className="text-xs">Destination</Label><Input value={landed.destination} onChange={(e) => setLanded({ ...landed, destination: e.target.value })} /></div>
             <div><Label className="text-xs">Selling price</Label><Input value={landed.sellingPrice} onChange={(e) => setLanded({ ...landed, sellingPrice: e.target.value })} /></div>
           </div>
-          <p className="text-[11px] text-muted-foreground mt-2">Clearing fee source: selected agent quote, manual estimate, or awaiting agent bids. Canta does not quote clearing fees directly.</p>
+          <p className="text-[11px] text-muted-foreground mt-2">Clearing and handling figures are your own estimates. Canta does not quote clearing fees.</p>
           <DialogFooter>
             <Button variant="outline" onClick={() => { navigate({ to: "/landed-cost" }); setOpen(null); }}>Open Landed Cost Tool</Button>
             <Button onClick={submitLanded}>Request Estimate</Button>
@@ -337,7 +336,7 @@ export function ImporterActions({
       {/* Forwarder */}
       <Dialog open={open === "forwarder"} onOpenChange={(o) => !o && setOpen(null)}>
         <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>Invite Clearing Agent</DialogTitle><DialogDescription>Invite an approved clearing agent to a quote request or assigned clearing job.</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>Invite Freight Partner</DialogTitle><DialogDescription>Invite a freight or logistics contact to collaborate on this trade file.</DialogDescription></DialogHeader>
           <div className="grid gap-3">
             <div><Label className="text-xs">Company / contact name</Label><Input value={forwarder.name} onChange={(e) => setForwarder({ ...forwarder, name: e.target.value })} /></div>
             <div><Label className="text-xs">Email</Label><Input type="email" value={forwarder.email} onChange={(e) => setForwarder({ ...forwarder, email: e.target.value })} placeholder="ops@dragonfreight.com" /></div>

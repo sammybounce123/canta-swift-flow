@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,6 @@ import { Calculator, Plus, Trash2 } from "lucide-react";
 import { fmtMoney } from "@/lib/mock";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
-import { getAcceptedBid } from "@/lib/clearing-store";
 
 export const Route = createFileRoute("/landed-cost")({
   head: () => ({ meta: [{ title: "Landed Cost — Canta" }] }),
@@ -32,26 +31,9 @@ function LandedCostPage() {
     { id: "1", label: "Goods cost (supplier invoice)", amount: 2500 },
     { id: "2", label: "Freight / shipping", amount: 600 },
     { id: "3", label: "Customs duty", amount: 320 },
-    { id: "4", label: "Clearing agent fee (agent quote)", amount: 180 },
+    { id: "4", label: "Clearing / handling fee", amount: 180 },
     { id: "5", label: "Inland transport", amount: 90 },
   ]);
-  const [clearingTouched, setClearingTouched] = useState(false);
-  const [acceptedBid, setAcceptedBid] = useState(() => getAcceptedBid());
-
-  useEffect(() => { setAcceptedBid(getAcceptedBid()); }, []);
-
-  // When an accepted bid exists and user hasn't manually overridden, sync the clearing line.
-  useEffect(() => {
-    if (!acceptedBid || clearingTouched) return;
-    setLines((cur) => cur.map((l) => l.id === "4" ? { ...l, label: `Clearing agent fee (${acceptedBid.agentName})`, amount: acceptedBid.clearingFee } : l));
-  }, [acceptedBid, clearingTouched]);
-
-  const clearingSource = acceptedBid && !clearingTouched
-    ? { label: `Selected agent quote — ${acceptedBid.agentName}`, tone: "border-success/40 bg-success/10" }
-    : clearingTouched
-      ? { label: "Manual estimate", tone: "border-border bg-muted/30" }
-      : { label: "Awaiting agent bids", tone: "border-amber-500/30 bg-amber-500/5" };
-
   const totals = useMemo(() => {
     const total = lines.reduce((s, l) => s + (Number(l.amount) || 0), 0);
     const perUnit = units > 0 ? total / units : 0;
@@ -62,7 +44,6 @@ function LandedCostPage() {
   }, [lines, units, salePrice]);
 
   function update(id: string, patch: Partial<CostLine>) {
-    if (id === "4") setClearingTouched(true);
     setLines((cur) => cur.map((l) => (l.id === id ? { ...l, ...patch } : l)));
   }
   function add() {
@@ -86,9 +67,6 @@ function LandedCostPage() {
       </header>
 
 
-      <Card className={`p-3 shadow-card text-xs text-muted-foreground ${clearingSource.tone}`}>
-        <span className="font-semibold text-foreground">Clearing fee source:</span> {clearingSource.label}. Canta does not quote clearing fees directly — fees, timelines, duty estimates and service delivery are provided by the selected clearing agent.
-      </Card>
 
 
       <Card className="p-4 shadow-card">
