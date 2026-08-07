@@ -72,8 +72,12 @@ const TX_TYPES = [
 
 function BalancePage() {
   const s = useImporter();
+  const navigate = useNavigate();
   const [fundOpen, setFundOpen] = useState(false);
   const [fundMethod, setFundMethod] = useState<"NGN" | "USDT">("NGN");
+  const [convOpen, setConvOpen] = useState(false);
+  const [convFrom, setConvFrom] = useState<WalletCcy>("NGN");
+  const [convTo, setConvTo] = useState<WalletCcy>("USD");
   const [fCcy, setFCcy] = useState("all");
   const [fType, setFType] = useState("all");
   const [fStatus, setFStatus] = useState("all");
@@ -83,6 +87,13 @@ function BalancePage() {
     setFundMethod(m);
     setFundOpen(true);
   };
+
+  const openConvert = (from: WalletCcy, to: WalletCcy) => {
+    setConvFrom(from);
+    setConvTo(to);
+    setConvOpen(true);
+  };
+
 
   const pending = s.funding.filter((f) => FUNDING_OPEN.includes(f.status));
   const missing = WALLET_CCYS.filter((c) => !s.wallets.some((w) => w.ccy === c));
