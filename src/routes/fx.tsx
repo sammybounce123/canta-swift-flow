@@ -43,7 +43,7 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
-import { fxHistory, beneficiaries, fmtMoney } from "@/lib/mock";
+import { fxHistory, beneficiaries, fmtMoney, wallets } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
