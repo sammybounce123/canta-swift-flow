@@ -444,19 +444,33 @@ export const simpleInvoiceStore = {
   duplicate: (id: string) => {
     const src = SIMPLE_INVOICES.find((i) => i.id === id);
     if (!src) return null;
-    return simpleInvoiceStore.add({ ...src, status: "Draft", sentBy: "Not sent" });
+    return simpleInvoiceStore.add({ ...src, status: "Draft", sentBy: "Not sent", events: [] });
+  },
+  /** Append a timeline event without changing invoice status. */
+  addEvent: (id: string, label: string, detail?: string) => {
+    const inv = SIMPLE_INVOICES.find((i) => i.id === id);
+    if (!inv) return;
+    simpleInvoiceStore.update(id, { events: [...inv.events, makeEvent(label, detail)] });
   },
   /** Refreshing a quote re-prices and re-opens the 15-minute window. */
   refreshQuote: (id: string) => {
     const inv = SIMPLE_INVOICES.find((i) => i.id === id);
     if (!inv) return null;
-    const q = quoteFor(inv.amountRmb);
+    const q = previewRefreshedQuote(inv);
     return simpleInvoiceStore.update(id, {
       fxRate: q.rate,
       feeNgn: q.feeNgn,
       amountNgn: q.amountNgn,
-      quoteExpiresAt: Date.now() + 15 * 60 * 1000,
+      quoteExpiresAt: q.expiresAt,
       status: "Quote Locked",
+      paymentLink: paymentPath(inv.paymentRequestId),
+      events: [
+        ...inv.events,
+        makeEvent(
+          "Quote refreshed",
+          `New rate ₦${q.rate} / ¥1 · ₦${q.amountNgn.toLocaleString()} · valid 15 minutes`,
+        ),
+      ],
     });
   },
   /** Demo only: a Nigerian buyer pays the NGN amount and the provider confirms it. */
@@ -467,7 +481,16 @@ export const simpleInvoiceStore = {
       return { ok: false, error: "This invoice is not awaiting buyer payment." };
     if (isInvoiceQuoteExpired(inv))
       return { ok: false, error: "Quote expired — refresh the quote before payment." };
-    simpleInvoiceStore.update(id, { status: "NGN Received" });
+    simpleInvoiceStore.update(id, {
+      status: "NGN Received",
+      events: [
+        ...inv.events,
+        makeEvent(
+          "NGN received and matched",
+          `₦${inv.amountNgn.toLocaleString()} matched to ${inv.invoiceNumber}`,
+        ),
+      ],
+    });
     return { ok: true };
   },
   /** Manual conversion request, used when Automatic Convert is OFF. */
@@ -476,7 +499,10 @@ export const simpleInvoiceStore = {
     if (!inv) return { ok: false, error: "Invoice not found." };
     if (inv.status !== "NGN Received")
       return { ok: false, error: "Conversion can only be requested once NGN is received." };
-    simpleInvoiceStore.update(id, { status: "Compliance Review" });
+    simpleInvoiceStore.update(id, {
+      status: "Compliance Review",
+      events: [...inv.events, makeEvent("Compliance review started")],
+    });
     return { ok: true };
   },
   /**
@@ -488,15 +514,46 @@ export const simpleInvoiceStore = {
   ): { ok: boolean; status?: SimpleInvoiceStatus; error?: string } => {
     const inv = SIMPLE_INVOICES.find((i) => i.id === id);
     if (!inv) return { ok: false, error: "Invoice not found." };
+    if (inv.status === "RMB Settlement Pending")
+      return simpleInvoiceStore.confirmProviderPayout(id);
     const next = SETTLEMENT_NEXT[inv.status];
     if (!next) return { ok: false, error: "No further settlement stage for this invoice." };
-    const patch: Partial<SimpleInvoice> = { status: next };
-    if (next === "RMB Paid") {
-      patch.receiptId = `RC-${inv.paymentRequestId.replace("PR-", "")}`;
-      patch.providerConfirmed = true;
-    }
-    simpleInvoiceStore.update(id, patch);
+    simpleInvoiceStore.update(id, {
+      status: next,
+      events: [...inv.events, makeEvent(SETTLEMENT_EVENT_LABEL[next] ?? next)],
+    });
     return { ok: true, status: next };
+  },
+  /**
+   * Demo stand-in for the payout provider webhook. Only this call may mark an
+   * invoice RMB Paid and issue the settlement receipt.
+   */
+  confirmProviderPayout: (
+    id: string,
+  ): { ok: boolean; status?: SimpleInvoiceStatus; error?: string } => {
+    const inv = SIMPLE_INVOICES.find((i) => i.id === id);
+    if (!inv) return { ok: false, error: "Invoice not found." };
+    if (inv.status !== "RMB Settlement Pending")
+      return {
+        ok: false,
+        error: "Provider confirmation is only possible once the RMB payout is pending.",
+      };
+    const now = Date.now();
+    const ref = `PCONF-${inv.paymentRequestId.replace("PR-", "")}`;
+    simpleInvoiceStore.update(id, {
+      status: "RMB Paid",
+      receiptId: `RC-${inv.paymentRequestId.replace("PR-", "")}`,
+      providerConfirmed: true,
+      providerRef: ref,
+      settledAt: now,
+      events: [
+        ...inv.events,
+        makeEvent("Provider confirmed payout", `Provider reference ${ref}`, now),
+        makeEvent("RMB paid to your bank account", `¥${inv.amountRmb.toLocaleString()}`, now),
+        makeEvent("Receipt available", `Receipt RC-${inv.paymentRequestId.replace("PR-", "")}`, now),
+      ],
+    });
+    return { ok: true, status: "RMB Paid" };
   },
   subscribe: (f: () => void) => {
     invSubs.add(f);
