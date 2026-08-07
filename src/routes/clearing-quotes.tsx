@@ -76,7 +76,7 @@ function ClearingQuotesPage() {
           {search.file ? (
             <div className="text-xs text-muted-foreground mt-2">
               Filtered to trade file <span className="font-semibold text-foreground">{search.file}</span> ·{" "}
-              <button onClick={() => navigate({ to: "/clearing-quotes", search: { file: undefined } })} className="text-primary underline">Clear filter</button>
+              <button onClick={() => navigate({ to: "/clearing-quotes", search: { file: undefined, request: undefined } })} className="text-primary underline">Clear filter</button>
             </div>
           ) : null}
         </div>
@@ -100,7 +100,7 @@ function ClearingQuotesPage() {
           scopedToFile={search.file}
           onCreate={() => setFormOpen(true)}
           onSeed={() => { loadDemoData(); const seeded = getRequests(); setRequests(seeded); setActiveReqId(seeded[0]?.id ?? null); setTick((t) => t + 1); toast.success("Demo data loaded"); }}
-          onClearFilter={() => navigate({ to: "/clearing-quotes", search: { file: undefined } })}
+          onClearFilter={() => navigate({ to: "/clearing-quotes", search: { file: undefined, request: undefined } })}
         />
 
       ) : (
