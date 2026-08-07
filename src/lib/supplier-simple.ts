@@ -702,3 +702,203 @@ export function copyText(text: string) {
     /* ignore */
   }
 }
+
+// ---------------------------------------------------------------------------
+// Payment timeline
+// ---------------------------------------------------------------------------
+
+export type TimelineStepState = "Completed" | "Current" | "Pending" | "Blocked";
+
+export type TimelineStep = {
+  key: string;
+  label: string;
+  explain: string;
+  state: TimelineStepState;
+  at?: number;
+  blocker?: string;
+};
+
+const TIMELINE_STEPS: Array<{ key: string; label: string; explain: string }> = [
+  { key: "created", label: "Invoice Created", explain: "You created the invoice for your buyer." },
+  {
+    key: "quote",
+    label: "Quote Generated",
+    explain: "The RMB amount was priced in NGN at a locked rate.",
+  },
+  { key: "sent", label: "Invoice Sent", explain: "The invoice and payment link went to the buyer." },
+  { key: "viewed", label: "Buyer Viewed", explain: "The buyer opened the payment link." },
+  {
+    key: "awaiting",
+    label: "Awaiting NGN Payment",
+    explain: "Waiting for the buyer to pay NGN into your Canta collection account.",
+  },
+  {
+    key: "received",
+    label: "NGN Received",
+    explain: "Canta matched the buyer's NGN payment to this invoice.",
+  },
+  {
+    key: "compliance",
+    label: "Compliance Review",
+    explain: "Standard checks run before any conversion.",
+  },
+  { key: "converting", label: "Auto-Converting", explain: "NGN is converted to RMB at your rate." },
+  {
+    key: "payout",
+    label: "RMB Settlement Pending",
+    explain: "RMB payout queued to your verified bank account.",
+  },
+  {
+    key: "provider",
+    label: "Provider Confirmation",
+    explain: "The payout provider must confirm the transfer.",
+  },
+  { key: "paid", label: "RMB Paid", explain: "RMB arrived in your Chinese bank account." },
+  {
+    key: "receipt",
+    label: "Receipt Available",
+    explain: "Settlement receipt issued after provider confirmation.",
+  },
+];
+
+const STATUS_PROGRESS: Record<SimpleInvoiceStatus, number> = {
+  Draft: 0,
+  "Quote Locked": 1,
+  "Sent to Buyer": 2,
+  "Buyer Viewed": 3,
+  "Awaiting NGN Payment": 4,
+  "NGN Received": 5,
+  "Compliance Review": 6,
+  "Auto-Converting": 7,
+  "RMB Settlement Pending": 8,
+  "RMB Paid": 11,
+  Expired: 1,
+  Cancelled: 0,
+};
+
+/**
+ * Derive the twelve-step payment timeline for an invoice. `blockers` carries
+ * account-level problems (verification, bank) that stop progress.
+ */
+export function invoiceTimeline(inv: SimpleInvoice, blockers: string[] = []): TimelineStep[] {
+  const expired = isInvoiceQuoteExpired(inv);
+  const reached = STATUS_PROGRESS[inv.status] ?? 0;
+  const paid = inv.status === "RMB Paid";
+  return TIMELINE_STEPS.map((step, i) => {
+    let state: TimelineStepState =
+      i < reached ? "Completed" : i === reached ? "Current" : "Pending";
+    if (paid) state = "Completed";
+    let blocker: string | undefined;
+    if (state === "Current") {
+      if (expired && !paid) {
+        state = "Blocked";
+        blocker = "Quote expired — refresh quote to continue.";
+      } else if (inv.status === "Cancelled") {
+        state = "Blocked";
+        blocker = "Invoice cancelled.";
+      } else if (step.key === "compliance") {
+        blocker = "Compliance review pending.";
+      } else if (step.key === "provider") {
+        blocker = "Provider confirmation pending.";
+      } else if (blockers.length > 0 && i >= 5) {
+        state = "Blocked";
+        blocker = blockers.join(" · ");
+      }
+    }
+    if (i === 9 && inv.status === "RMB Settlement Pending") {
+      state = "Current";
+      blocker = "Provider confirmation pending.";
+    }
+    const at = inv.events[Math.min(i, inv.events.length - 1)]?.at;
+    return {
+      ...step,
+      state,
+      blocker,
+      at: state === "Completed" ? (i < inv.events.length ? inv.events[i]!.at : at) : undefined,
+    };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Buyer reminder + receipt
+// ---------------------------------------------------------------------------
+
+export const SUPPLIER_NAME = "Guangzhou Tech Factory";
+
+export function reminderMessage(inv: SimpleInvoice) {
+  return [
+    `Hello ${inv.buyerCompany},`,
+    `${SUPPLIER_NAME} has sent you invoice ${inv.invoiceNumber} through Canta.`,
+    `Amount: ¥${inv.amountRmb.toLocaleString()} (₦${inv.amountNgn.toLocaleString()} at ₦${inv.fxRate} / ¥1)`,
+    `Payment link: ${paymentLinkUrl(inv)}`,
+    `Quote valid until: ${formatStamp(inv.quoteExpiresAt)}`,
+    "Please pay the NGN amount using the secure Canta payment link before the quote expires.",
+  ].join("\n");
+}
+
+export function whatsappHref(inv: SimpleInvoice) {
+  const digits = inv.buyerWhatsapp.replace(/\D/g, "");
+  return `https://wa.me/${digits}?text=${encodeURIComponent(reminderMessage(inv))}`;
+}
+
+export function mailtoHref(inv: SimpleInvoice) {
+  return `mailto:${inv.buyerEmail}?subject=${encodeURIComponent(
+    `Invoice ${inv.invoiceNumber} from ${SUPPLIER_NAME}`,
+  )}&body=${encodeURIComponent(reminderMessage(inv))}`;
+}
+
+export function receiptText(inv: SimpleInvoice, bankLine: string) {
+  return [
+    "CANTA SETTLEMENT RECEIPT",
+    "-----------------------------------------",
+    `Receipt number: ${inv.receiptId ?? "—"}`,
+    `Invoice number: ${inv.invoiceNumber}`,
+    `Payment request: ${inv.paymentRequestId}`,
+    `Buyer: ${inv.buyerCompany}`,
+    `Supplier: ${SUPPLIER_NAME}`,
+    `NGN amount paid: ₦${inv.amountNgn.toLocaleString()}`,
+    `RMB amount settled: ¥${inv.amountRmb.toLocaleString()}`,
+    `FX rate: ₦${inv.fxRate} / ¥1`,
+    `Canta fee: ₦${inv.feeNgn.toLocaleString()}`,
+    `Settlement bank account: ${bankLine}`,
+    `Provider confirmation reference: ${inv.providerRef ?? "—"}`,
+    `Date: ${formatStamp(inv.settledAt ?? Date.now())}`,
+    "Status: RMB Paid",
+    "Compliance: Payment matched and compliance review completed before conversion.",
+    "-----------------------------------------",
+    "Demo data — illustrative receipt generated by the Canta demo environment.",
+  ].join("\n");
+}
+
+export function downloadTextFile(filename: string, contents: string) {
+  try {
+    const blob = new Blob([contents], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Statuses where an unpaid payment link / buyer reminder still makes sense. */
+export const UNPAID_STATUSES: SimpleInvoiceStatus[] = [
+  "Quote Locked",
+  "Sent to Buyer",
+  "Buyer Viewed",
+  "Awaiting NGN Payment",
+];
+
+export const SETTLEMENT_STATUSES: SimpleInvoiceStatus[] = [
+  "NGN Received",
+  "Compliance Review",
+  "Auto-Converting",
+  "RMB Settlement Pending",
+  "RMB Paid",
+];
