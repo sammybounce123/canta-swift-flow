@@ -78,13 +78,100 @@ export type SupplierPayment = {
   receiptNo?: string;
 };
 
+export type WalletCcy = "NGN" | "USDT" | "USD" | "GBP" | "EUR";
+
+export const WALLET_CCYS: WalletCcy[] = ["NGN", "USDT", "USD", "GBP", "EUR"];
+
+/** Only these rails can be funded directly today. */
+export const FUNDABLE_CCYS: WalletCcy[] = ["NGN", "USDT"];
+
+export const USDT_NETWORKS = ["TRC20", "ERC20", "BEP20"] as const;
+export type UsdtNetwork = (typeof USDT_NETWORKS)[number];
+
+export type ImporterWallet = {
+  ccy: WalletCcy;
+  available: number;
+  pending: number;
+  status: "Active" | "Pending" | "Disabled";
+  lastActivity: string;
+};
+
+export type FundingStatus =
+  | "Awaiting NGN Payment"
+  | "Awaiting USDT Transfer"
+  | "Payment confirmation submitted"
+  | "Transfer confirmation submitted"
+  | "Blockchain confirmation pending"
+  | "Provider confirmation pending"
+  | "Under review"
+  | "Wallet credited"
+  | "Failed"
+  | "Expired"
+  | "Cancelled";
+
+export const FUNDING_OPEN: FundingStatus[] = [
+  "Awaiting NGN Payment",
+  "Awaiting USDT Transfer",
+  "Payment confirmation submitted",
+  "Transfer confirmation submitted",
+  "Blockchain confirmation pending",
+  "Provider confirmation pending",
+  "Under review",
+];
+
 export type FundingEntry = {
   id: string;
   method: "NGN" | "USDT";
+  network?: UsdtNetwork;
   amount: number;
-  status: "Awaiting payment" | "Payment received" | "Under review" | "Balance credited" | "Failed";
+  purpose?: string;
+  reference: string;
+  address?: string;
+  status: FundingStatus;
   createdAt: string;
+  expiresAt?: string;
+  providerRef?: string;
+  receiptNo?: string;
 };
+
+export type WalletTxType =
+  | "Wallet funding"
+  | "Supplier payment"
+  | "FX conversion"
+  | "Refund"
+  | "Fee"
+  | "Receipt generated";
+
+export type WalletTx = {
+  id: string;
+  at: string;
+  ccy: WalletCcy;
+  type: WalletTxType;
+  amount: number;
+  status: "Completed" | "Pending" | "Failed";
+  reference: string;
+  receiptNo?: string;
+};
+
+export type FundingReceipt = {
+  receiptNo: string;
+  fundingRef: string;
+  ccy: WalletCcy;
+  amount: number;
+  method: string;
+  providerRef: string;
+  at: string;
+  status: "Wallet credited";
+};
+
+export type PaymentDraft = {
+  id: string;
+  at: string;
+  supplier: string;
+  amountLabel: string;
+  form: Record<string, unknown>;
+};
+
 
 export type ImporterDoc = {
   id: string;
