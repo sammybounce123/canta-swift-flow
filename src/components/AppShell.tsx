@@ -266,7 +266,16 @@ function SidebarContent({
       </Link>
 
       <nav className="flex-1 px-3 py-3 space-y-3 overflow-y-auto scrollbar-thin">
-        {groups.map((g) => (
+        {pendingWorkspace && (
+          <div className="space-y-2 px-3 py-2">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-8 rounded-lg bg-sidebar-accent/40 animate-pulse" />
+            ))}
+          </div>
+        )}
+        {!pendingWorkspace &&
+          groups.map((g) => (
+
           <div key={g}>
             <div className="px-3 mb-1 text-[10px] uppercase tracking-widest text-sidebar-foreground/40">
               {g}
