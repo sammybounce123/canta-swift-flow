@@ -88,7 +88,26 @@ export function ConvertDialog({
         ? "Quote ready"
         : "Draft";
 
-  const destinations = useMemo(() => WALLET_CCYS.filter((c) => c !== from), [from]);
+  /** Only currencies the customer actually holds a wallet in. */
+  const availableCcys = useMemo(
+    () => WALLET_CCYS.filter((c) => s.wallets.some((w) => w.ccy === c)),
+    [s.wallets]
+  );
+  const destinations = useMemo(
+    () => availableCcys.filter((c) => c !== from),
+    [availableCcys, from]
+  );
+
+  useEffect(() => {
+    if (availableCcys.length === 0) return;
+    if (!availableCcys.includes(from)) setFrom(availableCcys[0]!);
+  }, [availableCcys, from]);
+
+  useEffect(() => {
+    if (destinations.length === 0) return;
+    if (!destinations.includes(to)) setTo(destinations[0]!);
+  }, [destinations, to]);
+
 
   const getQuote = () => {
     if (amt <= 0) return toast.error("Enter an amount to convert");
