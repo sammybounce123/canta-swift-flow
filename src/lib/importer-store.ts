@@ -292,10 +292,11 @@ function seed(): ImporterState {
       { id: "SP-2026-0141", supplier: "Northwind Trading FZE", country: "United Arab Emirates", bank: "Emirates NBD", accountNumber: "AE07 0331 2345 6789 0123", swift: "EBILAEAD", currency: "USD", amount: 32_000, ngnCost: 52_800_000, rate: 1650, fee: 61_000, description: "Generator parts", purpose: "Goods import payment", status: "Awaiting funding", createdAt: iso(-1), documents: [] },
     ],
     funding: [
-      { id: "FD-1042", method: "NGN", amount: 20_000_000, status: "Balance credited", createdAt: iso(-9) },
-      { id: "FD-1043", method: "USDT", amount: 3_200, status: "Balance credited", createdAt: iso(-5) },
-      { id: "FD-1044", method: "NGN", amount: 6_000_000, status: "Under review", createdAt: iso(-1) },
+      { id: "FD-1042", method: "NGN", amount: 20_000_000, reference: "CANTA-FD-1042", status: "Wallet credited", createdAt: iso(-9), providerRef: "PRV-NGN-448120", receiptNo: "FR-1042" },
+      { id: "FD-1043", method: "USDT", network: "TRC20", amount: 3_200, reference: "CANTA-FD-1043", status: "Wallet credited", createdAt: iso(-5), providerRef: "PRV-USDT-771903", receiptNo: "FR-1043" },
+      { id: "FD-1044", method: "NGN", amount: 6_000_000, reference: "CANTA-FD-1044", status: "Under review", createdAt: iso(-1) },
     ],
+
     documents: [
       { id: "DOC-2001", name: "Commercial invoice — Yiwu 2291.pdf", type: "Commercial invoice", linkedPayment: "SP-2026-0139", status: "Approved", uploadedAt: iso(-12) },
       { id: "DOC-2002", name: "Packing list — Yiwu 2291.pdf", type: "Packing list", linkedPayment: "SP-2026-0139", status: "Approved", uploadedAt: iso(-12) },
