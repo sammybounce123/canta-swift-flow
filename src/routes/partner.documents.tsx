@@ -27,6 +27,7 @@ import { CASES, getSolicitor, MARKETERS } from "@/lib/partner";
 import { addDocument, listCases } from "@/lib/partner-store";
 import { appendDocAudit, listDocAudit, subscribeExtras } from "@/lib/partner-extras";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
+import { downloadCsv } from "@/lib/partner-demo";
 
 export const Route = createFileRoute("/partner/documents")({
   head: () => ({ meta: [{ title: "Documents — Kingsbridge Property Partners" }] }),
@@ -194,7 +195,7 @@ function DocumentsPage() {
                           className="text-[10px] bg-success/15 text-success border-success/30"
                         >
                           <CheckCircle2 className="h-3 w-3 mr-1" />{" "}
-                          {d.uploadedByRole === "client" ? "Client" : "B&C"}
+                          {d.uploadedByRole === "client" ? "Client" : "Partner"}
                         </Badge>
                       </td>
                       <td className="py-3 px-3 text-right">
@@ -232,7 +233,16 @@ function DocumentsPage() {
                         >
                           Reject
                         </Button>
-                        <Button size="sm" variant="ghost">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() =>
+                            downloadCsv(`${c.ref}-${d.type}.csv`, [
+                              ["Case", "Client", "Document", "File", "Uploaded by", "Uploaded at"],
+                              [c.ref, c.clientName, d.type, d.name, d.uploadedByName, d.uploadedAt],
+                            ])
+                          }
+                        >
                           <Download className="h-3.5 w-3.5" />
                         </Button>
                       </td>
@@ -336,7 +346,8 @@ function DocumentsPage() {
       </Card>
 
       <div className="text-[11px] text-muted-foreground">
-        Recognised actors: {MARKETERS.length} B&amp;C users, Canta Ops &amp; clients via /pay link.
+        Recognised actors: {MARKETERS.length} Kingsbridge Property Partners users, Canta Ops &amp;
+        clients via the client payment link.
       </div>
     </div>
   );
