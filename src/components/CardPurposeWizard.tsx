@@ -222,7 +222,8 @@ export function CardPurposeWizard({
   function toggleCat(list: "allowedCategories" | "blockedCategories", cat: string) {
     setDraft((d) => {
       const set = new Set(d[list]);
-      set.has(cat) ? set.delete(cat) : set.add(cat);
+      if (set.has(cat)) set.delete(cat);
+      else set.add(cat);
       return { ...d, [list]: Array.from(set) };
     });
   }
