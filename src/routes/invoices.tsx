@@ -89,7 +89,6 @@ function readLS(): Invoice[] {
     const arr = JSON.parse(raw);
     // Items pushed from /collections/new use a different shape; normalize.
     const norm: Invoice[] = (Array.isArray(arr) ? arr : []).map((x: any) => ({
-      // eslint-disable-line @typescript-eslint/no-explicit-any
       id: x.id,
       payer: x.payer ?? x.subject ?? "Payer",
       payerEmail: x.payerEmail ?? x.fields?.payerEmail ?? "",

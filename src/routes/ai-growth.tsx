@@ -59,7 +59,6 @@ type Category =
   | "Treasury Prospects"
   | "Institutional Partners";
 const CATEGORIES: { l: Category; i: any; tone: string }[] = [
-  // eslint-disable-line @typescript-eslint/no-explicit-any
   { l: "Importers", i: Ship, tone: "bg-primary/10 text-primary" },
   { l: "Freight Forwarders", i: Truck, tone: "bg-accent/15 text-accent" },
   { l: "Suppliers", i: Building2, tone: "bg-warning/10 text-warning" },
@@ -290,7 +289,7 @@ function KPI({
   label: string;
   value: string;
   sub?: string;
-  icon: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  icon: any;
   tone?: string;
 }) {
   return (

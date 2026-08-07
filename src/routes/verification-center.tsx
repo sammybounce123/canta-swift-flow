@@ -258,7 +258,7 @@ function RequestCard({
 function DirectoryTable({
   rows,
 }: {
-  rows: { id: string; name: string; country: string; status: any; meta: string }[]; // eslint-disable-line @typescript-eslint/no-explicit-any
+  rows: { id: string; name: string; country: string; status: any; meta: string }[];
 }) {
   return (
     <Card>

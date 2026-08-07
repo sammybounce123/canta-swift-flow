@@ -100,7 +100,6 @@ function loadRows(): EscrowRow[] {
   try {
     const stored = JSON.parse(window.localStorage.getItem(LS_KEY) ?? "[]");
     const mapped: EscrowRow[] = (Array.isArray(stored) ? stored : []).map((r: any, i: number) => ({
-      // eslint-disable-line @typescript-eslint/no-explicit-any
       id: r.id ?? `ESC-${Date.now()}-${i}`,
       reference: r.reference ?? r.tradeFile ?? "—",
       supplier: r.supplier ?? "—",

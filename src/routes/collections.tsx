@@ -386,7 +386,7 @@ function KPI({
   value: string;
   sub?: string;
   tone?: string;
-  icon: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  icon: any;
 }) {
   return (
     <Card className="p-3 sm:p-4 shadow-card min-w-0 overflow-hidden">
