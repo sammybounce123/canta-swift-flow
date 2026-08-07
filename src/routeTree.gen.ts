@@ -18,7 +18,6 @@ import { Route as AuditLogsRouteImport } from './routes/audit-logs'
 import { Route as BeneficiariesRouteImport } from './routes/beneficiaries'
 import { Route as BuyersRouteImport } from './routes/buyers'
 import { Route as CardsRouteImport } from './routes/cards'
-import { Route as ClearingQuotesRouteImport } from './routes/clearing-quotes'
 import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as CustomersRouteImport } from './routes/customers'
@@ -163,11 +162,6 @@ const BuyersRoute = BuyersRouteImport.update({
 const CardsRoute = CardsRouteImport.update({
   id: '/cards',
   path: '/cards',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ClearingQuotesRoute = ClearingQuotesRouteImport.update({
-  id: '/clearing-quotes',
-  path: '/clearing-quotes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CollectionsRoute = CollectionsRouteImport.update({
@@ -691,7 +685,6 @@ export interface FileRoutesByFullPath {
   '/beneficiaries': typeof BeneficiariesRoute
   '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
-  '/clearing-quotes': typeof ClearingQuotesRoute
   '/collections': typeof CollectionsRouteWithChildren
   '/compliance': typeof ComplianceRoute
   '/customers': typeof CustomersRoute
@@ -803,7 +796,6 @@ export interface FileRoutesByTo {
   '/beneficiaries': typeof BeneficiariesRoute
   '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
-  '/clearing-quotes': typeof ClearingQuotesRoute
   '/collections': typeof CollectionsRouteWithChildren
   '/compliance': typeof ComplianceRoute
   '/customers': typeof CustomersRoute
@@ -912,7 +904,6 @@ export interface FileRoutesById {
   '/beneficiaries': typeof BeneficiariesRoute
   '/buyers': typeof BuyersRoute
   '/cards': typeof CardsRoute
-  '/clearing-quotes': typeof ClearingQuotesRoute
   '/collections': typeof CollectionsRouteWithChildren
   '/compliance': typeof ComplianceRoute
   '/customers': typeof CustomersRoute
@@ -1026,7 +1017,6 @@ export interface FileRouteTypes {
     | '/beneficiaries'
     | '/buyers'
     | '/cards'
-    | '/clearing-quotes'
     | '/collections'
     | '/compliance'
     | '/customers'
@@ -1138,7 +1128,6 @@ export interface FileRouteTypes {
     | '/beneficiaries'
     | '/buyers'
     | '/cards'
-    | '/clearing-quotes'
     | '/collections'
     | '/compliance'
     | '/customers'
@@ -1246,7 +1235,6 @@ export interface FileRouteTypes {
     | '/beneficiaries'
     | '/buyers'
     | '/cards'
-    | '/clearing-quotes'
     | '/collections'
     | '/compliance'
     | '/customers'
@@ -1359,7 +1347,6 @@ export interface RootRouteChildren {
   BeneficiariesRoute: typeof BeneficiariesRoute
   BuyersRoute: typeof BuyersRoute
   CardsRoute: typeof CardsRoute
-  ClearingQuotesRoute: typeof ClearingQuotesRoute
   CollectionsRoute: typeof CollectionsRouteWithChildren
   ComplianceRoute: typeof ComplianceRoute
   CustomersRoute: typeof CustomersRoute
@@ -1475,13 +1462,6 @@ declare module '@tanstack/react-router' {
       path: '/cards'
       fullPath: '/cards'
       preLoaderRoute: typeof CardsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/clearing-quotes': {
-      id: '/clearing-quotes'
-      path: '/clearing-quotes'
-      fullPath: '/clearing-quotes'
-      preLoaderRoute: typeof ClearingQuotesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/collections': {
@@ -2376,7 +2356,6 @@ const rootRouteChildren: RootRouteChildren = {
   BeneficiariesRoute: BeneficiariesRoute,
   BuyersRoute: BuyersRoute,
   CardsRoute: CardsRoute,
-  ClearingQuotesRoute: ClearingQuotesRoute,
   CollectionsRoute: CollectionsRouteWithChildren,
   ComplianceRoute: ComplianceRoute,
   CustomersRoute: CustomersRoute,
@@ -2431,3 +2410,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

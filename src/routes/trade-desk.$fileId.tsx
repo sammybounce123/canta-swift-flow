@@ -148,7 +148,6 @@ function TradeFileDetail() {
             ["timeline", "Shipment Timeline"],
             ["documents", "Documents"],
             ["payments", "Payments"],
-            ["clearing", "Clearing Quotes"],
             ["landed", "Landed Cost"],
             ["escrow", "Escrow"],
             ["whatsapp", "WhatsApp History"],
@@ -233,10 +232,6 @@ function TradeFileDetail() {
 
         <TabsContent value="payments">
           <Payments file={file} />
-        </TabsContent>
-
-        <TabsContent value="clearing">
-          <ClearingQuotesTab fileId={file.id} />
         </TabsContent>
 
         <TabsContent value="landed">
@@ -359,14 +354,6 @@ function TradeFileActions({
     if (msg) toast.message(msg);
   };
   const actions = [
-    { label: "Request Clearing Quotes", icon: Send,
-      onClick: () => onNavigate({ to: "/clearing-quotes", search: { file: fileId, request: undefined, view: "request" } as never }) },
-    { label: "Compare Clearing Agent Bids", icon: Calculator,
-      onClick: () => onNavigate({ to: "/clearing-quotes", search: { file: fileId, view: "compare" } as never }) },
-    { label: "Select Clearing Agent", icon: CheckCircle2,
-      onClick: () => onNavigate({ to: "/clearing-quotes", search: { file: fileId, view: "select" } as never }) },
-    { label: "Track Clearing Workflow", icon: Activity,
-      onClick: () => onNavigate({ to: "/clearing-quotes", search: { file: fileId, view: "track" } as never }) },
     { label: "Add supplier details", icon: UserPlus,
       onClick: () => go("/suppliers", `Add ${supplier}'s bank details to your beneficiaries`) },
     { label: "Save supplier beneficiary", icon: Mail,
@@ -561,11 +548,7 @@ function LandedCost({ value }: { value: number }) {
     <Card className="p-6 shadow-card border-accent/20 bg-gradient-to-br from-accent/5 to-transparent">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="text-sm font-semibold flex items-center gap-2"><Calculator className="h-4 w-4 text-accent" /> Landed cost calculator</div>
-        <Badge variant="outline" className="text-[10px]">Clearing fee source: Manual estimate</Badge>
       </div>
-      <p className="text-[11px] text-muted-foreground mt-1">
-        Clearing fee comes from a verified agent bid where available, otherwise from your manual estimate. Canta does not quote clearing fees directly — request bids in <span className="font-semibold">Clearing Quotes</span>.
-      </p>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-5">
         <div className="grid grid-cols-2 gap-3">
           {inputs.map(([label, val, set]) => (
@@ -586,55 +569,6 @@ function LandedCost({ value }: { value: number }) {
           </div>
           <Button className="w-full" onClick={() => toast.success("Landed cost saved to trade file")}>Save to trade file</Button>
         </div>
-      </div>
-    </Card>
-  );
-}
-
-function ClearingQuotesTab({ fileId }: { fileId: string }) {
-  const actions: { label: string; icon: typeof Shield; description: string }[] = [
-    { label: "Request Clearing Quotes",   icon: Send,         description: "Send a new quote request to verified clearing agents." },
-    { label: "Compare Clearing Agent Bids", icon: Calculator, description: "Review fee, timeline, scope, and rating side by side." },
-    { label: "Select Clearing Agent",     icon: CheckCircle2, description: "Accept a bid and assign clearing to the chosen agent." },
-    { label: "Track Clearing Workflow",   icon: Activity,     description: "Monitor documents, clearing, cleared, and delivery stages." },
-  ];
-  return (
-    <Card className="p-6 shadow-card">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <div className="text-sm font-semibold flex items-center gap-2"><Shield className="h-4 w-4 text-primary" /> Clearing Agent Marketplace</div>
-          <p className="text-xs text-muted-foreground mt-1 max-w-xl">
-            Clearing for this trade file is handled inside the marketplace. Use the actions below to request, compare, select, and track.
-          </p>
-        </div>
-      </div>
-      <ButtonGroup label="Clearing marketplace actions" className="mt-4">
-        {actions.map((a) => (
-          <Button
-            key={a.label}
-            asChild
-            variant="outline"
-            className="h-auto min-h-16 justify-start whitespace-normal break-words text-left px-4 py-3"
-          >
-            <Link to="/clearing-quotes" search={{ file: fileId, request: undefined }}>
-              <span className="flex items-start gap-3 w-full">
-                <a.icon className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-                <span className="flex flex-col gap-0.5 min-w-0">
-                  <span className="text-sm font-semibold leading-tight">{a.label}</span>
-                  <span className="text-[11px] text-muted-foreground leading-snug">{a.description}</span>
-                </span>
-              </span>
-            </Link>
-          </Button>
-        ))}
-      </ButtonGroup>
-      <div className="mt-4 rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-muted-foreground">
-        Canta connects importers with verified clearing agents. Clearing fees, timelines, duty estimates, and service delivery are provided by the clearing agent. Importers should review bids carefully before accepting.
-      </div>
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-        <Info2 label="Bids include" v="Fee, timeline, duty estimate, service scope, required docs, terms" />
-        <Info2 label="You control" v="Compare bids and pick the agent that fits — never auto-selected by Canta" />
-        <Info2 label="Workflow tracked" v="Agent selected → Documents → Clearing → Cleared → Delivered" />
       </div>
     </Card>
   );
