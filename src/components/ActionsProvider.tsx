@@ -907,11 +907,14 @@ function SendForm({
     return (
       <FundFlow
         steps={[
-          { label: `Debiting ${fmtMoney(amt, ben.ccy)}`, sub: `From your ${ben.ccy} wallet` },
+          { label: `Debiting ${fmtAnyCcy(amt, payCcy)}`, sub: `From your ${payCcy} wallet` },
           { label: "Routing on best corridor", sub: `${ben.country} · ${ben.bank}` },
-          { label: `Crediting ${ben.name}`, sub: `${ben.account} · settlement complete` },
+          {
+            label: `Crediting ${ben.name}`,
+            sub: `${fmtAnyCcy(receiveAmt, quoteCcy)} · ${ben.account}`,
+          },
         ]}
-        onDone={() => onConfirm(amt, ben.ccy, ben.name, reference || narration)}
+        onDone={() => onConfirm(receiveAmt, quoteCcy, ben.name, reference || narration)}
       />
     );
   }
@@ -922,11 +925,9 @@ function SendForm({
       ["Country", ben.country],
       ["Bank", ben.bank],
       ["Account", ben.account],
-      ["Currency", ben.ccy],
-      ["Amount", fmtMoney(amt, ben.ccy)],
+      ["You pay", fmtAnyCcy(amt, payCcy)],
+      ["Beneficiary receives", fmtAnyCcy(receiveAmt, quoteCcy)],
       ["Reference", reference || "—"],
-      ["Purpose", narration || "—"],
-      ["Supporting document", doc?.name ?? "None attached"],
     ];
     return (
       <div className="space-y-4">
