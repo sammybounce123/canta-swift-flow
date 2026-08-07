@@ -134,10 +134,16 @@ function initialVerified(): boolean {
 let verified = initialVerified();
 const verifiedSubs = new Set<() => void>();
 export const verifiedStore = {
-  get: () => verified,
+  // Re-check storage until verified, so completing KYB in this session is picked
+  // up even though the module was first evaluated before the flag was written.
+  get: () => {
+    if (!verified && initialVerified()) verified = true;
+    return verified;
+  },
   set: (v: boolean) => { verified = v; verifiedSubs.forEach((f) => f()); },
   subscribe: (f: () => void) => { verifiedSubs.add(f); return () => verifiedSubs.delete(f); },
 };
+
 export function useVerified() {
   return useSyncExternalStore(verifiedStore.subscribe, verifiedStore.get, () => false);
 }

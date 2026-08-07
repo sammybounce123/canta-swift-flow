@@ -8,8 +8,11 @@ import { autoConvertStore, useAutoConvert, useRmbBanks, useSimpleInvoices, isInv
 import { useVerified } from "@/lib/supplier-data";
 import { useT } from "@/lib/supplier-lang";
 
-/** Requirements that must all be met before Canta can auto-convert. */
-export function useConversionBlockers() {
+/**
+ * Account-level requirements that must be met before Canta can auto-convert.
+ * Pass an invoice to also include that invoice's own quote freshness.
+ */
+export function useConversionBlockers(invoice?: { quoteExpiresAt: number; status: string }) {
   const verified = useVerified();
   const banks = useRmbBanks();
   const invoices = useSimpleInvoices();
@@ -18,14 +21,13 @@ export function useConversionBlockers() {
   if (!banks.some((b) => b.status === "Verified" && b.isSettlementDestination)) {
     blockers.push({ label: "Add or verify an RMB bank account", to: "/supplier-portal/rmb-bank-account" });
   }
-  if (invoices.some((i) => isInvoiceQuoteExpired(i) && i.status !== "Cancelled")) {
-    blockers.push({ label: "Refresh expired quote", to: "/supplier-portal/invoices" });
-  }
-  if (invoices.some((i) => i.status === "Compliance Review")) {
-    blockers.push({ label: "Compliance review pending", to: "/supplier-portal/settlements" });
-  }
+  const expired = invoice
+    ? isInvoiceQuoteExpired(invoice as never) && invoice.status !== "Cancelled"
+    : invoices.some((i) => isInvoiceQuoteExpired(i) && i.status !== "Cancelled");
+  if (expired) blockers.push({ label: "Refresh expired quote", to: "/supplier-portal/invoices" });
   return blockers;
 }
+
 
 export function AutoConvertCard() {
   const on = useAutoConvert();
