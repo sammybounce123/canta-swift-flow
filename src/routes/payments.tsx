@@ -608,11 +608,6 @@ function CreatePayoutDialog({
   const [mode, setMode] = useState<"single" | "bulk">("single");
   const { openAddBeneficiary } = useActions();
   const [single, setSingle] = useState<SingleForm>(emptySingle());
-  const [batchCcy, setBatchCcy] = useState("USD");
-  const [bulkRows, setBulkRows] = useState<BulkRow[]>([
-    { ...emptySingle(), rowId: crypto.randomUUID() },
-  ]);
-  const bulkMismatch = bulkRows.filter((r) => r.ccy !== batchCcy);
 
   function validateRow(f: SingleForm): string | null {
     if (!f.beneficiary.trim()) return "Beneficiary is required";
@@ -644,48 +639,6 @@ function CreatePayoutDialog({
     toast.success(`Payout ${row.id} created as draft`);
   }
 
-  function addBulkRow() {
-    setBulkRows((r) => [...r, { ...emptySingle(), rowId: crypto.randomUUID() }]);
-  }
-  function removeBulkRow(rowId: string) {
-    setBulkRows((r) => r.filter((x) => x.rowId !== rowId));
-  }
-  function updateBulkRow(rowId: string, patch: Partial<SingleForm>) {
-    setBulkRows((r) => r.map((x) => (x.rowId === rowId ? { ...x, ...patch } : x)));
-  }
-  function submitBulk() {
-    if (bulkMismatch.length) {
-      toast.error(
-        `Bulk payout only supports same-currency payouts. Change recipient currency to ${batchCcy} or use Convert & Send.`,
-      );
-      return;
-    }
-    const errors: string[] = [];
-    bulkRows.forEach((r, i) => {
-      const e = validateRow(r);
-      if (e) errors.push(`Row ${i + 1}: ${e}`);
-    });
-    if (errors.length) {
-      toast.error(errors[0], {
-        description: errors.length > 1 ? `+${errors.length - 1} more issue(s)` : undefined,
-      });
-      return;
-    }
-    const rows: Payment[] = bulkRows.map((r) => ({
-      id: nextPayoutId(),
-      beneficiary: r.beneficiary,
-      kind: r.kind,
-      reference: r.reference || `REF-${Date.now().toString().slice(-6)}`,
-      amount: Number(r.amount),
-      ccy: batchCcy,
-      date: new Date().toISOString().slice(0, 10),
-      status: "Draft",
-      purpose: r.purpose,
-      account: r.account,
-    }));
-    onCreate(rows);
-    toast.success(`${rows.length} payouts created as drafts`);
-  }
 
   return (
     <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
