@@ -9,7 +9,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { shipments, shippingLines, fmtMoney, type Shipment, type ShipmentVertical } from "@/lib/mock";
-import { Plus, Search, Ship, Anchor, Truck, Plane, Package, Calendar as CalendarIcon, List, FileText, ExternalLink, PackageSearch } from "lucide-react";
+import { Plus, Search, Ship, Anchor, Truck, Plane, Package, Calendar as CalendarIcon, List, FileText, ExternalLink, PackageSearch, BellRing } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
@@ -19,14 +19,27 @@ export const Route = createFileRoute("/shipments")({
   component: ShipmentsPage,
 });
 
-const STATUS_CARDS: { label: string; statuses: Shipment["status"][]; tone: string }[] = [
+// Tracking-only statuses. Canta records movement up to arrival ("landed").
+// Anything after arrival (customs clearance, release, delivery) is NOT tracked
+// automatically — the importer records it manually.
+const TRACKED_STATUSES = ["Booked", "At Origin", "Loaded", "On Vessel", "Arrived", "Delayed"] as const;
+type TrackedStatus = (typeof TRACKED_STATUSES)[number];
+
+function trackedStatus(s: Shipment): TrackedStatus {
+  if (s.status === "Customs" || s.status === "Released" || s.status === "Delivered") return "Arrived";
+  return s.status as TrackedStatus;
+}
+
+export const CLEARANCE_OPTIONS = ["Not updated", "Clearing started", "Duty paid", "Cleared", "Delivered"] as const;
+type Clearance = (typeof CLEARANCE_OPTIONS)[number];
+
+const STATUS_CARDS: { label: string; statuses: TrackedStatus[]; tone: string }[] = [
   { label: "Active", statuses: ["Booked", "At Origin", "Loaded"], tone: "bg-primary/10 text-primary border-primary/20" },
   { label: "On Vessel", statuses: ["On Vessel"], tone: "bg-blue-500/10 text-blue-700 border-blue-500/20" },
-  { label: "Arrived", statuses: ["Arrived"], tone: "bg-amber-500/10 text-amber-700 border-amber-500/20" },
-  { label: "Clearing", statuses: ["Customs"], tone: "bg-orange-500/10 text-orange-700 border-orange-500/20" },
-  { label: "Delivered", statuses: ["Released", "Delivered"], tone: "bg-success/10 text-success border-success/20" },
+  { label: "Landed", statuses: ["Arrived"], tone: "bg-amber-500/10 text-amber-700 border-amber-500/20" },
   { label: "Delayed", statuses: ["Delayed"], tone: "bg-destructive/10 text-destructive border-destructive/20" },
 ];
+
 
 function ShipmentsPage() {
   const [q, setQ] = useState("");
@@ -44,14 +57,17 @@ function ShipmentsPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const [claimOpen, setClaimOpen] = useState(false);
   const [claimedIds, setClaimedIds] = useState<Set<string>>(new Set());
+  const [clearance, setClearance] = useState<Record<string, Clearance>>({});
+  const [dismissedLanded, setDismissedLanded] = useState<Set<string>>(new Set());
 
   const uniq = (k: keyof Shipment) => Array.from(new Set(shipments.map((s) => s[k] as string).filter(Boolean)));
 
   const filtered = useMemo(() => shipments.filter((s) => {
-    const cardOk = !statusCard || STATUS_CARDS.find((c) => c.label === statusCard)?.statuses.includes(s.status);
+    const ts = trackedStatus(s);
+    const cardOk = !statusCard || STATUS_CARDS.find((c) => c.label === statusCard)?.statuses.includes(ts);
     const qOk = !q || `${s.id} ${s.name} ${s.shipmentNumber} ${s.container ?? ""} ${s.bl ?? ""} ${s.supplier} ${s.importer} ${s.category} ${(s.vertical.kind === "Vehicles" ? s.vertical.vin : "")}`.toLowerCase().includes(q.toLowerCase());
     if (!cardOk || !qOk) return false;
-    if (fStatus !== "all" && s.status !== fStatus) return false;
+    if (fStatus !== "all" && ts !== fStatus) return false;
     if (fLine !== "all" && s.shippingLine !== fLine) return false;
     if (fOrigin !== "all" && s.origin !== fOrigin) return false;
     if (fDest !== "all" && s.destination !== fDest) return false;
@@ -62,13 +78,21 @@ function ShipmentsPage() {
     return true;
   }), [q, statusCard, fStatus, fLine, fOrigin, fDest, fImporter, fSupplier, fForwarder, fEta]);
 
+  // Landed notifications: goods that have arrived at destination port and have
+  // no clearance update recorded yet.
+  const landed = shipments.filter(
+    (s) => trackedStatus(s) === "Arrived"
+      && (clearance[s.id] ?? "Not updated") === "Not updated"
+      && !dismissedLanded.has(s.id),
+  );
+
   return (
     <div className="space-y-6">
       <ReadinessBar status="Demo Preview" cue="Tracking depends on the accuracy of BL, container, shipment, VIN, or AWB details." />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Shipments</h1>
-          <p className="text-sm text-muted-foreground mt-1">Containers, RORO, air freight, courier & loose cargo — all in one operating view.</p>
+          <p className="text-sm text-muted-foreground mt-1">Track and record movement up to arrival. Customs clearance and delivery are recorded by you — Canta does not detect them.</p>
         </div>
         <div className="flex items-center gap-2">
           <Dialog open={claimOpen} onOpenChange={setClaimOpen}>
@@ -85,10 +109,34 @@ function ShipmentsPage() {
         </div>
       </div>
 
+      {/* Goods landed notifications */}
+      {landed.length > 0 && (
+        <Card className="p-4 shadow-card border-amber-500/30 bg-amber-500/5">
+          <div className="flex items-center gap-2 text-sm font-semibold text-amber-700">
+            <BellRing className="h-4 w-4" /> {landed.length} shipment{landed.length === 1 ? " has" : "s have"} landed
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">Goods have arrived at the destination port. Clearance status is not tracked automatically — record it yourself once your agent confirms.</p>
+          <div className="mt-3 space-y-2">
+            {landed.map((s) => (
+              <div key={s.id} className="flex items-center justify-between gap-3 flex-wrap rounded-lg border border-amber-500/20 bg-card px-3 py-2">
+                <div className="min-w-0">
+                  <div className="text-sm font-medium">{s.shipmentNumber} · {s.destination}</div>
+                  <div className="text-xs text-muted-foreground truncate">{s.name} · arrived {s.eta}</div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant="outline" onClick={() => setSelected(s)}>Record clearance</Button>
+                  <Button size="sm" variant="ghost" onClick={() => setDismissedLanded((p) => new Set(p).add(s.id))}>Dismiss</Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
       {/* Status cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
         {STATUS_CARDS.map((g) => {
-          const count = shipments.filter((s) => g.statuses.includes(s.status)).length;
+          const count = shipments.filter((s) => g.statuses.includes(trackedStatus(s))).length;
           const active = statusCard === g.label;
           return (
             <button key={g.label} onClick={() => setStatusCard(active ? null : g.label)} className={`p-4 rounded-xl border text-left transition ${active ? "ring-2 ring-primary " + g.tone : g.tone + " hover:opacity-80"}`}>
@@ -97,6 +145,12 @@ function ShipmentsPage() {
             </button>
           );
         })}
+        <div className="p-4 rounded-xl border border-dashed bg-secondary/30 text-left">
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Cleared (you recorded)</div>
+          <div className="text-2xl font-semibold tabular-nums mt-1">
+            {Object.values(clearance).filter((c) => c === "Cleared" || c === "Delivered").length}
+          </div>
+        </div>
       </div>
 
       {/* Filters */}
@@ -114,7 +168,7 @@ function ShipmentsPage() {
           </Tabs>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
-          <FilterSelect label="Status" value={fStatus} onChange={setFStatus} options={["Booked","At Origin","Loaded","On Vessel","Arrived","Customs","Released","Delivered","Delayed"]} />
+          <FilterSelect label="Tracking status" value={fStatus} onChange={setFStatus} options={[...TRACKED_STATUSES]} />
           <FilterSelect label="Shipping line" value={fLine} onChange={setFLine} options={shippingLines} />
           <FilterSelect label="Origin" value={fOrigin} onChange={setFOrigin} options={uniq("origin")} />
           <FilterSelect label="Destination" value={fDest} onChange={setFDest} options={uniq("destination")} />
@@ -129,14 +183,24 @@ function ShipmentsPage() {
       </Card>
 
       {view === "list" ? (
-        <ShipmentTable rows={filtered} onSelect={setSelected} claimedIds={claimedIds} />
+        <ShipmentTable rows={filtered} onSelect={setSelected} claimedIds={claimedIds} clearance={clearance} />
       ) : (
         <EtaCalendar rows={filtered} onSelect={setSelected} />
       )}
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
-        {selected && <ShipmentDetail s={selected} />}
+        {selected && (
+          <ShipmentDetail
+            s={selected}
+            clearance={clearance[selected.id] ?? "Not updated"}
+            onClearanceChange={(c) => {
+              setClearance((prev) => ({ ...prev, [selected.id]: c }));
+              toast.success(`Clearance status recorded: ${c}`);
+            }}
+          />
+        )}
       </Dialog>
+
     </div>
   );
 }
@@ -179,7 +243,18 @@ function StatusBadge({ status }: { status: string }) {
   return <span className={`text-[10px] px-2 py-0.5 rounded-full border ${tones[status] ?? "bg-secondary"}`}>{status}</span>;
 }
 
-function ShipmentTable({ rows, onSelect, claimedIds }: { rows: Shipment[]; onSelect: (s: Shipment) => void; claimedIds: Set<string> }) {
+function ClearanceBadge({ value }: { value: Clearance }) {
+  const tones: Record<Clearance, string> = {
+    "Not updated": "bg-secondary text-muted-foreground border-border",
+    "Clearing started": "bg-orange-500/15 text-orange-700 border-orange-500/30",
+    "Duty paid": "bg-blue-500/15 text-blue-700 border-blue-500/30",
+    "Cleared": "bg-success/15 text-success border-success/30",
+    "Delivered": "bg-success/15 text-success border-success/30",
+  };
+  return <span className={`text-[10px] px-2 py-0.5 rounded-full border ${tones[value]}`}>{value}</span>;
+}
+
+function ShipmentTable({ rows, onSelect, claimedIds, clearance }: { rows: Shipment[]; onSelect: (s: Shipment) => void; claimedIds: Set<string>; clearance: Record<string, Clearance> }) {
   return (
     <Card className="shadow-card overflow-hidden">
       <div className="overflow-x-auto">
@@ -191,10 +266,11 @@ function ShipmentTable({ rows, onSelect, claimedIds }: { rows: Shipment[]; onSel
               <th className="px-4 py-3">Route</th>
               <th className="px-4 py-3">Client · Supplier</th>
               <th className="px-4 py-3">Forwarder</th>
-              <th className="px-4 py-3">ETA</th>
               <th className="px-4 py-3">ETA / Arrival</th>
               <th className="px-4 py-3 text-right">Value</th>
-              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Tracking</th>
+              <th className="px-4 py-3">Clearance (recorded)</th>
+
             </tr>
           </thead>
           <tbody>
@@ -213,10 +289,12 @@ function ShipmentTable({ rows, onSelect, claimedIds }: { rows: Shipment[]; onSel
                 <td className="px-4 py-3 text-xs">{s.forwarder}</td>
                 <td className="px-4 py-3 tabular-nums text-xs">
                   <div>{s.eta}</div>
-                  <div className="text-[10px] text-muted-foreground">{s.status === "Delivered" ? "Delivered" : s.status === "Arrived" || s.status === "Customs" || s.status === "Released" ? "Arrived at port" : "Estimated arrival"}</div>
+                  <div className="text-[10px] text-muted-foreground">{trackedStatus(s) === "Arrived" ? "Arrived at port" : "Estimated arrival"}</div>
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums font-semibold">{fmtMoney(s.value, s.ccy)}</td>
-                <td className="px-4 py-3"><StatusBadge status={s.status} /></td>
+                <td className="px-4 py-3"><StatusBadge status={trackedStatus(s)} /></td>
+                <td className="px-4 py-3"><ClearanceBadge value={clearance[s.id] ?? "Not updated"} /></td>
+
               </tr>
             ))}
             {rows.length === 0 && (
@@ -288,13 +366,38 @@ function EtaCalendar({ rows, onSelect }: { rows: Shipment[]; onSelect: (s: Shipm
   );
 }
 
-function ShipmentDetail({ s }: { s: Shipment }) {
+function ShipmentDetail({ s, clearance, onClearanceChange }: { s: Shipment; clearance: Clearance; onClearanceChange: (c: Clearance) => void }) {
+  const [draft, setDraft] = useState<Clearance>(clearance);
+  const ts = trackedStatus(s);
   return (
     <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>
-        <DialogTitle className="flex items-center gap-2"><TypeIcon type={s.type} /> {s.shipmentNumber} <StatusBadge status={s.status} /></DialogTitle>
+        <DialogTitle className="flex items-center gap-2"><TypeIcon type={s.type} /> {s.shipmentNumber} <StatusBadge status={ts} /></DialogTitle>
         <p className="text-xs text-muted-foreground">{s.name}</p>
       </DialogHeader>
+
+      {ts === "Arrived" && (
+        <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-xs text-amber-700 flex items-center gap-2">
+          <BellRing className="h-3.5 w-3.5" /> Goods have landed at {s.destination} on {s.eta}.
+        </div>
+      )}
+
+      {/* User-recorded clearance — never inferred by Canta */}
+      <Card className="p-4 shadow-card">
+        <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Clearance status (recorded by you)</div>
+        <p className="text-xs text-muted-foreground mt-1">Canta tracks movement up to arrival only. Customs clearance, release and delivery are not detected automatically — update them here when confirmed.</p>
+        <div className="mt-3 flex items-center gap-2 flex-wrap">
+          <Select value={draft} onValueChange={(v) => setDraft(v as Clearance)}>
+            <SelectTrigger className="h-9 text-xs w-[220px]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {CLEARANCE_OPTIONS.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Button size="sm" className="bg-primary" disabled={draft === clearance} onClick={() => onClearanceChange(draft)}>Save update</Button>
+          <ClearanceBadge value={clearance} />
+        </div>
+      </Card>
+
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
         <Field label="Shipment type" value={s.type} />
