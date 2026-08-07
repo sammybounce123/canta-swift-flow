@@ -285,7 +285,7 @@ function Landing() {
           <div className="absolute -left-20 -bottom-20 h-72 w-72 rounded-full bg-primary-glow/30 blur-3xl" />
           <div className="relative max-w-3xl">
             <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">
-              One trusted workspace. Trade files. Supplier settlement. Treasury.
+              One trusted workspace. Supplier payments. Shipments. Treasury.
             </h2>
             <p className="text-primary-foreground/75 mt-4">
               Step into a Canta workspace and feel the platform — from supplier payments to FX,
