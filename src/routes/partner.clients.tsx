@@ -102,6 +102,12 @@ function PartnerClientsPage() {
     [rows, q, status],
   );
 
+  const exportCsv = () =>
+    downloadCsv("partner-clients.csv", [
+      ["Client", "Case", "Property", "Amount GBP", "Status"],
+      ...cases.map((c) => [c.clientName, c.ref, c.property, c.amountGBP, c.status]),
+    ]);
+
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:flex sm:flex-wrap sm:justify-between">

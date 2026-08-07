@@ -100,6 +100,19 @@ function Payouts() {
   const pending = rows.filter((c) => c.status === "Payout Processing").length;
   const failed = rows.filter((c) => c.status === "Failed / Returned").length;
 
+  const exportCsv = () =>
+    downloadCsv("solicitor-payouts.csv", [
+      ["Case", "Client", "Solicitor", "Amount GBP", "Status", "Reference"],
+      ...rows.map((c) => [
+        c.ref,
+        c.clientName,
+        c.solicitorId,
+        c.amountGBP,
+        c.status,
+        c.paymentReference ?? `KPP/${c.id}/COMPL`,
+      ]),
+    ]);
+
   return (
     <div className="space-y-5">
       <ReadinessBar

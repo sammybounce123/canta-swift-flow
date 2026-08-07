@@ -37,6 +37,19 @@ function Reports() {
   const conversion = totalReferred ? Math.round((success.length / totalReferred) * 100) : 0;
   const commission = Math.round(totalGBP * 0.005);
 
+  const exportCsv = (filename: string) =>
+    downloadCsv(filename, [
+      ["Metric", "Value"],
+      ["Referred clients", totalReferred],
+      ["Payment cases", CASES.length],
+      ["Funding received (GBP)", totalGBP],
+      ["Solicitor payouts", success.length],
+      ["Commission estimate (GBP)", commission],
+      ["Commission paid (GBP)", Math.round(commission * 0.6)],
+      ["Marketer conversion (%)", conversion],
+      ["Failed / returned payouts", failed.length],
+    ]);
+
   const monthly = [
     { m: "Jan", v: 820_000 },
     { m: "Feb", v: 1_120_000 },
