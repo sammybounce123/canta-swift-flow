@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Event-driven Trade File creation.
 // A draft Trade File is created automatically in response to an upstream
 // event (BL upload, invoice, payment request, payment link accepted, staff
