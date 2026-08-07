@@ -57,14 +57,17 @@ function ShipmentsPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const [claimOpen, setClaimOpen] = useState(false);
   const [claimedIds, setClaimedIds] = useState<Set<string>>(new Set());
+  const [clearance, setClearance] = useState<Record<string, Clearance>>({});
+  const [dismissedLanded, setDismissedLanded] = useState<Set<string>>(new Set());
 
   const uniq = (k: keyof Shipment) => Array.from(new Set(shipments.map((s) => s[k] as string).filter(Boolean)));
 
   const filtered = useMemo(() => shipments.filter((s) => {
-    const cardOk = !statusCard || STATUS_CARDS.find((c) => c.label === statusCard)?.statuses.includes(s.status);
+    const ts = trackedStatus(s);
+    const cardOk = !statusCard || STATUS_CARDS.find((c) => c.label === statusCard)?.statuses.includes(ts);
     const qOk = !q || `${s.id} ${s.name} ${s.shipmentNumber} ${s.container ?? ""} ${s.bl ?? ""} ${s.supplier} ${s.importer} ${s.category} ${(s.vertical.kind === "Vehicles" ? s.vertical.vin : "")}`.toLowerCase().includes(q.toLowerCase());
     if (!cardOk || !qOk) return false;
-    if (fStatus !== "all" && s.status !== fStatus) return false;
+    if (fStatus !== "all" && ts !== fStatus) return false;
     if (fLine !== "all" && s.shippingLine !== fLine) return false;
     if (fOrigin !== "all" && s.origin !== fOrigin) return false;
     if (fDest !== "all" && s.destination !== fDest) return false;
@@ -75,13 +78,21 @@ function ShipmentsPage() {
     return true;
   }), [q, statusCard, fStatus, fLine, fOrigin, fDest, fImporter, fSupplier, fForwarder, fEta]);
 
+  // Landed notifications: goods that have arrived at destination port and have
+  // no clearance update recorded yet.
+  const landed = shipments.filter(
+    (s) => trackedStatus(s) === "Arrived"
+      && (clearance[s.id] ?? "Not updated") === "Not updated"
+      && !dismissedLanded.has(s.id),
+  );
+
   return (
     <div className="space-y-6">
       <ReadinessBar status="Demo Preview" cue="Tracking depends on the accuracy of BL, container, shipment, VIN, or AWB details." />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Shipments</h1>
-          <p className="text-sm text-muted-foreground mt-1">Containers, RORO, air freight, courier & loose cargo — all in one operating view.</p>
+          <p className="text-sm text-muted-foreground mt-1">Track and record movement up to arrival. Customs clearance and delivery are recorded by you — Canta does not detect them.</p>
         </div>
         <div className="flex items-center gap-2">
           <Dialog open={claimOpen} onOpenChange={setClaimOpen}>
@@ -98,10 +109,34 @@ function ShipmentsPage() {
         </div>
       </div>
 
+      {/* Goods landed notifications */}
+      {landed.length > 0 && (
+        <Card className="p-4 shadow-card border-amber-500/30 bg-amber-500/5">
+          <div className="flex items-center gap-2 text-sm font-semibold text-amber-700">
+            <BellRing className="h-4 w-4" /> {landed.length} shipment{landed.length === 1 ? " has" : "s have"} landed
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">Goods have arrived at the destination port. Clearance status is not tracked automatically — record it yourself once your agent confirms.</p>
+          <div className="mt-3 space-y-2">
+            {landed.map((s) => (
+              <div key={s.id} className="flex items-center justify-between gap-3 flex-wrap rounded-lg border border-amber-500/20 bg-card px-3 py-2">
+                <div className="min-w-0">
+                  <div className="text-sm font-medium">{s.shipmentNumber} · {s.destination}</div>
+                  <div className="text-xs text-muted-foreground truncate">{s.name} · arrived {s.eta}</div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant="outline" onClick={() => setSelected(s)}>Record clearance</Button>
+                  <Button size="sm" variant="ghost" onClick={() => setDismissedLanded((p) => new Set(p).add(s.id))}>Dismiss</Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
       {/* Status cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
         {STATUS_CARDS.map((g) => {
-          const count = shipments.filter((s) => g.statuses.includes(s.status)).length;
+          const count = shipments.filter((s) => g.statuses.includes(trackedStatus(s))).length;
           const active = statusCard === g.label;
           return (
             <button key={g.label} onClick={() => setStatusCard(active ? null : g.label)} className={`p-4 rounded-xl border text-left transition ${active ? "ring-2 ring-primary " + g.tone : g.tone + " hover:opacity-80"}`}>
@@ -110,6 +145,12 @@ function ShipmentsPage() {
             </button>
           );
         })}
+        <div className="p-4 rounded-xl border border-dashed bg-secondary/30 text-left">
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Cleared (you recorded)</div>
+          <div className="text-2xl font-semibold tabular-nums mt-1">
+            {Object.values(clearance).filter((c) => c === "Cleared" || c === "Delivered").length}
+          </div>
+        </div>
       </div>
 
       {/* Filters */}
@@ -127,7 +168,7 @@ function ShipmentsPage() {
           </Tabs>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
-          <FilterSelect label="Status" value={fStatus} onChange={setFStatus} options={["Booked","At Origin","Loaded","On Vessel","Arrived","Customs","Released","Delivered","Delayed"]} />
+          <FilterSelect label="Tracking status" value={fStatus} onChange={setFStatus} options={[...TRACKED_STATUSES]} />
           <FilterSelect label="Shipping line" value={fLine} onChange={setFLine} options={shippingLines} />
           <FilterSelect label="Origin" value={fOrigin} onChange={setFOrigin} options={uniq("origin")} />
           <FilterSelect label="Destination" value={fDest} onChange={setFDest} options={uniq("destination")} />
@@ -142,14 +183,24 @@ function ShipmentsPage() {
       </Card>
 
       {view === "list" ? (
-        <ShipmentTable rows={filtered} onSelect={setSelected} claimedIds={claimedIds} />
+        <ShipmentTable rows={filtered} onSelect={setSelected} claimedIds={claimedIds} clearance={clearance} />
       ) : (
         <EtaCalendar rows={filtered} onSelect={setSelected} />
       )}
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
-        {selected && <ShipmentDetail s={selected} />}
+        {selected && (
+          <ShipmentDetail
+            s={selected}
+            clearance={clearance[selected.id] ?? "Not updated"}
+            onClearanceChange={(c) => {
+              setClearance((prev) => ({ ...prev, [selected.id]: c }));
+              toast.success(`Clearance status recorded: ${c}`);
+            }}
+          />
+        )}
       </Dialog>
+
     </div>
   );
 }
