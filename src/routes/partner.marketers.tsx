@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -99,7 +99,7 @@ function Marketers() {
                 <Button
                   size="sm"
                   variant="ghost"
-                  onClick={() => demoToast(`Message ${r.name}`)}
+                  onClick={() => demoToast(`Message ${r.marketer.name}`)}
                 >
                   Message
                 </Button>
