@@ -76,9 +76,24 @@ function FX() {
   const out = num * rate;
 
   const confirm = () => {
-    setPendingConversion({ sendAmt: num, from, to, out, rate });
-    setPhase("beneficiary");
+    if (num <= 0) return toast.error("Enter an amount to convert");
+    if (from === to) return toast.error("Choose two different wallets");
+    addTransaction({
+      type: "FX Conversion",
+      desc: `${from} → ${to} · Received ${fmtMoney(out, to)}`,
+      amount: num,
+      ccy: from,
+      status: "Completed",
+    });
+    toast.success("Conversion settled", {
+      description: `${fmtMoney(num, from)} → ${fmtMoney(out, to)} · Funds are in your ${to} wallet.`,
+    });
+    setPendingConversion(null);
+    setChosenBeneficiary(null);
+    setPhase("convert");
+    navigate({ to: "/transactions" });
   };
+
 
   if (phase === "beneficiary" && pendingConversion) {
     return (
@@ -187,7 +202,7 @@ function FX() {
               </button>
             </div>
 
-            <label className="text-xs text-muted-foreground">Recipient gets</label>
+            <label className="text-xs text-muted-foreground">You receive in your {to} wallet</label>
             <div className="grid grid-cols-[1fr_auto] items-center gap-2 p-3 rounded-xl bg-secondary/50 border border-border">
               <div
                 style={{ wordBreak: "normal", overflowWrap: "normal" }}
