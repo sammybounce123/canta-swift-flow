@@ -208,18 +208,14 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
   switch (workspace) {
     case "importer_portal":
       return [
-        D,
-        { to: "/importer", label: "Importer Dashboard", iconKey: "importer", group: "My Workspace", exact: true },
+        { to: "/importer", label: "Dashboard", iconKey: "importer", group: "My Workspace", exact: true },
         { to: "/importer/balance", label: "Balance", iconKey: "wallet", group: "Money" },
-        { to: "/importer/pay-supplier", label: "Pay Supplier", iconKey: "receipt", group: "Money" },
-        { to: "/importer/payments", label: "Supplier Payments", iconKey: "receipt", group: "Money" },
-        { to: "/importer/suppliers", label: "Suppliers", iconKey: "factory", group: "My Workspace" },
+        { to: "/importer/suppliers", label: "Suppliers", iconKey: "factory", group: "Money" },
+        { to: "/importer/payments", label: "Payments", iconKey: "receipt", group: "Money" },
         { to: "/importer/shipments", label: "Shipments", iconKey: "ship", group: "Move Goods" },
         { to: "/importer/documents", label: "Documents", iconKey: "file", group: "Move Goods" },
-        { to: "/importer/receipts", label: "Receipts", iconKey: "file", group: "Money" },
-        { to: "/importer/notifications", label: "Notifications", iconKey: "whatsapp", group: "Updates" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
-        Team, Settings,
+        Settings,
       ];
 
 
