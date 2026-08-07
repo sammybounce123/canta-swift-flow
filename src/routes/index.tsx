@@ -34,7 +34,7 @@ export const Route = createFileRoute("/")({
 
 const aiFeatures = [
   { icon: ScanLine, t: "Document extraction", d: "AI-assisted document review for BLs, invoices and packing lists." },
-  { icon: TrendingUp, t: "Trade file insights", d: "Spot which shipments, suppliers and payments need attention next." },
+  { icon: TrendingUp, t: "Payment & shipment insights", d: "Spot which supplier payments, shipments, documents, and receipts need attention next." },
   { icon: Brain, t: "AI assistant", d: "Summarize trade conversations, draft replies, and track next steps." },
       { icon: Receipt, t: "Landed cost estimates", d: "Forecast duty, freight, agent quote inputs and FX before goods ship." },
   { icon: Languages, t: "WhatsApp onboarding", d: "Onboard importers conversationally — no app required." },
@@ -285,7 +285,7 @@ function Landing() {
           <div className="absolute -left-20 -bottom-20 h-72 w-72 rounded-full bg-primary-glow/30 blur-3xl" />
           <div className="relative max-w-3xl">
             <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">
-              One trusted workspace. Trade files. Supplier settlement. Treasury.
+              One trusted workspace. Supplier payments. Shipments. Treasury.
             </h2>
             <p className="text-primary-foreground/75 mt-4">
               Step into a Canta workspace and feel the platform — from supplier payments to FX,
