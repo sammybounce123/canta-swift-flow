@@ -219,7 +219,28 @@ export type SimpleInvoice = {
   createdAt: string;
   receiptId?: string;
   providerConfirmed?: boolean;
+  providerRef?: string;
+  settledAt?: number;
+  events: TimelineEvent[];
 };
+
+export type TimelineEvent = {
+  id: string;
+  label: string;
+  detail?: string;
+  at: number;
+};
+
+let evtSeq = 0;
+export function makeEvent(label: string, detail?: string, at = Date.now()): TimelineEvent {
+  evtSeq++;
+  return { id: `ev_${evtSeq}`, label, detail, at };
+}
+
+/** Deterministic, locale-free timestamp so SSR and client agree. */
+export function formatStamp(ts: number) {
+  return `${new Date(ts).toISOString().replace("T", " ").slice(0, 16)} UTC`;
+}
 
 export const FX_RATE = 204.35;
 export const FEE_RATE = 0.009; // 0.9% Canta fee, shown on every quote
@@ -245,6 +266,39 @@ export function nextPaymentRequestId() {
   return `PR-3${String(invSeq).padStart(3, "0")}`;
 }
 
+/** Demo-safe payment link. Stored relative, resolved to an absolute URL on copy. */
+export function paymentPath(paymentRequestId: string) {
+  return `/pay/${paymentRequestId.toLowerCase()}`;
+}
+export function paymentLinkUrl(inv: SimpleInvoice) {
+  const base =
+    typeof window !== "undefined" && window.location?.origin
+      ? window.location.origin
+      : "https://canta.app";
+  return inv.paymentLink.startsWith("http") ? inv.paymentLink : `${base}${inv.paymentLink}`;
+}
+
+const SEED_STEP_LABELS: Array<[SimpleInvoiceStatus, string]> = [
+  ["Draft", "Invoice created"],
+  ["Quote Locked", "Quote generated"],
+  ["Sent to Buyer", "Invoice sent to buyer"],
+  ["Buyer Viewed", "Buyer viewed invoice"],
+  ["Awaiting NGN Payment", "Awaiting NGN payment"],
+  ["NGN Received", "NGN received and matched"],
+  ["Compliance Review", "Compliance review started"],
+  ["Auto-Converting", "NGN converted to RMB"],
+  ["RMB Settlement Pending", "RMB payout initiated"],
+  ["RMB Paid", "Provider confirmed payout — RMB paid"],
+];
+
+function seedEvents(status: SimpleInvoiceStatus, startedAt: number): TimelineEvent[] {
+  const reached = SEED_STEP_LABELS.findIndex(([s]) => s === status);
+  const upTo = reached === -1 ? 1 : reached;
+  return SEED_STEP_LABELS.slice(0, upTo + 1).map(([, label], i) =>
+    makeEvent(label, undefined, startedAt + i * 3_600_000),
+  );
+}
+
 function seed(
   n: number,
   buyerCompany: string,
@@ -255,8 +309,12 @@ function seed(
   expiryOffsetDays: number,
   createdOffsetDays: number,
 ): SimpleInvoice {
+  const createdMs = SEED_NOW + createdOffsetDays * DAY;
   const createdAt = dayStamp(createdOffsetDays);
   const q = quoteFor(amountRmb);
+  const events = seedEvents(status, createdMs);
+  if (status === "Expired")
+    events.push(makeEvent("Quote expired", "Refresh the quote to create a new payment link."));
   return {
     id: `si_${n}`,
     invoiceNumber: `INV-2026-0${n}`,
@@ -271,13 +329,16 @@ function seed(
     amountNgn: q.amountNgn,
     quoteExpiresAt: SEED_NOW + expiryOffsetDays * DAY,
     dueDate: dayStamp(21),
-    paymentLink: `https://canta.pay/i/${`INV-2026-0${n}`.toLowerCase()}`,
+    paymentLink: paymentPath(`PR-30${n}`),
     payoutAccountId: "RB-1001",
     status,
     sentBy,
     createdAt,
     receiptId: status === "RMB Paid" ? `RC-30${n}` : undefined,
     providerConfirmed: status === "RMB Paid",
+    providerRef: status === "RMB Paid" ? `PCONF-30${n}` : undefined,
+    settledAt: status === "RMB Paid" ? createdMs + 4 * DAY : undefined,
+    events,
   };
 }
 
@@ -345,8 +406,9 @@ export const simpleInvoiceStore = {
       | "createdAt"
       | "status"
       | "sentBy"
+      | "events"
     > &
-      Partial<Pick<SimpleInvoice, "status" | "sentBy">>,
+      Partial<Pick<SimpleInvoice, "status" | "sentBy" | "events">>,
   ) => {
     const invoiceNumber = nextInvoiceNumber();
     const paymentRequestId = nextPaymentRequestId();
@@ -355,11 +417,12 @@ export const simpleInvoiceStore = {
       id: `si_${Date.now().toString(36)}`,
       invoiceNumber,
       paymentRequestId,
-      paymentLink: `https://canta.pay/i/${invoiceNumber.toLowerCase()}`,
+      paymentLink: paymentPath(paymentRequestId),
       createdAt: new Date().toISOString().slice(0, 10),
       status: data.status ?? "Quote Locked",
       sentBy: data.sentBy ?? "Not sent",
       ...data,
+      events: [makeEvent("Invoice created"), makeEvent("Quote generated")],
     };
     SIMPLE_INVOICES.unshift(full);
     notifyInv();
@@ -381,19 +444,33 @@ export const simpleInvoiceStore = {
   duplicate: (id: string) => {
     const src = SIMPLE_INVOICES.find((i) => i.id === id);
     if (!src) return null;
-    return simpleInvoiceStore.add({ ...src, status: "Draft", sentBy: "Not sent" });
+    return simpleInvoiceStore.add({ ...src, status: "Draft", sentBy: "Not sent", events: [] });
+  },
+  /** Append a timeline event without changing invoice status. */
+  addEvent: (id: string, label: string, detail?: string) => {
+    const inv = SIMPLE_INVOICES.find((i) => i.id === id);
+    if (!inv) return;
+    simpleInvoiceStore.update(id, { events: [...inv.events, makeEvent(label, detail)] });
   },
   /** Refreshing a quote re-prices and re-opens the 15-minute window. */
   refreshQuote: (id: string) => {
     const inv = SIMPLE_INVOICES.find((i) => i.id === id);
     if (!inv) return null;
-    const q = quoteFor(inv.amountRmb);
+    const q = previewRefreshedQuote(inv);
     return simpleInvoiceStore.update(id, {
       fxRate: q.rate,
       feeNgn: q.feeNgn,
       amountNgn: q.amountNgn,
-      quoteExpiresAt: Date.now() + 15 * 60 * 1000,
+      quoteExpiresAt: q.expiresAt,
       status: "Quote Locked",
+      paymentLink: paymentPath(inv.paymentRequestId),
+      events: [
+        ...inv.events,
+        makeEvent(
+          "Quote refreshed",
+          `New rate ₦${q.rate} / ¥1 · ₦${q.amountNgn.toLocaleString()} · valid 15 minutes`,
+        ),
+      ],
     });
   },
   /** Demo only: a Nigerian buyer pays the NGN amount and the provider confirms it. */
@@ -404,7 +481,16 @@ export const simpleInvoiceStore = {
       return { ok: false, error: "This invoice is not awaiting buyer payment." };
     if (isInvoiceQuoteExpired(inv))
       return { ok: false, error: "Quote expired — refresh the quote before payment." };
-    simpleInvoiceStore.update(id, { status: "NGN Received" });
+    simpleInvoiceStore.update(id, {
+      status: "NGN Received",
+      events: [
+        ...inv.events,
+        makeEvent(
+          "NGN received and matched",
+          `₦${inv.amountNgn.toLocaleString()} matched to ${inv.invoiceNumber}`,
+        ),
+      ],
+    });
     return { ok: true };
   },
   /** Manual conversion request, used when Automatic Convert is OFF. */
@@ -413,7 +499,10 @@ export const simpleInvoiceStore = {
     if (!inv) return { ok: false, error: "Invoice not found." };
     if (inv.status !== "NGN Received")
       return { ok: false, error: "Conversion can only be requested once NGN is received." };
-    simpleInvoiceStore.update(id, { status: "Compliance Review" });
+    simpleInvoiceStore.update(id, {
+      status: "Compliance Review",
+      events: [...inv.events, makeEvent("Compliance review started")],
+    });
     return { ok: true };
   },
   /**
@@ -425,15 +514,50 @@ export const simpleInvoiceStore = {
   ): { ok: boolean; status?: SimpleInvoiceStatus; error?: string } => {
     const inv = SIMPLE_INVOICES.find((i) => i.id === id);
     if (!inv) return { ok: false, error: "Invoice not found." };
+    if (inv.status === "RMB Settlement Pending")
+      return simpleInvoiceStore.confirmProviderPayout(id);
     const next = SETTLEMENT_NEXT[inv.status];
     if (!next) return { ok: false, error: "No further settlement stage for this invoice." };
-    const patch: Partial<SimpleInvoice> = { status: next };
-    if (next === "RMB Paid") {
-      patch.receiptId = `RC-${inv.paymentRequestId.replace("PR-", "")}`;
-      patch.providerConfirmed = true;
-    }
-    simpleInvoiceStore.update(id, patch);
+    simpleInvoiceStore.update(id, {
+      status: next,
+      events: [...inv.events, makeEvent(SETTLEMENT_EVENT_LABEL[next] ?? next)],
+    });
     return { ok: true, status: next };
+  },
+  /**
+   * Demo stand-in for the payout provider webhook. Only this call may mark an
+   * invoice RMB Paid and issue the settlement receipt.
+   */
+  confirmProviderPayout: (
+    id: string,
+  ): { ok: boolean; status?: SimpleInvoiceStatus; error?: string } => {
+    const inv = SIMPLE_INVOICES.find((i) => i.id === id);
+    if (!inv) return { ok: false, error: "Invoice not found." };
+    if (inv.status !== "RMB Settlement Pending")
+      return {
+        ok: false,
+        error: "Provider confirmation is only possible once the RMB payout is pending.",
+      };
+    const now = Date.now();
+    const ref = `PCONF-${inv.paymentRequestId.replace("PR-", "")}`;
+    simpleInvoiceStore.update(id, {
+      status: "RMB Paid",
+      receiptId: `RC-${inv.paymentRequestId.replace("PR-", "")}`,
+      providerConfirmed: true,
+      providerRef: ref,
+      settledAt: now,
+      events: [
+        ...inv.events,
+        makeEvent("Provider confirmed payout", `Provider reference ${ref}`, now),
+        makeEvent("RMB paid to your bank account", `¥${inv.amountRmb.toLocaleString()}`, now),
+        makeEvent(
+          "Receipt available",
+          `Receipt RC-${inv.paymentRequestId.replace("PR-", "")}`,
+          now,
+        ),
+      ],
+    });
+    return { ok: true, status: "RMB Paid" };
   },
   subscribe: (f: () => void) => {
     invSubs.add(f);
@@ -463,6 +587,20 @@ export const SETTLEMENT_NEXT_LABEL: Partial<Record<SimpleInvoiceStatus, string>>
   "Auto-Converting": "Simulate payout initiated",
   "RMB Settlement Pending": "Simulate provider confirmation",
 };
+
+const SETTLEMENT_EVENT_LABEL: Partial<Record<SimpleInvoiceStatus, string>> = {
+  "Compliance Review": "Compliance review started",
+  "Auto-Converting": "NGN converted to RMB",
+  "RMB Settlement Pending": "RMB payout initiated",
+};
+
+/** Re-price an expired quote without committing it, for the Refresh Quote modal. */
+export function previewRefreshedQuote(inv: SimpleInvoice) {
+  const drift = ((inv.amountRmb % 7) - 3) * 0.15; // small deterministic demo movement
+  const rate = Math.round((FX_RATE + drift) * 100) / 100;
+  const q = quoteFor(inv.amountRmb, rate);
+  return { ...q, expiresAt: Date.now() + 15 * 60 * 1000 };
+}
 
 export function useSimpleInvoices() {
   useSyncExternalStore(
@@ -568,3 +706,207 @@ export function copyText(text: string) {
     /* ignore */
   }
 }
+
+// ---------------------------------------------------------------------------
+// Payment timeline
+// ---------------------------------------------------------------------------
+
+export type TimelineStepState = "Completed" | "Current" | "Pending" | "Blocked";
+
+export type TimelineStep = {
+  key: string;
+  label: string;
+  explain: string;
+  state: TimelineStepState;
+  at?: number;
+  blocker?: string;
+};
+
+const TIMELINE_STEPS: Array<{ key: string; label: string; explain: string }> = [
+  { key: "created", label: "Invoice Created", explain: "You created the invoice for your buyer." },
+  {
+    key: "quote",
+    label: "Quote Generated",
+    explain: "The RMB amount was priced in NGN at a locked rate.",
+  },
+  {
+    key: "sent",
+    label: "Invoice Sent",
+    explain: "The invoice and payment link went to the buyer.",
+  },
+  { key: "viewed", label: "Buyer Viewed", explain: "The buyer opened the payment link." },
+  {
+    key: "awaiting",
+    label: "Awaiting NGN Payment",
+    explain: "Waiting for the buyer to pay NGN into your Canta collection account.",
+  },
+  {
+    key: "received",
+    label: "NGN Received",
+    explain: "Canta matched the buyer's NGN payment to this invoice.",
+  },
+  {
+    key: "compliance",
+    label: "Compliance Review",
+    explain: "Standard checks run before any conversion.",
+  },
+  { key: "converting", label: "Auto-Converting", explain: "NGN is converted to RMB at your rate." },
+  {
+    key: "payout",
+    label: "RMB Settlement Pending",
+    explain: "RMB payout queued to your verified bank account.",
+  },
+  {
+    key: "provider",
+    label: "Provider Confirmation",
+    explain: "The payout provider must confirm the transfer.",
+  },
+  { key: "paid", label: "RMB Paid", explain: "RMB arrived in your Chinese bank account." },
+  {
+    key: "receipt",
+    label: "Receipt Available",
+    explain: "Settlement receipt issued after provider confirmation.",
+  },
+];
+
+const STATUS_PROGRESS: Record<SimpleInvoiceStatus, number> = {
+  Draft: 0,
+  "Quote Locked": 1,
+  "Sent to Buyer": 2,
+  "Buyer Viewed": 3,
+  "Awaiting NGN Payment": 4,
+  "NGN Received": 5,
+  "Compliance Review": 6,
+  "Auto-Converting": 7,
+  "RMB Settlement Pending": 8,
+  "RMB Paid": 11,
+  Expired: 1,
+  Cancelled: 0,
+};
+
+/**
+ * Derive the twelve-step payment timeline for an invoice. `blockers` carries
+ * account-level problems (verification, bank) that stop progress.
+ */
+export function invoiceTimeline(inv: SimpleInvoice, blockers: string[] = []): TimelineStep[] {
+  const expired = isInvoiceQuoteExpired(inv);
+  const reached = STATUS_PROGRESS[inv.status] ?? 0;
+  const paid = inv.status === "RMB Paid";
+  return TIMELINE_STEPS.map((step, i) => {
+    let state: TimelineStepState =
+      i < reached ? "Completed" : i === reached ? "Current" : "Pending";
+    if (paid) state = "Completed";
+    let blocker: string | undefined;
+    if (state === "Current") {
+      if (expired && !paid) {
+        state = "Blocked";
+        blocker = "Quote expired — refresh quote to continue.";
+      } else if (inv.status === "Cancelled") {
+        state = "Blocked";
+        blocker = "Invoice cancelled.";
+      } else if (step.key === "compliance") {
+        blocker = "Compliance review pending.";
+      } else if (step.key === "provider") {
+        blocker = "Provider confirmation pending.";
+      } else if (blockers.length > 0 && i >= 5) {
+        state = "Blocked";
+        blocker = blockers.join(" · ");
+      }
+    }
+    if (i === 9 && inv.status === "RMB Settlement Pending") {
+      state = "Current";
+      blocker = "Provider confirmation pending.";
+    }
+    const at = inv.events[Math.min(i, inv.events.length - 1)]?.at;
+    return {
+      ...step,
+      state,
+      blocker,
+      at: state === "Completed" ? (i < inv.events.length ? inv.events[i]!.at : at) : undefined,
+    };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Buyer reminder + receipt
+// ---------------------------------------------------------------------------
+
+export const SUPPLIER_NAME = "Guangzhou Tech Factory";
+
+export function reminderMessage(inv: SimpleInvoice) {
+  return [
+    `Hello ${inv.buyerCompany},`,
+    `${SUPPLIER_NAME} has sent you invoice ${inv.invoiceNumber} through Canta.`,
+    `Amount: ¥${inv.amountRmb.toLocaleString()} (₦${inv.amountNgn.toLocaleString()} at ₦${inv.fxRate} / ¥1)`,
+    `Payment link: ${paymentLinkUrl(inv)}`,
+    `Quote valid until: ${formatStamp(inv.quoteExpiresAt)}`,
+    "Please pay the NGN amount using the secure Canta payment link before the quote expires.",
+  ].join("\n");
+}
+
+export function whatsappHref(inv: SimpleInvoice) {
+  const digits = inv.buyerWhatsapp.replace(/\D/g, "");
+  return `https://wa.me/${digits}?text=${encodeURIComponent(reminderMessage(inv))}`;
+}
+
+export function mailtoHref(inv: SimpleInvoice) {
+  return `mailto:${inv.buyerEmail}?subject=${encodeURIComponent(
+    `Invoice ${inv.invoiceNumber} from ${SUPPLIER_NAME}`,
+  )}&body=${encodeURIComponent(reminderMessage(inv))}`;
+}
+
+export function receiptText(inv: SimpleInvoice, bankLine: string) {
+  return [
+    "CANTA SETTLEMENT RECEIPT",
+    "-----------------------------------------",
+    `Receipt number: ${inv.receiptId ?? "—"}`,
+    `Invoice number: ${inv.invoiceNumber}`,
+    `Payment request: ${inv.paymentRequestId}`,
+    `Buyer: ${inv.buyerCompany}`,
+    `Supplier: ${SUPPLIER_NAME}`,
+    `NGN amount paid: ₦${inv.amountNgn.toLocaleString()}`,
+    `RMB amount settled: ¥${inv.amountRmb.toLocaleString()}`,
+    `FX rate: ₦${inv.fxRate} / ¥1`,
+    `Canta fee: ₦${inv.feeNgn.toLocaleString()}`,
+    `Settlement bank account: ${bankLine}`,
+    `Provider confirmation reference: ${inv.providerRef ?? "—"}`,
+    `Date: ${formatStamp(inv.settledAt ?? Date.now())}`,
+    "Status: RMB Paid",
+    "Compliance: Payment matched and compliance review completed before conversion.",
+    "-----------------------------------------",
+    "Demo data — illustrative receipt generated by the Canta demo environment.",
+  ].join("\n");
+}
+
+export function downloadTextFile(filename: string, contents: string) {
+  try {
+    const blob = new Blob([contents], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Statuses where an unpaid payment link / buyer reminder still makes sense. */
+export const UNPAID_STATUSES: SimpleInvoiceStatus[] = [
+  "Quote Locked",
+  "Sent to Buyer",
+  "Buyer Viewed",
+  "Awaiting NGN Payment",
+];
+
+export const SETTLEMENT_STATUSES: SimpleInvoiceStatus[] = [
+  "NGN Received",
+  "Compliance Review",
+  "Auto-Converting",
+  "RMB Settlement Pending",
+  "RMB Paid",
+];

@@ -1,17 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import {
   useRmbBanks,
   useSimpleInvoices,
-  simpleInvoiceStore,
-  SETTLEMENT_NEXT_LABEL,
+  SETTLEMENT_STATUSES,
   ngnSummary,
   maskAccount,
   type SimpleInvoice,
 } from "@/lib/supplier-simple";
+import { SupplierInvoiceActions } from "@/components/supplier/SupplierInvoiceActions";
 
 export const Route = createFileRoute("/supplier-portal/settlements")({
   head: () => ({
@@ -59,15 +57,7 @@ function SettlementsPage() {
   const s = ngnSummary(invoices);
   const dest = banks.find((b) => b.isSettlementDestination);
 
-  const rows = invoices.filter((i) =>
-    [
-      "NGN Received",
-      "Compliance Review",
-      "Auto-Converting",
-      "RMB Settlement Pending",
-      "RMB Paid",
-    ].includes(i.status),
-  );
+  const rows = invoices.filter((i) => SETTLEMENT_STATUSES.includes(i.status));
 
   return (
     <div className="space-y-4">
@@ -116,38 +106,11 @@ function SettlementsPage() {
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant="outline" className="text-[10px]">
-                      {inv.status}
+                      {inv.status === "RMB Settlement Pending"
+                        ? "Provider Confirmation Pending"
+                        : inv.status}
                     </Badge>
-                    {SETTLEMENT_NEXT_LABEL[inv.status] && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-7 text-xs"
-                        onClick={() => {
-                          const res = simpleInvoiceStore.advanceSettlement(inv.id);
-                          if (res.ok)
-                            toast.success(
-                              res.status === "RMB Paid"
-                                ? "Provider confirmed payout — receipt available"
-                                : `Moved to ${res.status}`,
-                            );
-                          else toast.error(res.error ?? "Could not advance settlement");
-                        }}
-                      >
-                        {SETTLEMENT_NEXT_LABEL[inv.status]}
-                      </Button>
-                    )}
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="h-7 text-xs"
-                      disabled={!inv.providerConfirmed}
-                      onClick={() =>
-                        toast.success(`Settlement receipt ${inv.receiptId ?? ""} downloaded`)
-                      }
-                    >
-                      Receipt
-                    </Button>
+                    <SupplierInvoiceActions invoice={inv} className="flex flex-wrap gap-1.5" />
                   </div>
                 </div>
 
