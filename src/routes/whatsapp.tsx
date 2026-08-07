@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -137,7 +137,10 @@ const SEED_BY_WS: Record<string, Convo[]> = {
 function WhatsAppCustomer() {
   useRequireWorkspace();
   const ws = useActiveWorkspace();
-  const seed = SEED_BY_WS[ws.workspace] ?? SEED_BY_WS.enterprise_treasury;
+  const seed = useMemo(
+    () => SEED_BY_WS[ws.workspace] ?? SEED_BY_WS.enterprise_treasury,
+    [ws.workspace],
+  );
   const [convos, setConvos] = useState<Convo[]>(seed);
   const [active, setActive] = useState<string>(seed[0]?.id ?? "");
   const [reply, setReply] = useState("");
@@ -145,7 +148,7 @@ function WhatsAppCustomer() {
   useEffect(() => {
     setConvos(seed);
     setActive(seed[0]?.id ?? "");
-  }, [ws.workspace]);
+  }, [seed]);
 
   const current = convos.find((c) => c.id === active);
 

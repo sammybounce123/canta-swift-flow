@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useHydrated, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useMode, type Mode } from "@/components/ModeProvider";
 import { loadProfile, type WorkspaceType } from "@/lib/profile";
@@ -304,7 +304,10 @@ export function useActiveWorkspace() {
 
   const hydrated = useHydrated();
 
-  const resolveWorkspace = () => resolveActiveWorkspace(pathname, mode) ?? "importer_portal";
+  const resolveWorkspace = useCallback(
+    () => resolveActiveWorkspace(pathname, mode) ?? "importer_portal",
+    [pathname, mode],
+  );
 
   // The server cannot read localStorage, so the first client render must match
   // the SSR output: path/mode only, no stored workspace, until hydration.
@@ -314,12 +317,12 @@ export function useActiveWorkspace() {
 
   useEffect(() => {
     if (hydrated) setWorkspace(resolveWorkspace());
-  }, [hydrated]);
+  }, [hydrated, resolveWorkspace]);
 
   useEffect(() => {
     if (pathWorkspace) saveActiveWorkspace(pathWorkspace);
     setWorkspace(resolveWorkspace());
-  }, [pathWorkspace, mode]);
+  }, [pathWorkspace, resolveWorkspace]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -330,7 +333,7 @@ export function useActiveWorkspace() {
       window.removeEventListener("canta:mode-change", syncWorkspace);
       window.removeEventListener("storage", syncWorkspace);
     };
-  }, [pathWorkspace, mode]);
+  }, [resolveWorkspace]);
 
   return { workspace, ...PROFILES[workspace] };
 }
