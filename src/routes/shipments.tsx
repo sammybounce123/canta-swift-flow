@@ -266,10 +266,11 @@ function ShipmentTable({ rows, onSelect, claimedIds, clearance }: { rows: Shipme
               <th className="px-4 py-3">Route</th>
               <th className="px-4 py-3">Client · Supplier</th>
               <th className="px-4 py-3">Forwarder</th>
-              <th className="px-4 py-3">ETA</th>
               <th className="px-4 py-3">ETA / Arrival</th>
               <th className="px-4 py-3 text-right">Value</th>
-              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Tracking</th>
+              <th className="px-4 py-3">Clearance (recorded)</th>
+
             </tr>
           </thead>
           <tbody>
