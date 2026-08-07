@@ -181,8 +181,8 @@ export function ImporterActions({
     { label: "Request Clearing Quotes", icon: Calculator,   onClick: () => navigate({ to: "/clearing-quotes", search: { file: ctx.tradeFileId, request: undefined } }), show: DEMO_EXTRAS || variant === "tradefile" },
     { label: "Link Shipment",          icon: Ship,          onClick: () => setOpen("linkShipment"),  show: DEMO_EXTRAS && variant !== "supplier" },
     { label: "Share Tracking Link",    icon: LinkIcon,      onClick: () => setOpen("share"),         show: !!ctx.shipmentId || variant === "tradefile" },
-    { label: "Add Supplier",           icon: UserPlus,      onClick: () => { navigate({ to: "/my-suppliers" }); toast.message("Add a supplier to your trade desk"); }, show: DEMO_EXTRAS },
-    { label: "Invite Supplier",        icon: Mail,          onClick: () => { navigate({ to: "/my-suppliers" }); toast.message("Invite a supplier from your supplier list"); }, show: DEMO_EXTRAS },
+    { label: "Add supplier details",   icon: UserPlus,      onClick: () => { navigate({ to: "/my-suppliers" }); toast.message("Add supplier company and bank details"); }, show: DEMO_EXTRAS },
+    { label: "Save supplier beneficiary", icon: Mail,       onClick: () => { navigate({ to: "/my-suppliers" }); toast.message("Save a reusable supplier beneficiary — no Canta account needed"); }, show: DEMO_EXTRAS },
     { label: "Link Supplier Payment Request", icon: Send,   onClick: () => { navigate({ to: "/payments" }); toast.message("Send a payment request to your supplier"); }, show: DEMO_EXTRAS && (variant === "tradefile" || variant === "toolbar") },
     { label: "View Supplier Payment Status", icon: Eye,     onClick: () => { navigate({ to: "/payments" }); }, show: DEMO_EXTRAS },
   ];
