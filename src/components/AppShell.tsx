@@ -55,19 +55,25 @@ function FxTicker() {
     return () => clearInterval(id);
   }, []);
   return (
-    <div className="hidden xl:flex items-center gap-4 px-4 py-1.5 rounded-full bg-secondary/60 border border-border">
-      {rates.map((r) => (
-        <div key={r.pair} className={`flex items-center gap-2 text-xs font-medium ${flash[r.pair] === "up" ? "flash-up" : flash[r.pair] === "down" ? "flash-down" : ""} px-2 py-0.5 rounded`}>
+    <div className="hidden md:flex min-w-0 max-w-[46vw] items-center gap-2 overflow-hidden rounded-full border border-border bg-secondary/60 px-2 py-1.5 lg:max-w-none lg:gap-4 lg:px-4">
+      {rates.map((r, i) => (
+        <div
+          key={r.pair}
+          className={`flex shrink-0 items-center gap-1.5 rounded px-1.5 py-0.5 text-[11px] font-medium lg:gap-2 lg:px-2 lg:text-xs ${
+            i > 0 ? "hidden lg:flex" : ""
+          } ${i > 1 ? "xl:flex" : ""} ${flash[r.pair] === "up" ? "flash-up" : flash[r.pair] === "down" ? "flash-down" : ""}`}
+        >
           <span className="text-muted-foreground">{r.pair}</span>
           <span className="font-semibold tabular-nums">{r.rate.toLocaleString("en-US")}</span>
           <span className={`flex items-center gap-0.5 ${r.change >= 0 ? "text-success" : "text-destructive"}`}>
-            {r.change >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+            {r.change >= 0 ? <TrendingUp className="h-3 w-3 shrink-0" /> : <TrendingDown className="h-3 w-3 shrink-0" />}
             {Math.abs(r.change).toFixed(2)}%
           </span>
         </div>
       ))}
     </div>
   );
+
 }
 
 const WORKSPACE_TO_MODE: Record<import("@/lib/profile").WorkspaceType, Mode> = {

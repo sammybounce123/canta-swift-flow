@@ -73,17 +73,18 @@ function LandedCostPage() {
   return (
     <div className="space-y-6">
       <ReadinessBar status="Demo Preview" cue="Landed cost is an estimate based on the values you enter." />
-      <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:flex-wrap sm:justify-between">
+      <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:flex sm:flex-wrap sm:justify-between sm:gap-4">
         <div className="min-w-0">
-          <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
-            <Calculator className="h-5 w-5 text-accent shrink-0" /> Landed Cost
+          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight sm:text-2xl">
+            <Calculator className="h-5 w-5 shrink-0 text-accent" /> <span className="truncate">Landed Cost</span>
           </h1>
-          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
             Know your true cost per unit before goods arrive — and see your projected profit.
           </p>
         </div>
-        <Button onClick={() => toast.success("Estimate saved")}>Save estimate</Button>
+        <Button className="shrink-0" onClick={() => toast.success("Estimate saved")}>Save estimate</Button>
       </header>
+
 
       <Card className={`p-3 shadow-card text-xs text-muted-foreground ${clearingSource.tone}`}>
         <span className="font-semibold text-foreground">Clearing fee source:</span> {clearingSource.label}. Canta does not quote clearing fees directly — fees, timelines, duty estimates and service delivery are provided by the selected clearing agent.
@@ -104,22 +105,23 @@ function LandedCostPage() {
         </div>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">
-        <Card className="p-4 shadow-card">
-          <div className="flex items-center justify-between mb-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <Card className="min-w-0 p-4 shadow-card">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <div className="text-sm font-semibold">Cost breakdown</div>
-            <Button size="sm" variant="outline" onClick={add}><Plus className="h-3.5 w-3.5 mr-1" /> Add cost</Button>
+            <Button size="sm" variant="outline" className="shrink-0" onClick={add}><Plus className="h-3.5 w-3.5 mr-1" /> Add cost</Button>
           </div>
           <div className="space-y-2">
             {lines.map((l) => (
-              <div key={l.id} className="grid grid-cols-[1fr_140px_auto] gap-2 items-center">
-                <Input value={l.label} onChange={(e) => update(l.id, { label: e.target.value })} />
-                <Input type="number" value={l.amount} onChange={(e) => update(l.id, { amount: Number(e.target.value) || 0 })} />
-                <Button size="icon" variant="ghost" onClick={() => remove(l.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+              <div key={l.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 sm:grid-cols-[minmax(0,1fr)_140px_auto]">
+                <Input className="col-span-2 min-w-0 sm:col-span-1" value={l.label} onChange={(e) => update(l.id, { label: e.target.value })} />
+                <Input className="min-w-0" type="number" value={l.amount} onChange={(e) => update(l.id, { amount: Number(e.target.value) || 0 })} />
+                <Button size="icon" variant="ghost" className="shrink-0" onClick={() => remove(l.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
               </div>
             ))}
           </div>
         </Card>
+
 
         <Card className="p-4 shadow-card h-fit space-y-3">
           <div className="text-sm font-semibold">Summary</div>
@@ -143,9 +145,10 @@ function LandedCostPage() {
 
 function Row({ label, value, tone }: { label: string; value: string; tone?: string }) {
   return (
-    <div className="flex items-center justify-between">
-      <span className="text-xs text-muted-foreground">{label}</span>
-      <span className={`text-sm font-semibold tabular-nums ${tone ?? ""}`}>{value}</span>
+    <div className="flex items-center justify-between gap-2">
+      <span className="min-w-0 truncate text-xs text-muted-foreground">{label}</span>
+      <span className={`shrink-0 text-sm font-semibold tabular-nums ${tone ?? ""}`}>{value}</span>
     </div>
   );
 }
+
