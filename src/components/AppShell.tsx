@@ -1,4 +1,4 @@
-import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
+import { Link, useRouterState, useNavigate, useHydrated } from "@tanstack/react-router";
 import {
   LayoutDashboard, Wallet, ArrowLeftRight, Receipt, Users, Building2,
   Sparkles, Shield, Settings, Bell, Search, ChevronDown, TrendingUp, TrendingDown,
@@ -105,13 +105,18 @@ function SidebarContent({ pathname, search, onNavigate }: { pathname: string; se
   const { mode, setMode } = useMode();
   const userProfile = loadProfile();
   const pathWorkspace = workspaceFromPath(pathname);
-  const workspace = pathWorkspace ?? resolveActiveWorkspace(pathname, mode) ?? "importer_portal";
+  const hydrated = useHydrated();
+  // Stored workspace lives in localStorage, which the server cannot read. Only
+  // consult it after hydration so SSR and the first client render agree.
+  const workspace = pathWorkspace
+    ?? (hydrated ? resolveActiveWorkspace(pathname, mode) : null)
+    ?? "importer_portal";
   // Persist the active workspace whenever the user lands on any workspace-scoped
   // route (direct URL visit, refresh, or link click). Without this, shared
   // routes like /reports, /support and /whatsapp silently fall back to
   // Enterprise Treasury when the user never clicked a sidebar link.
   useEffect(() => {
-    if (pathWorkspace) {
+    if (pathWorkspace && pathWorkspace !== "canta_ops") {
       saveActiveWorkspace(pathWorkspace);
       const nextMode = WORKSPACE_TO_MODE[pathWorkspace];
       if (nextMode && nextMode !== mode) setMode(nextMode);
@@ -282,13 +287,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   // Derive the active workspace from path first, then fall back to saved mode.
   const pathWorkspace = workspaceFromPath(pathname);
-  const activeWorkspace = pathWorkspace ?? resolveActiveWorkspace(pathname, mode) ?? "importer_portal";
+  const hydrated = useHydrated();
+  const activeWorkspace = pathWorkspace
+    ?? (hydrated ? resolveActiveWorkspace(pathname, mode) : null)
+    ?? "importer_portal";
   const displayMode: Mode = WORKSPACE_TO_MODE[activeWorkspace];
 
   // Persist the inferred mode so other surfaces (dashboard hero, etc.) follow.
   useEffect(() => {
-    if (pathWorkspace) saveActiveWorkspace(pathWorkspace);
-    if (pathWorkspace && WORKSPACE_TO_MODE[pathWorkspace] !== mode) {
+    if (pathWorkspace && pathWorkspace !== "canta_ops") saveActiveWorkspace(pathWorkspace);
+    if (pathWorkspace && pathWorkspace !== "canta_ops" && WORKSPACE_TO_MODE[pathWorkspace] !== mode) {
       setMode(WORKSPACE_TO_MODE[pathWorkspace]);
     }
   }, [pathWorkspace, mode, setMode]);

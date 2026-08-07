@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useRouterState } from "@tanstack/react-router";
+import { useHydrated, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useMode, type Mode } from "@/components/ModeProvider";
 import { loadProfile, type WorkspaceType } from "@/lib/profile";
 
@@ -100,6 +100,9 @@ export function isSharedWorkspacePath(pathname: string) {
 }
 
 export function workspaceFromPath(pathname: string): WorkspaceType | null {
+  // Internal Ops console is always Canta Ops context — resolving it from the
+  // path (never from stored client state) keeps SSR and client identical.
+  if (pathname === "/ops" || pathname.startsWith("/ops/")) return "canta_ops";
   if (pathname.startsWith("/partner")) return "partner_property";
   if (pathname.startsWith("/collections") || pathname.startsWith("/merchant") || pathname.startsWith("/payment-links") || pathname.startsWith("/payers") || pathname.startsWith("/reconciliation")) return "global_collections";
   if (pathname.startsWith("/supplier-portal")) return "supplier_dashboard";
@@ -201,11 +204,21 @@ export function useActiveWorkspace() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const pathWorkspace = workspaceFromPath(pathname);
 
+  const hydrated = useHydrated();
+
   const resolveWorkspace = () =>
     resolveActiveWorkspace(pathname, mode) ??
     "importer_portal";
 
-  const [workspace, setWorkspace] = useState<WorkspaceType>(resolveWorkspace);
+  // The server cannot read localStorage, so the first client render must match
+  // the SSR output: path/mode only, no stored workspace, until hydration.
+  const [workspace, setWorkspace] = useState<WorkspaceType>(
+    () => pathWorkspace ?? MODE_TO_WORKSPACE[mode] ?? "importer_portal",
+  );
+
+  useEffect(() => {
+    if (hydrated) setWorkspace(resolveWorkspace());
+  }, [hydrated]);
 
   useEffect(() => {
     if (pathWorkspace) saveActiveWorkspace(pathWorkspace);

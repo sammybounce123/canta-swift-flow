@@ -168,7 +168,8 @@ function TradeDeskList() {
               </div>
               <div className="col-span-1 text-right text-xs text-muted-foreground flex items-center justify-end gap-1">
                 <Clock className="h-3 w-3" />
-                {f.eta}
+                {/* Demo ETAs are relative to the runtime clock; prerendered HTML can be older than the client. */}
+                <span suppressHydrationWarning>{f.eta}</span>
                 <ArrowRight className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 ml-1 text-primary" />
               </div>
             </Link>
