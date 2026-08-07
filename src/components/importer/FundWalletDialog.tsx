@@ -6,11 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { AlertTriangle, Check, Copy, QrCode } from "lucide-react";
+import { AlertTriangle, Check, Copy, QrCode, RefreshCw, Timer } from "lucide-react";
 import {
   useImporter, startFunding, confirmFundingSent, simulateProviderConfirmation, cancelFunding,
-  fmtWallet, remittanceQuote, WALLET_CCYS, NGN_COLLECTION_ACCOUNT, USDT_ADDRESSES, USDT_CONFIRMATIONS, USDT_NETWORKS,
-  type UsdtNetwork,
+  fmtWallet, fmtAnyCcy, buildLockedQuote, GLOBAL_SEND_CCYS, QUOTE_LOCK_SECONDS,
+  NGN_COLLECTION_ACCOUNT, USDT_ADDRESSES, USDT_CONFIRMATIONS, USDT_NETWORKS,
+  type UsdtNetwork, type LockedQuote,
 } from "@/lib/importer-store";
 
 const NGN_TIMELINE = [
@@ -247,7 +248,25 @@ export function FundWalletDialog({
 }
 
 function RemittanceQuote({ method, amount }: { method: "NGN" | "USDT"; amount: number }) {
-  const { fee, net, legs } = remittanceQuote(method, amount);
+  const [target, setTarget] = useState("USD");
+  const [quote, setQuote] = useState<LockedQuote | null>(null);
+  const [left, setLeft] = useState(0);
+
+  // Any change to the inputs invalidates a locked quote.
+  useEffect(() => { setQuote(null); setLeft(0); }, [method, amount, target]);
+
+  useEffect(() => {
+    if (!quote) return;
+    const tick = () => setLeft(Math.max(0, Math.ceil((quote.expiresAt - Date.now()) / 1000)));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [quote]);
+
+  const lock = () => setQuote(buildLockedQuote(method, amount, target));
+  const expired = !!quote && left <= 0;
+  const mmss = `${String(Math.floor(left / 60)).padStart(2, "0")}:${String(left % 60).padStart(2, "0")}`;
+
   return (
     <div className="rounded-lg border border-border p-3 space-y-2">
       <div className="flex items-center justify-between gap-2">
@@ -255,35 +274,67 @@ function RemittanceQuote({ method, amount }: { method: "NGN" | "USDT"; amount: n
         <Badge variant="outline" className="text-[10px]">Illustrative rates</Badge>
       </div>
       <p className="text-[11px] text-muted-foreground">
-        All wallets are funded with NGN or USDT only. Below is the indicative amount you would receive if you
-        convert this {method} funding into another wallet currency.
+        Wallets are funded with NGN or USDT only, but you can pay suppliers anywhere — quote against any popular
+        currency, whether or not you hold that wallet.
       </p>
-      {amount > 0 ? (
-        <>
-          <div className="flex justify-between text-xs">
-            <span className="text-muted-foreground">Conversion fee (0.4%)</span>
-            <span className="font-medium">{fmtWallet(fee, method)}</span>
-          </div>
-          <div className="flex justify-between text-xs">
-            <span className="text-muted-foreground">Convertible amount</span>
-            <span className="font-medium">{fmtWallet(net, method)}</span>
-          </div>
-          <div className="divide-y divide-border rounded-md border border-border">
-            {legs.map((l) => (
-              <div key={l.ccy} className="flex items-center justify-between gap-2 px-2.5 py-1.5">
-                <span className="text-xs font-medium">{l.ccy}</span>
-                <span className="text-[11px] text-muted-foreground">
-                  1 {method} = {l.rate >= 1 ? l.rate.toFixed(2) : l.rate.toFixed(6)} {l.ccy}
-                </span>
-                <span className="text-xs font-semibold">{fmtWallet(l.receive, l.ccy)}</span>
-              </div>
+
+      <div>
+        <Label className="text-[11px] text-muted-foreground">Quote against</Label>
+        <Select value={target} onValueChange={setTarget}>
+          <SelectTrigger><SelectValue /></SelectTrigger>
+          <SelectContent className="max-h-64">
+            {GLOBAL_SEND_CCYS.filter((c) => c.code !== method).map((c) => (
+              <SelectItem key={c.code} value={c.code}>{c.code} — {c.name}</SelectItem>
             ))}
-          </div>
-        </>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {amount > 0 ? (
+        !quote ? (
+          <Button size="sm" variant="outline" className="w-full" onClick={lock}>
+            <Timer className="h-3.5 w-3.5" /> Lock quote for {QUOTE_LOCK_SECONDS}s
+          </Button>
+        ) : (
+          <>
+            <div className="flex justify-between text-xs">
+              <span className="text-muted-foreground">Conversion fee (0.4%)</span>
+              <span className="font-medium">{fmtWallet(quote.fee, method)}</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-muted-foreground">Convertible amount</span>
+              <span className="font-medium">{fmtWallet(quote.net, method)}</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-muted-foreground">Rate</span>
+              <span className="font-medium">
+                1 {method} = {quote.rate >= 1 ? quote.rate.toFixed(2) : quote.rate.toFixed(6)} {quote.target}
+              </span>
+            </div>
+            <div className="flex justify-between items-center rounded-md border border-border px-2.5 py-2">
+              <span className="text-xs text-muted-foreground">Supplier receives (indicative)</span>
+              <span className="text-sm font-semibold">{fmtAnyCcy(quote.receive, quote.target)}</span>
+            </div>
+
+            {expired ? (
+              <div className="flex items-center justify-between gap-2 rounded-md border border-destructive/40 bg-destructive/5 px-2.5 py-2">
+                <span className="text-[11px] text-destructive flex items-center gap-1.5">
+                  <AlertTriangle className="h-3.5 w-3.5" /> Quote expired — refresh to see the current rate.
+                </span>
+                <Button size="sm" variant="secondary" onClick={lock}><RefreshCw className="h-3.5 w-3.5" /> Refresh</Button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between gap-2 rounded-md bg-muted/40 px-2.5 py-2">
+                <span className="text-[11px] text-muted-foreground flex items-center gap-1.5">
+                  <Timer className="h-3.5 w-3.5" /> Rate locked — valid for <b className="tabular-nums">{mmss}</b>
+                </span>
+                <Button size="sm" variant="ghost" onClick={lock}><RefreshCw className="h-3.5 w-3.5" /> Re-lock</Button>
+              </div>
+            )}
+          </>
+        )
       ) : (
-        <p className="text-[11px] text-muted-foreground">
-          Enter an amount to see {WALLET_CCYS.filter((c) => c !== method).join(", ")} equivalents.
-        </p>
+        <p className="text-[11px] text-muted-foreground">Enter an amount to lock a {target} quote.</p>
       )}
     </div>
   );
