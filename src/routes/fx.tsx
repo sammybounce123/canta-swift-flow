@@ -47,6 +47,7 @@ type Beneficiary = (typeof beneficiaries)[number];
 
 function FX() {
   const navigate = useNavigate();
+  const { openConvert, openSend } = useActions();
   const [from, setFrom] = useState("NGN");
   const [to, setTo] = useState("USD");
   const [amount, setAmount] = useState("50000000");
