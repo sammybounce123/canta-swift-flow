@@ -317,12 +317,12 @@ export function useActiveWorkspace() {
 
   useEffect(() => {
     if (hydrated) setWorkspace(resolveWorkspace());
-  }, [hydrated]);
+  }, [hydrated, resolveWorkspace]);
 
   useEffect(() => {
     if (pathWorkspace) saveActiveWorkspace(pathWorkspace);
     setWorkspace(resolveWorkspace());
-  }, [pathWorkspace, mode]);
+  }, [pathWorkspace, resolveWorkspace]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -333,7 +333,7 @@ export function useActiveWorkspace() {
       window.removeEventListener("canta:mode-change", syncWorkspace);
       window.removeEventListener("storage", syncWorkspace);
     };
-  }, [pathWorkspace, mode]);
+  }, [resolveWorkspace]);
 
   return { workspace, ...PROFILES[workspace] };
 }

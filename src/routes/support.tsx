@@ -78,6 +78,9 @@ function SupportPage() {
   const tickets = listTickets(ws.workspaceLabel).slice(0, 50);
   const [statusFilter, setStatusFilter] = useState<CustomerStatus | "All">("All");
   const [openId, setOpenId] = useState<string | null>(null);
+  // `tickets` is intentionally listed: it is re-read from the store on every
+  // support update, and re-running getTicket keeps the open dialog fresh.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const open = useMemo(() => (openId ? (getTicket(openId) ?? null) : null), [openId, tickets]);
 
   const filtered =
