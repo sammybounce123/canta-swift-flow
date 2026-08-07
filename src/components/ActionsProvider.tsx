@@ -1136,7 +1136,10 @@ function SendForm({
 
 function AddBeneficiaryForm({ onClose }: { onClose: () => void }) {
   const [country, setCountry] = useState("US");
+  const [name, setName] = useState("");
+  const [vals, setVals] = useState<Record<string, string>>({});
   const auto = COUNTRIES.find((c) => c.code === country)?.ccy ?? "USD";
+
   const [ccy, setCcy] = useState(auto);
   useEffect(() => {
     setCcy(auto);
