@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useHydrated, useNavigate } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,8 +30,11 @@ export const Route = createFileRoute("/trade-desk/$fileId")({
 function TradeFileDetail() {
   const { fileId } = Route.useParams();
   const navigate = useNavigate();
+  // Drafts live in localStorage, so they can only be read after hydration —
+  // reading during SSR/first paint would produce a hydration mismatch.
+  const hydrated = useHydrated();
   const known = (tradeFiles.find((f) => f.id === fileId)
-    ?? (findDraftTradeFile(fileId) as (typeof tradeFiles)[number] | null));
+    ?? (hydrated ? (findDraftTradeFile(fileId) as (typeof tradeFiles)[number] | null) : null));
   // A Trade File reference may exist on a draft created in another session or
   // referenced from Ops. Render a placeholder payment case instead of a 404.
   const file: (typeof tradeFiles)[number] = known ?? ({

@@ -40,17 +40,18 @@ export const SEGMENTS: Segment[] = [
   },
   {
     id: "importer_portal",
-    label: "Importer Trade Desk",
-    shortLabel: "Importer Trade Desk",
+    label: "Importer Mode",
+    shortLabel: "Importer",
     accountType: "business",
     customerSegment: "importer",
-    primaryUseCase: "Trade files, shipments, suppliers, landed cost",
+    primaryUseCase: "Pay suppliers, track shipments, keep receipts",
     defaultRole: "Importer Owner",
-    defaultPermissions: ["view dashboard", "create trade file", "view shipment", "manage suppliers", "view landed cost"],
+    defaultPermissions: ["view dashboard", "create supplier payment", "view shipment", "manage suppliers", "download receipt"],
     route: "/importer",
-    welcome: "Track shipments, organize documents, calculate landed cost, manage suppliers, and control trade expenses.",
-    tagline: "Buyers importing from China, UAE, Turkey, India and beyond",
+    welcome: "Pay suppliers, track shipments, and keep receipts.",
+    tagline: "Nigerian importers and businesses paying suppliers anywhere in the world",
   },
+
 
   {
     id: "global_collections",
@@ -208,18 +209,19 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
     case "importer_portal":
       return [
         D,
-        { to: "/importer", label: "Importer Dashboard", iconKey: "importer", group: "My Workspace" },
-        { to: "/trade-desk", label: "Trade Files", iconKey: "trade", group: "Trade Ops" },
-        { to: "/shipments", label: "Shipments", iconKey: "ship", group: "Move Goods" },
-        { to: "/documents", label: "Documents", iconKey: "file", group: "Trade Ops" },
-        { to: "/landed-cost", label: "Landed Cost", iconKey: "calculator", group: "Trade Ops" },
-        { to: "/payments", label: "Payments", iconKey: "receipt", group: "Money" },
-        { to: "/escrow", label: "Escrow", iconKey: "shield-check", group: "Money" },
-        { to: "/whatsapp", label: "WhatsApp Updates", iconKey: "whatsapp", group: "Updates" },
-        { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
+        { to: "/importer", label: "Importer Dashboard", iconKey: "importer", group: "My Workspace", exact: true },
+        { to: "/importer/balance", label: "Balance", iconKey: "wallet", group: "Money" },
+        { to: "/importer/pay-supplier", label: "Pay Supplier", iconKey: "receipt", group: "Money" },
+        { to: "/importer/payments", label: "Supplier Payments", iconKey: "receipt", group: "Money" },
+        { to: "/importer/suppliers", label: "Suppliers", iconKey: "factory", group: "My Workspace" },
+        { to: "/importer/shipments", label: "Shipments", iconKey: "ship", group: "Move Goods" },
+        { to: "/importer/documents", label: "Documents", iconKey: "file", group: "Move Goods" },
+        { to: "/importer/receipts", label: "Receipts", iconKey: "file", group: "Money" },
+        { to: "/importer/notifications", label: "Notifications", iconKey: "whatsapp", group: "Updates" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         Team, Settings,
       ];
+
 
 
     case "supplier_dashboard":

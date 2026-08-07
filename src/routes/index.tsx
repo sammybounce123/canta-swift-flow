@@ -24,9 +24,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Canta — Trade & Treasury Operating System" },
-      { name: "description", content: "Canta helps importers, suppliers, enterprises, and partners manage trade files, supplier payments, FX, RMB settlement, documents, and treasury workflows from one trusted workspace." },
+      { name: "description", content: "Canta helps importers, suppliers, enterprises, and partners manage supplier payments, FX, RMB settlement, documents, and treasury workflows from one trusted workspace." },
       { property: "og:title", content: "Canta — Trade & Treasury Operating System" },
-      { property: "og:description", content: "Canta helps importers, suppliers, enterprises, and partners manage trade files, supplier payments, FX, RMB settlement, documents, and treasury workflows from one trusted workspace." },
+      { property: "og:description", content: "Canta helps importers, suppliers, enterprises, and partners manage supplier payments, FX, RMB settlement, documents, and treasury workflows from one trusted workspace." },
     ],
   }),
   component: Landing,
@@ -106,7 +106,7 @@ function Landing() {
               <Link to="/welcome">Try the demo <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
             </Button>
             <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-              <Link to="/importer" onClick={pickWorkspace("Importer")}>Importer Trade Desk</Link>
+              <Link to="/importer" onClick={pickWorkspace("Importer")}>Importer Mode</Link>
             </Button>
             <Button asChild size="lg" className="bg-[#25D366] text-white hover:bg-[#1FB855] hover:shadow-lg hover:shadow-[#25D366]/30 transition h-12 px-6 font-semibold">
               <Link to="/track/whatsapp">
@@ -159,7 +159,7 @@ function Landing() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {([
-            { icon: Ship,      tag: "Importer Trade Desk",   desc: "Send your BL, track shipments, organize documents, and pay suppliers safely. Every supplier, invoice, shipment and document connected to the trade.", cta: "Enter Importer Trade Desk", to: "/importer",         mode: "Importer" as Mode,            tone: "bg-accent/15 text-accent" },
+            { icon: Ship,      tag: "Importer Mode",   desc: "Pay any supplier globally, upload your invoice and BL, track shipments, and download receipts. Your supplier does not need a Canta account.", cta: "Enter Importer Mode", to: "/importer",         mode: "Importer" as Mode,            tone: "bg-accent/15 text-accent" },
             { icon: Factory,   tag: "Supplier Portal",       desc: "Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta. Suppliers can send payment requests, upload invoices, and track settlement receipts.", cta: "Enter Supplier Portal",     to: "/supplier-portal",  mode: "Supplier" as Mode,            tone: "bg-amber-500/15 text-amber-700" },
             { icon: Building2, tag: "Enterprise Treasury",   desc: "Multi-currency balances, FX, bulk payouts, approvals, beneficiaries, and treasury reports.",          cta: "Enter Treasury",              to: "/treasury",         mode: "Enterprise Treasury" as Mode, tone: "bg-primary/10 text-primary" },
             { icon: Home,      tag: "Partner Mode",          desc: "Property and company partners referring clients to Canta. Track referrals, payments and commission.",  cta: "Enter Partner Mode",          to: "/partner",          mode: "Partner Property" as Mode,    tone: "bg-primary/10 text-primary" },
@@ -288,12 +288,12 @@ function Landing() {
               One trusted workspace. Trade files. Supplier settlement. Treasury.
             </h2>
             <p className="text-primary-foreground/75 mt-4">
-              Step into a Canta workspace and feel the platform — from trade files to FX,
+              Step into a Canta workspace and feel the platform — from supplier payments to FX,
               from supplier settlement to payouts.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold">
-                <Link to="/importer" onClick={pickWorkspace("Importer")}>Start with Importer Trade Desk <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
+                <Link to="/importer" onClick={pickWorkspace("Importer")}>Start with Importer Mode <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
               </Button>
               <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
                 <Link to="/treasury" onClick={pickWorkspace("Enterprise Treasury")}>Explore Enterprise Treasury</Link>

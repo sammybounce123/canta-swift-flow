@@ -34,10 +34,10 @@ type Doc = {
 const DOCS: Doc[] = [
   { id: "DOC-2041", name: "Commercial Invoice — SH-9012.pdf", type: "Commercial Invoice", linkedTo: "Shipment SH-9012", uploadedBy: "Aisha B.", uploadedAt: "2026-06-18", size: "412 KB", status: "Verified" },
   { id: "DOC-2040", name: "Bill of Lading — SH-9012.pdf",     type: "Bill of Lading",     linkedTo: "Shipment SH-9012", uploadedBy: "Ops Team", uploadedAt: "2026-06-17", size: "1.1 MB", status: "Verified" },
-  { id: "DOC-2039", name: "Packing List — TR-2031.xlsx",      type: "Packing List",       linkedTo: "Trade File TR-2031", uploadedBy: "Tunde B.", uploadedAt: "2026-06-15", size: "88 KB",  status: "Pending review" },
+  { id: "DOC-2039", name: "Packing List — SP-2026-0131.xlsx",      type: "Packing List",       linkedTo: "Supplier Payment SP-2031", uploadedBy: "Tunde B.", uploadedAt: "2026-06-15", size: "88 KB",  status: "Pending review" },
   { id: "DOC-2038", name: "Form M — ABC-2026-04.pdf",         type: "Form M",             linkedTo: "Shipment SH-9012", uploadedBy: "Compliance", uploadedAt: "2026-06-12", size: "240 KB", status: "Action required" },
-  { id: "DOC-2037", name: "SONCAP Certificate.pdf",           type: "SONCAP",             linkedTo: "Trade File TR-2042", uploadedBy: "Tunde B.", uploadedAt: "2026-06-10", size: "604 KB", status: "Verified" },
-  { id: "DOC-2036", name: "Quality Inspection Report.pdf",    type: "Inspection",         linkedTo: "Trade File TR-2055", uploadedBy: "QC Vendor", uploadedAt: "2026-06-09", size: "1.4 MB", status: "Verified" },
+  { id: "DOC-2037", name: "SONCAP Certificate.pdf",           type: "SONCAP",             linkedTo: "Supplier Payment SP-2042", uploadedBy: "Tunde B.", uploadedAt: "2026-06-10", size: "604 KB", status: "Verified" },
+  { id: "DOC-2036", name: "Quality Inspection Report.pdf",    type: "Inspection",         linkedTo: "Supplier Payment SP-2055", uploadedBy: "QC Vendor", uploadedAt: "2026-06-09", size: "1.4 MB", status: "Verified" },
   { id: "DOC-2035", name: "Supplier Contract — Yiwu.pdf",     type: "Contract",           linkedTo: "Supplier: Yiwu Fashion", uploadedBy: "Adaeze O.", uploadedAt: "2026-06-05", size: "812 KB", status: "Verified" },
   { id: "DOC-2034", name: "Customs Duty Receipt.pdf",         type: "Receipt",            linkedTo: "Shipment SH-8990",   uploadedBy: "Clearing Agent", uploadedAt: "2026-06-02", size: "120 KB", status: "Verified" },
 ];

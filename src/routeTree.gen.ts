@@ -62,7 +62,16 @@ import { Route as WalletsRouteImport } from './routes/wallets'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as WhatsappRouteImport } from './routes/whatsapp'
 import { Route as CollectionsNewRouteImport } from './routes/collections.new'
+import { Route as ImporterIndexRouteImport } from './routes/importer.index'
+import { Route as ImporterBalanceRouteImport } from './routes/importer.balance'
 import { Route as ImporterCardsRouteImport } from './routes/importer.cards'
+import { Route as ImporterDocumentsRouteImport } from './routes/importer.documents'
+import { Route as ImporterNotificationsRouteImport } from './routes/importer.notifications'
+import { Route as ImporterPaySupplierRouteImport } from './routes/importer.pay-supplier'
+import { Route as ImporterPaymentsRouteImport } from './routes/importer.payments'
+import { Route as ImporterReceiptsRouteImport } from './routes/importer.receipts'
+import { Route as ImporterShipmentsRouteImport } from './routes/importer.shipments'
+import { Route as ImporterSuppliersRouteImport } from './routes/importer.suppliers'
 import { Route as MerchantKybRouteImport } from './routes/merchant.kyb'
 import { Route as MerchantProfileRouteImport } from './routes/merchant.profile'
 import { Route as PLinkIdRouteImport } from './routes/p.$linkId'
@@ -384,9 +393,54 @@ const CollectionsNewRoute = CollectionsNewRouteImport.update({
   path: '/new',
   getParentRoute: () => CollectionsRoute,
 } as any)
+const ImporterIndexRoute = ImporterIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ImporterRoute,
+} as any)
+const ImporterBalanceRoute = ImporterBalanceRouteImport.update({
+  id: '/balance',
+  path: '/balance',
+  getParentRoute: () => ImporterRoute,
+} as any)
 const ImporterCardsRoute = ImporterCardsRouteImport.update({
   id: '/cards',
   path: '/cards',
+  getParentRoute: () => ImporterRoute,
+} as any)
+const ImporterDocumentsRoute = ImporterDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => ImporterRoute,
+} as any)
+const ImporterNotificationsRoute = ImporterNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => ImporterRoute,
+} as any)
+const ImporterPaySupplierRoute = ImporterPaySupplierRouteImport.update({
+  id: '/pay-supplier',
+  path: '/pay-supplier',
+  getParentRoute: () => ImporterRoute,
+} as any)
+const ImporterPaymentsRoute = ImporterPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => ImporterRoute,
+} as any)
+const ImporterReceiptsRoute = ImporterReceiptsRouteImport.update({
+  id: '/receipts',
+  path: '/receipts',
+  getParentRoute: () => ImporterRoute,
+} as any)
+const ImporterShipmentsRoute = ImporterShipmentsRouteImport.update({
+  id: '/shipments',
+  path: '/shipments',
+  getParentRoute: () => ImporterRoute,
+} as any)
+const ImporterSuppliersRoute = ImporterSuppliersRouteImport.update({
+  id: '/suppliers',
+  path: '/suppliers',
   getParentRoute: () => ImporterRoute,
 } as any)
 const MerchantKybRoute = MerchantKybRouteImport.update({
@@ -729,7 +783,15 @@ export interface FileRoutesByFullPath {
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
   '/collections/new': typeof CollectionsNewRoute
+  '/importer/balance': typeof ImporterBalanceRoute
   '/importer/cards': typeof ImporterCardsRoute
+  '/importer/documents': typeof ImporterDocumentsRoute
+  '/importer/notifications': typeof ImporterNotificationsRoute
+  '/importer/pay-supplier': typeof ImporterPaySupplierRoute
+  '/importer/payments': typeof ImporterPaymentsRoute
+  '/importer/receipts': typeof ImporterReceiptsRoute
+  '/importer/shipments': typeof ImporterShipmentsRoute
+  '/importer/suppliers': typeof ImporterSuppliersRoute
   '/merchant/kyb': typeof MerchantKybRoute
   '/merchant/profile': typeof MerchantProfileRoute
   '/p/$linkId': typeof PLinkIdRoute
@@ -779,6 +841,7 @@ export interface FileRoutesByFullPath {
   '/track/whatsapp': typeof TrackWhatsappRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/treasury/cards': typeof TreasuryCardsRoute
+  '/importer/': typeof ImporterIndexRoute
   '/partner/': typeof PartnerIndexRoute
   '/supplier-portal/': typeof SupplierPortalIndexRoute
   '/track/': typeof TrackIndexRoute
@@ -805,7 +868,6 @@ export interface FileRoutesByTo {
   '/documents': typeof DocumentsRoute
   '/escrow': typeof EscrowRoute
   '/fx': typeof FxRoute
-  '/importer': typeof ImporterRouteWithChildren
   '/integrations': typeof IntegrationsRoute
   '/invoices': typeof InvoicesRoute
   '/kyb-onboarding': typeof KybOnboardingRoute
@@ -837,7 +899,15 @@ export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
   '/collections/new': typeof CollectionsNewRoute
+  '/importer/balance': typeof ImporterBalanceRoute
   '/importer/cards': typeof ImporterCardsRoute
+  '/importer/documents': typeof ImporterDocumentsRoute
+  '/importer/notifications': typeof ImporterNotificationsRoute
+  '/importer/pay-supplier': typeof ImporterPaySupplierRoute
+  '/importer/payments': typeof ImporterPaymentsRoute
+  '/importer/receipts': typeof ImporterReceiptsRoute
+  '/importer/shipments': typeof ImporterShipmentsRoute
+  '/importer/suppliers': typeof ImporterSuppliersRoute
   '/merchant/kyb': typeof MerchantKybRoute
   '/merchant/profile': typeof MerchantProfileRoute
   '/p/$linkId': typeof PLinkIdRoute
@@ -886,6 +956,7 @@ export interface FileRoutesByTo {
   '/track/whatsapp': typeof TrackWhatsappRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/treasury/cards': typeof TreasuryCardsRoute
+  '/importer': typeof ImporterIndexRoute
   '/partner': typeof PartnerIndexRoute
   '/supplier-portal': typeof SupplierPortalIndexRoute
   '/track': typeof TrackIndexRoute
@@ -948,7 +1019,15 @@ export interface FileRoutesById {
   '/welcome': typeof WelcomeRoute
   '/whatsapp': typeof WhatsappRoute
   '/collections/new': typeof CollectionsNewRoute
+  '/importer/balance': typeof ImporterBalanceRoute
   '/importer/cards': typeof ImporterCardsRoute
+  '/importer/documents': typeof ImporterDocumentsRoute
+  '/importer/notifications': typeof ImporterNotificationsRoute
+  '/importer/pay-supplier': typeof ImporterPaySupplierRoute
+  '/importer/payments': typeof ImporterPaymentsRoute
+  '/importer/receipts': typeof ImporterReceiptsRoute
+  '/importer/shipments': typeof ImporterShipmentsRoute
+  '/importer/suppliers': typeof ImporterSuppliersRoute
   '/merchant/kyb': typeof MerchantKybRoute
   '/merchant/profile': typeof MerchantProfileRoute
   '/p/$linkId': typeof PLinkIdRoute
@@ -998,6 +1077,7 @@ export interface FileRoutesById {
   '/track/whatsapp': typeof TrackWhatsappRoute
   '/trade-desk/$fileId': typeof TradeDeskFileIdRoute
   '/treasury/cards': typeof TreasuryCardsRoute
+  '/importer/': typeof ImporterIndexRoute
   '/partner/': typeof PartnerIndexRoute
   '/supplier-portal/': typeof SupplierPortalIndexRoute
   '/track/': typeof TrackIndexRoute
@@ -1061,7 +1141,15 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/whatsapp'
     | '/collections/new'
+    | '/importer/balance'
     | '/importer/cards'
+    | '/importer/documents'
+    | '/importer/notifications'
+    | '/importer/pay-supplier'
+    | '/importer/payments'
+    | '/importer/receipts'
+    | '/importer/shipments'
+    | '/importer/suppliers'
     | '/merchant/kyb'
     | '/merchant/profile'
     | '/p/$linkId'
@@ -1111,6 +1199,7 @@ export interface FileRouteTypes {
     | '/track/whatsapp'
     | '/trade-desk/$fileId'
     | '/treasury/cards'
+    | '/importer/'
     | '/partner/'
     | '/supplier-portal/'
     | '/track/'
@@ -1137,7 +1226,6 @@ export interface FileRouteTypes {
     | '/documents'
     | '/escrow'
     | '/fx'
-    | '/importer'
     | '/integrations'
     | '/invoices'
     | '/kyb-onboarding'
@@ -1169,7 +1257,15 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/whatsapp'
     | '/collections/new'
+    | '/importer/balance'
     | '/importer/cards'
+    | '/importer/documents'
+    | '/importer/notifications'
+    | '/importer/pay-supplier'
+    | '/importer/payments'
+    | '/importer/receipts'
+    | '/importer/shipments'
+    | '/importer/suppliers'
     | '/merchant/kyb'
     | '/merchant/profile'
     | '/p/$linkId'
@@ -1218,6 +1314,7 @@ export interface FileRouteTypes {
     | '/track/whatsapp'
     | '/trade-desk/$fileId'
     | '/treasury/cards'
+    | '/importer'
     | '/partner'
     | '/supplier-portal'
     | '/track'
@@ -1279,7 +1376,15 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/whatsapp'
     | '/collections/new'
+    | '/importer/balance'
     | '/importer/cards'
+    | '/importer/documents'
+    | '/importer/notifications'
+    | '/importer/pay-supplier'
+    | '/importer/payments'
+    | '/importer/receipts'
+    | '/importer/shipments'
+    | '/importer/suppliers'
     | '/merchant/kyb'
     | '/merchant/profile'
     | '/p/$linkId'
@@ -1329,6 +1434,7 @@ export interface FileRouteTypes {
     | '/track/whatsapp'
     | '/trade-desk/$fileId'
     | '/treasury/cards'
+    | '/importer/'
     | '/partner/'
     | '/supplier-portal/'
     | '/track/'
@@ -1772,11 +1878,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CollectionsNewRouteImport
       parentRoute: typeof CollectionsRoute
     }
+    '/importer/': {
+      id: '/importer/'
+      path: '/'
+      fullPath: '/importer/'
+      preLoaderRoute: typeof ImporterIndexRouteImport
+      parentRoute: typeof ImporterRoute
+    }
+    '/importer/balance': {
+      id: '/importer/balance'
+      path: '/balance'
+      fullPath: '/importer/balance'
+      preLoaderRoute: typeof ImporterBalanceRouteImport
+      parentRoute: typeof ImporterRoute
+    }
     '/importer/cards': {
       id: '/importer/cards'
       path: '/cards'
       fullPath: '/importer/cards'
       preLoaderRoute: typeof ImporterCardsRouteImport
+      parentRoute: typeof ImporterRoute
+    }
+    '/importer/documents': {
+      id: '/importer/documents'
+      path: '/documents'
+      fullPath: '/importer/documents'
+      preLoaderRoute: typeof ImporterDocumentsRouteImport
+      parentRoute: typeof ImporterRoute
+    }
+    '/importer/notifications': {
+      id: '/importer/notifications'
+      path: '/notifications'
+      fullPath: '/importer/notifications'
+      preLoaderRoute: typeof ImporterNotificationsRouteImport
+      parentRoute: typeof ImporterRoute
+    }
+    '/importer/pay-supplier': {
+      id: '/importer/pay-supplier'
+      path: '/pay-supplier'
+      fullPath: '/importer/pay-supplier'
+      preLoaderRoute: typeof ImporterPaySupplierRouteImport
+      parentRoute: typeof ImporterRoute
+    }
+    '/importer/payments': {
+      id: '/importer/payments'
+      path: '/payments'
+      fullPath: '/importer/payments'
+      preLoaderRoute: typeof ImporterPaymentsRouteImport
+      parentRoute: typeof ImporterRoute
+    }
+    '/importer/receipts': {
+      id: '/importer/receipts'
+      path: '/receipts'
+      fullPath: '/importer/receipts'
+      preLoaderRoute: typeof ImporterReceiptsRouteImport
+      parentRoute: typeof ImporterRoute
+    }
+    '/importer/shipments': {
+      id: '/importer/shipments'
+      path: '/shipments'
+      fullPath: '/importer/shipments'
+      preLoaderRoute: typeof ImporterShipmentsRouteImport
+      parentRoute: typeof ImporterRoute
+    }
+    '/importer/suppliers': {
+      id: '/importer/suppliers'
+      path: '/suppliers'
+      fullPath: '/importer/suppliers'
+      preLoaderRoute: typeof ImporterSuppliersRouteImport
       parentRoute: typeof ImporterRoute
     }
     '/merchant/kyb': {
@@ -2180,11 +2349,29 @@ const CollectionsRouteWithChildren = CollectionsRoute._addFileChildren(
 )
 
 interface ImporterRouteChildren {
+  ImporterBalanceRoute: typeof ImporterBalanceRoute
   ImporterCardsRoute: typeof ImporterCardsRoute
+  ImporterDocumentsRoute: typeof ImporterDocumentsRoute
+  ImporterNotificationsRoute: typeof ImporterNotificationsRoute
+  ImporterPaySupplierRoute: typeof ImporterPaySupplierRoute
+  ImporterPaymentsRoute: typeof ImporterPaymentsRoute
+  ImporterReceiptsRoute: typeof ImporterReceiptsRoute
+  ImporterShipmentsRoute: typeof ImporterShipmentsRoute
+  ImporterSuppliersRoute: typeof ImporterSuppliersRoute
+  ImporterIndexRoute: typeof ImporterIndexRoute
 }
 
 const ImporterRouteChildren: ImporterRouteChildren = {
+  ImporterBalanceRoute: ImporterBalanceRoute,
   ImporterCardsRoute: ImporterCardsRoute,
+  ImporterDocumentsRoute: ImporterDocumentsRoute,
+  ImporterNotificationsRoute: ImporterNotificationsRoute,
+  ImporterPaySupplierRoute: ImporterPaySupplierRoute,
+  ImporterPaymentsRoute: ImporterPaymentsRoute,
+  ImporterReceiptsRoute: ImporterReceiptsRoute,
+  ImporterShipmentsRoute: ImporterShipmentsRoute,
+  ImporterSuppliersRoute: ImporterSuppliersRoute,
+  ImporterIndexRoute: ImporterIndexRoute,
 }
 
 const ImporterRouteWithChildren = ImporterRoute._addFileChildren(
@@ -2410,13 +2597,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
