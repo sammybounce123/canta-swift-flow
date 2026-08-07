@@ -10,11 +10,36 @@ export const Route = createFileRoute("/partner/activity-log")({
 });
 
 const PARTNER_EVENTS = [
-  { at: "Today · 09:42", actor: "Charlotte Baron", action: "Approved payment case", ref: "BC-2026-1001" },
-  { at: "Today · 08:15", actor: "Quinn Solicitors", action: "Uploaded solicitor undertaking", ref: "BC-2026-1001" },
-  { at: "Yesterday · 17:04", actor: "Charlotte Baron", action: "Created payment link", ref: "PL-2026-0342" },
-  { at: "Yesterday · 11:22", actor: "Marketing Team", action: "Added referral lead", ref: "LEAD-2026-088" },
-  { at: "2 days ago", actor: "Charlotte Baron", action: "Updated commission split", ref: "COM-2026-014" },
+  {
+    at: "Today · 09:42",
+    actor: "Charlotte Baron",
+    action: "Approved payment case",
+    ref: "BC-2026-1001",
+  },
+  {
+    at: "Today · 08:15",
+    actor: "Quinn Solicitors",
+    action: "Uploaded solicitor undertaking",
+    ref: "BC-2026-1001",
+  },
+  {
+    at: "Yesterday · 17:04",
+    actor: "Charlotte Baron",
+    action: "Created payment link",
+    ref: "PL-2026-0342",
+  },
+  {
+    at: "Yesterday · 11:22",
+    actor: "Marketing Team",
+    action: "Added referral lead",
+    ref: "LEAD-2026-088",
+  },
+  {
+    at: "2 days ago",
+    actor: "Charlotte Baron",
+    action: "Updated commission split",
+    ref: "COM-2026-014",
+  },
 ];
 
 function PartnerActivityLog() {
@@ -29,7 +54,9 @@ function PartnerActivityLog() {
             {PARTNER_ORG.name} · scoped to your partner workspace only.
           </p>
         </div>
-        <Badge variant="outline" className="text-[10px]">Illustrative demo data</Badge>
+        <Badge variant="outline" className="text-[10px]">
+          Illustrative demo data
+        </Badge>
       </div>
 
       <Card className="p-0 overflow-hidden">
@@ -38,7 +65,9 @@ function PartnerActivityLog() {
             <li key={i} className="flex items-center justify-between gap-3 p-3 text-sm">
               <div>
                 <div className="font-medium">{e.action}</div>
-                <div className="text-xs text-muted-foreground">{e.actor} · Ref {e.ref}</div>
+                <div className="text-xs text-muted-foreground">
+                  {e.actor} · Ref {e.ref}
+                </div>
               </div>
               <div className="text-xs text-muted-foreground whitespace-nowrap">{e.at}</div>
             </li>

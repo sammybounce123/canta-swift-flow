@@ -3,7 +3,6 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, BookOpen, Users } from "lucide-react";
 
-
 export const Route = createFileRoute("/docs")({
   head: () => ({ meta: [{ title: "Documentation — Canta" }] }),
   component: Docs,
@@ -94,9 +93,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
   },
   {
     h: "Verification & Compliance",
-    body: [
-      "/verification-center centralised KYB/KYC/document verification across all workspaces.",
-    ],
+    body: ["/verification-center centralised KYB/KYC/document verification across all workspaces."],
   },
 
   {
@@ -212,7 +209,9 @@ const SECTIONS: { h: string; body: string[] }[] = [
 
 function Docs() {
   const downloadMd = () => {
-    const md = SECTIONS.map((s) => `## ${s.h}\n\n${s.body.map((p) => `- ${p}`).join("\n")}`).join("\n\n");
+    const md = SECTIONS.map((s) => `## ${s.h}\n\n${s.body.map((p) => `- ${p}`).join("\n")}`).join(
+      "\n\n",
+    );
     const full = `# Canta — Product Documentation\n\n${md}\n`;
     const blob = new Blob([full], { type: "text/markdown" });
     const a = document.createElement("a");
@@ -234,27 +233,30 @@ function Docs() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" asChild>
-            <Link to="/user-stories"><Users className="h-4 w-4 mr-1.5" /> User stories</Link>
+            <Link to="/user-stories">
+              <Users className="h-4 w-4 mr-1.5" /> User stories
+            </Link>
           </Button>
           <Button variant="outline" onClick={downloadMd}>
             <Download className="h-4 w-4 mr-1.5" /> Download .md
           </Button>
         </div>
-
       </div>
 
       <Card className="p-6 shadow-card space-y-6">
         <div>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            Canta is an enterprise cross-border payments, FX and trade platform for
-            corporates, importers, suppliers and partner property firms.
+            Canta is an enterprise cross-border payments, FX and trade platform for corporates,
+            importers, suppliers and partner property firms.
           </p>
         </div>
         {SECTIONS.map((s) => (
           <section key={s.h} className="space-y-2">
             <h2 className="text-base font-semibold">{s.h}</h2>
             <ul className="space-y-1.5 text-sm text-muted-foreground list-disc pl-5">
-              {s.body.map((b, i) => <li key={i}>{b}</li>)}
+              {s.body.map((b, i) => (
+                <li key={i}>{b}</li>
+              ))}
             </ul>
           </section>
         ))}

@@ -4,7 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
-import { autoConvertStore, useAutoConvert, useRmbBanks, useSimpleInvoices, isInvoiceQuoteExpired } from "@/lib/supplier-simple";
+import {
+  autoConvertStore,
+  useAutoConvert,
+  useRmbBanks,
+  useSimpleInvoices,
+  isInvoiceQuoteExpired,
+} from "@/lib/supplier-simple";
 import { useVerified } from "@/lib/supplier-data";
 import { useT } from "@/lib/supplier-lang";
 
@@ -17,9 +23,13 @@ export function useConversionBlockers(invoice?: { quoteExpiresAt: number; status
   const banks = useRmbBanks();
   const invoices = useSimpleInvoices();
   const blockers: Array<{ label: string; to: string }> = [];
-  if (!verified) blockers.push({ label: "Complete verification", to: "/supplier-portal/verification" });
+  if (!verified)
+    blockers.push({ label: "Complete verification", to: "/supplier-portal/verification" });
   if (!banks.some((b) => b.status === "Verified" && b.isSettlementDestination)) {
-    blockers.push({ label: "Add or verify an RMB bank account", to: "/supplier-portal/rmb-bank-account" });
+    blockers.push({
+      label: "Add or verify an RMB bank account",
+      to: "/supplier-portal/rmb-bank-account",
+    });
   }
   const expired = invoice
     ? isInvoiceQuoteExpired(invoice as never) && invoice.status !== "Cancelled"
@@ -27,7 +37,6 @@ export function useConversionBlockers(invoice?: { quoteExpiresAt: number; status
   if (expired) blockers.push({ label: "Refresh expired quote", to: "/supplier-portal/invoices" });
   return blockers;
 }
-
 
 export function AutoConvertCard() {
   const on = useAutoConvert();
@@ -51,7 +60,9 @@ export function AutoConvertCard() {
         />
       </div>
       <div className="rounded-md border bg-muted/30 p-3 text-xs">
-        <Badge variant="outline" className="mr-2 text-[10px]">{on ? "ON" : "OFF"}</Badge>
+        <Badge variant="outline" className="mr-2 text-[10px]">
+          {on ? "ON" : "OFF"}
+        </Badge>
         {on ? t("autoConvertOn") : t("autoConvertOff")}
       </div>
 
@@ -63,7 +74,9 @@ export function AutoConvertCard() {
           <ul className="mt-1 list-disc pl-5 text-xs space-y-0.5">
             {blockers.map((b) => (
               <li key={b.label}>
-                <Link to={b.to} className="underline underline-offset-2">{b.label}</Link>
+                <Link to={b.to} className="underline underline-offset-2">
+                  {b.label}
+                </Link>
               </li>
             ))}
           </ul>

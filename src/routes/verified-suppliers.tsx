@@ -17,10 +17,13 @@ function VerifiedSuppliersUnavailable() {
         </div>
         <h1 className="mt-4 text-2xl font-semibold">This feature is not available in this demo</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Public supplier discovery has been removed. Suppliers join Canta via invitation through the Supplier Portal.
+          Public supplier discovery has been removed. Suppliers join Canta via invitation through
+          the Supplier Portal.
         </p>
         <Button asChild className="mt-6">
-          <Link to="/welcome"><ArrowLeft className="h-4 w-4 mr-2" /> Back to workspace selection</Link>
+          <Link to="/welcome">
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back to workspace selection
+          </Link>
         </Button>
       </Card>
     </div>

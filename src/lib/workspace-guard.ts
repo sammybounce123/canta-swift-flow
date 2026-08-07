@@ -5,8 +5,8 @@ import { loadProfile, type WorkspaceType } from "@/lib/profile";
 
 const MODE_TO_WORKSPACE: Record<Mode, WorkspaceType> = {
   "Enterprise Treasury": "enterprise_treasury",
-  "Importer": "importer_portal",
-  "Supplier": "supplier_dashboard",
+  Importer: "importer_portal",
+  Supplier: "supplier_dashboard",
   "Global Merchant": "global_collections",
   "Partner Property": "partner_property",
   "Canta Ops": "canta_ops",
@@ -85,18 +85,59 @@ function normalizeWorkspace(value?: string | null): WorkspaceType | null {
   return mode ? MODE_TO_WORKSPACE[mode] : null;
 }
 
-const PROFILES: Record<WorkspaceType, { name: string; title: string; badge: string; workspaceLabel: string }> = {
-  enterprise_treasury: { name: "Adaeze Okonkwo", title: "Treasury Admin",  badge: "Enterprise Treasury Mode", workspaceLabel: "Enterprise Treasury" },
-  importer_portal:     { name: "Tunde Bakare",   title: "Importer Owner",  badge: "Importer Mode",            workspaceLabel: "Importer" },
-  global_collections:  { name: "Amaka Bello",    title: "Merchant Owner",  badge: "Global Collections Mode",  workspaceLabel: "Global Merchant" },
-  supplier_dashboard:  { name: "Li Wei",         title: "Supplier Admin",  badge: "Supplier Mode",            workspaceLabel: "Supplier" },
-  partner_property:    { name: "Charlotte Baron", title: "Partner Admin",   badge: "Partner Mode",             workspaceLabel: "Partner Mode" },
-  global_spend_cards:  { name: "Adaeze Okonkwo", title: "Treasury Admin",  badge: "Enterprise Treasury Mode", workspaceLabel: "Enterprise Treasury" },
-  canta_ops:           { name: "Adaeze Okonkwo", title: "Treasury Admin",  badge: "Enterprise Treasury Mode", workspaceLabel: "Enterprise Treasury" },
+const PROFILES: Record<
+  WorkspaceType,
+  { name: string; title: string; badge: string; workspaceLabel: string }
+> = {
+  enterprise_treasury: {
+    name: "Adaeze Okonkwo",
+    title: "Treasury Admin",
+    badge: "Enterprise Treasury Mode",
+    workspaceLabel: "Enterprise Treasury",
+  },
+  importer_portal: {
+    name: "Tunde Bakare",
+    title: "Importer Owner",
+    badge: "Importer Mode",
+    workspaceLabel: "Importer",
+  },
+  global_collections: {
+    name: "Amaka Bello",
+    title: "Merchant Owner",
+    badge: "Global Collections Mode",
+    workspaceLabel: "Global Merchant",
+  },
+  supplier_dashboard: {
+    name: "Li Wei",
+    title: "Supplier Admin",
+    badge: "Supplier Mode",
+    workspaceLabel: "Supplier",
+  },
+  partner_property: {
+    name: "Charlotte Baron",
+    title: "Partner Admin",
+    badge: "Partner Mode",
+    workspaceLabel: "Partner Mode",
+  },
+  global_spend_cards: {
+    name: "Adaeze Okonkwo",
+    title: "Treasury Admin",
+    badge: "Enterprise Treasury Mode",
+    workspaceLabel: "Enterprise Treasury",
+  },
+  canta_ops: {
+    name: "Adaeze Okonkwo",
+    title: "Treasury Admin",
+    badge: "Enterprise Treasury Mode",
+    workspaceLabel: "Enterprise Treasury",
+  },
 };
 
 export function isSharedWorkspacePath(pathname: string) {
-  return SHARED_WORKSPACE_PATHS.has(pathname) || Array.from(SHARED_WORKSPACE_PATHS).some((path) => pathname.startsWith(`${path}/`));
+  return (
+    SHARED_WORKSPACE_PATHS.has(pathname) ||
+    Array.from(SHARED_WORKSPACE_PATHS).some((path) => pathname.startsWith(`${path}/`))
+  );
 }
 
 export function workspaceFromPath(pathname: string): WorkspaceType | null {
@@ -104,19 +145,42 @@ export function workspaceFromPath(pathname: string): WorkspaceType | null {
   // path (never from stored client state) keeps SSR and client identical.
   if (pathname === "/ops" || pathname.startsWith("/ops/")) return "canta_ops";
   if (pathname.startsWith("/partner")) return "partner_property";
-  if (pathname.startsWith("/collections") || pathname.startsWith("/merchant") || pathname.startsWith("/payment-links") || pathname.startsWith("/payers") || pathname.startsWith("/reconciliation")) return "global_collections";
+  if (
+    pathname.startsWith("/collections") ||
+    pathname.startsWith("/merchant") ||
+    pathname.startsWith("/payment-links") ||
+    pathname.startsWith("/payers") ||
+    pathname.startsWith("/reconciliation")
+  )
+    return "global_collections";
   if (pathname.startsWith("/supplier-portal")) return "supplier_dashboard";
   if (pathname.startsWith("/escrow")) return "importer_portal";
   // /trade-desk is the internal Trade File console (ops/admin only) — importer
   // customers use the /importer/* supplier payment screens instead.
   if (pathname.startsWith("/trade-desk")) return "canta_ops";
-  if (pathname.startsWith("/importer") || pathname.startsWith("/my-suppliers") || pathname.startsWith("/landed-cost") || pathname.startsWith("/shipments")) return "importer_portal";
-  if (pathname.startsWith("/suppliers") || pathname.startsWith("/buyers") || pathname.startsWith("/verified-buyers")) return "supplier_dashboard";
+  if (
+    pathname.startsWith("/importer") ||
+    pathname.startsWith("/my-suppliers") ||
+    pathname.startsWith("/landed-cost") ||
+    pathname.startsWith("/shipments")
+  )
+    return "importer_portal";
+  if (
+    pathname.startsWith("/suppliers") ||
+    pathname.startsWith("/buyers") ||
+    pathname.startsWith("/verified-buyers")
+  )
+    return "supplier_dashboard";
   if (pathname === "/cards" || pathname.startsWith("/cards/")) return null;
-  if (pathname.startsWith("/treasury") || pathname.startsWith("/wallets") || pathname.startsWith("/fx") || pathname.startsWith("/beneficiaries")) return "enterprise_treasury";
+  if (
+    pathname.startsWith("/treasury") ||
+    pathname.startsWith("/wallets") ||
+    pathname.startsWith("/fx") ||
+    pathname.startsWith("/beneficiaries")
+  )
+    return "enterprise_treasury";
   return null;
 }
-
 
 function isCustomerWorkspace(workspace?: WorkspaceType | null): workspace is WorkspaceType {
   return VALID_CUSTOMER_WORKSPACES.has(workspace as WorkspaceType);
@@ -147,18 +211,27 @@ export function getSavedCustomerWorkspace(): WorkspaceType | null {
   // Repair mismatches between the active workspace key and legacy mode key.
   // Prefer the non-Enterprise value when one side is stale so shared routes do
   // not leak Enterprise identity after a user has selected Importer/Supplier/Partner.
-  if (isCustomerWorkspace(savedWorkspace) && isCustomerWorkspace(savedModeWorkspace) && savedWorkspace !== savedModeWorkspace) {
-    const repaired = savedModeWorkspace !== "enterprise_treasury"
-      ? savedModeWorkspace
-      : savedWorkspace !== "enterprise_treasury"
-        ? savedWorkspace
-        : savedModeWorkspace;
+  if (
+    isCustomerWorkspace(savedWorkspace) &&
+    isCustomerWorkspace(savedModeWorkspace) &&
+    savedWorkspace !== savedModeWorkspace
+  ) {
+    const repaired =
+      savedModeWorkspace !== "enterprise_treasury"
+        ? savedModeWorkspace
+        : savedWorkspace !== "enterprise_treasury"
+          ? savedWorkspace
+          : savedModeWorkspace;
     window.localStorage.setItem(ACTIVE_WORKSPACE_KEY, repaired);
     window.localStorage.setItem("canta:mode", WORKSPACE_TO_MODE[repaired]);
     return repaired;
   }
 
-  if (savedModeWorkspace && savedWorkspace !== savedModeWorkspace && isCustomerWorkspace(savedModeWorkspace)) {
+  if (
+    savedModeWorkspace &&
+    savedWorkspace !== savedModeWorkspace &&
+    isCustomerWorkspace(savedModeWorkspace)
+  ) {
     window.localStorage.setItem(ACTIVE_WORKSPACE_KEY, savedModeWorkspace);
     return savedModeWorkspace;
   }
@@ -224,7 +297,6 @@ export function useRequireWorkspace() {
   }, [navigate, pathname]);
 }
 
-
 export function useActiveWorkspace() {
   const { mode } = useMode();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -232,9 +304,7 @@ export function useActiveWorkspace() {
 
   const hydrated = useHydrated();
 
-  const resolveWorkspace = () =>
-    resolveActiveWorkspace(pathname, mode) ??
-    "importer_portal";
+  const resolveWorkspace = () => resolveActiveWorkspace(pathname, mode) ?? "importer_portal";
 
   // The server cannot read localStorage, so the first client render must match
   // the SSR output: path/mode only, no stored workspace, until hydration.

@@ -17,10 +17,13 @@ function CardsUnavailable() {
         </div>
         <h1 className="mt-4 text-2xl font-semibold">This feature is not available in this demo</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          This focused phase highlights Importer Trade Desk, Supplier Portal, Enterprise Treasury, and Partner Mode.
+          This focused phase highlights Importer Trade Desk, Supplier Portal, Enterprise Treasury,
+          and Partner Mode.
         </p>
         <Button asChild className="mt-6">
-          <Link to="/welcome"><ArrowLeft className="h-4 w-4 mr-2" /> Back to workspace selection</Link>
+          <Link to="/welcome">
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back to workspace selection
+          </Link>
         </Button>
       </Card>
     </div>

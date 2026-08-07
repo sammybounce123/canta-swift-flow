@@ -12,7 +12,11 @@ export const Route = createFileRoute("/supplier-portal/")({
   head: () => ({
     meta: [
       { title: "Dashboard — Supplier Portal — Canta" },
-      { name: "description", content: "Your NGN balance, RMB settlement pending and payouts to your verified RMB bank account." },
+      {
+        name: "description",
+        content:
+          "Your NGN balance, RMB settlement pending and payouts to your verified RMB bank account.",
+      },
     ],
   }),
   component: SupplierDashboard,
@@ -69,10 +73,20 @@ function SupplierDashboard() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Button asChild><Link to="/supplier-portal/create-invoice"><FileText className="mr-2 h-4 w-4" /> {t("createInvoice")}</Link></Button>
-        <Button asChild variant="outline"><Link to="/supplier-portal/ngn-balance">{t("viewNgnDetails")}</Link></Button>
-        <Button asChild variant="outline"><Link to="/supplier-portal/rmb-bank-account">{t("addRmbBank")}</Link></Button>
-        <Button asChild variant="outline"><Link to="/supplier-portal/settlements">{t("viewSettlements")}</Link></Button>
+        <Button asChild>
+          <Link to="/supplier-portal/create-invoice">
+            <FileText className="mr-2 h-4 w-4" /> {t("createInvoice")}
+          </Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link to="/supplier-portal/ngn-balance">{t("viewNgnDetails")}</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link to="/supplier-portal/rmb-bank-account">{t("addRmbBank")}</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link to="/supplier-portal/settlements">{t("viewSettlements")}</Link>
+        </Button>
       </div>
 
       <AutoConvertCard />
@@ -82,7 +96,9 @@ function SupplierDashboard() {
         <ol className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {steps.map((st) => (
             <li key={st.n} className="rounded-lg border p-3">
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Step {st.n}</div>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                Step {st.n}
+              </div>
               <div className="mt-1 text-sm font-medium">{st.en}</div>
               {lang === "en" && <div className="mt-1 text-xs text-muted-foreground">{st.zh}</div>}
             </li>
@@ -93,16 +109,25 @@ function SupplierDashboard() {
       <Card className="p-4">
         <div className="mb-3 flex items-center justify-between">
           <div className="text-sm font-semibold">Recent invoices</div>
-          <Link to="/supplier-portal/invoices" className="text-xs text-primary hover:underline">{t("invoiceHistory")}</Link>
+          <Link to="/supplier-portal/invoices" className="text-xs text-primary hover:underline">
+            {t("invoiceHistory")}
+          </Link>
         </div>
         <ul className="space-y-2 text-sm">
           {invoices.slice(0, 4).map((i) => (
-            <li key={i.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border p-2">
+            <li
+              key={i.id}
+              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border p-2"
+            >
               <div>
                 <div className="font-mono text-xs">{i.invoiceNumber}</div>
-                <div className="text-xs text-muted-foreground">{i.buyerCompany} · ¥{i.amountRmb.toLocaleString()}</div>
+                <div className="text-xs text-muted-foreground">
+                  {i.buyerCompany} · ¥{i.amountRmb.toLocaleString()}
+                </div>
               </div>
-              <Badge variant="outline" className="text-[10px]">{i.status}</Badge>
+              <Badge variant="outline" className="text-[10px]">
+                {i.status}
+              </Badge>
             </li>
           ))}
         </ul>
@@ -111,7 +136,17 @@ function SupplierDashboard() {
   );
 }
 
-function Metric({ icon: Icon, label, value, help }: { icon: typeof Wallet; label: string; value: string; help: string }) {
+function Metric({
+  icon: Icon,
+  label,
+  value,
+  help,
+}: {
+  icon: typeof Wallet;
+  label: string;
+  value: string;
+  help: string;
+}) {
   return (
     <Card className="p-4">
       <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-muted-foreground">

@@ -26,30 +26,50 @@ function TrackIndex() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="max-w-3xl mx-auto px-4 py-3">
-          <Link to="/" className="font-bold text-lg">Canta</Link>
+          <Link to="/" className="font-bold text-lg">
+            Canta
+          </Link>
         </div>
       </header>
       <main className="max-w-md mx-auto px-4 py-12">
         <Card className="p-8 shadow-card text-center">
           <Ship className="h-10 w-10 text-primary mx-auto" />
           <h1 className="text-2xl font-semibold mt-3">Track your shipment</h1>
-          <p className="text-sm text-muted-foreground mt-1">Enter your shipment ID or container number.</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Enter your shipment ID or container number.
+          </p>
           <div className="mt-6 flex gap-2">
-            <Input value={id} onChange={(e) => setId(e.target.value)} onKeyDown={(e) => e.key === "Enter" && go()} placeholder="SHP-10421" className="text-center font-mono" />
-            <Button className="bg-primary" onClick={go}>Track</Button>
+            <Input
+              value={id}
+              onChange={(e) => setId(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && go()}
+              placeholder="SHP-10421"
+              className="text-center font-mono"
+            />
+            <Button className="bg-primary" onClick={go}>
+              Track
+            </Button>
           </div>
           <div className="mt-6 text-xs text-muted-foreground">
             Try one of these demo IDs:
             <div className="mt-2 flex flex-wrap gap-1.5 justify-center">
               {examples.map((s) => (
-                <Link key={s.id} to="/track/$id" params={{ id: s.id }} className="px-2 py-1 rounded-full bg-secondary text-xs font-mono hover:bg-secondary/70">{s.id}</Link>
+                <Link
+                  key={s.id}
+                  to="/track/$id"
+                  params={{ id: s.id }}
+                  className="px-2 py-1 rounded-full bg-secondary text-xs font-mono hover:bg-secondary/70"
+                >
+                  {s.id}
+                </Link>
               ))}
             </div>
           </div>
         </Card>
         <Link to="/track/whatsapp" className="mt-4 block group">
           <Card className="p-4 bg-[#25D366] text-white shadow-card flex items-center justify-center gap-2 transition group-hover:bg-[#1FB855] group-hover:shadow-lg group-hover:shadow-[#25D366]/30">
-            <MessageCircle className="h-4 w-4" /> <span className="text-sm font-semibold">Track My Shipment on WhatsApp</span>
+            <MessageCircle className="h-4 w-4" />{" "}
+            <span className="text-sm font-semibold">Track My Shipment on WhatsApp</span>
           </Card>
         </Link>
       </main>

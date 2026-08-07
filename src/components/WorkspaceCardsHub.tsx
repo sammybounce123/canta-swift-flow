@@ -8,22 +8,43 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
   DialogDescription,
 } from "@/components/ui/dialog";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  CreditCard, Plus, Snowflake, Flame, Receipt, ChevronLeft, Download,
-  TrendingUp, ShieldCheck, AlertTriangle,
+  CreditCard,
+  Plus,
+  Snowflake,
+  Flame,
+  Receipt,
+  ChevronLeft,
+  Download,
+  TrendingUp,
+  ShieldCheck,
+  AlertTriangle,
 } from "lucide-react";
 import { fmtMoney } from "@/lib/mock";
 import { toast } from "sonner";
 import type { ReactNode } from "react";
 import { EmptyState } from "@/components/EmptyState";
-import { CardPurposeWizard, type CardDraft, type CardLinkKind } from "@/components/CardPurposeWizard";
+import {
+  CardPurposeWizard,
+  type CardDraft,
+  type CardLinkKind,
+} from "@/components/CardPurposeWizard";
 import { CardActions } from "@/components/CardActions";
 
 type CardType = { key: string; label: string; desc: string };
@@ -97,7 +118,7 @@ export function WorkspaceCardsHub({
             { label: `${d.label} B`, amount: Math.round(Math.random() * 4000) + 500 },
             { label: `${d.label} C`, amount: Math.round(Math.random() * 3000) + 300 },
           ],
-        ])
+        ]),
       ),
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,13 +134,20 @@ export function WorkspaceCardsHub({
   // Map workspace-specific link entity strings to the wizard's canonical CardLinkKind.
   const defaultLinkKind: CardLinkKind = (() => {
     const m: Record<string, CardLinkKind> = {
-      "Trade file": "Trade File", "Trade File": "Trade File",
-      "Shipment": "Shipment", "Supplier": "Supplier",
-      "Cost center": "Cost Center", "Cost Center": "Cost Center",
-      "Department": "Department", "Project": "Project",
-      "Freight route": "Freight Route", "Freight Route": "Freight Route",
-      "Freight customer": "Freight Customer", "Freight Customer": "Freight Customer",
-      "Event": "Event", "Property Case": "Property Case",
+      "Trade file": "Trade File",
+      "Trade File": "Trade File",
+      Shipment: "Shipment",
+      Supplier: "Supplier",
+      "Cost center": "Cost Center",
+      "Cost Center": "Cost Center",
+      Department: "Department",
+      Project: "Project",
+      "Freight route": "Freight Route",
+      "Freight Route": "Freight Route",
+      "Freight customer": "Freight Customer",
+      "Freight Customer": "Freight Customer",
+      Event: "Event",
+      "Property Case": "Property Case",
     };
     return m[linkEntities[0]] ?? "Department";
   })();
@@ -130,7 +158,7 @@ export function WorkspaceCardsHub({
       id: nextId(),
       type: d.purpose,
       typeLabel: d.purpose,
-      holder: d.who === "Me" ? "Me" : (d.holder || d.who),
+      holder: d.who === "Me" ? "Me" : d.holder || d.who,
       last4: String(1000 + Math.floor(Math.random() * 8999)).slice(-4),
       status: requireApproval ? "Pending Approval" : "Active",
       dailyLimit: d.dailyLimit,
@@ -145,16 +173,16 @@ export function WorkspaceCardsHub({
       spendByDim: Object.fromEntries(spendDimensions.map((dim) => [dim.key, []])),
     };
     setCards((c) => [newCard, ...c]);
-    toast.success(requireApproval ? "Card request created — awaiting approval" : "Card issued and active");
+    toast.success(
+      requireApproval ? "Card request created — awaiting approval" : "Card issued and active",
+    );
   }
 
   function toggleFreeze(id: string) {
     setCards((cs) =>
       cs.map((c) =>
-        c.id === id
-          ? { ...c, status: c.status === "Frozen" ? "Active" : "Frozen" }
-          : c
-      )
+        c.id === id ? { ...c, status: c.status === "Frozen" ? "Active" : "Frozen" } : c,
+      ),
     );
     toast.success("Card status updated");
   }
@@ -167,7 +195,16 @@ export function WorkspaceCardsHub({
   function exportCsv() {
     const rows = [
       ["Card", "Type", "Holder", "Last4", "Status", "Linked", "Monthly spend", "Limit"],
-      ...cards.map((c) => [c.id, c.typeLabel, c.holder, c.last4, c.status, c.linkedTo, c.monthlySpend, c.monthlyLimit]),
+      ...cards.map((c) => [
+        c.id,
+        c.typeLabel,
+        c.holder,
+        c.last4,
+        c.status,
+        c.linkedTo,
+        c.monthlySpend,
+        c.monthlyLimit,
+      ]),
     ];
     const csv = rows.map((r) => r.join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
@@ -185,7 +222,10 @@ export function WorkspaceCardsHub({
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           {backTo && (
-            <Link to={backTo.to} className="text-xs text-muted-foreground inline-flex items-center gap-1 hover:text-foreground">
+            <Link
+              to={backTo.to}
+              className="text-xs text-muted-foreground inline-flex items-center gap-1 hover:text-foreground"
+            >
               <ChevronLeft className="h-3 w-3" /> {backTo.label}
             </Link>
           )}
@@ -205,8 +245,16 @@ export function WorkspaceCardsHub({
       <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
         <Kpi label="Active cards" value={String(active)} tone="bg-success/10 text-success" />
         <Kpi label="Monthly spend" value={fmtMoney(totalSpend, "USD")} />
-        <Kpi label="Pending approvals" value={String(pending)} tone={pending ? "bg-warning/10 text-warning" : ""} />
-        <Kpi label="Receipts missing" value={String(receiptsMissing)} tone={receiptsMissing ? "bg-warning/10 text-warning" : ""} />
+        <Kpi
+          label="Pending approvals"
+          value={String(pending)}
+          tone={pending ? "bg-warning/10 text-warning" : ""}
+        />
+        <Kpi
+          label="Receipts missing"
+          value={String(receiptsMissing)}
+          tone={receiptsMissing ? "bg-warning/10 text-warning" : ""}
+        />
         <Kpi label="Card types" value={String(cardTypes.length)} />
       </div>
 
@@ -223,47 +271,86 @@ export function WorkspaceCardsHub({
               icon={<CreditCard className="h-5 w-5" />}
               title={`No ${workspaceKey} cards yet`}
               description={`Create a ${cardTypes[0].label.toLowerCase()} to start tracking spend.`}
-              action={{ label: "Create card", onClick: () => toast.info("Click 'Create card' in the header to start the wizard.") }}
+              action={{
+                label: "Create card",
+                onClick: () => toast.info("Click 'Create card' in the header to start the wizard."),
+              }}
             />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {cards.map((c) => {
-                const used = Math.min(100, Math.round((c.monthlySpend / Math.max(1, c.monthlyLimit)) * 100));
+                const used = Math.min(
+                  100,
+                  Math.round((c.monthlySpend / Math.max(1, c.monthlyLimit)) * 100),
+                );
                 return (
                   <Card key={c.id} className="p-4">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <div className="text-xs uppercase tracking-wider text-muted-foreground">{c.typeLabel}</div>
+                        <div className="text-xs uppercase tracking-wider text-muted-foreground">
+                          {c.typeLabel}
+                        </div>
                         <div className="font-semibold truncate">{c.holder}</div>
                       </div>
-                      <Badge variant="outline" className={
-                        c.status === "Active" ? "bg-success/15 text-success border-success/30" :
-                        c.status === "Frozen" ? "bg-muted text-muted-foreground" :
-                        "bg-warning/15 text-warning border-warning/30"
-                      }>{c.status}</Badge>
+                      <Badge
+                        variant="outline"
+                        className={
+                          c.status === "Active"
+                            ? "bg-success/15 text-success border-success/30"
+                            : c.status === "Frozen"
+                              ? "bg-muted text-muted-foreground"
+                              : "bg-warning/15 text-warning border-warning/30"
+                        }
+                      >
+                        {c.status}
+                      </Badge>
                     </div>
-                    <div className="mt-2 font-mono text-sm tracking-widest text-muted-foreground">•••• {c.last4}</div>
+                    <div className="mt-2 font-mono text-sm tracking-widest text-muted-foreground">
+                      •••• {c.last4}
+                    </div>
                     <div className="mt-1 text-[11px] text-muted-foreground">↳ {c.linkedTo}</div>
                     <div className="mt-3 text-[11px] flex justify-between">
-                      <span>{fmtMoney(c.monthlySpend, "USD")} / {fmtMoney(c.monthlyLimit, "USD")}</span>
+                      <span>
+                        {fmtMoney(c.monthlySpend, "USD")} / {fmtMoney(c.monthlyLimit, "USD")}
+                      </span>
                       <span>{used}%</span>
                     </div>
                     <Progress value={used} className="h-1 mt-1" />
                     <div className="mt-3 flex flex-wrap gap-1">
-                      {c.requireApproval && <Badge variant="secondary" className="text-[10px]"><ShieldCheck className="h-3 w-3 mr-1" /> Approvals</Badge>}
-                      {c.requireReceipts && <Badge variant="secondary" className="text-[10px]"><Receipt className="h-3 w-3 mr-1" /> Receipts</Badge>}
+                      {c.requireApproval && (
+                        <Badge variant="secondary" className="text-[10px]">
+                          <ShieldCheck className="h-3 w-3 mr-1" /> Approvals
+                        </Badge>
+                      )}
+                      {c.requireReceipts && (
+                        <Badge variant="secondary" className="text-[10px]">
+                          <Receipt className="h-3 w-3 mr-1" /> Receipts
+                        </Badge>
+                      )}
                       {c.receiptsMissing > 0 && (
-                        <Badge variant="outline" className="text-[10px] bg-warning/10 text-warning border-warning/30">
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] bg-warning/10 text-warning border-warning/30"
+                        >
                           <AlertTriangle className="h-3 w-3 mr-1" /> {c.receiptsMissing} missing
                         </Badge>
                       )}
                     </div>
                     <div className="mt-3">
                       {c.status === "Pending Approval" ? (
-                        <Button size="sm" className="h-7" onClick={() => approve(c.id)}>Approve</Button>
+                        <Button size="sm" className="h-7" onClick={() => approve(c.id)}>
+                          Approve
+                        </Button>
                       ) : (
                         <CardActions
-                          card={{ id: c.id, holder: c.holder, monthlySpend: c.monthlySpend, monthlyLimit: c.monthlyLimit, linkedTo: c.linkedTo, status: c.status }}
+                          card={{
+                            id: c.id,
+                            holder: c.holder,
+                            monthlySpend: c.monthlySpend,
+                            monthlyLimit: c.monthlyLimit,
+                            linkedTo: c.linkedTo,
+                            status: c.status,
+                          }}
                           isFrozen={c.status === "Frozen"}
                           onFreezeToggle={() => toggleFreeze(c.id)}
                         />
@@ -282,9 +369,11 @@ export function WorkspaceCardsHub({
             cards.forEach((c) =>
               (c.spendByDim[dim.key] ?? []).forEach((row) => {
                 agg[row.label] = (agg[row.label] ?? 0) + row.amount;
-              })
+              }),
             );
-            const rows = Object.entries(agg).map(([label, amount]) => ({ label, amount })).sort((a, b) => b.amount - a.amount);
+            const rows = Object.entries(agg)
+              .map(([label, amount]) => ({ label, amount }))
+              .sort((a, b) => b.amount - a.amount);
             const max = Math.max(1, ...rows.map((r) => r.amount));
             return (
               <Card key={dim.key} className="p-4">
@@ -299,7 +388,9 @@ export function WorkspaceCardsHub({
                       <div key={r.label}>
                         <div className="flex justify-between text-xs mb-1">
                           <span className="font-medium">{r.label}</span>
-                          <span className="tabular-nums text-muted-foreground">{fmtMoney(r.amount, "USD")}</span>
+                          <span className="tabular-nums text-muted-foreground">
+                            {fmtMoney(r.amount, "USD")}
+                          </span>
                         </div>
                         <Progress value={Math.round((r.amount / max) * 100)} className="h-1" />
                       </div>
@@ -321,7 +412,11 @@ export function WorkspaceCardsHub({
                   <CardPurposeWizard
                     defaultLinkKind={defaultLinkKind}
                     onCreate={handleCreate}
-                    trigger={<Button size="sm" variant="outline"><Plus className="h-3 w-3 mr-1" /> Create {t.label.toLowerCase()}</Button>}
+                    trigger={
+                      <Button size="sm" variant="outline">
+                        <Plus className="h-3 w-3 mr-1" /> Create {t.label.toLowerCase()}
+                      </Button>
+                    }
                   />
                 </div>
               </Card>

@@ -3,7 +3,15 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, FileSpreadsheet, FileText } from "lucide-react";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
 } from "recharts";
 import { CASES, SOLICITORS, formatGBP, getSolicitor } from "@/lib/partner";
 import { ReadinessBar } from "@/components/ReadinessBar";
@@ -16,7 +24,12 @@ export const Route = createFileRoute("/partner/reports")({
 function Reports() {
   const totalReferred = CASES.length;
   const success = CASES.filter((c) => ["Paid to Solicitor", "Receipt Uploaded"].includes(c.status));
-  const pending = CASES.filter((c) => !["Paid to Solicitor", "Receipt Uploaded", "Failed / Returned", "Cancelled"].includes(c.status));
+  const pending = CASES.filter(
+    (c) =>
+      !["Paid to Solicitor", "Receipt Uploaded", "Failed / Returned", "Cancelled"].includes(
+        c.status,
+      ),
+  );
   const failed = CASES.filter((c) => c.status === "Failed / Returned");
   const totalGBP = success.reduce((s, c) => s + c.amountGBP, 0);
   const avg = success.length ? Math.round(totalGBP / success.length) : 0;
@@ -24,8 +37,12 @@ function Reports() {
   const commission = Math.round(totalGBP * 0.005);
 
   const monthly = [
-    { m: "Jan", v: 820_000 }, { m: "Feb", v: 1_120_000 }, { m: "Mar", v: 980_000 },
-    { m: "Apr", v: 1_540_000 }, { m: "May", v: 1_810_000 }, { m: "Jun", v: 1_245_000 },
+    { m: "Jan", v: 820_000 },
+    { m: "Feb", v: 1_120_000 },
+    { m: "Mar", v: 980_000 },
+    { m: "Apr", v: 1_540_000 },
+    { m: "May", v: 1_810_000 },
+    { m: "Jun", v: 1_245_000 },
   ];
 
   const bySolicitor = SOLICITORS.map((s) => ({
@@ -34,7 +51,10 @@ function Reports() {
   }));
 
   const byProperty = Array.from(
-    CASES.reduce((m, c) => m.set(c.propertyLocation, (m.get(c.propertyLocation) ?? 0) + c.amountGBP), new Map<string, number>())
+    CASES.reduce(
+      (m, c) => m.set(c.propertyLocation, (m.get(c.propertyLocation) ?? 0) + c.amountGBP),
+      new Map<string, number>(),
+    ),
   ).map(([name, v]) => ({ name, v }));
 
   return (
@@ -43,12 +63,20 @@ function Reports() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Partner reports</h1>
-          <p className="text-sm text-muted-foreground mt-1">Reporting on every client referred by Baron &amp; Cabot.</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Reporting on every client referred by Baron &amp; Cabot.
+          </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline"><FileText className="h-4 w-4 mr-1.5" /> CSV</Button>
-          <Button variant="outline"><FileSpreadsheet className="h-4 w-4 mr-1.5" /> Excel</Button>
-          <Button variant="outline"><Download className="h-4 w-4 mr-1.5" /> PDF</Button>
+          <Button variant="outline">
+            <FileText className="h-4 w-4 mr-1.5" /> CSV
+          </Button>
+          <Button variant="outline">
+            <FileSpreadsheet className="h-4 w-4 mr-1.5" /> Excel
+          </Button>
+          <Button variant="outline">
+            <Download className="h-4 w-4 mr-1.5" /> PDF
+          </Button>
         </div>
       </div>
 
@@ -71,9 +99,23 @@ function Reports() {
             <LineChart data={monthly}>
               <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.92 0.01 250)" vertical={false} />
               <XAxis dataKey="m" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} tickFormatter={(v) => `£${(v / 1000).toFixed(0)}k`} />
-              <Tooltip contentStyle={{ borderRadius: 12, fontSize: 12 }} formatter={(v: number) => formatGBP(v)} />
-              <Line type="monotone" dataKey="v" stroke="oklch(0.36 0.12 260)" strokeWidth={2.5} dot={{ r: 4 }} />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 11 }}
+                tickFormatter={(v) => `£${(v / 1000).toFixed(0)}k`}
+              />
+              <Tooltip
+                contentStyle={{ borderRadius: 12, fontSize: 12 }}
+                formatter={(v: number) => formatGBP(v)}
+              />
+              <Line
+                type="monotone"
+                dataKey="v"
+                stroke="oklch(0.36 0.12 260)"
+                strokeWidth={2.5}
+                dot={{ r: 4 }}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -85,10 +127,22 @@ function Reports() {
           <div className="h-64 mt-3">
             <ResponsiveContainer>
               <BarChart data={bySolicitor}>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.92 0.01 250)" vertical={false} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="oklch(0.92 0.01 250)"
+                  vertical={false}
+                />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} tickFormatter={(v) => `£${(v / 1000).toFixed(0)}k`} />
-                <Tooltip contentStyle={{ borderRadius: 12, fontSize: 12 }} formatter={(v: number) => formatGBP(v)} />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 11 }}
+                  tickFormatter={(v) => `£${(v / 1000).toFixed(0)}k`}
+                />
+                <Tooltip
+                  contentStyle={{ borderRadius: 12, fontSize: 12 }}
+                  formatter={(v: number) => formatGBP(v)}
+                />
                 <Bar dataKey="volume" fill="oklch(0.78 0.16 175)" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -100,10 +154,30 @@ function Reports() {
           <div className="h-64 mt-3">
             <ResponsiveContainer>
               <BarChart data={byProperty} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.92 0.01 250)" horizontal={false} />
-                <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} tickFormatter={(v) => `£${(v / 1000).toFixed(0)}k`} />
-                <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} width={120} />
-                <Tooltip contentStyle={{ borderRadius: 12, fontSize: 12 }} formatter={(v: number) => formatGBP(v)} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="oklch(0.92 0.01 250)"
+                  horizontal={false}
+                />
+                <XAxis
+                  type="number"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 11 }}
+                  tickFormatter={(v) => `£${(v / 1000).toFixed(0)}k`}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 11 }}
+                  width={120}
+                />
+                <Tooltip
+                  contentStyle={{ borderRadius: 12, fontSize: 12 }}
+                  formatter={(v: number) => formatGBP(v)}
+                />
                 <Bar dataKey="v" fill="oklch(0.36 0.12 260)" radius={[0, 8, 8, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -127,8 +201,12 @@ function Reports() {
               <tr key={s.id} className="border-b last:border-0">
                 <td className="py-2">{s.firm}</td>
                 <td className="py-2 text-right tabular-nums">{s.linkedClients}</td>
-                <td className="py-2 text-right tabular-nums font-medium">{formatGBP(s.totalPayouts)}</td>
-                <td className="py-2 text-right text-muted-foreground tabular-nums">{s.lastPayout}</td>
+                <td className="py-2 text-right tabular-nums font-medium">
+                  {formatGBP(s.totalPayouts)}
+                </td>
+                <td className="py-2 text-right text-muted-foreground tabular-nums">
+                  {s.lastPayout}
+                </td>
               </tr>
             ))}
           </tbody>

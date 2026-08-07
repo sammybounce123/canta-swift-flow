@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { getActivePartnerRole, getActivePartnerUserId, getMarketer, type PartnerRole } from "@/lib/partner";
+import {
+  getActivePartnerRole,
+  getActivePartnerUserId,
+  getMarketer,
+  type PartnerRole,
+} from "@/lib/partner";
 
 // SSR-safe: start from server-side defaults, then hydrate from localStorage after mount
 // to avoid React hydration mismatches.

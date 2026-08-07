@@ -1,6 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import {
-  listCases, getExtendedCase, subscribe, expireQuoteIfNeeded, type ExtendedCase,
+  listCases,
+  getExtendedCase,
+  subscribe,
+  expireQuoteIfNeeded,
+  type ExtendedCase,
 } from "@/lib/partner-store";
 
 export function usePartnerCases(): ExtendedCase[] {

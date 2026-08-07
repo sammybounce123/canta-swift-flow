@@ -1,5 +1,12 @@
 export type FieldType = "text" | "number" | "date" | "select" | "textarea" | "file";
-export type TemplateField = { key: string; label: string; type: FieldType; required?: boolean; options?: string[]; placeholder?: string };
+export type TemplateField = {
+  key: string;
+  label: string;
+  type: FieldType;
+  required?: boolean;
+  options?: string[];
+  placeholder?: string;
+};
 export type CollectionTemplate = {
   id: string;
   label: string;
@@ -8,27 +15,48 @@ export type CollectionTemplate = {
   fields: TemplateField[];
 };
 
-const SETTLEMENT_CCY: TemplateField = { key: "settlementCcy", label: "Settlement currency", type: "select", required: true, options: ["USD", "GBP", "EUR", "RMB", "AED", "CAD"] };
-const PAYER_COUNTRY: TemplateField = { key: "payerCountry", label: "Payer country", type: "text", placeholder: "Nigeria" };
+const SETTLEMENT_CCY: TemplateField = {
+  key: "settlementCcy",
+  label: "Settlement currency",
+  type: "select",
+  required: true,
+  options: ["USD", "GBP", "EUR", "RMB", "AED", "CAD"],
+};
+const PAYER_COUNTRY: TemplateField = {
+  key: "payerCountry",
+  label: "Payer country",
+  type: "text",
+  placeholder: "Nigeria",
+};
 
 export const TEMPLATES: CollectionTemplate[] = [
   {
-    id: "tuition", label: "Tuition Collection", description: "Universities, schools, training programmes",
+    id: "tuition",
+    label: "Tuition Collection",
+    description: "Universities, schools, training programmes",
     purpose: "Tuition payment",
     fields: [
       { key: "studentName", label: "Student name", type: "text", required: true },
       { key: "studentRef", label: "Student ID / admission number", type: "text", required: true },
       { key: "programme", label: "Programme", type: "text" },
-      { key: "session", label: "Academic session / term", type: "text", placeholder: "Spring 2026" },
+      {
+        key: "session",
+        label: "Academic session / term",
+        type: "text",
+        placeholder: "Spring 2026",
+      },
       { key: "amount", label: "Invoice amount", type: "number", required: true },
       { key: "payerName", label: "Payer name", type: "text", required: true },
-      PAYER_COUNTRY, SETTLEMENT_CCY,
+      PAYER_COUNTRY,
+      SETTLEMENT_CCY,
       { key: "deadline", label: "Payment deadline", type: "date" },
       { key: "reconRef", label: "Reconciliation reference", type: "text" },
     ],
   },
   {
-    id: "medical", label: "Medical Payment", description: "Hospitals, clinics, treatment programmes",
+    id: "medical",
+    label: "Medical Payment",
+    description: "Hospitals, clinics, treatment programmes",
     purpose: "Medical payment",
     fields: [
       { key: "patientName", label: "Patient name", type: "text", required: true },
@@ -42,7 +70,9 @@ export const TEMPLATES: CollectionTemplate[] = [
     ],
   },
   {
-    id: "property", label: "Property Payment", description: "Property purchase, milestones",
+    id: "property",
+    label: "Property Payment",
+    description: "Property purchase, milestones",
     purpose: "Property payment",
     fields: [
       { key: "buyerName", label: "Buyer name", type: "text", required: true },
@@ -55,7 +85,9 @@ export const TEMPLATES: CollectionTemplate[] = [
     ],
   },
   {
-    id: "travel", label: "Travel Payment", description: "Airlines, travel agencies",
+    id: "travel",
+    label: "Travel Payment",
+    description: "Airlines, travel agencies",
     purpose: "Travel payment",
     fields: [
       { key: "traveller", label: "Traveller name", type: "text", required: true },
@@ -68,7 +100,9 @@ export const TEMPLATES: CollectionTemplate[] = [
     ],
   },
   {
-    id: "ecommerce", label: "E-commerce Order", description: "Online merchants, marketplaces",
+    id: "ecommerce",
+    label: "E-commerce Order",
+    description: "Online merchants, marketplaces",
     purpose: "E-commerce order",
     fields: [
       { key: "customer", label: "Customer name", type: "text", required: true },
@@ -76,12 +110,19 @@ export const TEMPLATES: CollectionTemplate[] = [
       { key: "product", label: "Product / service", type: "text" },
       { key: "amount", label: "Amount", type: "number", required: true },
       SETTLEMENT_CCY,
-      { key: "delivery", label: "Delivery status", type: "select", options: ["Pending", "Shipped", "Delivered"] },
+      {
+        key: "delivery",
+        label: "Delivery status",
+        type: "select",
+        options: ["Pending", "Shipped", "Delivered"],
+      },
       { key: "paymentRef", label: "Payment reference", type: "text" },
     ],
   },
   {
-    id: "services", label: "Professional Services", description: "Legal, consulting, professional fees",
+    id: "services",
+    label: "Professional Services",
+    description: "Legal, consulting, professional fees",
     purpose: "Professional service",
     fields: [
       { key: "client", label: "Client name", type: "text", required: true },
@@ -93,7 +134,9 @@ export const TEMPLATES: CollectionTemplate[] = [
     ],
   },
   {
-    id: "supplier", label: "Supplier Invoice", description: "B2B supplier settlements",
+    id: "supplier",
+    label: "Supplier Invoice",
+    description: "B2B supplier settlements",
     purpose: "Supplier invoice",
     fields: [
       { key: "supplier", label: "Supplier name", type: "text", required: true },
@@ -108,5 +151,6 @@ export const TEMPLATES: CollectionTemplate[] = [
   },
 ];
 
-
-export function getTemplate(id: string) { return TEMPLATES.find((t) => t.id === id); }
+export function getTemplate(id: string) {
+  return TEMPLATES.find((t) => t.id === id);
+}

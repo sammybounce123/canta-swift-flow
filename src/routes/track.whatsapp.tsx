@@ -57,7 +57,9 @@ function TrackWhatsAppPage() {
         ...parsed.data,
       });
       window.localStorage.setItem("canta:leads", JSON.stringify(arr.slice(0, 200)));
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     const text = `Hi Canta, I want to track my shipment. My tracking reference is ${reference}.`;
     const href = `https://wa.me/${(import.meta.env.VITE_CANTA_WHATSAPP_NUMBER as string | undefined)?.replace(/\D/g, "") || "2348000000000"}?text=${encodeURIComponent(text)}`;
     toast.success("Opening WhatsApp…", { description: `Reference ${reference}` });
@@ -70,8 +72,12 @@ function TrackWhatsAppPage() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link to="/" className="font-bold text-lg">Canta</Link>
-          <Link to="/track" className="text-xs text-muted-foreground">Back to tracking</Link>
+          <Link to="/" className="font-bold text-lg">
+            Canta
+          </Link>
+          <Link to="/track" className="text-xs text-muted-foreground">
+            Back to tracking
+          </Link>
         </div>
       </header>
       <main className="max-w-md mx-auto px-4 py-10">
@@ -87,22 +93,56 @@ function TrackWhatsAppPage() {
 
           <form onSubmit={submit} className="mt-5 space-y-3">
             <div>
-              <Label htmlFor="firstName" className="text-xs">First name</Label>
-              <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Jane" maxLength={60} />
+              <Label htmlFor="firstName" className="text-xs">
+                First name
+              </Label>
+              <Input
+                id="firstName"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Jane"
+                maxLength={60}
+              />
             </div>
             <div>
-              <Label htmlFor="phone" className="text-xs">WhatsApp phone number</Label>
-              <Input id="phone" type="tel" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+234 800 000 0000" maxLength={30} />
+              <Label htmlFor="phone" className="text-xs">
+                WhatsApp phone number
+              </Label>
+              <Input
+                id="phone"
+                type="tel"
+                inputMode="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+234 800 000 0000"
+                maxLength={30}
+              />
             </div>
             <div>
-              <Label htmlFor="business" className="text-xs">Business or trading name <span className="text-muted-foreground">(optional)</span></Label>
-              <Input id="business" value={business} onChange={(e) => setBusiness(e.target.value)} placeholder="Optional" maxLength={120} />
+              <Label htmlFor="business" className="text-xs">
+                Business or trading name <span className="text-muted-foreground">(optional)</span>
+              </Label>
+              <Input
+                id="business"
+                value={business}
+                onChange={(e) => setBusiness(e.target.value)}
+                placeholder="Optional"
+                maxLength={120}
+              />
             </div>
             <label className="flex items-start gap-2 text-[12px] text-muted-foreground pt-1">
-              <Checkbox checked={consent} onCheckedChange={(v) => setConsent(v === true)} className="mt-0.5" />
+              <Checkbox
+                checked={consent}
+                onCheckedChange={(v) => setConsent(v === true)}
+                className="mt-0.5"
+              />
               <span>I agree to be contacted by Canta on WhatsApp about my shipment.</span>
             </label>
-            <Button type="submit" disabled={submitting} className="w-full bg-[#25D366] hover:bg-[#1FB855] text-white">
+            <Button
+              type="submit"
+              disabled={submitting}
+              className="w-full bg-[#25D366] hover:bg-[#1FB855] text-white"
+            >
               Continue to WhatsApp <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
             <p className="text-[11px] text-muted-foreground text-center">

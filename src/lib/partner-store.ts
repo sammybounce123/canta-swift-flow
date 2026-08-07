@@ -5,8 +5,14 @@
 // the flow survives reloads. Subscribers receive a "partner-data-change" event.
 
 import {
-  CASES, type PaymentCase, type CaseStatus, getCase as getSeedCase,
-  PARTNER_ORG, getMarketer, type PartnerRole, MARKETERS,
+  CASES,
+  type PaymentCase,
+  type CaseStatus,
+  getCase as getSeedCase,
+  PARTNER_ORG,
+  getMarketer,
+  type PartnerRole,
+  MARKETERS,
 } from "./partner";
 
 export type CaseDocument = {
@@ -33,9 +39,9 @@ export type FxQuote = {
   id: string;
   caseId: string;
   gbpAmount: number;
-  rate: number;       // 1 GBP = X NGN
+  rate: number; // 1 GBP = X NGN
   feeGBP: number;
-  ngnTotal: number;   // amount client pays
+  ngnTotal: number; // amount client pays
   reference: string;
   generatedBy: string;
   generatedByName: string;
@@ -50,7 +56,7 @@ export type PaymentLink = {
   id: string;
   caseId: string;
   quoteId: string;
-  url: string;        // /pay/<id>
+  url: string; // /pay/<id>
   status: "Active" | "Sent" | "Opened" | "Verified" | "Funded" | "Completed" | "Expired";
   createdAt: string;
   sentAt?: string;
@@ -58,7 +64,7 @@ export type PaymentLink = {
 };
 
 export type ClientVerification = {
-  bvnMasked?: string;       // we store only the masked form
+  bvnMasked?: string; // we store only the masked form
   bvnStatus: "Pending" | "Submitted" | "Verified" | "Failed";
   dob?: string;
   fullNameConfirmed?: boolean;
@@ -79,11 +85,22 @@ export type FundingRecord = {
   payerName?: string;
   reference?: string;
   receivedAt?: string;
-  reviewStatus?: "Pending" | "Amount Mismatch" | "Name Mismatch" | "Reference Missing" | "Ready for FX";
+  reviewStatus?:
+    | "Pending"
+    | "Amount Mismatch"
+    | "Name Mismatch"
+    | "Reference Missing"
+    | "Ready for FX";
 };
 
 export type PayoutRecord = {
-  status: "Pending" | "Processing" | "Paid to Solicitor" | "Failed" | "Returned" | "Receipt Uploaded";
+  status:
+    | "Pending"
+    | "Processing"
+    | "Paid to Solicitor"
+    | "Failed"
+    | "Returned"
+    | "Receipt Uploaded";
   payoutAt?: string;
   reference?: string;
   receiptUrl?: string;
@@ -150,24 +167,30 @@ function seedExtended(c: PaymentCase): ExtendedCase {
     quotes: [],
     payout: {
       status:
-        c.status === "Paid to Solicitor" ? "Paid to Solicitor" :
-        c.status === "Receipt Uploaded" ? "Receipt Uploaded" :
-        c.status === "Failed / Returned" ? "Failed" :
-        c.status === "Payout Processing" ? "Processing" :
-        "Pending",
+        c.status === "Paid to Solicitor"
+          ? "Paid to Solicitor"
+          : c.status === "Receipt Uploaded"
+            ? "Receipt Uploaded"
+            : c.status === "Failed / Returned"
+              ? "Failed"
+              : c.status === "Payout Processing"
+                ? "Processing"
+                : "Pending",
       payoutAt: c.expectedPayout,
       reference: c.paymentReference,
     },
-    activity: [{
-      id: uid("ACT"),
-      caseId: c.id,
-      action: "Case seeded",
-      timestamp: c.createdAt + "T09:00:00Z",
-      userId: c.assignedMarketerId,
-      userName: getMarketer(c.assignedMarketerId)?.name ?? "Unknown",
-      userRole: "marketer",
-      toStatus: c.status,
-    }],
+    activity: [
+      {
+        id: uid("ACT"),
+        caseId: c.id,
+        action: "Case seeded",
+        timestamp: c.createdAt + "T09:00:00Z",
+        userId: c.assignedMarketerId,
+        userName: getMarketer(c.assignedMarketerId)?.name ?? "Unknown",
+        userRole: "marketer",
+        toStatus: c.status,
+      },
+    ],
   };
 }
 
@@ -189,7 +212,9 @@ function readStore(): ExtendedCase[] {
       MEMORY_STORE = merged;
       return merged;
     }
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   MEMORY_STORE = CASES.map(seedExtended);
   return MEMORY_STORE;
 }
@@ -197,7 +222,11 @@ function readStore(): ExtendedCase[] {
 function writeStore(cases: ExtendedCase[]) {
   MEMORY_STORE = cases;
   if (typeof window !== "undefined") {
-    try { window.localStorage.setItem(STORE_KEY, JSON.stringify(cases)); } catch { /* ignore */ }
+    try {
+      window.localStorage.setItem(STORE_KEY, JSON.stringify(cases));
+    } catch {
+      /* ignore */
+    }
   }
   emit();
 }
@@ -207,7 +236,10 @@ export function listCases(): ExtendedCase[] {
 }
 
 export function getExtendedCase(id: string): ExtendedCase | undefined {
-  return readStore().find((c) => c.id === id) ?? (getSeedCase(id) ? seedExtended(getSeedCase(id)!) : undefined);
+  return (
+    readStore().find((c) => c.id === id) ??
+    (getSeedCase(id) ? seedExtended(getSeedCase(id)!) : undefined)
+  );
 }
 
 function updateCase(id: string, mutator: (c: ExtendedCase) => ExtendedCase) {
@@ -243,31 +275,55 @@ export function appendActivity(
   }));
 }
 
-export function setStatus(caseId: string, toStatus: CaseStatus, actor: { id: string; name: string; role: PartnerRole | "client" | "canta_system" }, note?: string) {
+export function setStatus(
+  caseId: string,
+  toStatus: CaseStatus,
+  actor: { id: string; name: string; role: PartnerRole | "client" | "canta_system" },
+  note?: string,
+) {
   let from: CaseStatus | undefined;
-  updateCase(caseId, (c) => { from = c.status; return { ...c, status: toStatus }; });
-  appendActivity(caseId, `Status changed → ${toStatus}`, actor, { fromStatus: from, toStatus, notes: note });
+  updateCase(caseId, (c) => {
+    from = c.status;
+    return { ...c, status: toStatus };
+  });
+  appendActivity(caseId, `Status changed → ${toStatus}`, actor, {
+    fromStatus: from,
+    toStatus,
+    notes: note,
+  });
 }
 
 /* ------------- New case ------------- */
 
 export function createCase(input: {
-  clientName: string; clientEmail: string; clientPhone: string;
-  property: string; propertyLocation: string;
-  amountGBP: number; solicitorId: string;
-  paymentPurpose: string; paymentDeadline: string;
-  assignedMarketerId: string; notes?: string;
-  createdBy: string; createdByName: string;
+  clientName: string;
+  clientEmail: string;
+  clientPhone: string;
+  property: string;
+  propertyLocation: string;
+  amountGBP: number;
+  solicitorId: string;
+  paymentPurpose: string;
+  paymentDeadline: string;
+  assignedMarketerId: string;
+  notes?: string;
+  createdBy: string;
+  createdByName: string;
 }): ExtendedCase {
   const num = 1000 + readStore().length + 1;
   const id = `CS-${num}`;
   const ref = `BC-2026-${num}`;
   const officer = getMarketer(input.assignedMarketerId)?.name ?? "Unassigned";
   const c: ExtendedCase = {
-    id, ref,
-    clientName: input.clientName, clientEmail: input.clientEmail, clientPhone: input.clientPhone,
-    property: input.property, propertyLocation: input.propertyLocation,
-    amountGBP: input.amountGBP, currency: "GBP",
+    id,
+    ref,
+    clientName: input.clientName,
+    clientEmail: input.clientEmail,
+    clientPhone: input.clientPhone,
+    property: input.property,
+    propertyLocation: input.propertyLocation,
+    amountGBP: input.amountGBP,
+    currency: "GBP",
     solicitorId: input.solicitorId,
     status: "Draft",
     createdAt: new Date().toISOString().slice(0, 10),
@@ -280,17 +336,19 @@ export function createCase(input: {
     clientSource: "Partner Referral",
     documents: [],
     quotes: [],
-    activity: [{
-      id: uid("ACT"),
-      caseId: id,
-      action: `Case created by ${input.createdByName} (${PARTNER_ORG.name})`,
-      timestamp: nowISO(),
-      userId: input.createdBy,
-      userName: input.createdByName,
-      userRole: "marketer",
-      toStatus: "Draft",
-      notes: input.notes,
-    }],
+    activity: [
+      {
+        id: uid("ACT"),
+        caseId: id,
+        action: `Case created by ${input.createdByName} (${PARTNER_ORG.name})`,
+        timestamp: nowISO(),
+        userId: input.createdBy,
+        userName: input.createdByName,
+        userRole: "marketer",
+        toStatus: "Draft",
+        notes: input.notes,
+      },
+    ],
   };
   writeStore([c, ...readStore()]);
   return c;
@@ -303,13 +361,19 @@ export function addDocument(caseId: string, doc: Omit<CaseDocument, "id" | "uplo
     ...c,
     documents: [...c.documents, { ...doc, id: uid("DOC"), uploadedAt: nowISO() }],
   }));
-  appendActivity(caseId, `Document uploaded: ${doc.type}`,
-    { id: doc.uploadedBy, name: doc.uploadedByName, role: doc.uploadedByRole });
+  appendActivity(caseId, `Document uploaded: ${doc.type}`, {
+    id: doc.uploadedBy,
+    name: doc.uploadedByName,
+    role: doc.uploadedByRole,
+  });
   // Move status if currently Draft/Referred
   const c = getExtendedCase(caseId);
   if (c && ["Draft", "Referred", "Referral Created", "KYC Pending"].includes(c.status)) {
-    setStatus(caseId, "KYC Documents Uploaded",
-      { id: doc.uploadedBy, name: doc.uploadedByName, role: doc.uploadedByRole });
+    setStatus(caseId, "KYC Documents Uploaded", {
+      id: doc.uploadedBy,
+      name: doc.uploadedByName,
+      role: doc.uploadedByRole,
+    });
   }
 }
 
@@ -317,10 +381,14 @@ export function addDocument(caseId: string, doc: Omit<CaseDocument, "id" | "uplo
 
 function validityMs(v: FxQuote["validity"]): number {
   switch (v) {
-    case "30m": return 30 * 60 * 1000;
-    case "1h": return 60 * 60 * 1000;
-    case "same_day": return 12 * 60 * 60 * 1000;
-    case "custom": return 4 * 60 * 60 * 1000;
+    case "30m":
+      return 30 * 60 * 1000;
+    case "1h":
+      return 60 * 60 * 1000;
+    case "same_day":
+      return 12 * 60 * 60 * 1000;
+    case "custom":
+      return 4 * 60 * 60 * 1000;
   }
 }
 
@@ -332,10 +400,12 @@ export function generateQuote(
 ): FxQuote | undefined {
   const c = getExtendedCase(caseId);
   if (!c) return;
-  const gbpAmount = overrides?.amountGBP && overrides.amountGBP > 0 ? overrides.amountGBP : c.amountGBP;
-  const rate = overrides?.rate && overrides.rate > 0
-    ? overrides.rate
-    : 2050 + Math.round((Math.random() - 0.5) * 20);
+  const gbpAmount =
+    overrides?.amountGBP && overrides.amountGBP > 0 ? overrides.amountGBP : c.amountGBP;
+  const rate =
+    overrides?.rate && overrides.rate > 0
+      ? overrides.rate
+      : 2050 + Math.round((Math.random() - 0.5) * 20);
   const feeGBP = Math.max(20, Math.round(gbpAmount * 0.0075));
   const ngnTotal = Math.round((gbpAmount + feeGBP) * rate);
   const quote: FxQuote = {
@@ -357,13 +427,14 @@ export function generateQuote(
   updateCase(caseId, (cc) => ({
     ...cc,
     amountGBP: gbpAmount,
-    quotes: cc.quotes.map((q) => q.status === "Active" ? { ...q, status: "Replaced" as const } : q).concat(quote),
+    quotes: cc.quotes
+      .map((q) => (q.status === "Active" ? { ...q, status: "Replaced" as const } : q))
+      .concat(quote),
     activeQuoteId: quote.id,
   }));
   setStatus(caseId, "FX Quote Generated", actor, `Quote ${quote.reference} valid ${validity}`);
   return quote;
 }
-
 
 export function expireQuoteIfNeeded(caseId: string) {
   const c = getExtendedCase(caseId);
@@ -373,21 +444,32 @@ export function expireQuoteIfNeeded(caseId: string) {
   if (new Date(q.expiresAt).getTime() <= Date.now()) {
     updateCase(caseId, (cc) => ({
       ...cc,
-      quotes: cc.quotes.map((x) => x.id === q.id ? { ...x, status: "Expired" as const } : x),
-      paymentLink: cc.paymentLink ? { ...cc.paymentLink, status: "Expired" as const } : cc.paymentLink,
+      quotes: cc.quotes.map((x) => (x.id === q.id ? { ...x, status: "Expired" as const } : x)),
+      paymentLink: cc.paymentLink
+        ? { ...cc.paymentLink, status: "Expired" as const }
+        : cc.paymentLink,
     }));
-    setStatus(caseId, "Expired Quote", { id: "system", name: "Canta System", role: "canta_system" });
+    setStatus(caseId, "Expired Quote", {
+      id: "system",
+      name: "Canta System",
+      role: "canta_system",
+    });
   }
 }
 
 /* ------------- Payment Link ------------- */
 
-export function generatePaymentLink(caseId: string, actor: { id: string; name: string; role: PartnerRole }): PaymentLink | undefined {
+export function generatePaymentLink(
+  caseId: string,
+  actor: { id: string; name: string; role: PartnerRole },
+): PaymentLink | undefined {
   const c = getExtendedCase(caseId);
   if (!c?.activeQuoteId) return;
   const id = uid("PL");
   const link: PaymentLink = {
-    id, caseId, quoteId: c.activeQuoteId,
+    id,
+    caseId,
+    quoteId: c.activeQuoteId,
     url: `/pay/${id}`,
     status: "Active",
     createdAt: nowISO(),
@@ -397,10 +479,15 @@ export function generatePaymentLink(caseId: string, actor: { id: string; name: s
   return link;
 }
 
-export function markLinkSent(caseId: string, actor: { id: string; name: string; role: PartnerRole }) {
+export function markLinkSent(
+  caseId: string,
+  actor: { id: string; name: string; role: PartnerRole },
+) {
   updateCase(caseId, (cc) => ({
     ...cc,
-    paymentLink: cc.paymentLink ? { ...cc.paymentLink, status: "Sent" as const, sentAt: nowISO() } : cc.paymentLink,
+    paymentLink: cc.paymentLink
+      ? { ...cc.paymentLink, status: "Sent" as const, sentAt: nowISO() }
+      : cc.paymentLink,
   }));
   setStatus(caseId, "Payment Link Sent", actor);
 }
@@ -412,17 +499,30 @@ export function findCaseByLinkId(linkId: string): ExtendedCase | undefined {
 export function markLinkOpened(caseId: string) {
   updateCase(caseId, (cc) => ({
     ...cc,
-    paymentLink: cc.paymentLink && !cc.paymentLink.openedAt ? { ...cc.paymentLink, status: "Opened" as const, openedAt: nowISO() } : cc.paymentLink,
+    paymentLink:
+      cc.paymentLink && !cc.paymentLink.openedAt
+        ? { ...cc.paymentLink, status: "Opened" as const, openedAt: nowISO() }
+        : cc.paymentLink,
   }));
-  appendActivity(caseId, "Client opened payment link", { id: "client", name: "Client", role: "client" });
+  appendActivity(caseId, "Client opened payment link", {
+    id: "client",
+    name: "Client",
+    role: "client",
+  });
 }
 
 /* ------------- Verification ------------- */
 
-export function submitVerification(caseId: string, data: {
-  bvn: string; dob: string; fullNameConfirmed: boolean; sourceOfFunds: string;
-  consent: ClientVerification["consent"];
-}) {
+export function submitVerification(
+  caseId: string,
+  data: {
+    bvn: string;
+    dob: string;
+    fullNameConfirmed: boolean;
+    sourceOfFunds: string;
+    consent: ClientVerification["consent"];
+  },
+) {
   const masked = data.bvn.length >= 4 ? `••••••• ${data.bvn.slice(-4)}` : "•••••••";
   updateCase(caseId, (cc) => ({
     ...cc,
@@ -437,15 +537,26 @@ export function submitVerification(caseId: string, data: {
     },
   }));
   appendActivity(caseId, "Client submitted BVN", { id: "client", name: "Client", role: "client" });
-  appendActivity(caseId, "Client consent completed", { id: "client", name: "Client", role: "client" });
+  appendActivity(caseId, "Client consent completed", {
+    id: "client",
+    name: "Client",
+    role: "client",
+  });
   setStatus(caseId, "Client Consent Completed", { id: "client", name: "Client", role: "client" });
   // Move on to awaiting funding
-  setStatus(caseId, "Awaiting Client Funding", { id: "system", name: "Canta System", role: "canta_system" });
+  setStatus(caseId, "Awaiting Client Funding", {
+    id: "system",
+    name: "Canta System",
+    role: "canta_system",
+  });
 }
 
 /* ------------- Funding ------------- */
 
-export function recordFunding(caseId: string, payload: { payerName: string; receivedNGN: number; reference: string }) {
+export function recordFunding(
+  caseId: string,
+  payload: { payerName: string; receivedNGN: number; reference: string },
+) {
   const c = getExtendedCase(caseId);
   if (!c) return;
   const q = c.quotes.find((x) => x.id === c.activeQuoteId);
@@ -463,13 +574,29 @@ export function recordFunding(caseId: string, payload: { payerName: string; rece
       reviewStatus: review,
     },
   }));
-  appendActivity(caseId, `Funding received: ₦${payload.receivedNGN.toLocaleString()} from ${payload.payerName}`,
-    { id: "system", name: "Canta System", role: "canta_system" });
-  setStatus(caseId, "Funding Received", { id: "system", name: "Canta System", role: "canta_system" });
-  if (!mismatch) setStatus(caseId, "Funding Review", { id: "system", name: "Canta System", role: "canta_system" }, "Ready for FX");
+  appendActivity(
+    caseId,
+    `Funding received: ₦${payload.receivedNGN.toLocaleString()} from ${payload.payerName}`,
+    { id: "system", name: "Canta System", role: "canta_system" },
+  );
+  setStatus(caseId, "Funding Received", {
+    id: "system",
+    name: "Canta System",
+    role: "canta_system",
+  });
+  if (!mismatch)
+    setStatus(
+      caseId,
+      "Funding Review",
+      { id: "system", name: "Canta System", role: "canta_system" },
+      "Ready for FX",
+    );
 }
 
-export function convertFx(caseId: string, actor: { id: string; name: string; role: PartnerRole | "canta_system" }) {
+export function convertFx(
+  caseId: string,
+  actor: { id: string; name: string; role: PartnerRole | "canta_system" },
+) {
   setStatus(caseId, "FX Converted", actor);
   setStatus(caseId, "Payout Processing", actor);
   updateCase(caseId, (cc) => ({
@@ -478,7 +605,11 @@ export function convertFx(caseId: string, actor: { id: string; name: string; rol
   }));
 }
 
-export function markPaidToSolicitor(caseId: string, actor: { id: string; name: string; role: PartnerRole | "canta_system" }, reference?: string) {
+export function markPaidToSolicitor(
+  caseId: string,
+  actor: { id: string; name: string; role: PartnerRole | "canta_system" },
+  reference?: string,
+) {
   updateCase(caseId, (cc) => ({
     ...cc,
     payout: {
@@ -491,16 +622,26 @@ export function markPaidToSolicitor(caseId: string, actor: { id: string; name: s
   setStatus(caseId, "Paid to Solicitor", actor);
 }
 
-export function uploadReceipt(caseId: string, actor: { id: string; name: string; role: PartnerRole | "canta_system" }) {
+export function uploadReceipt(
+  caseId: string,
+  actor: { id: string; name: string; role: PartnerRole | "canta_system" },
+) {
   updateCase(caseId, (cc) => ({
     ...cc,
-    payout: { ...(cc.payout ?? { status: "Pending" }), status: "Receipt Uploaded", receiptUrl: "mock-receipt.pdf" },
+    payout: {
+      ...(cc.payout ?? { status: "Pending" }),
+      status: "Receipt Uploaded",
+      receiptUrl: "mock-receipt.pdf",
+    },
   }));
   setStatus(caseId, "Receipt Uploaded", actor);
   setStatus(caseId, "Completed", actor);
 }
 
-export function inviteToCanta(caseId: string, actor: { id: string; name: string; role: PartnerRole }) {
+export function inviteToCanta(
+  caseId: string,
+  actor: { id: string; name: string; role: PartnerRole },
+) {
   updateCase(caseId, (cc) => ({
     ...cc,
     activation: { ...(cc.activation ?? {}), invitedAt: nowISO() },
@@ -511,20 +652,39 @@ export function inviteToCanta(caseId: string, actor: { id: string; name: string;
 export function activateClientAccount(caseId: string) {
   updateCase(caseId, (cc) => ({
     ...cc,
-    activation: { ...(cc.activation ?? {}), invitedAt: cc.activation?.invitedAt ?? nowISO(), activated: true, activatedAt: nowISO() },
+    activation: {
+      ...(cc.activation ?? {}),
+      invitedAt: cc.activation?.invitedAt ?? nowISO(),
+      activated: true,
+      activatedAt: nowISO(),
+    },
   }));
-  appendActivity(caseId, "Client activated Canta account", { id: "client", name: "Client", role: "client" });
+  appendActivity(caseId, "Client activated Canta account", {
+    id: "client",
+    name: "Client",
+    role: "client",
+  });
 }
 
 /* ------------- Helpers ------------- */
 
 export const DOC_TYPES: CaseDocument["type"][] = [
-  "International passport", "National ID", "Driver's license", "Proof of address",
-  "Proof of funds", "Property payment instruction", "Solicitor payment instruction",
-  "Source of funds", "Other",
+  "International passport",
+  "National ID",
+  "Driver's license",
+  "Proof of address",
+  "Proof of funds",
+  "Property payment instruction",
+  "Solicitor payment instruction",
+  "Source of funds",
+  "Other",
 ];
 
-export function partnerActorFromUser(userId: string): { id: string; name: string; role: PartnerRole } {
+export function partnerActorFromUser(userId: string): {
+  id: string;
+  name: string;
+  role: PartnerRole;
+} {
   const m = MARKETERS.find((x) => x.id === userId);
   return { id: userId, name: m?.name ?? "Partner user", role: m?.role ?? "marketer" };
 }

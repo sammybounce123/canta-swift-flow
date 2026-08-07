@@ -15,7 +15,11 @@ export const autoConvertStore = {
   getServer: () => true,
   set: (v: boolean) => {
     autoConvert = v;
-    try { window.localStorage.setItem(AC_KEY, v ? "on" : "off"); } catch { /* ignore */ }
+    try {
+      window.localStorage.setItem(AC_KEY, v ? "on" : "off");
+    } catch {
+      /* ignore */
+    }
     acSubs.forEach((f) => f());
   },
   subscribe: (f: () => void) => {
@@ -25,9 +29,14 @@ export const autoConvertStore = {
         const stored = window.localStorage.getItem(AC_KEY);
         if (stored) {
           const v = stored === "on";
-          if (v !== autoConvert) { autoConvert = v; queueMicrotask(() => acSubs.forEach((s) => s())); }
+          if (v !== autoConvert) {
+            autoConvert = v;
+            queueMicrotask(() => acSubs.forEach((s) => s()));
+          }
         }
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
     }
     acSubs.add(f);
     return () => acSubs.delete(f);
@@ -38,10 +47,13 @@ export function useAutoConvert() {
   // Render the SSR default until hydration completes, so the persisted value
   // never changes rendered attributes during the hydration pass.
   const hydrated = useHydrated();
-  const value = useSyncExternalStore(autoConvertStore.subscribe, autoConvertStore.get, autoConvertStore.getServer);
+  const value = useSyncExternalStore(
+    autoConvertStore.subscribe,
+    autoConvertStore.get,
+    autoConvertStore.getServer,
+  );
   return hydrated ? value : autoConvertStore.getServer();
 }
-
 
 // ---------------------------------------------------------------------------
 // RMB bank accounts (settlement destinations)
@@ -105,7 +117,12 @@ export const rmbBankStore = {
   list: () => BANKS,
   destination: () => BANKS.find((b) => b.isSettlementDestination) ?? null,
   add: (b: Omit<RmbBankAccount, "id" | "status" | "isSettlementDestination">) => {
-    const full: RmbBankAccount = { id: `RB-${bankSeq++}`, status: "Pending", isSettlementDestination: false, ...b };
+    const full: RmbBankAccount = {
+      id: `RB-${bankSeq++}`,
+      status: "Pending",
+      isSettlementDestination: false,
+      ...b,
+    };
     BANKS = [...BANKS, full];
     notifyBanks();
     return full;
@@ -115,7 +132,9 @@ export const rmbBankStore = {
     notifyBanks();
   },
   submitForVerification: (id: string) => {
-    BANKS = BANKS.map((b) => (b.id === id ? { ...b, status: "Pending", rejectionReason: undefined } : b));
+    BANKS = BANKS.map((b) =>
+      b.id === id ? { ...b, status: "Pending", rejectionReason: undefined } : b,
+    );
     notifyBanks();
   },
   setDestination: (id: string): { ok: boolean; error?: string } => {
@@ -128,7 +147,10 @@ export const rmbBankStore = {
     notifyBanks();
     return { ok: true };
   },
-  subscribe: (f: () => void) => { bankSubs.add(f); return () => bankSubs.delete(f); },
+  subscribe: (f: () => void) => {
+    bankSubs.add(f);
+    return () => bankSubs.delete(f);
+  },
 };
 
 export function useRmbBanks() {
@@ -158,7 +180,7 @@ export type SimpleInvoiceStatus =
   | "Cancelled";
 
 export const INVOICE_STATUS_TONE: Record<SimpleInvoiceStatus, string> = {
-  "Draft": "bg-muted text-foreground",
+  Draft: "bg-muted text-foreground",
   "Quote Locked": "bg-blue-100 text-blue-800",
   "Sent to Buyer": "bg-blue-100 text-blue-800",
   "Buyer Viewed": "bg-blue-100 text-blue-800",
@@ -168,8 +190,8 @@ export const INVOICE_STATUS_TONE: Record<SimpleInvoiceStatus, string> = {
   "Auto-Converting": "bg-indigo-100 text-indigo-800",
   "RMB Settlement Pending": "bg-indigo-100 text-indigo-800",
   "RMB Paid": "bg-emerald-100 text-emerald-800",
-  "Expired": "bg-destructive/10 text-destructive",
-  "Cancelled": "bg-muted text-foreground",
+  Expired: "bg-destructive/10 text-destructive",
+  Cancelled: "bg-muted text-foreground",
 };
 
 export type SendChannel = "WhatsApp" | "Email" | "WeChat" | "Not sent";
@@ -197,7 +219,6 @@ export type SimpleInvoice = {
   createdAt: string;
   receiptId?: string;
   providerConfirmed?: boolean;
-
 };
 
 export const FX_RATE = 204.35;
@@ -213,7 +234,8 @@ export function quoteFor(amountRmb: number, rate = FX_RATE) {
 // client render identical markup while demo dates never drift into the past.
 const DAY = 86_400_000;
 const SEED_NOW = Math.floor(Date.now() / DAY) * DAY;
-const dayStamp = (offsetDays: number) => new Date(SEED_NOW + offsetDays * DAY).toISOString().slice(0, 10);
+const dayStamp = (offsetDays: number) =>
+  new Date(SEED_NOW + offsetDays * DAY).toISOString().slice(0, 10);
 
 let invSeq = 48;
 export function nextInvoiceNumber() {
@@ -257,25 +279,75 @@ function seed(
     receiptId: status === "RMB Paid" ? `RC-30${n}` : undefined,
     providerConfirmed: status === "RMB Paid",
   };
-
 }
 
 const SIMPLE_INVOICES: SimpleInvoice[] = [
-  seed(41, "Zenith Imports Nigeria", "Bluetooth speakers x 500", 94_500, "RMB Paid", "WhatsApp", -3, -14),
+  seed(
+    41,
+    "Zenith Imports Nigeria",
+    "Bluetooth speakers x 500",
+    94_500,
+    "RMB Paid",
+    "WhatsApp",
+    -3,
+    -14,
+  ),
   seed(44, "Abuja Imports Ltd", "LED panels x 220", 42_300, "Auto-Converting", "Email", 5, -4),
-  seed(45, "Kano Distributors", "Industrial sewing machines", 69_100, "NGN Received", "WhatsApp", 6, -2),
-  seed(46, "Port Harcourt Trading", "Solar inverters x 60", 34_200, "Awaiting NGN Payment", "WeChat", 10, -1),
-  seed(47, "Zenith Imports Nigeria", "Plastic injection moulds", 29_900, "Expired", "WhatsApp", -5, -8),
+  seed(
+    45,
+    "Kano Distributors",
+    "Industrial sewing machines",
+    69_100,
+    "NGN Received",
+    "WhatsApp",
+    6,
+    -2,
+  ),
+  seed(
+    46,
+    "Port Harcourt Trading",
+    "Solar inverters x 60",
+    34_200,
+    "Awaiting NGN Payment",
+    "WeChat",
+    10,
+    -1,
+  ),
+  seed(
+    47,
+    "Zenith Imports Nigeria",
+    "Plastic injection moulds",
+    29_900,
+    "Expired",
+    "WhatsApp",
+    -5,
+    -8,
+  ),
 ];
 
 let invVersion = 0;
 const invSubs = new Set<() => void>();
-const notifyInv = () => { invVersion++; invSubs.forEach((f) => f()); };
+const notifyInv = () => {
+  invVersion++;
+  invSubs.forEach((f) => f());
+};
 
 export const simpleInvoiceStore = {
   list: () => SIMPLE_INVOICES,
   get: (id: string) => SIMPLE_INVOICES.find((i) => i.id === id) ?? null,
-  add: (data: Omit<SimpleInvoice, "id" | "invoiceNumber" | "paymentRequestId" | "paymentLink" | "createdAt" | "status" | "sentBy"> & Partial<Pick<SimpleInvoice, "status" | "sentBy">>) => {
+  add: (
+    data: Omit<
+      SimpleInvoice,
+      | "id"
+      | "invoiceNumber"
+      | "paymentRequestId"
+      | "paymentLink"
+      | "createdAt"
+      | "status"
+      | "sentBy"
+    > &
+      Partial<Pick<SimpleInvoice, "status" | "sentBy">>,
+  ) => {
     const invoiceNumber = nextInvoiceNumber();
     const paymentRequestId = nextPaymentRequestId();
     invSeq++;
@@ -328,8 +400,10 @@ export const simpleInvoiceStore = {
   simulateBuyerPayment: (id: string): { ok: boolean; error?: string } => {
     const inv = SIMPLE_INVOICES.find((i) => i.id === id);
     if (!inv) return { ok: false, error: "Invoice not found." };
-    if (!AWAITING_PAYMENT.includes(inv.status)) return { ok: false, error: "This invoice is not awaiting buyer payment." };
-    if (isInvoiceQuoteExpired(inv)) return { ok: false, error: "Quote expired — refresh the quote before payment." };
+    if (!AWAITING_PAYMENT.includes(inv.status))
+      return { ok: false, error: "This invoice is not awaiting buyer payment." };
+    if (isInvoiceQuoteExpired(inv))
+      return { ok: false, error: "Quote expired — refresh the quote before payment." };
     simpleInvoiceStore.update(id, { status: "NGN Received" });
     return { ok: true };
   },
@@ -337,7 +411,8 @@ export const simpleInvoiceStore = {
   requestConversion: (id: string): { ok: boolean; error?: string } => {
     const inv = SIMPLE_INVOICES.find((i) => i.id === id);
     if (!inv) return { ok: false, error: "Invoice not found." };
-    if (inv.status !== "NGN Received") return { ok: false, error: "Conversion can only be requested once NGN is received." };
+    if (inv.status !== "NGN Received")
+      return { ok: false, error: "Conversion can only be requested once NGN is received." };
     simpleInvoiceStore.update(id, { status: "Compliance Review" });
     return { ok: true };
   },
@@ -345,7 +420,9 @@ export const simpleInvoiceStore = {
    * Advance one settlement stage. RMB Paid is only ever reached through an
    * explicit payout-provider confirmation, which also issues the receipt.
    */
-  advanceSettlement: (id: string): { ok: boolean; status?: SimpleInvoiceStatus; error?: string } => {
+  advanceSettlement: (
+    id: string,
+  ): { ok: boolean; status?: SimpleInvoiceStatus; error?: string } => {
     const inv = SIMPLE_INVOICES.find((i) => i.id === id);
     if (!inv) return { ok: false, error: "Invoice not found." };
     const next = SETTLEMENT_NEXT[inv.status];
@@ -358,11 +435,19 @@ export const simpleInvoiceStore = {
     simpleInvoiceStore.update(id, patch);
     return { ok: true, status: next };
   },
-  subscribe: (f: () => void) => { invSubs.add(f); return () => invSubs.delete(f); },
+  subscribe: (f: () => void) => {
+    invSubs.add(f);
+    return () => invSubs.delete(f);
+  },
   getVersion: () => invVersion,
 };
 
-const AWAITING_PAYMENT: SimpleInvoiceStatus[] = ["Quote Locked", "Sent to Buyer", "Buyer Viewed", "Awaiting NGN Payment"];
+const AWAITING_PAYMENT: SimpleInvoiceStatus[] = [
+  "Quote Locked",
+  "Sent to Buyer",
+  "Buyer Viewed",
+  "Awaiting NGN Payment",
+];
 
 const SETTLEMENT_NEXT: Partial<Record<SimpleInvoiceStatus, SimpleInvoiceStatus>> = {
   "NGN Received": "Compliance Review",
@@ -379,15 +464,23 @@ export const SETTLEMENT_NEXT_LABEL: Partial<Record<SimpleInvoiceStatus, string>>
   "RMB Settlement Pending": "Simulate provider confirmation",
 };
 
-
 export function useSimpleInvoices() {
-  useSyncExternalStore(simpleInvoiceStore.subscribe, simpleInvoiceStore.getVersion, simpleInvoiceStore.getVersion);
+  useSyncExternalStore(
+    simpleInvoiceStore.subscribe,
+    simpleInvoiceStore.getVersion,
+    simpleInvoiceStore.getVersion,
+  );
   return SIMPLE_INVOICES;
 }
 
 /** Terminal / post-payment statuses are never treated as expired. */
 const PAID_ON: SimpleInvoiceStatus[] = [
-  "NGN Received", "Compliance Review", "Auto-Converting", "RMB Settlement Pending", "RMB Paid", "Cancelled",
+  "NGN Received",
+  "Compliance Review",
+  "Auto-Converting",
+  "RMB Settlement Pending",
+  "RMB Paid",
+  "Cancelled",
 ];
 
 export function isInvoiceQuoteExpired(inv: SimpleInvoice) {
@@ -416,11 +509,18 @@ export function formatExpiry(ts: number) {
 
 export function ngnSummary(invoices: SimpleInvoice[]) {
   const received = invoices.filter((i) => i.status === "NGN Received");
-  const awaitingConversion = invoices.filter((i) => ["NGN Received", "Compliance Review"].includes(i.status));
-  const converting = invoices.filter((i) => ["Auto-Converting", "RMB Settlement Pending"].includes(i.status));
-  const pendingPayment = invoices.filter((i) => ["Sent to Buyer", "Buyer Viewed", "Awaiting NGN Payment"].includes(i.status));
+  const awaitingConversion = invoices.filter((i) =>
+    ["NGN Received", "Compliance Review"].includes(i.status),
+  );
+  const converting = invoices.filter((i) =>
+    ["Auto-Converting", "RMB Settlement Pending"].includes(i.status),
+  );
+  const pendingPayment = invoices.filter((i) =>
+    ["Sent to Buyer", "Buyer Viewed", "Awaiting NGN Payment"].includes(i.status),
+  );
   const paid = invoices.filter((i) => i.status === "RMB Paid");
-  const sum = (rows: SimpleInvoice[], k: "amountNgn" | "amountRmb") => rows.reduce((s, r) => s + r[k], 0);
+  const sum = (rows: SimpleInvoice[], k: "amountNgn" | "amountRmb") =>
+    rows.reduce((s, r) => s + r[k], 0);
   return {
     available: sum(received, "amountNgn"),
     pending: sum(pendingPayment, "amountNgn"),
@@ -429,7 +529,9 @@ export function ngnSummary(invoices: SimpleInvoice[]) {
     convertedNgn: sum(converting, "amountNgn"),
     rmbPending: sum(converting, "amountRmb"),
     rmbPaid: sum(paid, "amountRmb"),
-    linked: [...received, ...awaitingConversion, ...converting].filter((v, i, a) => a.indexOf(v) === i),
+    linked: [...received, ...awaitingConversion, ...converting].filter(
+      (v, i, a) => a.indexOf(v) === i,
+    ),
   };
 }
 
@@ -450,7 +552,9 @@ export function paymentInstructions(inv?: SimpleInvoice) {
     "Currency: NGN",
     inv ? `Reference: ${inv.invoiceNumber}` : NGN_COLLECTION_ACCOUNT.reference,
     inv ? `Amount: ₦${inv.amountNgn.toLocaleString()}` : "",
-  ].filter(Boolean).join("\n");
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 export function wechatMessage(inv: SimpleInvoice) {
@@ -458,5 +562,9 @@ export function wechatMessage(inv: SimpleInvoice) {
 }
 
 export function copyText(text: string) {
-  try { void navigator.clipboard.writeText(text); } catch { /* ignore */ }
+  try {
+    void navigator.clipboard.writeText(text);
+  } catch {
+    /* ignore */
+  }
 }

@@ -42,7 +42,11 @@ export function addAuditEntry(entry: Omit<AuditEntry, "id" | "ts">): AuditEntry 
   };
   if (typeof window !== "undefined") {
     const list = [full, ...getAuditEntries()].slice(0, 500);
-    try { window.localStorage.setItem(KEY, JSON.stringify(list)); } catch { /* noop */ }
+    try {
+      window.localStorage.setItem(KEY, JSON.stringify(list));
+    } catch {
+      /* noop */
+    }
     window.dispatchEvent(new Event("canta-audit-change"));
   }
   return full;

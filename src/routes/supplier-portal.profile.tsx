@@ -3,14 +3,25 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Factory, ShieldCheck, CheckCircle2, AlertCircle, FileText, Wallet, LifeBuoy, FlaskConical,
+  Factory,
+  ShieldCheck,
+  CheckCircle2,
+  AlertCircle,
+  FileText,
+  Wallet,
+  LifeBuoy,
+  FlaskConical,
 } from "lucide-react";
 
 export const Route = createFileRoute("/supplier-portal/profile")({
   head: () => ({
     meta: [
       { title: "Supplier Profile — Supplier Portal — Canta" },
-      { name: "description", content: "Company details, verification status and payout account summary for your Canta supplier account." },
+      {
+        name: "description",
+        content:
+          "Company details, verification status and payout account summary for your Canta supplier account.",
+      },
     ],
   }),
   component: SupplierPortalProfile,
@@ -39,11 +50,14 @@ function SupplierPortalProfile() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <Badge variant="outline" className="gap-1"><Factory className="h-3 w-3" /> Supplier Profile · 供应商资料</Badge>
+          <Badge variant="outline" className="gap-1">
+            <Factory className="h-3 w-3" /> Supplier Profile · 供应商资料
+          </Badge>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight">{COMPANY.name}</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-            Receive-only supplier account. Your Nigerian buyers pay in NGN to Canta&apos;s collection account; Canta settles you in RMB
-            to your verified payout account. You cannot send funds out of Canta from this portal.
+            Receive-only supplier account. Your Nigerian buyers pay in NGN to Canta&apos;s
+            collection account; Canta settles you in RMB to your verified payout account. You cannot
+            send funds out of Canta from this portal.
           </p>
         </div>
         <Badge variant="outline" className="text-[10px] inline-flex items-center gap-1">
@@ -101,10 +115,24 @@ function SupplierPortalProfile() {
         </div>
         <div className="space-y-2">
           {DOCS.map((d) => (
-            <div key={d.name} className="flex items-center justify-between border-b border-border/40 py-2 text-sm last:border-0">
+            <div
+              key={d.name}
+              className="flex items-center justify-between border-b border-border/40 py-2 text-sm last:border-0"
+            >
               <span>{d.name}</span>
-              <Badge variant="outline" className={d.status === "On file" ? "text-[10px] text-primary" : "text-[10px] text-muted-foreground"}>
-                {d.status === "On file" ? <CheckCircle2 className="mr-1 h-3 w-3" /> : <AlertCircle className="mr-1 h-3 w-3" />}
+              <Badge
+                variant="outline"
+                className={
+                  d.status === "On file"
+                    ? "text-[10px] text-primary"
+                    : "text-[10px] text-muted-foreground"
+                }
+              >
+                {d.status === "On file" ? (
+                  <CheckCircle2 className="mr-1 h-3 w-3" />
+                ) : (
+                  <AlertCircle className="mr-1 h-3 w-3" />
+                )}
                 {d.status}
               </Badge>
             </div>
@@ -137,7 +165,10 @@ function Row({ k, ok }: { k: string; ok: boolean }) {
   return (
     <div className="flex items-center justify-between text-sm">
       <span>{k}</span>
-      <Badge variant="outline" className={ok ? "text-[10px] text-primary" : "text-[10px] text-muted-foreground"}>
+      <Badge
+        variant="outline"
+        className={ok ? "text-[10px] text-primary" : "text-[10px] text-muted-foreground"}
+      >
         {ok ? <CheckCircle2 className="mr-1 h-3 w-3" /> : <AlertCircle className="mr-1 h-3 w-3" />}
         {ok ? "Verified" : "Incomplete"}
       </Badge>

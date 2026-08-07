@@ -15,7 +15,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  ShieldCheck, Building2, FileText, Upload, CheckCircle2, ArrowRight, ArrowLeft,
+  ShieldCheck,
+  Building2,
+  FileText,
+  Upload,
+  CheckCircle2,
+  ArrowRight,
+  ArrowLeft,
 } from "lucide-react";
 import { toast } from "sonner";
 import { SEGMENTS, type WorkspaceType } from "@/lib/profile";
@@ -62,10 +68,10 @@ export function markKybComplete(ws: WorkspaceType) {
 
 type StepKey = "business" | "directors" | "documents" | "review";
 const STEPS: { key: StepKey; label: string; icon: typeof Building2 }[] = [
-  { key: "business",  label: "Business details", icon: Building2 },
+  { key: "business", label: "Business details", icon: Building2 },
   { key: "directors", label: "Directors & ownership", icon: ShieldCheck },
   { key: "documents", label: "Documents", icon: FileText },
-  { key: "review",    label: "Review & submit", icon: CheckCircle2 },
+  { key: "review", label: "Review & submit", icon: CheckCircle2 },
 ];
 
 function KybOnboardingPage() {
@@ -86,7 +92,7 @@ function KybOnboardingPage() {
 
   const requiredDocs = [
     { key: "cac", label: "Company registration (CAC / incorporation)" },
-    { key: "id",  label: "Director ID" },
+    { key: "id", label: "Director ID" },
     { key: "addr", label: "Proof of business address" },
   ];
 
@@ -108,8 +114,12 @@ function KybOnboardingPage() {
   };
   const currentStepValid = stepValid[step.key];
 
-  function next() { setStepIdx((i) => Math.min(STEPS.length - 1, i + 1)); }
-  function back() { setStepIdx((i) => Math.max(0, i - 1)); }
+  function next() {
+    setStepIdx((i) => Math.min(STEPS.length - 1, i + 1));
+  }
+  function back() {
+    setStepIdx((i) => Math.max(0, i - 1));
+  }
 
   function submit() {
     markKybComplete(segment.id);
@@ -125,22 +135,31 @@ function KybOnboardingPage() {
       <header className="border-b border-border bg-card">
         <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-md bg-primary grid place-items-center text-primary-foreground text-sm font-bold">C</div>
+            <div className="h-7 w-7 rounded-md bg-primary grid place-items-center text-primary-foreground text-sm font-bold">
+              C
+            </div>
             <span className="font-semibold">Canta</span>
-            <Badge variant="secondary" className="ml-2 hidden sm:inline-flex">KYB Onboarding</Badge>
+            <Badge variant="secondary" className="ml-2 hidden sm:inline-flex">
+              KYB Onboarding
+            </Badge>
           </Link>
-          <Link to="/welcome" className="text-xs text-muted-foreground hover:text-foreground">Change workspace</Link>
+          <Link to="/welcome" className="text-xs text-muted-foreground hover:text-foreground">
+            Change workspace
+          </Link>
         </div>
       </header>
 
       <div className="max-w-4xl mx-auto px-6 py-10">
         <div className="mb-6">
-          <Badge variant="outline" className="mb-3">Step 2 · Verify your business</Badge>
+          <Badge variant="outline" className="mb-3">
+            Step 2 · Verify your business
+          </Badge>
           <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
             Complete KYB to unlock {segment.shortLabel}
           </h1>
           <p className="text-sm text-muted-foreground mt-2">
-            Fields with warnings are optional for demo access — you can complete them later from Settings.
+            Fields with warnings are optional for demo access — you can complete them later from
+            Settings.
           </p>
         </div>
 
@@ -155,7 +174,8 @@ function KybOnboardingPage() {
                   {segment.shortLabel} KYB · {stepIdx + 1} of {STEPS.length} steps
                 </div>
                 <div className="text-xs text-muted-foreground truncate">
-                  Currently on <span className="text-foreground font-medium">{step.label}</span> · {pct}% complete
+                  Currently on <span className="text-foreground font-medium">{step.label}</span> ·{" "}
+                  {pct}% complete
                 </div>
                 <div className="mt-2 w-full max-w-xs">
                   <Progress value={pct} />
@@ -165,7 +185,10 @@ function KybOnboardingPage() {
             <Button
               size="sm"
               disabled={!currentStepValid}
-              onClick={() => { if (step.key === "review") submit(); else next(); }}
+              onClick={() => {
+                if (step.key === "review") submit();
+                else next();
+              }}
             >
               Continue KYB <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
@@ -177,12 +200,22 @@ function KybOnboardingPage() {
             <div className="space-y-4">
               <div>
                 <Label>Business name</Label>
-                <Input value={biz.name} onChange={(e) => setBiz({ ...biz, name: e.target.value })} placeholder="Acme Trading Ltd" aria-invalid={!!errors.name} />
+                <Input
+                  value={biz.name}
+                  onChange={(e) => setBiz({ ...biz, name: e.target.value })}
+                  placeholder="Acme Trading Ltd"
+                  aria-invalid={!!errors.name}
+                />
                 {fieldError(errors.name)}
               </div>
               <div>
                 <Label>Registration number</Label>
-                <Input value={biz.regNo} onChange={(e) => setBiz({ ...biz, regNo: e.target.value })} placeholder="RC-1234567" aria-invalid={!!errors.regNo} />
+                <Input
+                  value={biz.regNo}
+                  onChange={(e) => setBiz({ ...biz, regNo: e.target.value })}
+                  placeholder="RC-1234567"
+                  aria-invalid={!!errors.regNo}
+                />
                 {fieldError(errors.regNo)}
               </div>
               <div>
@@ -193,14 +226,21 @@ function KybOnboardingPage() {
                   </SelectTrigger>
                   <SelectContent>
                     {COUNTRIES.map((c) => (
-                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                      <SelectItem key={c} value={c}>
+                        {c}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div>
                 <Label>Registered address</Label>
-                <Input value={biz.address} onChange={(e) => setBiz({ ...biz, address: e.target.value })} placeholder="Street, City" aria-invalid={!!errors.address} />
+                <Input
+                  value={biz.address}
+                  onChange={(e) => setBiz({ ...biz, address: e.target.value })}
+                  placeholder="Street, City"
+                  aria-invalid={!!errors.address}
+                />
                 {fieldError(errors.address)}
               </div>
             </div>
@@ -210,19 +250,33 @@ function KybOnboardingPage() {
             <div className="space-y-4">
               <div>
                 <Label>Director / owner name</Label>
-                <Input value={director.name} onChange={(e) => setDirector({ ...director, name: e.target.value })} aria-invalid={!!errors.dirName} />
+                <Input
+                  value={director.name}
+                  onChange={(e) => setDirector({ ...director, name: e.target.value })}
+                  aria-invalid={!!errors.dirName}
+                />
                 {fieldError(errors.dirName)}
               </div>
               <div>
                 <Label>Email</Label>
-                <Input type="email" value={director.email} onChange={(e) => setDirector({ ...director, email: e.target.value })} aria-invalid={!!errors.dirEmail} />
+                <Input
+                  type="email"
+                  value={director.email}
+                  onChange={(e) => setDirector({ ...director, email: e.target.value })}
+                  aria-invalid={!!errors.dirEmail}
+                />
                 {fieldError(errors.dirEmail)}
               </div>
               <div>
                 <Label>Role</Label>
-                <Input value={director.role} onChange={(e) => setDirector({ ...director, role: e.target.value })} />
+                <Input
+                  value={director.role}
+                  onChange={(e) => setDirector({ ...director, role: e.target.value })}
+                />
               </div>
-              <p className="text-[11px] text-muted-foreground">You can add more directors and beneficial owners after onboarding.</p>
+              <p className="text-[11px] text-muted-foreground">
+                You can add more directors and beneficial owners after onboarding.
+              </p>
             </div>
           )}
 
@@ -230,22 +284,31 @@ function KybOnboardingPage() {
             <div className="space-y-3">
               {missingDocs.length > 0 && (
                 <p className="text-[11px] text-muted-foreground">
-                  Uploads are optional for demo — you can add {missingDocs.length} document{missingDocs.length > 1 ? "s" : ""} later from Settings › Verification.
+                  Uploads are optional for demo — you can add {missingDocs.length} document
+                  {missingDocs.length > 1 ? "s" : ""} later from Settings › Verification.
                 </p>
               )}
               {requiredDocs.map((d) => (
-                <div key={d.key} className="flex flex-col gap-2 p-3 rounded-lg border border-border">
+                <div
+                  key={d.key}
+                  className="flex flex-col gap-2 p-3 rounded-lg border border-border"
+                >
                   <div className="flex items-center justify-between gap-3 flex-wrap">
                     <div className="text-sm font-medium flex items-center gap-2">
                       <FileText className="h-4 w-4 text-muted-foreground" /> {d.label}
                     </div>
                     <div className="flex items-center gap-2">
                       {docs[d.key] ? (
-                        <Badge variant="outline" className="text-[10px] bg-success/15 text-success border-success/30">
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] bg-success/15 text-success border-success/30"
+                        >
                           <CheckCircle2 className="h-3 w-3 mr-1" /> {docs[d.key]}
                         </Badge>
                       ) : (
-                        <Badge variant="outline" className="text-[10px] text-muted-foreground">Not uploaded</Badge>
+                        <Badge variant="outline" className="text-[10px] text-muted-foreground">
+                          Not uploaded
+                        </Badge>
                       )}
                       <Label className="cursor-pointer">
                         <input
@@ -270,15 +333,25 @@ function KybOnboardingPage() {
           {step.key === "review" && (
             <div className="space-y-3 text-sm">
               <div className="p-3 rounded-lg border border-border">
-                <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Business</div>
-                <div>{biz.name || "—"} · {biz.regNo || "—"} · {biz.country}</div>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
+                  Business
+                </div>
+                <div>
+                  {biz.name || "—"} · {biz.regNo || "—"} · {biz.country}
+                </div>
               </div>
               <div className="p-3 rounded-lg border border-border">
-                <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Director</div>
-                <div>{director.name || "—"} · {director.email || "—"} · {director.role}</div>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
+                  Director
+                </div>
+                <div>
+                  {director.name || "—"} · {director.email || "—"} · {director.role}
+                </div>
               </div>
               <div className="p-3 rounded-lg border border-border">
-                <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Documents</div>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
+                  Documents
+                </div>
                 <ul className="space-y-1">
                   {requiredDocs.map((d) => (
                     <li key={d.key} className="flex justify-between">
@@ -289,7 +362,8 @@ function KybOnboardingPage() {
                 </ul>
               </div>
               <p className="text-[11px] text-muted-foreground">
-                Submitting will unlock your {segment.shortLabel} dashboard. Any skipped items can be completed later from Settings › Verification.
+                Submitting will unlock your {segment.shortLabel} dashboard. Any skipped items can be
+                completed later from Settings › Verification.
               </p>
             </div>
           )}

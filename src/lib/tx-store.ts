@@ -17,8 +17,7 @@ export const subscribeTx = (l: () => void) => {
 
 export const getLiveTransactions = () => live;
 
-export const newTxId = () =>
-  "TXN-" + Math.floor(100_000 + Math.random() * 900_000).toString();
+export const newTxId = () => "TXN-" + Math.floor(100_000 + Math.random() * 900_000).toString();
 
 export const nowStamp = () => {
   const d = new Date();

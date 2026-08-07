@@ -7,8 +7,12 @@ async function clearStorage(page: Page) {
   // Establish an origin first so storage APIs are available.
   await page.goto("/");
   await page.evaluate(() => {
-    try { window.localStorage.clear(); } catch {}
-    try { window.sessionStorage.clear(); } catch {}
+    try {
+      window.localStorage.clear();
+    } catch {}
+    try {
+      window.sessionStorage.clear();
+    } catch {}
   });
 }
 
@@ -22,7 +26,7 @@ async function seedWorkspace(page: Page, workspace: string, mode: string) {
       // bounce warm navigation into /kyb-onboarding.
       window.localStorage.setItem("canta:kyb:" + workspace, "done");
     },
-    { workspace, mode }
+    { workspace, mode },
   );
 }
 
@@ -54,7 +58,6 @@ async function seedUnverifiedSupplier(page: Page) {
     window.localStorage.setItem("canta:mode", "Supplier");
   });
 }
-
 
 async function assertAbsent(page: Page, texts: string[]) {
   const body = (await page.textContent("body")) ?? "";
@@ -122,7 +125,9 @@ test.describe("Cold shared-route navigation redirects to /welcome", () => {
 /* ------------------------------------------------------------------ */
 /* Generic dashboard cold visit                                        */
 /* ------------------------------------------------------------------ */
-test("Cold /dashboard redirects to /welcome without flashing Treasury identity", async ({ page }) => {
+test("Cold /dashboard redirects to /welcome without flashing Treasury identity", async ({
+  page,
+}) => {
   await clearStorage(page);
   await page.goto("/dashboard");
   await page.waitForURL("**/welcome", { timeout: 5000 });
@@ -170,8 +175,9 @@ test.describe("Demo supplier navigation keeps supplier context", () => {
       await seedDemoSupplier(page);
       await page.goto(p);
       await page.waitForLoadState("networkidle");
-      expect(page.url(), `should not bounce demo supplier to KYB from ${p}`)
-        .not.toContain("/kyb-onboarding");
+      expect(page.url(), `should not bounce demo supplier to KYB from ${p}`).not.toContain(
+        "/kyb-onboarding",
+      );
       await assertPresent(page, ["Li Wei", "Supplier Mode"]);
       await assertAbsent(page, ["Adaeze Okonkwo", "Enterprise Treasury Mode"]);
     });
@@ -185,7 +191,6 @@ test("Unverified supplier is redirected to KYB onboarding", async ({ page }) => 
   await page.waitForURL(/\/kyb-onboarding/, { timeout: 5000 });
   expect(page.url()).toContain("workspace=supplier_dashboard");
 });
-
 
 /* ------------------------------------------------------------------ */
 /* Shipment date consistency                                           */
@@ -259,7 +264,6 @@ test("Demo supplier RMB settlement page has no on-hold warning", async ({ page }
   await assertAbsent(page, ["Withdrawals are on hold"]);
 });
 
-
 /* ------------------------------------------------------------------ */
 /* No 1969/1970 dates anywhere on shipments (raw string check)         */
 /* ------------------------------------------------------------------ */
@@ -294,7 +298,10 @@ test("Landing page Supplier Portal card shows Demo approved on entry", async ({ 
   await page.goto("/");
   await page.waitForLoadState("networkidle");
   // Click the Supplier Portal entry-card CTA.
-  await page.getByRole("link", { name: /Enter Supplier Portal/i }).first().click();
+  await page
+    .getByRole("link", { name: /Enter Supplier Portal/i })
+    .first()
+    .click();
   await page.waitForURL(/\/supplier-portal/, { timeout: 5000 });
   await page.waitForLoadState("networkidle");
   expect(page.url(), "landing → supplier must not bounce to KYB").not.toContain("/kyb-onboarding");
@@ -309,7 +316,9 @@ test("Landing page Supplier Portal card shows Demo approved on entry", async ({ 
 /* ------------------------------------------------------------------ */
 /* Supplier pages contain no obsolete wallet wording                    */
 /* ------------------------------------------------------------------ */
-test("Supplier pages have no 'Canta wallet' or obsolete Chinese wallet wording", async ({ page }) => {
+test("Supplier pages have no 'Canta wallet' or obsolete Chinese wallet wording", async ({
+  page,
+}) => {
   await clearStorage(page);
   await seedDemoSupplier(page);
   for (const p of ["/supplier-portal", "/supplier-portal/rmb-wallet"]) {

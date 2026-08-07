@@ -14,7 +14,13 @@ export type InvoiceItem = {
 };
 
 export type InvoiceStatus = "Draft" | "Issued" | "Payment Requested" | "Paid" | "Cancelled";
-export type PaymentRequestStatus = "None" | "Pending" | "Sent" | "Buyer Verifying" | "Buyer Paid" | "Settled";
+export type PaymentRequestStatus =
+  | "None"
+  | "Pending"
+  | "Sent"
+  | "Buyer Verifying"
+  | "Buyer Paid"
+  | "Settled";
 
 export type Invoice = {
   id: string;
@@ -63,7 +69,10 @@ export function nextInvoiceNumber() {
 export const invoiceStore = {
   list: () => INVOICES,
   get: (id: string) => INVOICES.find((i) => i.id === id) ?? null,
-  add: (inv: Omit<Invoice, "id" | "createdAt" | "status" | "paymentRequestStatus"> & Partial<Pick<Invoice, "status" | "paymentRequestStatus">>) => {
+  add: (
+    inv: Omit<Invoice, "id" | "createdAt" | "status" | "paymentRequestStatus"> &
+      Partial<Pick<Invoice, "status" | "paymentRequestStatus">>,
+  ) => {
     const full: Invoice = {
       id: `inv_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
       createdAt: new Date().toISOString(),
@@ -96,9 +105,17 @@ export const invoiceStore = {
     const src = INVOICES.find((i) => i.id === id);
     if (!src) return null;
     const number = nextInvoiceNumber();
-    return invoiceStore.add({ ...src, invoiceNumber: number, status: "Draft", paymentRequestStatus: "None" });
+    return invoiceStore.add({
+      ...src,
+      invoiceNumber: number,
+      status: "Draft",
+      paymentRequestStatus: "None",
+    });
   },
-  subscribe: (f: () => void) => { subs.add(f); return () => subs.delete(f); },
+  subscribe: (f: () => void) => {
+    subs.add(f);
+    return () => subs.delete(f);
+  },
   getVersion: () => version,
 };
 
@@ -107,9 +124,20 @@ export function useInvoices() {
   return INVOICES;
 }
 
-export function calcTotals(items: InvoiceItem[], discount: number, shipping: number, other: number) {
-  const subtotal = items.reduce((s, i) => s + (Number(i.quantity) || 0) * (Number(i.unitPrice) || 0), 0);
-  const total = Math.max(0, subtotal - (Number(discount) || 0) + (Number(shipping) || 0) + (Number(other) || 0));
+export function calcTotals(
+  items: InvoiceItem[],
+  discount: number,
+  shipping: number,
+  other: number,
+) {
+  const subtotal = items.reduce(
+    (s, i) => s + (Number(i.quantity) || 0) * (Number(i.unitPrice) || 0),
+    0,
+  );
+  const total = Math.max(
+    0,
+    subtotal - (Number(discount) || 0) + (Number(shipping) || 0) + (Number(other) || 0),
+  );
   return { subtotal, total };
 }
 

@@ -3,16 +3,20 @@ import { Button, type ButtonProps } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 function intersperseActionSpacing(children: React.ReactNode) {
-  return React.Children.toArray(children).flatMap((child, index) => (
+  return React.Children.toArray(children).flatMap((child, index) =>
     index === 0
       ? [child]
       : [
-          <span key={`action-separator-${index}`} aria-hidden="true" className="contents select-none">
+          <span
+            key={`action-separator-${index}`}
+            aria-hidden="true"
+            className="contents select-none"
+          >
             {" "}
           </span>,
           child,
-        ]
-  ));
+        ],
+  );
 }
 
 const ActionGroup = React.forwardRef<

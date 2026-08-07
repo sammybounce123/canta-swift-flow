@@ -33,7 +33,12 @@ export const SEGMENTS: Segment[] = [
     customerSegment: "enterprise",
     primaryUseCase: "FX, treasury, wallets, approvals",
     defaultRole: "Enterprise Owner",
-    defaultPermissions: ["view dashboard", "view wallet balances", "approve payment", "create FX conversion"],
+    defaultPermissions: [
+      "view dashboard",
+      "view wallet balances",
+      "approve payment",
+      "create FX conversion",
+    ],
     route: "/treasury",
     welcome: "Manage FX, wallets, beneficiaries, approvals, and global treasury.",
     tagline: "Multinationals, corporates, traders and large SMEs",
@@ -46,12 +51,17 @@ export const SEGMENTS: Segment[] = [
     customerSegment: "importer",
     primaryUseCase: "Pay suppliers, track shipments, keep receipts",
     defaultRole: "Importer Owner",
-    defaultPermissions: ["view dashboard", "create supplier payment", "view shipment", "manage suppliers", "download receipt"],
+    defaultPermissions: [
+      "view dashboard",
+      "create supplier payment",
+      "view shipment",
+      "manage suppliers",
+      "download receipt",
+    ],
     route: "/importer",
     welcome: "Pay suppliers, track shipments, and keep receipts.",
     tagline: "Nigerian importers and businesses paying suppliers anywhere in the world",
   },
-
 
   {
     id: "global_collections",
@@ -61,7 +71,12 @@ export const SEGMENTS: Segment[] = [
     customerSegment: "merchant",
     primaryUseCase: "Local collections, reconciliation, global settlement",
     defaultRole: "Merchant Owner",
-    defaultPermissions: ["view dashboard", "create payment link", "view collections", "approve settlement"],
+    defaultPermissions: [
+      "view dashboard",
+      "create payment link",
+      "view collections",
+      "approve settlement",
+    ],
     route: "/collections",
     welcome: "Collect locally from African customers, reconcile payments, and settle globally.",
     tagline: "Universities, hospitals, airlines, travel, e-commerce",
@@ -72,11 +87,18 @@ export const SEGMENTS: Segment[] = [
     shortLabel: "Supplier Portal",
     accountType: "business",
     customerSegment: "supplier",
-    primaryUseCase: "Chinese suppliers receiving RMB settlement after Nigerian buyers pay NGN locally through Canta",
+    primaryUseCase:
+      "Chinese suppliers receiving RMB settlement after Nigerian buyers pay NGN locally through Canta",
     defaultRole: "Supplier Owner",
-    defaultPermissions: ["view dashboard", "create buyer record", "create invoice", "view settlement status"],
+    defaultPermissions: [
+      "view dashboard",
+      "create buyer record",
+      "create invoice",
+      "view settlement status",
+    ],
     route: "/supplier-portal",
-    welcome: "Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta.",
+    welcome:
+      "Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta.",
     tagline: "Chinese suppliers receiving RMB settlement after Nigerian buyer payments",
   },
   {
@@ -87,7 +109,16 @@ export const SEGMENTS: Segment[] = [
     customerSegment: "partner_property",
     primaryUseCase: "Refer clients for FX & solicitor payouts",
     defaultRole: "Partner Admin",
-    defaultPermissions: ["create referral", "view all cases", "view solicitor details", "add solicitor", "view payouts", "download receipts", "export reports", "manage team"],
+    defaultPermissions: [
+      "create referral",
+      "view all cases",
+      "view solicitor details",
+      "add solicitor",
+      "view payouts",
+      "download receipts",
+      "export reports",
+      "manage team",
+    ],
     route: "/partner",
     welcome: "Refer property clients, track FX conversions and solicitor payouts end-to-end.",
     tagline: "Kingsbridge Property Partners and property partners referring clients to Canta",
@@ -178,7 +209,8 @@ export function loadFlags(workspace?: WorkspaceType): FeatureFlags {
   if (typeof window !== "undefined") {
     try {
       const raw = window.localStorage.getItem(FLAGS_KEY);
-      if (raw) return { ...defaultFlagsFor(workspace ?? "enterprise_treasury"), ...JSON.parse(raw) };
+      if (raw)
+        return { ...defaultFlagsFor(workspace ?? "enterprise_treasury"), ...JSON.parse(raw) };
     } catch {}
   }
   return defaultFlagsFor(workspace ?? "enterprise_treasury");
@@ -200,15 +232,35 @@ export type SidebarItem = {
   search?: Record<string, string>;
 };
 
-export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: FeatureFlags): SidebarItem[] {
-  const D: SidebarItem = { to: "/dashboard", label: "Dashboard", iconKey: "dashboard", group: "Overview", exact: true };
-  const Settings: SidebarItem = { to: "/settings", label: "Settings", iconKey: "settings", group: "Workspace" };
+export function getSidebarForWorkspace(
+  workspace: WorkspaceType,
+  _flags: FeatureFlags,
+): SidebarItem[] {
+  const D: SidebarItem = {
+    to: "/dashboard",
+    label: "Dashboard",
+    iconKey: "dashboard",
+    group: "Overview",
+    exact: true,
+  };
+  const Settings: SidebarItem = {
+    to: "/settings",
+    label: "Settings",
+    iconKey: "settings",
+    group: "Workspace",
+  };
   const Team: SidebarItem = { to: "/team", label: "Team", iconKey: "team", group: "Workspace" };
 
   switch (workspace) {
     case "importer_portal":
       return [
-        { to: "/importer", label: "Dashboard", iconKey: "importer", group: "My Workspace", exact: true },
+        {
+          to: "/importer",
+          label: "Dashboard",
+          iconKey: "importer",
+          group: "My Workspace",
+          exact: true,
+        },
         { to: "/importer/balance", label: "Balance", iconKey: "wallet", group: "Money" },
         { to: "/importer/suppliers", label: "Suppliers", iconKey: "factory", group: "Money" },
         { to: "/importer/payments", label: "Payments", iconKey: "receipt", group: "Money" },
@@ -218,28 +270,81 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/importer/settings", label: "Settings", iconKey: "settings", group: "Workspace" },
       ];
 
-
-
     case "supplier_dashboard":
       return [
-        { to: "/supplier-portal", label: "Dashboard", iconKey: "factory", group: "Supplier Portal", exact: true },
-        { to: "/supplier-portal/create-invoice", label: "Create Invoice", iconKey: "receipt", group: "Supplier Portal" },
-        { to: "/supplier-portal/ngn-balance", label: "NGN Balance", iconKey: "wallet", group: "Money" },
-        { to: "/supplier-portal/rmb-bank-account", label: "RMB Bank Account", iconKey: "globe", group: "Money" },
-        { to: "/supplier-portal/invoices", label: "Invoice History", iconKey: "file", group: "Money" },
-        { to: "/supplier-portal/settlements", label: "Settlements", iconKey: "check", group: "Money" },
-        { to: "/supplier-portal/verification", label: "Verification", iconKey: "shield-check", group: "Account" },
+        {
+          to: "/supplier-portal",
+          label: "Dashboard",
+          iconKey: "factory",
+          group: "Supplier Portal",
+          exact: true,
+        },
+        {
+          to: "/supplier-portal/create-invoice",
+          label: "Create Invoice",
+          iconKey: "receipt",
+          group: "Supplier Portal",
+        },
+        {
+          to: "/supplier-portal/ngn-balance",
+          label: "NGN Balance",
+          iconKey: "wallet",
+          group: "Money",
+        },
+        {
+          to: "/supplier-portal/rmb-bank-account",
+          label: "RMB Bank Account",
+          iconKey: "globe",
+          group: "Money",
+        },
+        {
+          to: "/supplier-portal/invoices",
+          label: "Invoice History",
+          iconKey: "file",
+          group: "Money",
+        },
+        {
+          to: "/supplier-portal/settlements",
+          label: "Settlements",
+          iconKey: "check",
+          group: "Money",
+        },
+        {
+          to: "/supplier-portal/verification",
+          label: "Verification",
+          iconKey: "shield-check",
+          group: "Account",
+        },
         { to: "/supplier-portal/support", label: "Support", iconKey: "users", group: "Account" },
-        { to: "/supplier-portal/settings", label: "Settings", iconKey: "settings", group: "Account" },
+        {
+          to: "/supplier-portal/settings",
+          label: "Settings",
+          iconKey: "settings",
+          group: "Account",
+        },
       ];
-
 
     case "global_collections":
       return [
         D,
-        { to: "/collections", label: "Global Collections", iconKey: "globe", group: "My Workspace" },
-        { to: "/merchant/profile", label: "Merchant Profile", iconKey: "building", group: "My Workspace" },
-        { to: "/merchant/kyb", label: "KYB / Verification", iconKey: "shield-check", group: "My Workspace" },
+        {
+          to: "/collections",
+          label: "Global Collections",
+          iconKey: "globe",
+          group: "My Workspace",
+        },
+        {
+          to: "/merchant/profile",
+          label: "Merchant Profile",
+          iconKey: "building",
+          group: "My Workspace",
+        },
+        {
+          to: "/merchant/kyb",
+          label: "KYB / Verification",
+          iconKey: "shield-check",
+          group: "My Workspace",
+        },
         { to: "/collections/new", label: "New Collection", iconKey: "sparkles", group: "Collect" },
         { to: "/payment-links", label: "Payment Links", iconKey: "link", group: "Collect" },
         { to: "/invoices", label: "Invoices", iconKey: "receipt", group: "Collect" },
@@ -252,12 +357,18 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
         { to: "/compliance", label: "Compliance Pack", iconKey: "shield", group: "Governance" },
         { to: "/audit-logs", label: "Activity Log", iconKey: "shield", group: "Governance" },
-        Team, Settings,
+        Team,
+        Settings,
       ];
     case "enterprise_treasury":
       return [
         D,
-        { to: "/treasury", label: "Enterprise Treasury", iconKey: "building", group: "My Workspace" },
+        {
+          to: "/treasury",
+          label: "Enterprise Treasury",
+          iconKey: "building",
+          group: "My Workspace",
+        },
         { to: "/wallets", label: "Balances", iconKey: "wallet", group: "Move Money" },
         { to: "/fx", label: "FX Conversion", iconKey: "fx", group: "Move Money" },
         { to: "/payments", label: "Bulk Payouts", iconKey: "receipt", group: "Move Money" },
@@ -267,36 +378,81 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/reports", label: "Reports", iconKey: "chart", group: "Insights" },
         { to: "/audit-logs", label: "Activity Log", iconKey: "shield", group: "Governance" },
         { to: "/support", label: "Support", iconKey: "users", group: "Help" },
-        Team, Settings,
+        Team,
+        Settings,
       ];
-
 
     case "global_spend_cards":
       return [
-        { to: "/welcome", label: "Choose Workspace", iconKey: "dashboard", group: "Overview", exact: true },
+        {
+          to: "/welcome",
+          label: "Choose Workspace",
+          iconKey: "dashboard",
+          group: "Overview",
+          exact: true,
+        },
       ];
     case "partner_property": {
       // Lazy import to avoid SSR cycles; settings stored in localStorage.
       let commissionsEnabled = true;
       if (typeof window !== "undefined") {
-        try { const raw = window.localStorage.getItem("canta:partner:settings:v1"); if (raw) commissionsEnabled = JSON.parse(raw).commissionsEnabled !== false; } catch { /* keep default */ }
+        try {
+          const raw = window.localStorage.getItem("canta:partner:settings:v1");
+          if (raw) commissionsEnabled = JSON.parse(raw).commissionsEnabled !== false;
+        } catch {
+          /* keep default */
+        }
       }
       const items: SidebarItem[] = [
         D,
         { to: "/partner/clients", label: "Partner Clients", iconKey: "users", group: "Referrals" },
         { to: "/partner/leads", label: "Referral Leads", iconKey: "sparkles", group: "Referrals" },
-        { to: "/partner/cases", label: "Client Payment Cases", iconKey: "file", group: "Referrals" },
-        { to: "/partner/new-referral", label: "New Payment Case", iconKey: "sparkles", group: "Referrals" },
+        {
+          to: "/partner/cases",
+          label: "Client Payment Cases",
+          iconKey: "file",
+          group: "Referrals",
+        },
+        {
+          to: "/partner/new-referral",
+          label: "New Payment Case",
+          iconKey: "sparkles",
+          group: "Referrals",
+        },
         { to: "/partner/fx-quotes", label: "FX Quotes", iconKey: "fx", group: "Money" },
         { to: "/partner/payment-links", label: "Payment Links", iconKey: "link", group: "Money" },
         { to: "/partner/payouts", label: "Solicitor Payouts", iconKey: "receipt", group: "Money" },
-        { to: "/partner/solicitors", label: "Solicitors", iconKey: "shield-check", group: "Beneficiaries" },
+        {
+          to: "/partner/solicitors",
+          label: "Solicitors",
+          iconKey: "shield-check",
+          group: "Beneficiaries",
+        },
         { to: "/partner/disputes", label: "Case Disputes", iconKey: "shield", group: "Operations" },
         { to: "/partner/documents", label: "Documents", iconKey: "file", group: "Operations" },
-        { to: "/partner/marketers", label: "Marketer Performance", iconKey: "users", group: "Insights" },
-        ...(commissionsEnabled ? [{ to: "/partner/commissions", label: "Commissions", iconKey: "receipt", group: "Insights" } as SidebarItem] : []),
+        {
+          to: "/partner/marketers",
+          label: "Marketer Performance",
+          iconKey: "users",
+          group: "Insights",
+        },
+        ...(commissionsEnabled
+          ? [
+              {
+                to: "/partner/commissions",
+                label: "Commissions",
+                iconKey: "receipt",
+                group: "Insights",
+              } as SidebarItem,
+            ]
+          : []),
         { to: "/partner/reports", label: "Reports", iconKey: "chart", group: "Insights" },
-        { to: "/partner/activity-log", label: "Activity Log", iconKey: "shield", group: "Governance" },
+        {
+          to: "/partner/activity-log",
+          label: "Activity Log",
+          iconKey: "shield",
+          group: "Governance",
+        },
         { to: "/partner/team", label: "Team", iconKey: "team", group: "Workspace" },
         { to: "/partner/settings", label: "Settings", iconKey: "settings", group: "Workspace" },
       ];
@@ -308,13 +464,23 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/ops", label: "Ops Console", iconKey: "dashboard", group: "Overview" },
         { to: "/whatsapp", label: "WhatsApp Desk", iconKey: "whatsapp", group: "Ops" },
         { to: "/ai-growth", label: "AI Growth", iconKey: "brain", group: "Intelligence" },
-        { to: "/ai-document-extraction", label: "AI Document Extraction", iconKey: "sparkles", group: "Intelligence" },
+        {
+          to: "/ai-document-extraction",
+          label: "AI Document Extraction",
+          iconKey: "sparkles",
+          group: "Intelligence",
+        },
         { to: "/ai-insights", label: "AI Insights", iconKey: "brain", group: "Intelligence" },
         { to: "/trade-desk", label: "Trade Files", iconKey: "trade", group: "Ops" },
         { to: "/partner/cases", label: "Payment Cases", iconKey: "file", group: "Ops" },
         { to: "/customers", label: "All Customers", iconKey: "users", group: "Ops" },
         { to: "/support", label: "Support Tickets", iconKey: "users", group: "Ops" },
-        { to: "/verification-center", label: "Verification Center", iconKey: "shield-check", group: "Governance" },
+        {
+          to: "/verification-center",
+          label: "Verification Center",
+          iconKey: "shield-check",
+          group: "Governance",
+        },
         { to: "/compliance", label: "Compliance", iconKey: "shield", group: "Governance" },
         { to: "/audit-logs", label: "Activity Log", iconKey: "shield", group: "Governance" },
         { to: "/integrations", label: "Integrations", iconKey: "plug", group: "Ops" },
@@ -323,8 +489,6 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
       ];
   }
 }
-
-
 
 export function getAllowedRoutes(workspace: WorkspaceType, flags: FeatureFlags): Set<string> {
   const allow = new Set<string>(COMMON_ROUTES);

@@ -12,8 +12,15 @@
 //   Delivered   → past arrival (5–14 days ago)
 
 export type DemoStatus =
-  | "Booked" | "At Origin" | "Loaded" | "On Vessel"
-  | "Arrived" | "Customs" | "Released" | "Delivered" | "Delayed";
+  | "Booked"
+  | "At Origin"
+  | "Loaded"
+  | "On Vessel"
+  | "Arrived"
+  | "Customs"
+  | "Released"
+  | "Delivered"
+  | "Delayed";
 
 // Fallback anchor: if the runtime clock is unavailable / stubbed to Unix epoch
 // (as can happen in some prerender / edge-worker cold starts), use this fixed
@@ -34,17 +41,18 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
 export function demoEtaFor(status: DemoStatus, seed = 0): string {
   const now = safeNow();
   // deterministic offset from seed so re-renders don't jump
-  const jitter = (min: number, max: number) => min + (Math.abs(Math.sin(seed + status.length)) * (max - min));
+  const jitter = (min: number, max: number) =>
+    min + Math.abs(Math.sin(seed + status.length)) * (max - min);
   const offsetDays: Record<DemoStatus, number> = {
-    Booked:     Math.round(jitter(10, 30)),
+    Booked: Math.round(jitter(10, 30)),
     "At Origin": Math.round(jitter(7, 20)),
-    Loaded:     Math.round(jitter(5, 15)),
+    Loaded: Math.round(jitter(5, 15)),
     "On Vessel": Math.round(jitter(3, 12)),
-    Delayed:    Math.round(jitter(5, 20)),
-    Arrived:    -Math.round(jitter(0, 3)),
-    Customs:    -Math.round(jitter(1, 5)),
-    Released:   -Math.round(jitter(3, 7)),
-    Delivered:  -Math.round(jitter(5, 14)),
+    Delayed: Math.round(jitter(5, 20)),
+    Arrived: -Math.round(jitter(0, 3)),
+    Customs: -Math.round(jitter(1, 5)),
+    Released: -Math.round(jitter(3, 7)),
+    Delivered: -Math.round(jitter(5, 14)),
   };
   const d = new Date(now);
   d.setUTCDate(d.getUTCDate() + offsetDays[status]);

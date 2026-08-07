@@ -24,15 +24,25 @@ function FxQuotesPage() {
     .sort((a, b) => b.q.generatedAt.localeCompare(a.q.generatedAt));
 
   const [, force] = useState(0);
-  useEffect(() => { const i = setInterval(() => force((n) => n + 1), 1000); return () => clearInterval(i); }, []);
+  useEffect(() => {
+    const i = setInterval(() => force((n) => n + 1), 1000);
+    return () => clearInterval(i);
+  }, []);
 
   return (
     <div className="space-y-5">
-      <ReadinessBar status="Demo Preview" cue="FX quotes are indicative and subject to market movement until locked." />
+      <ReadinessBar
+        status="Demo Preview"
+        cue="FX quotes are indicative and subject to market movement until locked."
+      />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold flex items-center gap-2"><ArrowLeftRight className="h-5 w-5 text-primary" /> FX Quotes</h1>
-          <p className="text-sm text-muted-foreground mt-1">All FX quotes generated for client payment cases.</p>
+          <h1 className="text-2xl font-semibold flex items-center gap-2">
+            <ArrowLeftRight className="h-5 w-5 text-primary" /> FX Quotes
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            All FX quotes generated for client payment cases.
+          </p>
         </div>
       </div>
 
@@ -54,39 +64,68 @@ function FxQuotesPage() {
             <tbody>
               {rows.map(({ q, c }) => {
                 const remaining = Math.max(0, new Date(q.expiresAt).getTime() - Date.now());
-                const mm = Math.floor(remaining / 60000); const ss = Math.floor((remaining % 60000) / 1000);
-                const expired = q.status === "Expired" || (q.status === "Active" && remaining === 0);
-                const tone = expired ? "bg-destructive/15 text-destructive border-destructive/30" :
-                  q.status === "Active" ? "bg-success/15 text-success border-success/30" :
-                  "bg-muted text-muted-foreground";
+                const mm = Math.floor(remaining / 60000);
+                const ss = Math.floor((remaining % 60000) / 1000);
+                const expired =
+                  q.status === "Expired" || (q.status === "Active" && remaining === 0);
+                const tone = expired
+                  ? "bg-destructive/15 text-destructive border-destructive/30"
+                  : q.status === "Active"
+                    ? "bg-success/15 text-success border-success/30"
+                    : "bg-muted text-muted-foreground";
                 return (
                   <tr key={q.id} className="border-t hover:bg-secondary/30">
                     <td className="py-3 px-4 font-mono text-xs">{q.reference}</td>
                     <td className="py-3 px-4">
                       <div className="font-medium">{c.clientName}</div>
-                      <Link to="/partner/cases/$caseId" params={{ caseId: c.id }} className="text-[11px] text-primary hover:underline">{c.ref}</Link>
+                      <Link
+                        to="/partner/cases/$caseId"
+                        params={{ caseId: c.id }}
+                        className="text-[11px] text-primary hover:underline"
+                      >
+                        {c.ref}
+                      </Link>
                     </td>
-                    <td className="py-3 px-4 text-right tabular-nums font-medium">{formatGBP(q.gbpAmount)}</td>
+                    <td className="py-3 px-4 text-right tabular-nums font-medium">
+                      {formatGBP(q.gbpAmount)}
+                    </td>
                     <td className="py-3 px-4 text-right tabular-nums">{q.rate.toLocaleString()}</td>
-                    <td className="py-3 px-4 text-right tabular-nums">₦{q.ngnTotal.toLocaleString()}</td>
+                    <td className="py-3 px-4 text-right tabular-nums">
+                      ₦{q.ngnTotal.toLocaleString()}
+                    </td>
                     <td className="py-3 px-4 text-xs">
                       {q.status === "Active" && !expired ? (
-                        <span className="inline-flex items-center gap-1 text-warning"><Clock className="h-3 w-3" /> {mm}m {ss}s</span>
+                        <span className="inline-flex items-center gap-1 text-warning">
+                          <Clock className="h-3 w-3" /> {mm}m {ss}s
+                        </span>
                       ) : (
-                        <span className="text-muted-foreground">{new Date(q.expiresAt).toLocaleString()}</span>
+                        <span className="text-muted-foreground">
+                          {new Date(q.expiresAt).toLocaleString()}
+                        </span>
                       )}
                     </td>
-                    <td className="py-3 px-4"><Badge variant="outline" className={`text-[10px] ${tone}`}>{expired && q.status === "Active" ? "Expired" : q.status}</Badge></td>
+                    <td className="py-3 px-4">
+                      <Badge variant="outline" className={`text-[10px] ${tone}`}>
+                        {expired && q.status === "Active" ? "Expired" : q.status}
+                      </Badge>
+                    </td>
                     <td className="py-3 px-4 text-right">
-                      <Button asChild size="sm" variant="outline"><Link to="/partner/cases/$caseId" params={{ caseId: c.id }}>Open case</Link></Button>
+                      <Button asChild size="sm" variant="outline">
+                        <Link to="/partner/cases/$caseId" params={{ caseId: c.id }}>
+                          Open case
+                        </Link>
+                      </Button>
                     </td>
                   </tr>
                 );
               })}
               {rows.length === 0 && (
-                <tr><td colSpan={8} className="py-10 text-center text-muted-foreground text-sm">
-                  <AlertTriangle className="h-4 w-4 inline mr-1" /> No FX quotes generated yet. Open a payment case and generate one.
-                </td></tr>
+                <tr>
+                  <td colSpan={8} className="py-10 text-center text-muted-foreground text-sm">
+                    <AlertTriangle className="h-4 w-4 inline mr-1" /> No FX quotes generated yet.
+                    Open a payment case and generate one.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>

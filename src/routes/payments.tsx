@@ -8,15 +8,37 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
-  Receipt, Plus, Search, Filter, Download, ArrowRight, CheckCircle2,
-  Clock, AlertCircle, Building2, Truck, FileText, Wallet, Trash2, Send,
+  Receipt,
+  Plus,
+  Search,
+  Filter,
+  Download,
+  ArrowRight,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  Building2,
+  Truck,
+  FileText,
+  Wallet,
+  Trash2,
+  Send,
 } from "lucide-react";
 import { fmtMoney } from "@/lib/mock";
 import { toast } from "sonner";
@@ -28,19 +50,100 @@ export const Route = createFileRoute("/payments")({
 
 type PayStatus = "Paid" | "Scheduled" | "Pending approval" | "Failed" | "Draft";
 type Payment = {
-  id: string; beneficiary: string; kind: "Supplier" | "Forwarder" | "Customs" | "Other";
-  reference: string; amount: number; ccy: string; date: string; status: PayStatus;
-  tradeFile?: string; shipment?: string; purpose?: string; account?: string;
+  id: string;
+  beneficiary: string;
+  kind: "Supplier" | "Forwarder" | "Customs" | "Other";
+  reference: string;
+  amount: number;
+  ccy: string;
+  date: string;
+  status: PayStatus;
+  tradeFile?: string;
+  shipment?: string;
+  purpose?: string;
+  account?: string;
 };
 
 const SEED_PAYMENTS: Payment[] = [
-  { id: "PAY-9041", beneficiary: "Yiwu Fashion Co.",      kind: "Supplier",  reference: "INV-CN-7042", amount: 67_400,  ccy: "USD", date: "2026-06-18", status: "Paid",             tradeFile: "TR-2042", shipment: "SH-9012" },
-  { id: "PAY-9040", beneficiary: "Guangzhou Electronics", kind: "Supplier",  reference: "INV-CN-7041", amount: 184_000, ccy: "USD", date: "2026-06-17", status: "Scheduled",        tradeFile: "TR-2031", shipment: "SH-9012" },
-  { id: "PAY-9039", beneficiary: "ABC Freight Lagos",     kind: "Forwarder", reference: "FRT-4408",    amount: 12_800,  ccy: "USD", date: "2026-06-16", status: "Pending approval", shipment: "SH-9012" },
-  { id: "PAY-9038", beneficiary: "Nigeria Customs",       kind: "Customs",   reference: "DUTY-2026-04",amount: 9_200,   ccy: "USD", date: "2026-06-14", status: "Paid",             shipment: "SH-8990" },
-  { id: "PAY-9037", beneficiary: "Dubai Spare Parts",     kind: "Supplier",  reference: "INV-AE-7043", amount: 41_900,  ccy: "USD", date: "2026-06-12", status: "Failed",           tradeFile: "TR-2055" },
-  { id: "PAY-9036", beneficiary: "Istanbul Textiles",     kind: "Supplier",  reference: "INV-TR-7045", amount: 96_400,  ccy: "EUR", date: "2026-06-10", status: "Paid",             tradeFile: "TR-2042" },
-  { id: "PAY-9035", beneficiary: "Mombasa Clearing Co.",  kind: "Forwarder", reference: "CLR-2031",    amount: 3_400,   ccy: "USD", date: "2026-06-08", status: "Scheduled",        shipment: "SH-8990" },
+  {
+    id: "PAY-9041",
+    beneficiary: "Yiwu Fashion Co.",
+    kind: "Supplier",
+    reference: "INV-CN-7042",
+    amount: 67_400,
+    ccy: "USD",
+    date: "2026-06-18",
+    status: "Paid",
+    tradeFile: "TR-2042",
+    shipment: "SH-9012",
+  },
+  {
+    id: "PAY-9040",
+    beneficiary: "Guangzhou Electronics",
+    kind: "Supplier",
+    reference: "INV-CN-7041",
+    amount: 184_000,
+    ccy: "USD",
+    date: "2026-06-17",
+    status: "Scheduled",
+    tradeFile: "TR-2031",
+    shipment: "SH-9012",
+  },
+  {
+    id: "PAY-9039",
+    beneficiary: "ABC Freight Lagos",
+    kind: "Forwarder",
+    reference: "FRT-4408",
+    amount: 12_800,
+    ccy: "USD",
+    date: "2026-06-16",
+    status: "Pending approval",
+    shipment: "SH-9012",
+  },
+  {
+    id: "PAY-9038",
+    beneficiary: "Nigeria Customs",
+    kind: "Customs",
+    reference: "DUTY-2026-04",
+    amount: 9_200,
+    ccy: "USD",
+    date: "2026-06-14",
+    status: "Paid",
+    shipment: "SH-8990",
+  },
+  {
+    id: "PAY-9037",
+    beneficiary: "Dubai Spare Parts",
+    kind: "Supplier",
+    reference: "INV-AE-7043",
+    amount: 41_900,
+    ccy: "USD",
+    date: "2026-06-12",
+    status: "Failed",
+    tradeFile: "TR-2055",
+  },
+  {
+    id: "PAY-9036",
+    beneficiary: "Istanbul Textiles",
+    kind: "Supplier",
+    reference: "INV-TR-7045",
+    amount: 96_400,
+    ccy: "EUR",
+    date: "2026-06-10",
+    status: "Paid",
+    tradeFile: "TR-2042",
+  },
+  {
+    id: "PAY-9035",
+    beneficiary: "Mombasa Clearing Co.",
+    kind: "Forwarder",
+    reference: "CLR-2031",
+    amount: 3_400,
+    ccy: "USD",
+    date: "2026-06-08",
+    status: "Scheduled",
+    shipment: "SH-8990",
+  },
 ];
 
 function tone(s: PayStatus) {
@@ -69,11 +172,19 @@ function PaymentsPage() {
   const [kind, setKind] = useState<"All" | Payment["kind"]>("All");
   const [open, setOpen] = useState(false);
 
-  const filtered = useMemo(() => payments.filter((p) =>
-    (tab === "all" || p.status === tab) &&
-    (kind === "All" || p.kind === kind) &&
-    (!q || p.beneficiary.toLowerCase().includes(q.toLowerCase()) || p.reference.toLowerCase().includes(q.toLowerCase()) || p.id.toLowerCase().includes(q.toLowerCase()))
-  ), [payments, q, tab, kind]);
+  const filtered = useMemo(
+    () =>
+      payments.filter(
+        (p) =>
+          (tab === "all" || p.status === tab) &&
+          (kind === "All" || p.kind === kind) &&
+          (!q ||
+            p.beneficiary.toLowerCase().includes(q.toLowerCase()) ||
+            p.reference.toLowerCase().includes(q.toLowerCase()) ||
+            p.id.toLowerCase().includes(q.toLowerCase())),
+      ),
+    [payments, q, tab, kind],
+  );
 
   const stats = useMemo(() => {
     const supplierPayments = payments.filter((p) => p.kind === "Supplier");
@@ -95,7 +206,7 @@ function PaymentsPage() {
   }
 
   function submitForApproval(id: string) {
-    setPayments((cur) => cur.map((p) => p.id === id ? { ...p, status: "Pending approval" } : p));
+    setPayments((cur) => cur.map((p) => (p.id === id ? { ...p, status: "Pending approval" } : p)));
     toast.success(`${id} submitted for approval`);
   }
 
@@ -107,7 +218,8 @@ function PaymentsPage() {
             <Receipt className="h-5 w-5 text-primary shrink-0" /> Payouts
           </h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            Create payouts to suppliers, forwarders, customs and other beneficiaries. Track NGN funded, RMB processing, RMB paid to supplier, and receipts available.
+            Create payouts to suppliers, forwarders, customs and other beneficiaries. Track NGN
+            funded, RMB processing, RMB paid to supplier, and receipts available.
           </p>
         </div>
         <div className="flex gap-2 shrink-0">
@@ -116,34 +228,68 @@ function PaymentsPage() {
           </Button>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button><Plus className="h-4 w-4 mr-1.5" /> Create Payout</Button>
+              <Button>
+                <Plus className="h-4 w-4 mr-1.5" /> Create Payout
+              </Button>
             </DialogTrigger>
             <CreatePayoutDialog
               onClose={() => setOpen(false)}
-              onCreate={(rows) => { addPayments(rows); setOpen(false); }}
+              onCreate={(rows) => {
+                addPayments(rows);
+                setOpen(false);
+              }}
             />
           </Dialog>
         </div>
       </header>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <Stat label="NGN paid" value={fmtMoney(stats.ngnPaid, "NGN")} icon={<CheckCircle2 className="h-3.5 w-3.5 text-success" />} tone="text-success" />
-        <Stat label="RMB processing" value={fmtMoney(stats.rmbProcessing, "RMB")} icon={<Clock className="h-3.5 w-3.5 text-primary" />} />
-        <Stat label="RMB paid to supplier" value={fmtMoney(stats.rmbPaidToSupplier, "RMB")} icon={<CheckCircle2 className="h-3.5 w-3.5 text-success" />} tone="text-success" />
-        <Stat label="Receipts available" value={String(stats.receiptsAvailable)} icon={<FileText className="h-3.5 w-3.5 text-primary" />} />
+        <Stat
+          label="NGN paid"
+          value={fmtMoney(stats.ngnPaid, "NGN")}
+          icon={<CheckCircle2 className="h-3.5 w-3.5 text-success" />}
+          tone="text-success"
+        />
+        <Stat
+          label="RMB processing"
+          value={fmtMoney(stats.rmbProcessing, "RMB")}
+          icon={<Clock className="h-3.5 w-3.5 text-primary" />}
+        />
+        <Stat
+          label="RMB paid to supplier"
+          value={fmtMoney(stats.rmbPaidToSupplier, "RMB")}
+          icon={<CheckCircle2 className="h-3.5 w-3.5 text-success" />}
+          tone="text-success"
+        />
+        <Stat
+          label="Receipts available"
+          value={String(stats.receiptsAvailable)}
+          icon={<FileText className="h-3.5 w-3.5 text-primary" />}
+        />
       </div>
-
 
       <Card className="p-4 shadow-card">
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
           <div className="relative">
             <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by beneficiary, reference or payment ID..." className="pl-9" />
+            <Input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search by beneficiary, reference or payment ID..."
+              className="pl-9"
+            />
           </div>
           <Select value={kind} onValueChange={(v) => setKind(v as typeof kind)}>
-            <SelectTrigger className="w-full sm:w-48"><Filter className="h-3.5 w-3.5 mr-2" /><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-48">
+              <Filter className="h-3.5 w-3.5 mr-2" />
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
-              {(["All", "Supplier", "Forwarder", "Customs", "Other"] as const).map((k) => <SelectItem key={k} value={k}>{k}</SelectItem>)}
+              {(["All", "Supplier", "Forwarder", "Customs", "Other"] as const).map((k) => (
+                <SelectItem key={k} value={k}>
+                  {k}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -197,12 +343,22 @@ function PaymentsPage() {
                           {p.shipment && <div>Shipment: {p.shipment}</div>}
                           {!p.tradeFile && !p.shipment && <span>—</span>}
                         </td>
-                        <td className="px-4 py-3 text-right tabular-nums font-semibold">{fmtMoney(p.amount, p.ccy)}</td>
+                        <td className="px-4 py-3 text-right tabular-nums font-semibold">
+                          {fmtMoney(p.amount, p.ccy)}
+                        </td>
                         <td className="px-4 py-3 text-muted-foreground">{p.date}</td>
-                        <td className="px-4 py-3"><Badge variant="outline" className={`text-[10px] ${tone(p.status)}`}>{p.status}</Badge></td>
+                        <td className="px-4 py-3">
+                          <Badge variant="outline" className={`text-[10px] ${tone(p.status)}`}>
+                            {p.status}
+                          </Badge>
+                        </td>
                         <td className="px-4 py-3 text-right">
                           {p.status === "Draft" && (
-                            <Button size="sm" variant="outline" onClick={() => submitForApproval(p.id)}>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => submitForApproval(p.id)}
+                            >
                               <Send className="h-3.5 w-3.5 mr-1" /> Submit for approval
                             </Button>
                           )}
@@ -211,7 +367,14 @@ function PaymentsPage() {
                     );
                   })}
                   {filtered.length === 0 && (
-                    <tr><td colSpan={8} className="px-4 py-10 text-center text-sm text-muted-foreground">No payments match your filters.</td></tr>
+                    <tr>
+                      <td
+                        colSpan={8}
+                        className="px-4 py-10 text-center text-sm text-muted-foreground"
+                      >
+                        No payments match your filters.
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>
@@ -229,29 +392,54 @@ function PaymentsPage() {
                       <Icon className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
                       <div className="min-w-0">
                         <div className="font-medium text-sm truncate">{p.beneficiary}</div>
-                        <div className="text-[11px] text-muted-foreground font-mono">{p.id} · {p.reference}</div>
+                        <div className="text-[11px] text-muted-foreground font-mono">
+                          {p.id} · {p.reference}
+                        </div>
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <div className="font-semibold tabular-nums text-sm">{fmtMoney(p.amount, p.ccy)}</div>
+                      <div className="font-semibold tabular-nums text-sm">
+                        {fmtMoney(p.amount, p.ccy)}
+                      </div>
                       <div className="text-[11px] text-muted-foreground">{p.date}</div>
                     </div>
                   </div>
                   <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                    <Badge variant="outline" className="text-[10px]">{p.kind}</Badge>
-                    {p.tradeFile && <Badge variant="outline" className="text-[10px]">Trade {p.tradeFile}</Badge>}
-                    {p.shipment && <Badge variant="outline" className="text-[10px]">{p.shipment}</Badge>}
-                    <Badge variant="outline" className={`text-[10px] ${tone(p.status)} ml-auto`}>{p.status}</Badge>
+                    <Badge variant="outline" className="text-[10px]">
+                      {p.kind}
+                    </Badge>
+                    {p.tradeFile && (
+                      <Badge variant="outline" className="text-[10px]">
+                        Trade {p.tradeFile}
+                      </Badge>
+                    )}
+                    {p.shipment && (
+                      <Badge variant="outline" className="text-[10px]">
+                        {p.shipment}
+                      </Badge>
+                    )}
+                    <Badge variant="outline" className={`text-[10px] ${tone(p.status)} ml-auto`}>
+                      {p.status}
+                    </Badge>
                   </div>
                   {p.status === "Draft" && (
-                    <Button size="sm" variant="outline" className="w-full mt-2" onClick={() => submitForApproval(p.id)}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full mt-2"
+                      onClick={() => submitForApproval(p.id)}
+                    >
                       <Send className="h-3.5 w-3.5 mr-1" /> Submit for approval
                     </Button>
                   )}
                 </Card>
               );
             })}
-            {filtered.length === 0 && <div className="text-center text-sm text-muted-foreground py-8">No payments match your filters.</div>}
+            {filtered.length === 0 && (
+              <div className="text-center text-sm text-muted-foreground py-8">
+                No payments match your filters.
+              </div>
+            )}
           </div>
         </TabsContent>
       </Tabs>
@@ -260,10 +448,15 @@ function PaymentsPage() {
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div className="min-w-0">
             <div className="text-sm font-semibold">Need FX-protected payouts?</div>
-            <div className="text-xs text-muted-foreground mt-1 max-w-xl">Lock your rate before paying suppliers in RMB, USD, EUR or AED. Reduce surprises on landed cost.</div>
+            <div className="text-xs text-muted-foreground mt-1 max-w-xl">
+              Lock your rate before paying suppliers in RMB, USD, EUR or AED. Reduce surprises on
+              landed cost.
+            </div>
           </div>
           <Button asChild variant="outline" className="shrink-0">
-            <Link to="/fx">Open FX Conversion <ArrowRight className="h-4 w-4 ml-1" /></Link>
+            <Link to="/fx">
+              Open FX Conversion <ArrowRight className="h-4 w-4 ml-1" />
+            </Link>
           </Button>
         </div>
       </Card>
@@ -271,7 +464,17 @@ function PaymentsPage() {
   );
 }
 
-function Stat({ label, value, icon, tone }: { label: string; value: string; icon: React.ReactNode; tone?: string }) {
+function Stat({
+  label,
+  value,
+  icon,
+  tone,
+}: {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+  tone?: string;
+}) {
   return (
     <Card className="p-4 shadow-card">
       <div className="flex items-center justify-between">
@@ -284,20 +487,41 @@ function Stat({ label, value, icon, tone }: { label: string; value: string; icon
 }
 
 type SingleForm = {
-  beneficiary: string; kind: Payment["kind"]; ccy: string; amount: string;
-  reference: string; purpose: string; account: string; notes: string;
+  beneficiary: string;
+  kind: Payment["kind"];
+  ccy: string;
+  amount: string;
+  reference: string;
+  purpose: string;
+  account: string;
+  notes: string;
 };
 
 const emptySingle = (): SingleForm => ({
-  beneficiary: "", kind: "Supplier", ccy: "USD", amount: "", reference: "", purpose: "", account: "", notes: "",
+  beneficiary: "",
+  kind: "Supplier",
+  ccy: "USD",
+  amount: "",
+  reference: "",
+  purpose: "",
+  account: "",
+  notes: "",
 });
 
 type BulkRow = SingleForm & { rowId: string };
 
-function CreatePayoutDialog({ onClose, onCreate }: { onClose: () => void; onCreate: (rows: Payment[]) => void }) {
+function CreatePayoutDialog({
+  onClose,
+  onCreate,
+}: {
+  onClose: () => void;
+  onCreate: (rows: Payment[]) => void;
+}) {
   const [mode, setMode] = useState<"single" | "bulk">("single");
   const [single, setSingle] = useState<SingleForm>(emptySingle());
-  const [bulkRows, setBulkRows] = useState<BulkRow[]>([{ ...emptySingle(), rowId: crypto.randomUUID() }]);
+  const [bulkRows, setBulkRows] = useState<BulkRow[]>([
+    { ...emptySingle(), rowId: crypto.randomUUID() },
+  ]);
 
   function validateRow(f: SingleForm): string | null {
     if (!f.beneficiary.trim()) return "Beneficiary is required";
@@ -309,13 +533,21 @@ function CreatePayoutDialog({ onClose, onCreate }: { onClose: () => void; onCrea
 
   function submitSingle() {
     const err = validateRow(single);
-    if (err) { toast.error(err); return; }
+    if (err) {
+      toast.error(err);
+      return;
+    }
     const row: Payment = {
-      id: nextPayoutId(), beneficiary: single.beneficiary, kind: single.kind,
+      id: nextPayoutId(),
+      beneficiary: single.beneficiary,
+      kind: single.kind,
       reference: single.reference || `REF-${Date.now().toString().slice(-6)}`,
-      amount: Number(single.amount), ccy: single.ccy,
-      date: new Date().toISOString().slice(0, 10), status: "Draft",
-      purpose: single.purpose, account: single.account,
+      amount: Number(single.amount),
+      ccy: single.ccy,
+      date: new Date().toISOString().slice(0, 10),
+      status: "Draft",
+      purpose: single.purpose,
+      account: single.account,
     };
     onCreate([row]);
     toast.success(`Payout ${row.id} created as draft`);
@@ -328,18 +560,31 @@ function CreatePayoutDialog({ onClose, onCreate }: { onClose: () => void; onCrea
     setBulkRows((r) => r.filter((x) => x.rowId !== rowId));
   }
   function updateBulkRow(rowId: string, patch: Partial<SingleForm>) {
-    setBulkRows((r) => r.map((x) => x.rowId === rowId ? { ...x, ...patch } : x));
+    setBulkRows((r) => r.map((x) => (x.rowId === rowId ? { ...x, ...patch } : x)));
   }
   function submitBulk() {
     const errors: string[] = [];
-    bulkRows.forEach((r, i) => { const e = validateRow(r); if (e) errors.push(`Row ${i + 1}: ${e}`); });
-    if (errors.length) { toast.error(errors[0], { description: errors.length > 1 ? `+${errors.length - 1} more issue(s)` : undefined }); return; }
+    bulkRows.forEach((r, i) => {
+      const e = validateRow(r);
+      if (e) errors.push(`Row ${i + 1}: ${e}`);
+    });
+    if (errors.length) {
+      toast.error(errors[0], {
+        description: errors.length > 1 ? `+${errors.length - 1} more issue(s)` : undefined,
+      });
+      return;
+    }
     const rows: Payment[] = bulkRows.map((r) => ({
-      id: nextPayoutId(), beneficiary: r.beneficiary, kind: r.kind,
+      id: nextPayoutId(),
+      beneficiary: r.beneficiary,
+      kind: r.kind,
       reference: r.reference || `REF-${Date.now().toString().slice(-6)}`,
-      amount: Number(r.amount), ccy: r.ccy,
-      date: new Date().toISOString().slice(0, 10), status: "Draft",
-      purpose: r.purpose, account: r.account,
+      amount: Number(r.amount),
+      ccy: r.ccy,
+      date: new Date().toISOString().slice(0, 10),
+      status: "Draft",
+      purpose: r.purpose,
+      account: r.account,
     }));
     onCreate(rows);
     toast.success(`${rows.length} payouts created as drafts`);
@@ -347,7 +592,9 @@ function CreatePayoutDialog({ onClose, onCreate }: { onClose: () => void; onCrea
 
   return (
     <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
-      <DialogHeader><DialogTitle>Create Payout</DialogTitle></DialogHeader>
+      <DialogHeader>
+        <DialogTitle>Create Payout</DialogTitle>
+      </DialogHeader>
       <Tabs value={mode} onValueChange={(v) => setMode(v as typeof mode)}>
         <TabsList>
           <TabsTrigger value="single">Single payout</TabsTrigger>
@@ -355,67 +602,181 @@ function CreatePayoutDialog({ onClose, onCreate }: { onClose: () => void; onCrea
         </TabsList>
         <TabsContent value="single" className="mt-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="sm:col-span-2"><Label>Beneficiary *</Label><Input value={single.beneficiary} onChange={(e) => setSingle({ ...single, beneficiary: e.target.value })} placeholder="Yiwu Fashion Co." /></div>
+            <div className="sm:col-span-2">
+              <Label>Beneficiary *</Label>
+              <Input
+                value={single.beneficiary}
+                onChange={(e) => setSingle({ ...single, beneficiary: e.target.value })}
+                placeholder="Yiwu Fashion Co."
+              />
+            </div>
             <div>
               <Label>Type</Label>
-              <Select value={single.kind} onValueChange={(v) => setSingle({ ...single, kind: v as Payment["kind"] })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+              <Select
+                value={single.kind}
+                onValueChange={(v) => setSingle({ ...single, kind: v as Payment["kind"] })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
-                  {(["Supplier", "Forwarder", "Customs", "Other"] as const).map((k) => <SelectItem key={k} value={k}>{k}</SelectItem>)}
+                  {(["Supplier", "Forwarder", "Customs", "Other"] as const).map((k) => (
+                    <SelectItem key={k} value={k}>
+                      {k}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             <div>
               <Label>Currency</Label>
               <Select value={single.ccy} onValueChange={(v) => setSingle({ ...single, ccy: v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{["USD","EUR","GBP","RMB","AED"].map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {["USD", "EUR", "GBP", "RMB", "AED"].map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
             </div>
-            <div><Label>Amount *</Label><Input type="number" value={single.amount} onChange={(e) => setSingle({ ...single, amount: e.target.value })} placeholder="12500" /></div>
-            <div><Label>Reference</Label><Input value={single.reference} onChange={(e) => setSingle({ ...single, reference: e.target.value })} placeholder="INV-CN-7042" /></div>
-            <div className="sm:col-span-2"><Label>Purpose *</Label><Input value={single.purpose} onChange={(e) => setSingle({ ...single, purpose: e.target.value })} placeholder="Goods payment, freight, duty…" /></div>
-            <div className="sm:col-span-2"><Label>Payout account *</Label><Input value={single.account} onChange={(e) => setSingle({ ...single, account: e.target.value })} placeholder="USD treasury wallet · ****4821" /></div>
-            <div className="sm:col-span-2"><Label>Notes</Label><Textarea value={single.notes} onChange={(e) => setSingle({ ...single, notes: e.target.value })} placeholder="Trade file or shipment notes" /></div>
+            <div>
+              <Label>Amount *</Label>
+              <Input
+                type="number"
+                value={single.amount}
+                onChange={(e) => setSingle({ ...single, amount: e.target.value })}
+                placeholder="12500"
+              />
+            </div>
+            <div>
+              <Label>Reference</Label>
+              <Input
+                value={single.reference}
+                onChange={(e) => setSingle({ ...single, reference: e.target.value })}
+                placeholder="INV-CN-7042"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <Label>Purpose *</Label>
+              <Input
+                value={single.purpose}
+                onChange={(e) => setSingle({ ...single, purpose: e.target.value })}
+                placeholder="Goods payment, freight, duty…"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <Label>Payout account *</Label>
+              <Input
+                value={single.account}
+                onChange={(e) => setSingle({ ...single, account: e.target.value })}
+                placeholder="USD treasury wallet · ****4821"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <Label>Notes</Label>
+              <Textarea
+                value={single.notes}
+                onChange={(e) => setSingle({ ...single, notes: e.target.value })}
+                placeholder="Trade file or shipment notes"
+              />
+            </div>
           </div>
           <DialogFooter className="mt-4">
-            <Button variant="ghost" onClick={onClose}>Cancel</Button>
+            <Button variant="ghost" onClick={onClose}>
+              Cancel
+            </Button>
             <Button onClick={submitSingle}>Create payout</Button>
           </DialogFooter>
         </TabsContent>
         <TabsContent value="bulk" className="mt-4 space-y-3">
-          <div className="text-xs text-muted-foreground">Add one row per beneficiary. All fields marked * are required per row.</div>
+          <div className="text-xs text-muted-foreground">
+            Add one row per beneficiary. All fields marked * are required per row.
+          </div>
           <div className="space-y-3 max-h-[45vh] overflow-y-auto pr-1">
             {bulkRows.map((r, i) => (
               <Card key={r.rowId} className="p-3 border-dashed">
                 <div className="flex items-center justify-between mb-2">
                   <div className="text-xs font-semibold text-muted-foreground">Row {i + 1}</div>
                   {bulkRows.length > 1 && (
-                    <Button size="sm" variant="ghost" onClick={() => removeBulkRow(r.rowId)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
+                    <Button size="sm" variant="ghost" onClick={() => removeBulkRow(r.rowId)}>
+                      <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                    </Button>
                   )}
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  <Input value={r.beneficiary} onChange={(e) => updateBulkRow(r.rowId, { beneficiary: e.target.value })} placeholder="Beneficiary *" className="col-span-2 sm:col-span-1" />
-                  <Select value={r.kind} onValueChange={(v) => updateBulkRow(r.rowId, { kind: v as Payment["kind"] })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{(["Supplier", "Forwarder", "Customs", "Other"] as const).map((k) => <SelectItem key={k} value={k}>{k}</SelectItem>)}</SelectContent>
+                  <Input
+                    value={r.beneficiary}
+                    onChange={(e) => updateBulkRow(r.rowId, { beneficiary: e.target.value })}
+                    placeholder="Beneficiary *"
+                    className="col-span-2 sm:col-span-1"
+                  />
+                  <Select
+                    value={r.kind}
+                    onValueChange={(v) => updateBulkRow(r.rowId, { kind: v as Payment["kind"] })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {(["Supplier", "Forwarder", "Customs", "Other"] as const).map((k) => (
+                        <SelectItem key={k} value={k}>
+                          {k}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
                   </Select>
                   <Select value={r.ccy} onValueChange={(v) => updateBulkRow(r.rowId, { ccy: v })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{["USD","EUR","GBP","RMB","AED"].map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {["USD", "EUR", "GBP", "RMB", "AED"].map((c) => (
+                        <SelectItem key={c} value={c}>
+                          {c}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
                   </Select>
-                  <Input type="number" value={r.amount} onChange={(e) => updateBulkRow(r.rowId, { amount: e.target.value })} placeholder="Amount *" />
-                  <Input value={r.reference} onChange={(e) => updateBulkRow(r.rowId, { reference: e.target.value })} placeholder="Reference" />
-                  <Input value={r.purpose} onChange={(e) => updateBulkRow(r.rowId, { purpose: e.target.value })} placeholder="Purpose *" />
-                  <Input value={r.account} onChange={(e) => updateBulkRow(r.rowId, { account: e.target.value })} placeholder="Payout account *" className="col-span-2 sm:col-span-3" />
+                  <Input
+                    type="number"
+                    value={r.amount}
+                    onChange={(e) => updateBulkRow(r.rowId, { amount: e.target.value })}
+                    placeholder="Amount *"
+                  />
+                  <Input
+                    value={r.reference}
+                    onChange={(e) => updateBulkRow(r.rowId, { reference: e.target.value })}
+                    placeholder="Reference"
+                  />
+                  <Input
+                    value={r.purpose}
+                    onChange={(e) => updateBulkRow(r.rowId, { purpose: e.target.value })}
+                    placeholder="Purpose *"
+                  />
+                  <Input
+                    value={r.account}
+                    onChange={(e) => updateBulkRow(r.rowId, { account: e.target.value })}
+                    placeholder="Payout account *"
+                    className="col-span-2 sm:col-span-3"
+                  />
                 </div>
               </Card>
             ))}
           </div>
-          <Button variant="outline" size="sm" onClick={addBulkRow}><Plus className="h-3.5 w-3.5 mr-1" /> Add row</Button>
+          <Button variant="outline" size="sm" onClick={addBulkRow}>
+            <Plus className="h-3.5 w-3.5 mr-1" /> Add row
+          </Button>
           <DialogFooter className="mt-2">
-            <Button variant="ghost" onClick={onClose}>Cancel</Button>
-            <Button onClick={submitBulk}>Create {bulkRows.length} payout{bulkRows.length > 1 ? "s" : ""}</Button>
+            <Button variant="ghost" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button onClick={submitBulk}>
+              Create {bulkRows.length} payout{bulkRows.length > 1 ? "s" : ""}
+            </Button>
           </DialogFooter>
         </TabsContent>
       </Tabs>

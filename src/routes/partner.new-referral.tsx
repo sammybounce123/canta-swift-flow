@@ -6,7 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Upload, Save, Send, UserPlus, Link2, UserCircle2 } from "lucide-react";
 import { toast } from "sonner";
@@ -25,17 +29,31 @@ function NewReferral() {
   const canAssign = canSeeAllMarketers(role);
   const DRAFT_KEY = "canta:partner:new-referral-draft:v1";
   type DraftForm = {
-    clientName: string; clientEmail: string; clientPhone: string;
-    property: string; location: string; amount: string; currency: string;
-    purpose: string; solicitor: string; deadline: string; notes: string;
+    clientName: string;
+    clientEmail: string;
+    clientPhone: string;
+    property: string;
+    location: string;
+    amount: string;
+    currency: string;
+    purpose: string;
+    solicitor: string;
+    deadline: string;
+    notes: string;
     assignedMarketerId: string;
   };
   const defaultForm = (): DraftForm => ({
-    clientName: "", clientEmail: "", clientPhone: "",
-    property: "", location: "", amount: "", currency: "GBP",
+    clientName: "",
+    clientEmail: "",
+    clientPhone: "",
+    property: "",
+    location: "",
+    amount: "",
+    currency: "GBP",
     purpose: "Property completion",
     solicitor: SOLICITORS[0]?.id ?? "",
-    deadline: "", notes: "",
+    deadline: "",
+    notes: "",
     assignedMarketerId: userId,
   });
   // Lazy-init: restore any in-progress draft from localStorage so the form
@@ -45,10 +63,13 @@ function NewReferral() {
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
       if (raw) return { ...defaultForm(), ...JSON.parse(raw), file: undefined };
-    } catch { /* noop */ }
+    } catch {
+      /* noop */
+    }
     return { ...defaultForm(), file: undefined };
   });
-  const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => setForm((p) => ({ ...p, [k]: v }));
+  const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) =>
+    setForm((p) => ({ ...p, [k]: v }));
 
   // Persist the draft (excluding the File object, which cannot be serialized)
   // on every change, so typed values are never lost.
@@ -57,11 +78,19 @@ function NewReferral() {
     if (typeof window === "undefined") return;
     const { file: _file, ...serializable } = form;
     void _file;
-    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(serializable)); } catch { /* noop */ }
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(serializable));
+    } catch {
+      /* noop */
+    }
   }, [form]);
 
   function clearDraft() {
-    try { localStorage.removeItem(DRAFT_KEY); } catch { /* noop */ }
+    try {
+      localStorage.removeItem(DRAFT_KEY);
+    } catch {
+      /* noop */
+    }
   }
   void hydrated;
 
@@ -81,12 +110,16 @@ function NewReferral() {
   const buildCase = (status?: "draft") => {
     const actor = partnerActorFromUser(userId);
     const created = createCase({
-      clientName: form.clientName, clientEmail: form.clientEmail, clientPhone: form.clientPhone,
-      property: form.property || "—", propertyLocation: form.location || "—",
+      clientName: form.clientName,
+      clientEmail: form.clientEmail,
+      clientPhone: form.clientPhone,
+      property: form.property || "—",
+      propertyLocation: form.location || "—",
       amountGBP: Number(form.amount),
       solicitorId: form.solicitor,
       paymentPurpose: form.purpose,
-      paymentDeadline: form.deadline || new Date(Date.now() + 14 * 86400_000).toISOString().slice(0, 10),
+      paymentDeadline:
+        form.deadline || new Date(Date.now() + 14 * 86400_000).toISOString().slice(0, 10),
       assignedMarketerId: form.assignedMarketerId,
       notes: status === "draft" ? `[DRAFT] ${form.notes ?? ""}`.trim() : form.notes,
       createdBy: actor.id,
@@ -107,15 +140,25 @@ function NewReferral() {
   const submit = () => {
     if (!validate()) return;
     const created = buildCase();
-    toast.success("Payment case created", { description: `${created.ref} — ${created.clientName}` });
+    toast.success("Payment case created", {
+      description: `${created.ref} — ${created.clientName}`,
+    });
     clearDraft();
-    setTimeout(() => navigate({ to: "/partner/cases/$caseId", params: { caseId: created.id } }), 400);
+    setTimeout(
+      () => navigate({ to: "/partner/cases/$caseId", params: { caseId: created.id } }),
+      400,
+    );
   };
 
   const saveDraft = () => {
-    if (!form.clientName.trim()) { toast.error("Add at least a client name to save a draft"); return; }
+    if (!form.clientName.trim()) {
+      toast.error("Add at least a client name to save a draft");
+      return;
+    }
     const created = buildCase("draft");
-    toast.success("Draft saved", { description: `${created.ref} kept as draft — you can finish it from Cases.` });
+    toast.success("Draft saved", {
+      description: `${created.ref} kept as draft — you can finish it from Cases.`,
+    });
     clearDraft();
     setTimeout(() => navigate({ to: "/partner/cases" }), 500);
   };
@@ -127,16 +170,21 @@ function NewReferral() {
       description: `Sent to ${created.clientEmail} for ${created.ref} (£${Number(form.amount).toLocaleString()}).`,
     });
     clearDraft();
-    setTimeout(() => navigate({ to: "/partner/cases/$caseId", params: { caseId: created.id } }), 500);
+    setTimeout(
+      () => navigate({ to: "/partner/cases/$caseId", params: { caseId: created.id } }),
+      500,
+    );
   };
-  void MARKETERS; void user;
-
+  void MARKETERS;
+  void user;
 
   return (
     <div className="space-y-5 max-w-4xl">
       <div>
         <h1 className="text-2xl font-semibold">New client referral</h1>
-        <p className="text-sm text-muted-foreground mt-1">Submit a Baron &amp; Cabot client for property payment processing.</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          Submit a Baron &amp; Cabot client for property payment processing.
+        </p>
       </div>
 
       <Card className="p-6 shadow-card space-y-6">
@@ -150,17 +198,28 @@ function NewReferral() {
                 <UserCircle2 className="h-3.5 w-3.5 text-muted-foreground" />
                 {user?.name ?? "Current user"}
               </div>
-              <div className="text-[11px] text-muted-foreground">Auto-tagged as the referral owner</div>
+              <div className="text-[11px] text-muted-foreground">
+                Auto-tagged as the referral owner
+              </div>
             </div>
-            <Badge variant="outline" className="text-[10px]">{user?.region}</Badge>
+            <Badge variant="outline" className="text-[10px]">
+              {user?.region}
+            </Badge>
           </div>
           {canAssign && (
             <Field label="Assign to marketer">
-              <Select value={form.assignedMarketerId} onValueChange={(v) => set("assignedMarketerId", v)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+              <Select
+                value={form.assignedMarketerId}
+                onValueChange={(v) => set("assignedMarketerId", v)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   {MARKETERS.filter((m) => m.role === "marketer" || m.id === userId).map((m) => (
-                    <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                    <SelectItem key={m.id} value={m.id}>
+                      {m.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -168,22 +227,68 @@ function NewReferral() {
           )}
         </Section>
         <Section title="Client">
-          <Field label="Client name" required><Input value={form.clientName} onChange={(e) => set("clientName", e.target.value)} placeholder="Full name" /></Field>
-          <Field label="Client email" required><Input type="email" value={form.clientEmail} onChange={(e) => set("clientEmail", e.target.value)} placeholder="name@email.com" /></Field>
-          <Field label="Client phone"><Input value={form.clientPhone} onChange={(e) => set("clientPhone", e.target.value)} placeholder="+234 …" /></Field>
+          <Field label="Client name" required>
+            <Input
+              value={form.clientName}
+              onChange={(e) => set("clientName", e.target.value)}
+              placeholder="Full name"
+            />
+          </Field>
+          <Field label="Client email" required>
+            <Input
+              type="email"
+              value={form.clientEmail}
+              onChange={(e) => set("clientEmail", e.target.value)}
+              placeholder="name@email.com"
+            />
+          </Field>
+          <Field label="Client phone">
+            <Input
+              value={form.clientPhone}
+              onChange={(e) => set("clientPhone", e.target.value)}
+              placeholder="+234 …"
+            />
+          </Field>
         </Section>
 
         <Section title="Property">
-          <Field label="Property / project"><Input value={form.property} onChange={(e) => set("property", e.target.value)} placeholder="The Wharf — Apt 14B" /></Field>
-          <Field label="Property location"><Input value={form.location} onChange={(e) => set("location", e.target.value)} placeholder="Manchester, UK" /></Field>
-          <Field label="Payment deadline"><Input type="date" value={form.deadline} onChange={(e) => set("deadline", e.target.value)} /></Field>
+          <Field label="Property / project">
+            <Input
+              value={form.property}
+              onChange={(e) => set("property", e.target.value)}
+              placeholder="The Wharf — Apt 14B"
+            />
+          </Field>
+          <Field label="Property location">
+            <Input
+              value={form.location}
+              onChange={(e) => set("location", e.target.value)}
+              placeholder="Manchester, UK"
+            />
+          </Field>
+          <Field label="Payment deadline">
+            <Input
+              type="date"
+              value={form.deadline}
+              onChange={(e) => set("deadline", e.target.value)}
+            />
+          </Field>
         </Section>
 
         <Section title="Payment">
-          <Field label="Amount" required><Input type="number" value={form.amount} onChange={(e) => set("amount", e.target.value)} placeholder="250000" /></Field>
+          <Field label="Amount" required>
+            <Input
+              type="number"
+              value={form.amount}
+              onChange={(e) => set("amount", e.target.value)}
+              placeholder="250000"
+            />
+          </Field>
           <Field label="Currency">
             <Select value={form.currency} onValueChange={(v) => set("currency", v)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="GBP">GBP</SelectItem>
                 <SelectItem value="EUR">EUR</SelectItem>
@@ -193,7 +298,9 @@ function NewReferral() {
           </Field>
           <Field label="Payment purpose">
             <Select value={form.purpose} onValueChange={(v) => set("purpose", v)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Property completion">Property completion</SelectItem>
                 <SelectItem value="Deposit">Deposit</SelectItem>
@@ -204,9 +311,15 @@ function NewReferral() {
           </Field>
           <Field label="Solicitor beneficiary" required>
             <Select value={form.solicitor} onValueChange={(v) => set("solicitor", v)}>
-              <SelectTrigger><SelectValue placeholder="Select a solicitor" /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a solicitor" />
+              </SelectTrigger>
               <SelectContent>
-                {SOLICITORS.map((s) => <SelectItem key={s.id} value={s.id}>{s.firm}</SelectItem>)}
+                {SOLICITORS.map((s) => (
+                  <SelectItem key={s.id} value={s.id}>
+                    {s.firm}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </Field>
@@ -230,7 +343,12 @@ function NewReferral() {
                 <Upload className="h-4 w-4" /> {form.file?.name ?? "Choose PDF / image (optional)"}
               </div>
               <span className="text-xs font-medium text-primary">Browse</span>
-              <input type="file" accept=".pdf,.png,.jpg,.jpeg" className="hidden" onChange={(e) => set("file", e.target.files?.[0])} />
+              <input
+                type="file"
+                accept=".pdf,.png,.jpg,.jpeg"
+                className="hidden"
+                onChange={(e) => set("file", e.target.files?.[0])}
+              />
             </label>
           </div>
         </Section>
@@ -243,7 +361,14 @@ function NewReferral() {
             <Button variant="outline" onClick={sendPaymentLink}>
               <Link2 className="h-4 w-4 mr-1.5" /> Send client payment link
             </Button>
-            <Button variant="outline" onClick={() => toast.success("Solicitor assigned", { description: SOLICITORS.find(s => s.id === form.solicitor)?.firm ?? "—" })}>
+            <Button
+              variant="outline"
+              onClick={() =>
+                toast.success("Solicitor assigned", {
+                  description: SOLICITORS.find((s) => s.id === form.solicitor)?.firm ?? "—",
+                })
+              }
+            >
               <UserPlus className="h-4 w-4 mr-1.5" /> Assign solicitor
             </Button>
           </div>
@@ -256,20 +381,42 @@ function NewReferral() {
   );
 }
 
-function Section({ title, children, cols = 3 }: { title: string; children: React.ReactNode; cols?: 1 | 2 | 3 }) {
-  const gridClass = cols === 1 ? "md:grid-cols-2" : cols === 2 ? "md:grid-cols-2" : "md:grid-cols-3";
+function Section({
+  title,
+  children,
+  cols = 3,
+}: {
+  title: string;
+  children: React.ReactNode;
+  cols?: 1 | 2 | 3;
+}) {
+  const gridClass =
+    cols === 1 ? "md:grid-cols-2" : cols === 2 ? "md:grid-cols-2" : "md:grid-cols-3";
   return (
     <div>
-      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">{title}</div>
+      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+        {title}
+      </div>
       <div className={`grid grid-cols-1 ${gridClass} gap-4`}>{children}</div>
     </div>
   );
 }
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-xs font-medium">{label}{required && <span className="text-destructive ml-0.5">*</span>}</Label>
+      <Label className="text-xs font-medium">
+        {label}
+        {required && <span className="text-destructive ml-0.5">*</span>}
+      </Label>
       {children}
     </div>
   );
