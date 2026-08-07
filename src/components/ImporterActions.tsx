@@ -166,9 +166,9 @@ export function ImporterActions({
     // Primary investor-demo importer journey
     { label: "Track Shipment",         icon: Ship,          onClick: () => { const id = ctx.shipmentId; if (id) navigate({ to: "/track/$id", params: { id } }); else navigate({ to: "/shipments" }); }, primary: true, show: variant === "toolbar" },
     { label: "Upload Bill of Lading",  icon: Paperclip,     onClick: () => setOpen("linkDocs"),      primary: true, show: variant === "toolbar" || variant === "tradefile" },
-    { label: "Add Supplier Invoice",   icon: FilePlus,      onClick: () => { navigate({ to: "/supplier-portal/invoices" }); }, primary: true, show: variant === "toolbar" },
-    { label: "Pay Supplier",           icon: Send,          onClick: () => { navigate({ to: "/supplier-portal/payment-requests" }); }, primary: true, show: variant === "toolbar" },
-    { label: "Track Settlement",       icon: Eye,           onClick: () => { navigate({ to: "/supplier-portal/rmb-wallet" }); }, primary: true, show: variant === "toolbar" },
+    { label: "Add Supplier Invoice",   icon: FilePlus,      onClick: () => { navigate({ to: "/documents" }); }, primary: true, show: variant === "toolbar" },
+    { label: "Pay Supplier",           icon: Send,          onClick: () => { navigate({ to: "/payments" }); }, primary: true, show: variant === "toolbar" },
+    { label: "Track Settlement",       icon: Eye,           onClick: () => { navigate({ to: "/payments" }); }, primary: true, show: variant === "toolbar" },
     // Secondary — always useful
     { label: "Verify Supplier",        icon: BadgeCheck,    onClick: () => setOpen("verify"),        show: true },
     { label: "Estimate Landed Cost",   icon: Calculator,    onClick: () => setOpen("landed"),        show: true },
