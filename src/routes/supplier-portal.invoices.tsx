@@ -62,8 +62,7 @@ function InvoiceHistory() {
           </thead>
           <tbody>
             {invoices.map((i) => {
-              const status =
-                isInvoiceQuoteExpired(i) && i.status !== "Cancelled" ? "Expired" : i.status;
+              const status = effectiveStatus(i);
               return (
                 <tr key={i.id} className="border-t align-top">
                   <td className="px-3 py-2 font-mono text-xs">
@@ -83,20 +82,9 @@ function InvoiceHistory() {
                   <td className="px-3 py-2 text-xs">{i.sentBy}</td>
                   <td className="px-3 py-2 text-xs">{i.createdAt}</td>
                   <td className="px-3 py-2">
-                    <div className="flex flex-wrap justify-end gap-1.5">
-                      {actionsFor(i, ctx).map((a) => (
-                        <Button
-                          key={a.label}
-                          size="sm"
-                          variant="outline"
-                          className="h-7 text-xs"
-                          onClick={a.run}
-                        >
-                          {a.label}
-                        </Button>
-                      ))}
-                    </div>
+                    <SupplierInvoiceActions invoice={i} />
                   </td>
+
                 </tr>
               );
             })}
