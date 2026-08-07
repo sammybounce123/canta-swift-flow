@@ -584,6 +584,20 @@ export const SETTLEMENT_NEXT_LABEL: Partial<Record<SimpleInvoiceStatus, string>>
   "RMB Settlement Pending": "Simulate provider confirmation",
 };
 
+const SETTLEMENT_EVENT_LABEL: Partial<Record<SimpleInvoiceStatus, string>> = {
+  "Compliance Review": "Compliance review started",
+  "Auto-Converting": "NGN converted to RMB",
+  "RMB Settlement Pending": "RMB payout initiated",
+};
+
+/** Re-price an expired quote without committing it, for the Refresh Quote modal. */
+export function previewRefreshedQuote(inv: SimpleInvoice) {
+  const drift = ((inv.amountRmb % 7) - 3) * 0.15; // small deterministic demo movement
+  const rate = Math.round((FX_RATE + drift) * 100) / 100;
+  const q = quoteFor(inv.amountRmb, rate);
+  return { ...q, expiresAt: Date.now() + 15 * 60 * 1000 };
+}
+
 export function useSimpleInvoices() {
   useSyncExternalStore(
     simpleInvoiceStore.subscribe,
