@@ -266,6 +266,39 @@ export function nextPaymentRequestId() {
   return `PR-3${String(invSeq).padStart(3, "0")}`;
 }
 
+/** Demo-safe payment link. Stored relative, resolved to an absolute URL on copy. */
+export function paymentPath(paymentRequestId: string) {
+  return `/pay/${paymentRequestId.toLowerCase()}`;
+}
+export function paymentLinkUrl(inv: SimpleInvoice) {
+  const base =
+    typeof window !== "undefined" && window.location?.origin
+      ? window.location.origin
+      : "https://canta.app";
+  return inv.paymentLink.startsWith("http") ? inv.paymentLink : `${base}${inv.paymentLink}`;
+}
+
+const SEED_STEP_LABELS: Array<[SimpleInvoiceStatus, string]> = [
+  ["Draft", "Invoice created"],
+  ["Quote Locked", "Quote generated"],
+  ["Sent to Buyer", "Invoice sent to buyer"],
+  ["Buyer Viewed", "Buyer viewed invoice"],
+  ["Awaiting NGN Payment", "Awaiting NGN payment"],
+  ["NGN Received", "NGN received and matched"],
+  ["Compliance Review", "Compliance review started"],
+  ["Auto-Converting", "NGN converted to RMB"],
+  ["RMB Settlement Pending", "RMB payout initiated"],
+  ["RMB Paid", "Provider confirmed payout — RMB paid"],
+];
+
+function seedEvents(status: SimpleInvoiceStatus, startedAt: number): TimelineEvent[] {
+  const reached = SEED_STEP_LABELS.findIndex(([s]) => s === status);
+  const upTo = reached === -1 ? 1 : reached;
+  return SEED_STEP_LABELS.slice(0, upTo + 1).map(([, label], i) =>
+    makeEvent(label, undefined, startedAt + i * 3_600_000),
+  );
+}
+
 function seed(
   n: number,
   buyerCompany: string,
@@ -276,8 +309,12 @@ function seed(
   expiryOffsetDays: number,
   createdOffsetDays: number,
 ): SimpleInvoice {
+  const createdMs = SEED_NOW + createdOffsetDays * DAY;
   const createdAt = dayStamp(createdOffsetDays);
   const q = quoteFor(amountRmb);
+  const events = seedEvents(status, createdMs);
+  if (status === "Expired")
+    events.push(makeEvent("Quote expired", "Refresh the quote to create a new payment link."));
   return {
     id: `si_${n}`,
     invoiceNumber: `INV-2026-0${n}`,
@@ -292,13 +329,16 @@ function seed(
     amountNgn: q.amountNgn,
     quoteExpiresAt: SEED_NOW + expiryOffsetDays * DAY,
     dueDate: dayStamp(21),
-    paymentLink: `https://canta.pay/i/${`INV-2026-0${n}`.toLowerCase()}`,
+    paymentLink: paymentPath(`PR-30${n}`),
     payoutAccountId: "RB-1001",
     status,
     sentBy,
     createdAt,
     receiptId: status === "RMB Paid" ? `RC-30${n}` : undefined,
     providerConfirmed: status === "RMB Paid",
+    providerRef: status === "RMB Paid" ? `PCONF-30${n}` : undefined,
+    settledAt: status === "RMB Paid" ? createdMs + 4 * DAY : undefined,
+    events,
   };
 }
 
