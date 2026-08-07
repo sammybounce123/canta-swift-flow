@@ -6,7 +6,10 @@ import { ReadinessBar } from "@/components/ReadinessBar";
 import {
   Wallet, Send, Ship, Receipt, Upload, Building2, ArrowRight, ShieldCheck,
 } from "lucide-react";
-import { useImporter, fmtNGN, NEXT_ACTION } from "@/lib/importer-store";
+import {
+  useImporter, fmtNGN, fmtWallet, walletOf, NEXT_ACTION, FUNDING_OPEN, WALLET_CCYS, FX_RATES,
+} from "@/lib/importer-store";
+
 
 export const Route = createFileRoute("/importer/")({
   head: () => ({
