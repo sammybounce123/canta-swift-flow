@@ -75,6 +75,12 @@ function FX() {
   const num = Number(amount) || 0;
   const out = num * rate;
 
+  const requestConfirm = () => {
+    if (num <= 0) return toast.error("Enter an amount to convert");
+    if (from === to) return toast.error("Choose two different wallets");
+    setConfirmOpen(true);
+  };
+
   const confirm = () => {
     if (num <= 0) return toast.error("Enter an amount to convert");
     if (from === to) return toast.error("Choose two different wallets");
@@ -88,11 +94,13 @@ function FX() {
     toast.success("Conversion settled", {
       description: `${fmtMoney(num, from)} → ${fmtMoney(out, to)} · Funds are in your ${to} wallet.`,
     });
+    setConfirmOpen(false);
     setPendingConversion(null);
     setChosenBeneficiary(null);
     setPhase("convert");
     navigate({ to: "/transactions" });
   };
+
 
 
   if (phase === "beneficiary" && pendingConversion) {
