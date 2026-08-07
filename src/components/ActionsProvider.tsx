@@ -894,6 +894,14 @@ function SendForm({
   const [confirmDetails, setConfirmDetails] = useState(false);
   const [confirmAuth, setConfirmAuth] = useState(false);
   const amt = Number(amount) || 0;
+  const [payCcy, setPayCcy] = useState<FundingCcy>("NGN");
+  const [quoteCcy, setQuoteCcy] = useState<string>(ben.ccy);
+  useEffect(() => {
+    setQuoteCcy(ben.ccy);
+  }, [ben.ccy]);
+  const sourceAmt = (amt * ngnRateOf(quoteCcy)) / ngnRateOf(payCcy);
+
+
 
   if (stage === "sending") {
     return (
