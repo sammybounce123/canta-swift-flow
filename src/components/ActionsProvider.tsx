@@ -226,17 +226,19 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
           <DialogHeader>
             <DialogTitle>Bulk Payout</DialogTitle>
             <DialogDescription>
-              Send multiple payouts in the same currency from one wallet. For cross-currency
+              Pay many saved beneficiaries in the same currency from one wallet. For cross-currency
               payments, use Convert &amp; Send.
             </DialogDescription>
           </DialogHeader>
           <BulkPayoutForm
             onClose={() => setBulk(false)}
+            onAddBeneficiary={() => setAddBen(true)}
             onConvertAndSend={() => {
               setBulk(false);
               setSend({ open: true, beneficiary: "" });
             }}
           />
+
         </DialogContent>
       </Dialog>
 
