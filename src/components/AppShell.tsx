@@ -344,7 +344,12 @@ function SidebarContent({
           <div className="text-[10px] uppercase tracking-widest text-sidebar-foreground/60 mb-1">
             Signed in as
           </div>
-          {isPartner && partner.user ? (
+          {pendingWorkspace ? (
+            <>
+              <div className="h-4 w-28 rounded bg-sidebar-accent/50 animate-pulse" />
+              <div className="mt-1.5 h-3 w-20 rounded bg-sidebar-accent/40 animate-pulse" />
+            </>
+          ) : isPartner && partner.user ? (
             <>
               <div className="text-sm font-semibold">{partner.user.name}</div>
               <div className="text-[11px] text-sidebar-foreground/70">
@@ -358,6 +363,7 @@ function SidebarContent({
               <div className="text-[10px] text-sidebar-foreground/50 mt-1">{wsProfile.badge}</div>
             </>
           )}
+
         </div>
       </div>
     </div>
