@@ -339,7 +339,7 @@ function PaymentsPage() {
                         </td>
                         <td className="px-4 py-3 font-mono text-xs">{p.reference}</td>
                         <td className="px-4 py-3 text-xs text-muted-foreground">
-                          {p.tradeFile && <div>Trade: {p.tradeFile}</div>}
+                          {p.tradeFile && <div>Ref: {p.tradeFile}</div>}
                           {p.shipment && <div>Shipment: {p.shipment}</div>}
                           {!p.tradeFile && !p.shipment && <span>—</span>}
                         </td>
@@ -681,7 +681,7 @@ function CreatePayoutDialog({
               <Textarea
                 value={single.notes}
                 onChange={(e) => setSingle({ ...single, notes: e.target.value })}
-                placeholder="Trade file or shipment notes"
+                placeholder="Payment reference or shipment notes"
               />
             </div>
           </div>
