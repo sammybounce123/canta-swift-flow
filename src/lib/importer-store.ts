@@ -217,6 +217,10 @@ export type ImporterNotification = {
 export type ImporterState = {
   ngnBalance: number;
   usdtBalance: number;
+  wallets: ImporterWallet[];
+  walletTx: WalletTx[];
+  fundingReceipts: FundingReceipt[];
+  drafts: PaymentDraft[];
   suppliers: SupplierRecord[];
   payments: SupplierPayment[];
   funding: FundingEntry[];
@@ -235,9 +239,13 @@ export type ImporterState = {
     fundingCurrency: "NGN" | "USDT";
     settlementCurrency: string;
     saveSupplierByDefault: boolean;
+    usdtWarnings: boolean;
+    emailFundingReceipts: boolean;
+    whatsappPaymentNotifications: boolean;
   };
   business: { name: string; contact: string; email: string; phone: string; address: string };
 };
+
 
 function iso(daysFromNow: number) {
   return new Date(Date.now() + daysFromNow * 86400000).toISOString().slice(0, 10);
