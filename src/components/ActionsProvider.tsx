@@ -46,7 +46,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
-import { ngnRateOf, fmtAnyCcy } from "@/lib/importer-store";
+import { ngnRateOf, fmtAnyCcy, WALLET_CCYS } from "@/lib/importer-store";
 import { useRole } from "@/components/RoleProvider";
 import { ActionsContext, type ActionsContextValue } from "@/components/actions-context";
 
