@@ -608,3 +608,41 @@ export function quoteFor(amount: number, currency: string) {
   const fee = Math.round(gross * 0.004);
   return { rate, ngnCost: Math.round(gross + fee), fee };
 }
+
+/* ------------------------------------------------- remittance quoting ---- */
+
+/** Indicative NGN value of 1 unit of each wallet currency (demo rates). */
+export const WALLET_NGN_RATE: Record<WalletCcy, number> = {
+  NGN: 1,
+  USDT: 1640,
+  USD: FX_RATES.USD,
+  GBP: FX_RATES.GBP,
+  EUR: FX_RATES.EUR,
+};
+
+export const REMITTANCE_FEE_PCT = 0.004;
+
+export type RemittanceLeg = {
+  ccy: WalletCcy;
+  rate: number;      // units of target ccy per 1 unit of funded ccy
+  receive: number;   // amount credited to the target wallet after fee
+};
+
+/**
+ * Every wallet is funded with NGN or USDT. This returns the indicative amount
+ * you would receive in each other wallet currency after converting.
+ */
+export function remittanceQuote(method: "NGN" | "USDT", amount: number): {
+  fee: number;
+  net: number;
+  legs: RemittanceLeg[];
+} {
+  const fee = Math.round(amount * REMITTANCE_FEE_PCT * 100) / 100;
+  const net = Math.max(0, amount - fee);
+  const src = WALLET_NGN_RATE[method];
+  const legs = WALLET_CCYS.filter((c) => c !== method).map((c) => {
+    const rate = src / WALLET_NGN_RATE[c];
+    return { ccy: c, rate, receive: net * rate };
+  });
+  return { fee, net, legs };
+}
