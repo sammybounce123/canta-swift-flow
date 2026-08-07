@@ -550,7 +550,11 @@ export const simpleInvoiceStore = {
         ...inv.events,
         makeEvent("Provider confirmed payout", `Provider reference ${ref}`, now),
         makeEvent("RMB paid to your bank account", `¥${inv.amountRmb.toLocaleString()}`, now),
-        makeEvent("Receipt available", `Receipt RC-${inv.paymentRequestId.replace("PR-", "")}`, now),
+        makeEvent(
+          "Receipt available",
+          `Receipt RC-${inv.paymentRequestId.replace("PR-", "")}`,
+          now,
+        ),
       ],
     });
     return { ok: true, status: "RMB Paid" };
@@ -725,7 +729,11 @@ const TIMELINE_STEPS: Array<{ key: string; label: string; explain: string }> = [
     label: "Quote Generated",
     explain: "The RMB amount was priced in NGN at a locked rate.",
   },
-  { key: "sent", label: "Invoice Sent", explain: "The invoice and payment link went to the buyer." },
+  {
+    key: "sent",
+    label: "Invoice Sent",
+    explain: "The invoice and payment link went to the buyer.",
+  },
   { key: "viewed", label: "Buyer Viewed", explain: "The buyer opened the payment link." },
   {
     key: "awaiting",

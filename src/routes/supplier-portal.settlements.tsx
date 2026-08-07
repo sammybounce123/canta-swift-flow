@@ -11,7 +11,6 @@ import {
 } from "@/lib/supplier-simple";
 import { SupplierInvoiceActions } from "@/components/supplier/SupplierInvoiceActions";
 
-
 export const Route = createFileRoute("/supplier-portal/settlements")({
   head: () => ({
     meta: [
@@ -59,7 +58,6 @@ function SettlementsPage() {
   const dest = banks.find((b) => b.isSettlementDestination);
 
   const rows = invoices.filter((i) => SETTLEMENT_STATUSES.includes(i.status));
-
 
   return (
     <div className="space-y-4">
@@ -114,7 +112,6 @@ function SettlementsPage() {
                     </Badge>
                     <SupplierInvoiceActions invoice={inv} className="flex flex-wrap gap-1.5" />
                   </div>
-
                 </div>
 
                 <ol className="mt-3 grid gap-2 text-xs sm:grid-cols-4 xl:grid-cols-7">

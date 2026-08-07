@@ -157,9 +157,10 @@ export function SupplierInvoiceActions({
       title: "Receipt will be available after provider confirmation.",
     });
   }
-  if (status === "Expired") add("refresh", "Refresh quote", () => setOpen("refresh"), {
-    primary: true,
-  });
+  if (status === "Expired")
+    add("refresh", "Refresh quote", () => setOpen("refresh"), {
+      primary: true,
+    });
   if (status === "Expired" || status === "Cancelled")
     add("duplicate", "Duplicate invoice", () => {
       simpleInvoiceStore.duplicate(invoice.id);
@@ -187,7 +188,10 @@ export function SupplierInvoiceActions({
       toast.error("Receipt is available only after provider confirmation.");
       return;
     }
-    const ok = downloadTextFile(`${invoice.receiptId}-${invoice.invoiceNumber}.txt`, receiptText(invoice, bankLine));
+    const ok = downloadTextFile(
+      `${invoice.receiptId}-${invoice.invoiceNumber}.txt`,
+      receiptText(invoice, bankLine),
+    );
     if (ok) toast.success("Receipt downloaded.");
     else {
       copyText(receiptText(invoice, bankLine));
@@ -316,7 +320,9 @@ export function TimelineDialog({
                       {formatStamp(s.at)}
                     </div>
                   )}
-                  {s.blocker && <div className="mt-0.5 text-[11px] text-amber-800">{s.blocker}</div>}
+                  {s.blocker && (
+                    <div className="mt-0.5 text-[11px] text-amber-800">{s.blocker}</div>
+                  )}
                 </div>
               </div>
             </li>
@@ -684,7 +690,8 @@ function ProviderConfirmDialog({
             onClick={() => {
               const res = simpleInvoiceStore.confirmProviderPayout(invoice.id);
               onOpenChange(false);
-              if (res.ok) toast.success("Provider confirmation received. Receipt is now available.");
+              if (res.ok)
+                toast.success("Provider confirmation received. Receipt is now available.");
               else toast.error(res.error ?? "Could not confirm payout");
             }}
           >

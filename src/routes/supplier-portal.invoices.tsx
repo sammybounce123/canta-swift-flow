@@ -28,7 +28,6 @@ function InvoiceHistory() {
   const invoices = useSimpleInvoices();
   const t = useT();
 
-
   return (
     <Card className="space-y-3 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -84,7 +83,6 @@ function InvoiceHistory() {
                   <td className="px-3 py-2">
                     <SupplierInvoiceActions invoice={i} />
                   </td>
-
                 </tr>
               );
             })}
