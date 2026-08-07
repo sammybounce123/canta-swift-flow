@@ -268,6 +268,13 @@ function RemittanceQuote({ method, amount }: { method: "NGN" | "USDT"; amount: n
   const expired = !!quote && left <= 0;
   const mmss = `${String(Math.floor(left / 60)).padStart(2, "0")}:${String(left % 60).padStart(2, "0")}`;
 
+  // Live indicative preview (recomputed on every keystroke, before locking).
+  const liveSrc = method === "NGN" ? 1 : WALLET_NGN_RATE.USDT;
+  const liveRate = liveSrc / ngnRateOf(target);
+  const liveFee = Math.round(amount * REMITTANCE_FEE_PCT * 100) / 100;
+  const liveNet = Math.max(0, amount - liveFee);
+  const liveReceive = liveNet * liveRate;
+
   return (
     <div className="rounded-lg border border-border p-3 space-y-2">
       <div className="flex items-center justify-between gap-2">
@@ -293,9 +300,35 @@ function RemittanceQuote({ method, amount }: { method: "NGN" | "USDT"; amount: n
 
       {amount > 0 ? (
         !quote ? (
-          <Button size="sm" variant="outline" className="w-full" onClick={lock}>
-            <Timer className="h-3.5 w-3.5" /> Lock quote for {QUOTE_LOCK_SECONDS}s
-          </Button>
+          <>
+            {/* Live indicative preview — updates as you type the funding amount */}
+            <div className="rounded-md bg-muted/40 px-3 py-2 space-y-1.5">
+              <div className="flex justify-between text-xs">
+                <span className="text-muted-foreground">Indicative rate</span>
+                <span className="font-medium">
+                  1 {method} = {liveRate >= 1 ? liveRate.toFixed(2) : liveRate.toFixed(6)} {target}
+                </span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span className="text-muted-foreground">Conversion fee (0.4%)</span>
+                <span className="font-medium">{fmtWallet(liveFee, method)}</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span className="text-muted-foreground">Convertible amount</span>
+                <span className="font-medium">{fmtWallet(liveNet, method)}</span>
+              </div>
+              <div className="flex justify-between items-center border-t border-border pt-1.5">
+                <span className="text-xs text-muted-foreground">Supplier receives (indicative)</span>
+                <span className="text-sm font-semibold">{fmtAnyCcy(liveReceive, target)}</span>
+              </div>
+            </div>
+            <p className="text-[10px] text-muted-foreground">
+              This is a live indicative rate. Lock it to guarantee the rate for {QUOTE_LOCK_SECONDS} seconds.
+            </p>
+            <Button size="sm" variant="outline" className="w-full" onClick={lock}>
+              <Timer className="h-3.5 w-3.5" /> Lock quote for {QUOTE_LOCK_SECONDS}s
+            </Button>
+          </>
         ) : (
           <>
             <div className="flex justify-between text-xs">
