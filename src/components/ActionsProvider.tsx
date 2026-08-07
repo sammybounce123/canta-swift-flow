@@ -45,6 +45,8 @@ import {
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { beneficiaries, fmtMoney } from "@/lib/mock";
+import { addBeneficiary } from "@/lib/beneficiary-store";
+
 import { BulkPayoutForm } from "@/components/treasury/BulkPayoutForm";
 import { addTransaction } from "@/lib/tx-store";
 import { ngnRateOf, fmtAnyCcy, WALLET_CCYS, GLOBAL_SEND_CCYS } from "@/lib/importer-store";
