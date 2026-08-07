@@ -2,14 +2,30 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, TrendingUp, TrendingDown, ArrowRight } from "lucide-react";
-import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine } from "recharts";
+import {
+  LineChart,
+  Line,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ReferenceLine,
+} from "recharts";
 
 const data = [
-  { d: "T-7", actual: 1598 }, { d: "T-6", actual: 1604 }, { d: "T-5", actual: 1601 },
-  { d: "T-4", actual: 1609 }, { d: "T-3", actual: 1612 }, { d: "T-2", actual: 1615 },
-  { d: "T-1", actual: 1612 }, { d: "Now", actual: 1612, predicted: 1612 },
-  { d: "T+1", predicted: 1618 }, { d: "T+2", predicted: 1624 },
-  { d: "T+3", predicted: 1629 }, { d: "T+4", predicted: 1632 },
+  { d: "T-7", actual: 1598 },
+  { d: "T-6", actual: 1604 },
+  { d: "T-5", actual: 1601 },
+  { d: "T-4", actual: 1609 },
+  { d: "T-3", actual: 1612 },
+  { d: "T-2", actual: 1615 },
+  { d: "T-1", actual: 1612 },
+  { d: "Now", actual: 1612, predicted: 1612 },
+  { d: "T+1", predicted: 1618 },
+  { d: "T+2", predicted: 1624 },
+  { d: "T+3", predicted: 1629 },
+  { d: "T+4", predicted: 1632 },
 ];
 
 export const Route = createFileRoute("/ai-insights")({
@@ -27,21 +43,27 @@ function AIInsights() {
           </div>
           <div>
             <h1 className="text-2xl font-semibold">AI Insights</h1>
-            <p className="text-sm text-muted-foreground">Sample AI output for treasury teams — not financial advice.</p>
+            <p className="text-sm text-muted-foreground">
+              Sample AI output for treasury teams — not financial advice.
+            </p>
           </div>
         </div>
-        <Badge variant="outline" className="text-[10px]">Sample AI output · Demo</Badge>
+        <Badge variant="outline" className="text-[10px]">
+          Sample AI output · Demo
+        </Badge>
       </div>
 
       <Card className="p-6 shadow-elevated bg-gradient-card text-primary-foreground border-none relative overflow-hidden">
         <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-accent/20 blur-3xl" />
         <div className="relative grid lg:grid-cols-3 gap-6">
           <div>
-            <Badge className="bg-accent text-accent-foreground hover:bg-accent">Sample signal</Badge>
+            <Badge className="bg-accent text-accent-foreground hover:bg-accent">
+              Sample signal
+            </Badge>
             <div className="mt-4 text-3xl font-semibold">FX may move in your window</div>
             <p className="text-sm text-primary-foreground/70 mt-2 leading-relaxed">
-              Illustrative AI output only. Review the current quote expiry before sending the buyer link and
-              plan conversions within your usual treasury cadence.
+              Illustrative AI output only. Review the current quote expiry before sending the buyer
+              link and plan conversions within your usual treasury cadence.
             </p>
             <div className="mt-5 flex items-center gap-3">
               <div>
@@ -58,25 +80,65 @@ function AIInsights() {
           <div className="lg:col-span-2 h-64">
             <ResponsiveContainer>
               <LineChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
-                <XAxis dataKey="d" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "rgba(255,255,255,0.6)" }} />
-                <YAxis domain={["dataMin - 5", "dataMax + 5"]} axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "rgba(255,255,255,0.6)" }} />
-                <Tooltip contentStyle={{ borderRadius: 12, fontSize: 12, background: "oklch(0.18 0.06 260)", border: "none", color: "#fff" }} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="rgba(255,255,255,0.1)"
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="d"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 11, fill: "rgba(255,255,255,0.6)" }}
+                />
+                <YAxis
+                  domain={["dataMin - 5", "dataMax + 5"]}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 11, fill: "rgba(255,255,255,0.6)" }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: 12,
+                    fontSize: 12,
+                    background: "oklch(0.18 0.06 260)",
+                    border: "none",
+                    color: "#fff",
+                  }}
+                />
                 <ReferenceLine x="Now" stroke="rgba(255,255,255,0.3)" strokeDasharray="3 3" />
-                <Line type="monotone" dataKey="actual" stroke="oklch(0.78 0.16 175)" strokeWidth={2.5} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="predicted" stroke="#fff" strokeDasharray="6 4" strokeWidth={2.5} dot={{ r: 3 }} />
+                <Line
+                  type="monotone"
+                  dataKey="actual"
+                  stroke="oklch(0.78 0.16 175)"
+                  strokeWidth={2.5}
+                  dot={{ r: 3 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="predicted"
+                  stroke="#fff"
+                  strokeDasharray="6 4"
+                  strokeWidth={2.5}
+                  dot={{ r: 3 }}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
       </Card>
 
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           { t: "EUR/NGN", desc: "Wait 24-48 hours", c: 72, dir: "wait", icon: TrendingDown },
           { t: "GBP/NGN", desc: "Hold position", c: 65, dir: "hold", icon: TrendingUp },
-          { t: "USD receipts", desc: "Convert in tranches", c: 81, dir: "tranche", icon: TrendingUp },
+          {
+            t: "USD receipts",
+            desc: "Convert in tranches",
+            c: 81,
+            dir: "tranche",
+            icon: TrendingUp,
+          },
         ].map((s) => (
           <Card key={s.t} className="p-5 shadow-card">
             <div className="flex items-center justify-between">

@@ -22,37 +22,143 @@ export type SettlementStatus =
 
 export const STATUS_TONE: Record<SettlementStatus, string> = {
   "Awaiting Buyer Payment": "bg-muted text-foreground",
-  "NGN Received":           "bg-primary/10 text-primary",
-  "Compliance Review":      "bg-amber-100 text-amber-800",
-  "FX Processing":          "bg-blue-100 text-blue-800",
-  "RMB Payout Initiated":   "bg-indigo-100 text-indigo-800",
-  "RMB Paid":               "bg-emerald-100 text-emerald-800",
-  "Failed":                 "bg-destructive/10 text-destructive",
-  "On Hold":                "bg-amber-100 text-amber-800",
-  "Refunded":               "bg-muted text-foreground",
+  "NGN Received": "bg-primary/10 text-primary",
+  "Compliance Review": "bg-amber-100 text-amber-800",
+  "FX Processing": "bg-blue-100 text-blue-800",
+  "RMB Payout Initiated": "bg-indigo-100 text-indigo-800",
+  "RMB Paid": "bg-emerald-100 text-emerald-800",
+  Failed: "bg-destructive/10 text-destructive",
+  "On Hold": "bg-amber-100 text-amber-800",
+  Refunded: "bg-muted text-foreground",
 };
 
 export type SupplierRequest = {
-  id: string; invoiceNumber: string; buyer: string; goods: string;
-  amountNgn: number; amountRmb: number; invoiceCurrency: "RMB" | "USD";
-  dueDate: string; invoiceDoc: string; status: SettlementStatus; updated: string;
-  rate: number; fee: number; payoutRef?: string; paidDate?: string;
+  id: string;
+  invoiceNumber: string;
+  buyer: string;
+  goods: string;
+  amountNgn: number;
+  amountRmb: number;
+  invoiceCurrency: "RMB" | "USD";
+  dueDate: string;
+  invoiceDoc: string;
+  status: SettlementStatus;
+  updated: string;
+  rate: number;
+  fee: number;
+  payoutRef?: string;
+  paidDate?: string;
   senderAccount?: { bank: string; accountName: string; accountNumber: string };
 };
 
 export const REQUESTS: SupplierRequest[] = [
-  { id: "PR-3041", invoiceNumber: "INV-2026-041", buyer: "Zenith Imports Nigeria",  goods: "Bluetooth speakers x 500",   amountNgn: 19_300_000, amountRmb: 94_500,  invoiceCurrency: "RMB", dueDate: "2026-06-10", invoiceDoc: "INV-041.pdf", status: "RMB Paid",               updated: "2 hours ago", rate: 204.23, fee: 12_500, payoutRef: "RMB-PO-88421", paidDate: "2026-06-12", senderAccount: { bank: "GTBank", accountName: "Zenith Imports Nigeria Ltd", accountNumber: "0123456789" } },
-  { id: "PR-3055", invoiceNumber: "INV-2026-055", buyer: "Abuja Imports Ltd",     goods: "LED panels x 220",           amountNgn: 8_650_000,  amountRmb: 42_300,  invoiceCurrency: "RMB", dueDate: "2026-06-20", invoiceDoc: "INV-055.pdf", status: "FX Processing",          updated: "today",       rate: 204.49, fee: 8_100,  senderAccount: { bank: "Access Bank", accountName: "Abuja Imports Ltd", accountNumber: "0987654321" } },
-  { id: "PR-3062", invoiceNumber: "INV-2026-062", buyer: "Kano Distributors",     goods: "Industrial sewing machines", amountNgn: 14_120_000, amountRmb: 69_100,  invoiceCurrency: "RMB", dueDate: "2026-06-25", invoiceDoc: "INV-062.pdf", status: "NGN Received",           updated: "yesterday",   rate: 204.34, fee: 10_900, senderAccount: { bank: "Zenith Bank", accountName: "Kano Distributors", accountNumber: "1122334455" } },
-  { id: "PR-3071", invoiceNumber: "INV-2026-071", buyer: "Port Harcourt Trading", goods: "Solar inverters x 60",       amountNgn: 27_400_000, amountRmb: 134_200, invoiceCurrency: "RMB", dueDate: "2026-07-01", invoiceDoc: "INV-071.pdf", status: "Awaiting Buyer Payment", updated: "3 days ago",  rate: 204.17, fee: 15_400 },
-  { id: "PR-3080", invoiceNumber: "INV-2026-080", buyer: "Zenith Imports Nigeria",  goods: "Plastic injection moulds",   amountNgn: 6_120_000,  amountRmb: 29_900,  invoiceCurrency: "RMB", dueDate: "2026-07-04", invoiceDoc: "INV-080.pdf", status: "Compliance Review",      updated: "5 days ago",  rate: 204.68, fee: 6_200,  senderAccount: { bank: "GTBank", accountName: "Zenith Imports Nigeria Ltd", accountNumber: "0123456789" } },
+  {
+    id: "PR-3041",
+    invoiceNumber: "INV-2026-041",
+    buyer: "Zenith Imports Nigeria",
+    goods: "Bluetooth speakers x 500",
+    amountNgn: 19_300_000,
+    amountRmb: 94_500,
+    invoiceCurrency: "RMB",
+    dueDate: "2026-06-10",
+    invoiceDoc: "INV-041.pdf",
+    status: "RMB Paid",
+    updated: "2 hours ago",
+    rate: 204.23,
+    fee: 12_500,
+    payoutRef: "RMB-PO-88421",
+    paidDate: "2026-06-12",
+    senderAccount: {
+      bank: "GTBank",
+      accountName: "Zenith Imports Nigeria Ltd",
+      accountNumber: "0123456789",
+    },
+  },
+  {
+    id: "PR-3055",
+    invoiceNumber: "INV-2026-055",
+    buyer: "Abuja Imports Ltd",
+    goods: "LED panels x 220",
+    amountNgn: 8_650_000,
+    amountRmb: 42_300,
+    invoiceCurrency: "RMB",
+    dueDate: "2026-06-20",
+    invoiceDoc: "INV-055.pdf",
+    status: "FX Processing",
+    updated: "today",
+    rate: 204.49,
+    fee: 8_100,
+    senderAccount: {
+      bank: "Access Bank",
+      accountName: "Abuja Imports Ltd",
+      accountNumber: "0987654321",
+    },
+  },
+  {
+    id: "PR-3062",
+    invoiceNumber: "INV-2026-062",
+    buyer: "Kano Distributors",
+    goods: "Industrial sewing machines",
+    amountNgn: 14_120_000,
+    amountRmb: 69_100,
+    invoiceCurrency: "RMB",
+    dueDate: "2026-06-25",
+    invoiceDoc: "INV-062.pdf",
+    status: "NGN Received",
+    updated: "yesterday",
+    rate: 204.34,
+    fee: 10_900,
+    senderAccount: {
+      bank: "Zenith Bank",
+      accountName: "Kano Distributors",
+      accountNumber: "1122334455",
+    },
+  },
+  {
+    id: "PR-3071",
+    invoiceNumber: "INV-2026-071",
+    buyer: "Port Harcourt Trading",
+    goods: "Solar inverters x 60",
+    amountNgn: 27_400_000,
+    amountRmb: 134_200,
+    invoiceCurrency: "RMB",
+    dueDate: "2026-07-01",
+    invoiceDoc: "INV-071.pdf",
+    status: "Awaiting Buyer Payment",
+    updated: "3 days ago",
+    rate: 204.17,
+    fee: 15_400,
+  },
+  {
+    id: "PR-3080",
+    invoiceNumber: "INV-2026-080",
+    buyer: "Zenith Imports Nigeria",
+    goods: "Plastic injection moulds",
+    amountNgn: 6_120_000,
+    amountRmb: 29_900,
+    invoiceCurrency: "RMB",
+    dueDate: "2026-07-04",
+    invoiceDoc: "INV-080.pdf",
+    status: "Compliance Review",
+    updated: "5 days ago",
+    rate: 204.68,
+    fee: 6_200,
+    senderAccount: {
+      bank: "GTBank",
+      accountName: "Zenith Imports Nigeria Ltd",
+      accountNumber: "0123456789",
+    },
+  },
 ];
 
 let requestsVersion = 0;
 const requestsSubs = new Set<() => void>();
 let nextRequestSeq = 3100;
 export const requestsStore = {
-  add: (r: Omit<SupplierRequest, "id" | "updated" | "status"> & Partial<Pick<SupplierRequest, "id" | "updated" | "status">>) => {
+  add: (
+    r: Omit<SupplierRequest, "id" | "updated" | "status"> &
+      Partial<Pick<SupplierRequest, "id" | "updated" | "status">>,
+  ) => {
     const full: SupplierRequest = {
       id: r.id ?? `PR-${nextRequestSeq++}`,
       updated: r.updated ?? "just now",
@@ -72,7 +178,10 @@ export const requestsStore = {
     requestsSubs.forEach((f) => f());
     return REQUESTS[idx];
   },
-  subscribe: (f: () => void) => { requestsSubs.add(f); return () => requestsSubs.delete(f); },
+  subscribe: (f: () => void) => {
+    requestsSubs.add(f);
+    return () => requestsSubs.delete(f);
+  },
   getVersion: () => requestsVersion,
 };
 export function useRequests() {
@@ -80,17 +189,43 @@ export function useRequests() {
   return REQUESTS;
 }
 
-
-
 export type Buyer = {
-  name: string; company: string; email: string; phone: string; country: string;
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  country: string;
 };
 
 export const BUYERS: Buyer[] = [
-  { name: "Tunde Bakare",   company: "Zenith Imports Nigeria",  email: "tunde@zenithimports.ng",    phone: "+234 802 111 2233", country: "Nigeria" },
-  { name: "Amina Yusuf",    company: "Abuja Imports Ltd",     email: "amina@abujaimports.ng",  phone: "+234 803 222 3344", country: "Nigeria" },
-  { name: "Ibrahim Musa",   company: "Kano Distributors",     email: "ibrahim@kanodist.ng",    phone: "+234 805 333 4455", country: "Nigeria" },
-  { name: "Chioma Eze",     company: "Port Harcourt Trading", email: "chioma@phtrading.ng",    phone: "+234 806 444 5566", country: "Nigeria" },
+  {
+    name: "Tunde Bakare",
+    company: "Zenith Imports Nigeria",
+    email: "tunde@zenithimports.ng",
+    phone: "+234 802 111 2233",
+    country: "Nigeria",
+  },
+  {
+    name: "Amina Yusuf",
+    company: "Abuja Imports Ltd",
+    email: "amina@abujaimports.ng",
+    phone: "+234 803 222 3344",
+    country: "Nigeria",
+  },
+  {
+    name: "Ibrahim Musa",
+    company: "Kano Distributors",
+    email: "ibrahim@kanodist.ng",
+    phone: "+234 805 333 4455",
+    country: "Nigeria",
+  },
+  {
+    name: "Chioma Eze",
+    company: "Port Harcourt Trading",
+    email: "chioma@phtrading.ng",
+    phone: "+234 806 444 5566",
+    country: "Nigeria",
+  },
 ];
 
 export const TIMELINE_STEPS = [
@@ -107,21 +242,19 @@ export const TIMELINE_STEPS = [
   "Settlement Receipt Available",
 ];
 
-
 export const COMPLIANCE_DISCLAIMER =
   "How settlement completes: buyer pays NGN → Canta compliance review → FX conversion at the locked rate → RMB paid to your verified RMB payout account → settlement receipt generated. Fees are shown on every quote. Refunds return only to the exact Nigerian bank account that sent the NGN payment. Timing depends on payment confirmation, document completeness, compliance review, FX availability and partner processing. Final NGN/RMB amounts are subject to applicable regulations.";
 
 export const SUPPLIER_TABS: Array<{ to: string; label: string }> = [
-  { to: "/supplier-portal",                    label: "Overview 首页" },
-  { to: "/supplier-portal/buyers",             label: "Nigerian Buyers 尼日利亚买家" },
-  { to: "/supplier-portal/payment-requests",           label: "Payment Requests 收款请求" },
-  { to: "/supplier-portal/rmb-wallet",             label: "RMB Settlement 人民币结算" },
-  { to: "/supplier-portal/invoices",           label: "Invoices 发票" },
-  { to: "/supplier-portal/documents",          label: "Documents 文件" },
-  { to: "/supplier-portal/verification",       label: "Verification 认证" },
-  { to: "/supplier-portal/support",            label: "Support 支持" },
+  { to: "/supplier-portal", label: "Overview 首页" },
+  { to: "/supplier-portal/buyers", label: "Nigerian Buyers 尼日利亚买家" },
+  { to: "/supplier-portal/payment-requests", label: "Payment Requests 收款请求" },
+  { to: "/supplier-portal/rmb-wallet", label: "RMB Settlement 人民币结算" },
+  { to: "/supplier-portal/invoices", label: "Invoices 发票" },
+  { to: "/supplier-portal/documents", label: "Documents 文件" },
+  { to: "/supplier-portal/verification", label: "Verification 认证" },
+  { to: "/supplier-portal/support", label: "Support 支持" },
 ];
-
 
 // --- Verification store ------------------------------------------------------
 
@@ -130,7 +263,9 @@ function initialVerified(): boolean {
   try {
     if (window.localStorage.getItem("canta:persona") === "supplier_demo") return true;
     if (window.localStorage.getItem("canta:kyb:supplier_dashboard") === "done") return true;
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return false;
 }
 let verified = initialVerified();
@@ -142,8 +277,14 @@ export const verifiedStore = {
     if (!verified && initialVerified()) verified = true;
     return verified;
   },
-  set: (v: boolean) => { verified = v; verifiedSubs.forEach((f) => f()); },
-  subscribe: (f: () => void) => { verifiedSubs.add(f); return () => verifiedSubs.delete(f); },
+  set: (v: boolean) => {
+    verified = v;
+    verifiedSubs.forEach((f) => f());
+  },
+  subscribe: (f: () => void) => {
+    verifiedSubs.add(f);
+    return () => verifiedSubs.delete(f);
+  },
 };
 
 export function useVerified() {
@@ -156,7 +297,11 @@ export function useVerified() {
 
 export function isDemoApproved(): boolean {
   if (typeof window === "undefined") return false;
-  try { return window.localStorage.getItem("canta:persona") === "supplier_demo"; } catch { return false; }
+  try {
+    return window.localStorage.getItem("canta:persona") === "supplier_demo";
+  } catch {
+    return false;
+  }
 }
 
 /** Hydration-safe variant of isDemoApproved() for use during render. */
@@ -165,19 +310,34 @@ export function useDemoApproved(): boolean {
   return hydrated ? isDemoApproved() : false;
 }
 
-
 // --- FX quote store ----------------------------------------------------------
 
 export type FxQuoteStatus =
-  | "Draft" | "Quote Generated" | "Rate Locked" | "Sent to Buyer" | "Expired"
-  | "Buyer Paid" | "Processing Settlement" | "Settled" | "Cancelled";
+  | "Draft"
+  | "Quote Generated"
+  | "Rate Locked"
+  | "Sent to Buyer"
+  | "Expired"
+  | "Buyer Paid"
+  | "Processing Settlement"
+  | "Settled"
+  | "Cancelled";
 
 export type FxQuote = {
-  id: string; invoiceNumber: string; buyer: string;
-  invoiceAmount: number; invoiceCurrency: "RMB" | "USD";
-  settlementCurrency: "RMB" | "USD"; rate: number; ngnTotal: number;
-  fee: number; estReceivable: number; payoutAccount: string;
-  expiresAt: number; lockedUntil?: number; status: FxQuoteStatus;
+  id: string;
+  invoiceNumber: string;
+  buyer: string;
+  invoiceAmount: number;
+  invoiceCurrency: "RMB" | "USD";
+  settlementCurrency: "RMB" | "USD";
+  rate: number;
+  ngnTotal: number;
+  fee: number;
+  estReceivable: number;
+  payoutAccount: string;
+  expiresAt: number;
+  lockedUntil?: number;
+  status: FxQuoteStatus;
   sentAt?: number;
 };
 
@@ -187,14 +347,21 @@ export type FxQuote = {
 const SEED_NOW = 1_735_689_600_000; // fixed epoch used for initial expiry / lock timestamps
 function buildQuote(r: SupplierRequest, seq: number, statusOverride?: FxQuoteStatus): FxQuote {
   const settlementCurrency: "RMB" | "USD" = seq % 2 === 0 ? "RMB" : "USD";
-  const jitter = ((seq * 37) % 100) / 100 * 0.6 - 0.3; // deterministic pseudo-jitter
+  const jitter = (((seq * 37) % 100) / 100) * 0.6 - 0.3; // deterministic pseudo-jitter
   const rate = +(r.rate + jitter).toFixed(2);
   const ngnTotal = Math.round(r.amountRmb * rate);
   const estReceivable = settlementCurrency === "RMB" ? r.amountRmb : Math.round(r.amountRmb / 7.2);
   return {
-    id: `FXQ-${3100 + seq}`, invoiceNumber: r.invoiceNumber, buyer: r.buyer,
-    invoiceAmount: r.amountRmb, invoiceCurrency: r.invoiceCurrency,
-    settlementCurrency, rate, ngnTotal, fee: r.fee, estReceivable,
+    id: `FXQ-${3100 + seq}`,
+    invoiceNumber: r.invoiceNumber,
+    buyer: r.buyer,
+    invoiceAmount: r.amountRmb,
+    invoiceCurrency: r.invoiceCurrency,
+    settlementCurrency,
+    rate,
+    ngnTotal,
+    fee: r.fee,
+    estReceivable,
     payoutAccount: settlementCurrency === "RMB" ? "ICBC ****4821" : "Bank of China ****9012",
     expiresAt: SEED_NOW + 15 * 60 * 1000,
     status: statusOverride ?? "Quote Generated",
@@ -202,7 +369,12 @@ function buildQuote(r: SupplierRequest, seq: number, statusOverride?: FxQuoteSta
 }
 
 let fxQuotes: FxQuote[] = (() => {
-  const seeded: FxQuoteStatus[] = ["Quote Generated", "Rate Locked", "Buyer Paid", "Processing Settlement"];
+  const seeded: FxQuoteStatus[] = [
+    "Quote Generated",
+    "Rate Locked",
+    "Buyer Paid",
+    "Processing Settlement",
+  ];
   return REQUESTS.slice(0, 4).map((r, i) => {
     const q = buildQuote(r, i, seeded[i]);
     if (q.status === "Rate Locked") q.lockedUntil = q.expiresAt;
@@ -215,7 +387,10 @@ const notify = () => fxSubs.forEach((f) => f());
 
 /** Statuses that are past the quote window — expiry no longer applies to them. */
 export const POST_QUOTE_STATUSES: FxQuoteStatus[] = [
-  "Buyer Paid", "Processing Settlement", "Settled", "Cancelled",
+  "Buyer Paid",
+  "Processing Settlement",
+  "Settled",
+  "Cancelled",
 ];
 
 /** A quote is expired once its window lapses, unless the buyer already paid. */
@@ -237,11 +412,16 @@ export function isQuoteSelectable(q: FxQuote): boolean {
 export const fxQuoteStore = {
   getQuotes: () => fxQuotes,
   getSelectedId: () => selectedQuoteId,
-  subscribe: (f: () => void) => { fxSubs.add(f); return () => fxSubs.delete(f); },
+  subscribe: (f: () => void) => {
+    fxSubs.add(f);
+    return () => fxSubs.delete(f);
+  },
   select: (id: string) => {
     const q = fxQuotes.find((x) => x.id === id);
     if (!q || !isQuoteSelectable(q)) return false;
-    selectedQuoteId = id; notify(); return true;
+    selectedQuoteId = id;
+    notify();
+    return true;
   },
   generate: () => {
     const nextIndex = fxQuotes.length;
@@ -256,18 +436,31 @@ export const fxQuoteStore = {
   lock: (id: string) => {
     const target = fxQuotes.find((q) => q.id === id);
     if (!target || isQuoteExpired(target)) return false;
-    fxQuotes = fxQuotes.map((q) => q.id === id
-      ? { ...q, status: "Rate Locked", lockedUntil: Date.now() + 15 * 60 * 1000, expiresAt: Date.now() + 15 * 60 * 1000 }
-      : q);
+    fxQuotes = fxQuotes.map((q) =>
+      q.id === id
+        ? {
+            ...q,
+            status: "Rate Locked",
+            lockedUntil: Date.now() + 15 * 60 * 1000,
+            expiresAt: Date.now() + 15 * 60 * 1000,
+          }
+        : q,
+    );
     notify();
     return true;
   },
   send: (id: string) => {
     const target = fxQuotes.find((q) => q.id === id);
     if (!target || isQuoteExpired(target)) return false;
-    fxQuotes = fxQuotes.map((q) => q.id === id
-      ? { ...q, status: q.status === "Rate Locked" ? "Rate Locked" : "Sent to Buyer", sentAt: Date.now() }
-      : q);
+    fxQuotes = fxQuotes.map((q) =>
+      q.id === id
+        ? {
+            ...q,
+            status: q.status === "Rate Locked" ? "Rate Locked" : "Sent to Buyer",
+            sentAt: Date.now(),
+          }
+        : q,
+    );
     notify();
     return true;
   },
@@ -276,7 +469,13 @@ export const fxQuoteStore = {
       if (q.id !== id) return q;
       const jitter = (Math.random() - 0.5) * 0.8;
       const newRate = +(q.rate + jitter).toFixed(2);
-      return { ...q, rate: newRate, ngnTotal: Math.round(q.invoiceAmount * newRate), expiresAt: Date.now() + 15 * 60 * 1000, status: "Quote Generated" };
+      return {
+        ...q,
+        rate: newRate,
+        ngnTotal: Math.round(q.invoiceAmount * newRate),
+        expiresAt: Date.now() + 15 * 60 * 1000,
+        status: "Quote Generated",
+      };
     });
     selectedQuoteId = id;
     notify();
@@ -285,10 +484,18 @@ export const fxQuoteStore = {
 };
 
 export function useFxQuotes() {
-  return useSyncExternalStore(fxQuoteStore.subscribe, fxQuoteStore.getQuotes, fxQuoteStore.getQuotes);
+  return useSyncExternalStore(
+    fxQuoteStore.subscribe,
+    fxQuoteStore.getQuotes,
+    fxQuoteStore.getQuotes,
+  );
 }
 export function useSelectedQuoteId() {
-  return useSyncExternalStore(fxQuoteStore.subscribe, fxQuoteStore.getSelectedId, fxQuoteStore.getSelectedId);
+  return useSyncExternalStore(
+    fxQuoteStore.subscribe,
+    fxQuoteStore.getSelectedId,
+    fxQuoteStore.getSelectedId,
+  );
 }
 export function useActiveQuote() {
   const quotes = useFxQuotes();
@@ -299,16 +506,27 @@ export function useActiveQuote() {
 }
 export function formatCountdown(ts: number) {
   const ms = Math.max(0, ts - Date.now());
-  const m = Math.floor(ms / 60000); const s = Math.floor((ms % 60000) / 1000);
+  const m = Math.floor(ms / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
   return ms === 0 ? "Expired" : `${m}m ${s.toString().padStart(2, "0")}s`;
 }
 
 // --- Shared subcomponents ----------------------------------------------------
 
-export function KPI({ label, value, icon: Icon }: { label: string; value: string; icon: typeof Wallet }) {
+export function KPI({
+  label,
+  value,
+  icon: Icon,
+}: {
+  label: string;
+  value: string;
+  icon: typeof Wallet;
+}) {
   return (
     <Card className="p-4">
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground flex items-center gap-1"><Icon className="h-3 w-3" /> {label}</div>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+        <Icon className="h-3 w-3" /> {label}
+      </div>
       <div className="text-lg font-semibold mt-1">{value}</div>
     </Card>
   );
@@ -317,7 +535,11 @@ export function KPI({ label, value, icon: Icon }: { label: string; value: string
 export function Check({ item, done }: { item: string; done: boolean }) {
   return (
     <li className="flex items-center gap-2">
-      {done ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <AlertTriangle className="h-4 w-4 text-amber-600" />}
+      {done ? (
+        <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+      ) : (
+        <AlertTriangle className="h-4 w-4 text-amber-600" />
+      )}
       <span className={done ? "text-foreground" : "text-muted-foreground"}>{item}</span>
     </li>
   );
@@ -327,9 +549,13 @@ export function SettlementTimeline({ currentIndex }: { currentIndex: number }) {
   return (
     <ol className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
       {TIMELINE_STEPS.map((s, i) => {
-        const done = i < currentIndex; const active = i === currentIndex;
+        const done = i < currentIndex;
+        const active = i === currentIndex;
         return (
-          <li key={s} className={`rounded-lg border p-2 ${active ? "border-primary bg-primary/5" : done ? "border-emerald-300 bg-emerald-50" : "border-border"}`}>
+          <li
+            key={s}
+            className={`rounded-lg border p-2 ${active ? "border-primary bg-primary/5" : done ? "border-emerald-300 bg-emerald-50" : "border-border"}`}
+          >
             <div className="flex items-center gap-1 text-[10px] text-muted-foreground">{i + 1}</div>
             <div className="font-medium text-foreground">{s}</div>
           </li>
@@ -363,9 +589,15 @@ export function RequestsTable({ rows, compact }: { rows: SupplierRequest[]; comp
                 <td className="py-2 px-3">{r.buyer}</td>
                 <td className="py-2 px-3 font-mono text-xs">{r.invoiceNumber}</td>
                 {!compact && <td className="py-2 px-3 text-xs">{r.goods}</td>}
-                <td className="py-2 px-3 text-right tabular-nums">₦{r.amountNgn.toLocaleString()}</td>
-                <td className="py-2 px-3 text-right tabular-nums">¥{r.amountRmb.toLocaleString()}</td>
-                <td className="py-2 px-3"><Badge className={STATUS_TONE[r.status]}>{r.status}</Badge></td>
+                <td className="py-2 px-3 text-right tabular-nums">
+                  ₦{r.amountNgn.toLocaleString()}
+                </td>
+                <td className="py-2 px-3 text-right tabular-nums">
+                  ¥{r.amountRmb.toLocaleString()}
+                </td>
+                <td className="py-2 px-3">
+                  <Badge className={STATUS_TONE[r.status]}>{r.status}</Badge>
+                </td>
                 <td className="py-2 px-3 text-xs text-muted-foreground">{r.updated}</td>
               </tr>
             ))}
@@ -375,7 +607,6 @@ export function RequestsTable({ rows, compact }: { rows: SupplierRequest[]; comp
     </Card>
   );
 }
-
 
 export function DetailRow({ label, value }: { label: string; value: string }) {
   return (
@@ -387,30 +618,48 @@ export function DetailRow({ label, value }: { label: string; value: string }) {
 }
 
 export function PayoutAccountCard({
-  currency, status, rows,
-}: { currency: "RMB" | "USD"; status: "Not Submitted" | "Under Review" | "Verified" | "Rejected" | "Update Required"; rows: Array<[string, string]> }) {
+  currency,
+  status,
+  rows,
+}: {
+  currency: "RMB" | "USD";
+  status: "Not Submitted" | "Under Review" | "Verified" | "Rejected" | "Update Required";
+  rows: Array<[string, string]>;
+}) {
   const tone =
-    status === "Verified" ? "bg-emerald-100 text-emerald-800" :
-    status === "Under Review" ? "bg-amber-100 text-amber-800" :
-    status === "Rejected" ? "bg-destructive/10 text-destructive" :
-    "bg-muted text-foreground";
+    status === "Verified"
+      ? "bg-emerald-100 text-emerald-800"
+      : status === "Under Review"
+        ? "bg-amber-100 text-amber-800"
+        : status === "Rejected"
+          ? "bg-destructive/10 text-destructive"
+          : "bg-muted text-foreground";
   return (
     <Card className="p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <div className="text-sm font-semibold flex items-center gap-1"><Landmark className="h-4 w-4" /> {currency} payout account</div>
+        <div className="text-sm font-semibold flex items-center gap-1">
+          <Landmark className="h-4 w-4" /> {currency} payout account
+        </div>
         <Badge className={tone}>{status}</Badge>
       </div>
       <ul className="text-xs space-y-1.5">
         {rows.map(([k, v]) => (
-          <li key={k} className="flex items-start justify-between gap-3 border-b last:border-0 pb-1">
+          <li
+            key={k}
+            className="flex items-start justify-between gap-3 border-b last:border-0 pb-1"
+          >
             <span className="text-muted-foreground">{k}</span>
             <span className="text-right font-medium">{v}</span>
           </li>
         ))}
       </ul>
       <ButtonGroup label={`${currency} account actions`}>
-        <Button size="sm" variant="outline">Edit account</Button>
-        <Button size="sm" variant="outline">Submit for review</Button>
+        <Button size="sm" variant="outline">
+          Edit account
+        </Button>
+        <Button size="sm" variant="outline">
+          Submit for review
+        </Button>
       </ButtonGroup>
       <div className="text-[11px] text-muted-foreground italic">
         Payout account is receive-only. Suppliers cannot send funds out of Canta from this account.

@@ -12,10 +12,17 @@ function SupportPanel() {
   return (
     <Card className="p-4 space-y-3 text-sm">
       <div className="font-semibold">Supplier support</div>
-      <div className="text-muted-foreground">Get help with buyer payment requests, invoice documents, verification, and RMB settlement receipts.</div>
+      <div className="text-muted-foreground">
+        Get help with buyer payment requests, invoice documents, verification, and RMB settlement
+        receipts.
+      </div>
       <ButtonGroup label="Supplier support actions">
-        <Button size="sm" variant="outline">Open support ticket</Button>
-        <Button size="sm" variant="outline">Message Canta</Button>
+        <Button size="sm" variant="outline">
+          Open support ticket
+        </Button>
+        <Button size="sm" variant="outline">
+          Message Canta
+        </Button>
       </ButtonGroup>
     </Card>
   );

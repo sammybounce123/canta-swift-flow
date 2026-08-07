@@ -34,10 +34,17 @@ function PaymentLinksPage() {
 
   return (
     <div className="space-y-5">
-      <ReadinessBar status="Requires Setup" cue="Payment links include payer and reconciliation references." />
+      <ReadinessBar
+        status="Requires Setup"
+        cue="Payment links include payer and reconciliation references."
+      />
       <div>
-        <h1 className="text-2xl font-semibold flex items-center gap-2"><LinkIcon className="h-5 w-5 text-primary" /> Payment Links</h1>
-        <p className="text-sm text-muted-foreground mt-1">Secure Canta × Baron &amp; Cabot payment pages — one link per payment case.</p>
+        <h1 className="text-2xl font-semibold flex items-center gap-2">
+          <LinkIcon className="h-5 w-5 text-primary" /> Payment Links
+        </h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Secure Canta × Baron &amp; Cabot payment pages — one link per payment case.
+        </p>
       </div>
 
       <Card className="p-0 shadow-card overflow-hidden">
@@ -61,22 +68,47 @@ function PaymentLinksPage() {
                     <div className="text-[11px] text-muted-foreground">{c.clientEmail}</div>
                   </td>
                   <td className="py-3 px-4">
-                    <Link to="/partner/cases/$caseId" params={{ caseId: c.id }} className="text-primary hover:underline">{c.ref}</Link>
+                    <Link
+                      to="/partner/cases/$caseId"
+                      params={{ caseId: c.id }}
+                      className="text-primary hover:underline"
+                    >
+                      {c.ref}
+                    </Link>
                   </td>
-                  <td className="py-3 px-4 text-right tabular-nums font-medium">{formatGBP(c.amountGBP)}</td>
-                  <td className="py-3 px-4 font-mono text-xs truncate max-w-[200px]">{c.paymentLink!.url}</td>
-                  <td className="py-3 px-4"><Badge variant="outline" className="text-[10px]">{c.paymentLink!.status}</Badge></td>
+                  <td className="py-3 px-4 text-right tabular-nums font-medium">
+                    {formatGBP(c.amountGBP)}
+                  </td>
+                  <td className="py-3 px-4 font-mono text-xs truncate max-w-[200px]">
+                    {c.paymentLink!.url}
+                  </td>
+                  <td className="py-3 px-4">
+                    <Badge variant="outline" className="text-[10px]">
+                      {c.paymentLink!.status}
+                    </Badge>
+                  </td>
                   <td className="py-3 px-4 text-right space-x-2">
-                    <Button size="sm" variant="outline" onClick={() => copy(c.paymentLink!.url)}><Copy className="h-3.5 w-3.5 mr-1" /> Copy</Button>
-                    <Button size="sm" variant="outline" onClick={() => send(c.id)}><Send className="h-3.5 w-3.5 mr-1" /> Send</Button>
-                    <Button asChild size="sm" variant="ghost"><a href={c.paymentLink!.url} target="_blank" rel="noreferrer">Preview</a></Button>
+                    <Button size="sm" variant="outline" onClick={() => copy(c.paymentLink!.url)}>
+                      <Copy className="h-3.5 w-3.5 mr-1" /> Copy
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => send(c.id)}>
+                      <Send className="h-3.5 w-3.5 mr-1" /> Send
+                    </Button>
+                    <Button asChild size="sm" variant="ghost">
+                      <a href={c.paymentLink!.url} target="_blank" rel="noreferrer">
+                        Preview
+                      </a>
+                    </Button>
                   </td>
                 </tr>
               ))}
               {rows.length === 0 && (
-                <tr><td colSpan={6} className="py-10 text-center text-muted-foreground text-sm">
-                  <AlertTriangle className="h-4 w-4 inline mr-1" /> No payment links yet. Generate an FX quote on a case, then create a link.
-                </td></tr>
+                <tr>
+                  <td colSpan={6} className="py-10 text-center text-muted-foreground text-sm">
+                    <AlertTriangle className="h-4 w-4 inline mr-1" /> No payment links yet. Generate
+                    an FX quote on a case, then create a link.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>

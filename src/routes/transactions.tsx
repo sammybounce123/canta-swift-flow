@@ -9,7 +9,11 @@ import { StatusPill } from "@/components/StatusPill";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -55,16 +59,28 @@ function Transactions() {
     const blob = new Blob([lines.join("\n")], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = `receipt-${t.id}.txt`; a.click();
+    a.href = url;
+    a.download = `receipt-${t.id}.txt`;
+    a.click();
     URL.revokeObjectURL(url);
     toast.success("Receipt downloaded");
   }
 
   function confirmFlag() {
     if (!flagTarget) return;
-    if (!flagReason.trim()) { toast.error("A reason is required to flag a transaction"); return; }
+    if (!flagReason.trim()) {
+      toast.error("A reason is required to flag a transaction");
+      return;
+    }
     setFlagged((f) => ({ ...f, [flagTarget.id]: flagReason }));
-    addAuditEntry({ actor: ws.name, workspace: ws.workspace, action: "Flagged transaction as high-risk", entity: flagTarget.id, result: "Success", detail: flagReason });
+    addAuditEntry({
+      actor: ws.name,
+      workspace: ws.workspace,
+      action: "Flagged transaction as high-risk",
+      entity: flagTarget.id,
+      result: "Success",
+      detail: flagReason,
+    });
     toast.success(`${flagTarget.id} flagged as high-risk`);
     setFlagTarget(null);
     setFlagReason("");
@@ -89,26 +105,39 @@ function Transactions() {
   const exportCsv = () => {
     const header = ["Reference", "Date", "Description", "Type", "Amount", "Currency", "Status"];
     const rows = filtered.map((t) => [t.id, t.date, t.desc, t.type, t.amount, t.ccy, t.status]);
-    const csv = [header, ...rows].map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const csv = [header, ...rows]
+      .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = `canta-transactions-${Date.now()}.csv`; a.click();
+    a.href = url;
+    a.download = `canta-transactions-${Date.now()}.csv`;
+    a.click();
     URL.revokeObjectURL(url);
     toast.success("Export ready", { description: `${filtered.length} rows downloaded.` });
   };
 
   return (
     <div className="space-y-6">
-      <ReadinessBar status="Demo Preview" cue="Transactions are recorded in your activity history." />
+      <ReadinessBar
+        status="Demo Preview"
+        cue="Transactions are recorded in your activity history."
+      />
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Transactions</h1>
-          <p className="text-sm text-muted-foreground mt-1">All payments, conversions and funding events.</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            All payments, conversions and funding events.
+          </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setShowFilter(true)}><Filter className="h-4 w-4 mr-1.5" /> Filter</Button>
-          <Button variant="outline" onClick={exportCsv}><Download className="h-4 w-4 mr-1.5" /> Export CSV</Button>
+          <Button variant="outline" onClick={() => setShowFilter(true)}>
+            <Filter className="h-4 w-4 mr-1.5" /> Filter
+          </Button>
+          <Button variant="outline" onClick={exportCsv}>
+            <Download className="h-4 w-4 mr-1.5" /> Export CSV
+          </Button>
         </div>
       </div>
 
@@ -117,7 +146,10 @@ function Transactions() {
           {TYPES.map((t) => (
             <button
               key={t}
-              onClick={() => { setType(t); setPage(1); }}
+              onClick={() => {
+                setType(t);
+                setPage(1);
+              }}
               className={`px-3 py-1.5 text-xs rounded-full border ${type === t ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-secondary"}`}
             >
               {t}
@@ -125,14 +157,35 @@ function Transactions() {
           ))}
           <input
             value={query}
-            onChange={(e) => { setQuery(e.target.value); setPage(1); }}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setPage(1);
+            }}
             placeholder="Search reference or description…"
             className="ml-auto text-xs px-3 py-1.5 rounded-lg border border-border bg-card outline-none focus:border-ring w-56"
           />
-          <select value={ccy} onChange={(e) => { setCcy(e.target.value); setPage(1); }} className="text-xs px-3 py-1.5 rounded-lg border border-border bg-card">
-            <option value="All">All currencies</option><option>NGN</option><option>USD</option><option>EUR</option><option>GBP</option>
+          <select
+            value={ccy}
+            onChange={(e) => {
+              setCcy(e.target.value);
+              setPage(1);
+            }}
+            className="text-xs px-3 py-1.5 rounded-lg border border-border bg-card"
+          >
+            <option value="All">All currencies</option>
+            <option>NGN</option>
+            <option>USD</option>
+            <option>EUR</option>
+            <option>GBP</option>
           </select>
-          <select value={range} onChange={(e) => { setRange(e.target.value); setPage(1); }} className="text-xs px-3 py-1.5 rounded-lg border border-border bg-card">
+          <select
+            value={range}
+            onChange={(e) => {
+              setRange(e.target.value);
+              setPage(1);
+            }}
+            className="text-xs px-3 py-1.5 rounded-lg border border-border bg-card"
+          >
             <option value="30">Last 30 days</option>
             <option value="7">Last 7 days</option>
             <option value="365">This year</option>
@@ -156,23 +209,37 @@ function Transactions() {
             </thead>
             <tbody>
               {pageRows.map((t) => (
-                <tr key={t.id} onClick={() => setActive(t)} className="border-t border-border hover:bg-secondary/30 cursor-pointer">
+                <tr
+                  key={t.id}
+                  onClick={() => setActive(t)}
+                  className="border-t border-border hover:bg-secondary/30 cursor-pointer"
+                >
                   <td className="px-5 py-3 font-mono text-xs">{t.id}</td>
                   <td className="px-5 py-3 text-xs text-muted-foreground">{t.date}</td>
                   <td className="px-5 py-3 font-medium">{t.desc}</td>
-                  <td className="px-5 py-3"><span className="text-xs px-2 py-0.5 rounded bg-secondary">{t.type}</span></td>
-                  <td className="px-5 py-3 text-right font-semibold tabular-nums">{fmtMoney(t.amount, t.ccy)}</td>
+                  <td className="px-5 py-3">
+                    <span className="text-xs px-2 py-0.5 rounded bg-secondary">{t.type}</span>
+                  </td>
+                  <td className="px-5 py-3 text-right font-semibold tabular-nums">
+                    {fmtMoney(t.amount, t.ccy)}
+                  </td>
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <StatusPill status={t.status} />
                       {flagged[t.id] && (
-                        <Badge variant="outline" className="text-[10px] bg-destructive/10 text-destructive border-destructive/30">
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] bg-destructive/10 text-destructive border-destructive/30"
+                        >
                           <ShieldAlert className="h-3 w-3 mr-1" /> Flagged
                         </Badge>
                       )}
                     </div>
                   </td>
-                  <td className="px-5 py-3 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                  <td
+                    className="px-5 py-3 text-right whitespace-nowrap"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <Button size="sm" variant="ghost" onClick={() => downloadReceipt(t)}>
                       <Download className="h-3.5 w-3.5 mr-1" /> Receipt
                     </Button>
@@ -181,25 +248,50 @@ function Transactions() {
                       variant="ghost"
                       className="text-destructive hover:text-destructive"
                       disabled={!!flagged[t.id]}
-                      onClick={() => { setFlagTarget(t); setFlagReason(""); }}
+                      onClick={() => {
+                        setFlagTarget(t);
+                        setFlagReason("");
+                      }}
                     >
-                      <Flag className="h-3.5 w-3.5 mr-1" /> {flagged[t.id] ? "Flagged" : "Flag high-risk"}
+                      <Flag className="h-3.5 w-3.5 mr-1" />{" "}
+                      {flagged[t.id] ? "Flagged" : "Flag high-risk"}
                     </Button>
                   </td>
                 </tr>
               ))}
               {pageRows.length === 0 && (
-                <tr><td colSpan={7} className="px-5 py-10 text-center text-sm text-muted-foreground">No transactions match your filters.</td></tr>
+                <tr>
+                  <td colSpan={7} className="px-5 py-10 text-center text-sm text-muted-foreground">
+                    No transactions match your filters.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
         </div>
         <div className="px-5 py-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-          <span>Showing {filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}</span>
+          <span>
+            Showing {filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–
+            {Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
+          </span>
           <div className="flex gap-1 items-center">
-            <button disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))} className="px-2.5 py-1 rounded border border-border hover:bg-secondary disabled:opacity-50">Prev</button>
-            <span className="px-2">{page} / {totalPages}</span>
-            <button disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))} className="px-2.5 py-1 rounded border border-border hover:bg-secondary disabled:opacity-50">Next</button>
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="px-2.5 py-1 rounded border border-border hover:bg-secondary disabled:opacity-50"
+            >
+              Prev
+            </button>
+            <span className="px-2">
+              {page} / {totalPages}
+            </span>
+            <button
+              disabled={page >= totalPages}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              className="px-2.5 py-1 rounded border border-border hover:bg-secondary disabled:opacity-50"
+            >
+              Next
+            </button>
           </div>
         </div>
       </Card>
@@ -214,26 +306,56 @@ function Transactions() {
           <div className="space-y-3 text-sm">
             <div>
               <div className="text-xs text-muted-foreground mb-1">Type</div>
-              <select value={type} onChange={(e) => setType(e.target.value as typeof type)} className="w-full p-2 rounded-lg border border-border bg-card">
-                {TYPES.map((t) => <option key={t}>{t}</option>)}
+              <select
+                value={type}
+                onChange={(e) => setType(e.target.value as typeof type)}
+                className="w-full p-2 rounded-lg border border-border bg-card"
+              >
+                {TYPES.map((t) => (
+                  <option key={t}>{t}</option>
+                ))}
               </select>
             </div>
             <div>
               <div className="text-xs text-muted-foreground mb-1">Currency</div>
-              <select value={ccy} onChange={(e) => setCcy(e.target.value)} className="w-full p-2 rounded-lg border border-border bg-card">
-                <option value="All">All</option><option>NGN</option><option>USD</option><option>EUR</option><option>GBP</option>
+              <select
+                value={ccy}
+                onChange={(e) => setCcy(e.target.value)}
+                className="w-full p-2 rounded-lg border border-border bg-card"
+              >
+                <option value="All">All</option>
+                <option>NGN</option>
+                <option>USD</option>
+                <option>EUR</option>
+                <option>GBP</option>
               </select>
             </div>
             <div>
               <div className="text-xs text-muted-foreground mb-1">Date range</div>
-              <select value={range} onChange={(e) => setRange(e.target.value)} className="w-full p-2 rounded-lg border border-border bg-card">
+              <select
+                value={range}
+                onChange={(e) => setRange(e.target.value)}
+                className="w-full p-2 rounded-lg border border-border bg-card"
+              >
                 <option value="7">Last 7 days</option>
                 <option value="30">Last 30 days</option>
                 <option value="365">This year</option>
               </select>
             </div>
-            <Button className="w-full" onClick={() => setShowFilter(false)}>Apply filters</Button>
-            <Button variant="ghost" className="w-full" onClick={() => { setType("All"); setCcy("All"); setRange("30"); setQuery(""); setShowFilter(false); }}>
+            <Button className="w-full" onClick={() => setShowFilter(false)}>
+              Apply filters
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full"
+              onClick={() => {
+                setType("All");
+                setCcy("All");
+                setRange("30");
+                setQuery("");
+                setShowFilter(false);
+              }}
+            >
               <X className="h-3.5 w-3.5 mr-1" /> Clear all
             </Button>
           </div>
@@ -258,8 +380,22 @@ function Transactions() {
                 <Row k="Settlement" v="Fast rail · after compliance clears" />
               </div>
               <div className="flex gap-2 pt-2">
-                <Button variant="outline" className="flex-1" onClick={() => downloadReceipt(active)}>Download receipt</Button>
-                <Button className="flex-1" onClick={() => { setActive(null); toast.info("Opening dispute…"); }}>Raise dispute</Button>
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => downloadReceipt(active)}
+                >
+                  Download receipt
+                </Button>
+                <Button
+                  className="flex-1"
+                  onClick={() => {
+                    setActive(null);
+                    toast.info("Opening dispute…");
+                  }}
+                >
+                  Raise dispute
+                </Button>
               </div>
             </>
           )}
@@ -267,23 +403,50 @@ function Transactions() {
       </Dialog>
 
       {/* Flag high-risk confirm dialog */}
-      <Dialog open={!!flagTarget} onOpenChange={(o) => { if (!o) { setFlagTarget(null); setFlagReason(""); } }}>
+      <Dialog
+        open={!!flagTarget}
+        onOpenChange={(o) => {
+          if (!o) {
+            setFlagTarget(null);
+            setFlagReason("");
+          }
+        }}
+      >
         <DialogContent className="max-w-sm">
           {flagTarget && (
             <>
               <DialogHeader>
-                <DialogTitle className="flex items-center gap-2"><ShieldAlert className="h-4 w-4 text-destructive" /> Flag as high-risk</DialogTitle>
+                <DialogTitle className="flex items-center gap-2">
+                  <ShieldAlert className="h-4 w-4 text-destructive" /> Flag as high-risk
+                </DialogTitle>
                 <DialogDescription>
-                  Flagging {flagTarget.id} records an entry in the audit trail and marks it for compliance review. This is a demo action — no real risk system is triggered.
+                  Flagging {flagTarget.id} records an entry in the audit trail and marks it for
+                  compliance review. This is a demo action — no real risk system is triggered.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-2">
                 <Label>Reason</Label>
-                <Textarea value={flagReason} onChange={(e) => setFlagReason(e.target.value)} rows={3} placeholder="Describe why this transaction looks high-risk…" />
+                <Textarea
+                  value={flagReason}
+                  onChange={(e) => setFlagReason(e.target.value)}
+                  rows={3}
+                  placeholder="Describe why this transaction looks high-risk…"
+                />
               </div>
               <div className="flex gap-2 pt-1">
-                <Button variant="ghost" className="flex-1" onClick={() => { setFlagTarget(null); setFlagReason(""); }}>Cancel</Button>
-                <Button variant="destructive" className="flex-1" onClick={confirmFlag}>Confirm flag</Button>
+                <Button
+                  variant="ghost"
+                  className="flex-1"
+                  onClick={() => {
+                    setFlagTarget(null);
+                    setFlagReason("");
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button variant="destructive" className="flex-1" onClick={confirmFlag}>
+                  Confirm flag
+                </Button>
               </div>
             </>
           )}

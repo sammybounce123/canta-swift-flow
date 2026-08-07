@@ -8,8 +8,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ActionButton, ActionGroup, ButtonGroup } from "@/components/ui/action-group";
 import {
-  MessageCircle, Send, Upload, Bell, FileText, Ship, DollarSign,
-  LifeBuoy, Paperclip, Plus, FilePlus2, Link2,
+  MessageCircle,
+  Send,
+  Upload,
+  Bell,
+  FileText,
+  Ship,
+  DollarSign,
+  LifeBuoy,
+  Paperclip,
+  Plus,
+  FilePlus2,
+  Link2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useRequireWorkspace, useActiveWorkspace } from "@/lib/workspace-guard";
@@ -32,23 +42,95 @@ type Convo = {
 
 const SEED_BY_WS: Record<string, Convo[]> = {
   importer_portal: [
-    { id: "C-01", with: "Shenzhen LedTech", kind: "Trade File", linked: "TF-2026-0214", last: "Proforma invoice received — please confirm.", time: "12m ago", status: "Awaiting reply" },
-    { id: "C-02", with: "Canta Support", kind: "Shipment", linked: "SHP-10421", last: "BL uploaded. Vessel ETA 18 Jun.", time: "1h ago", status: "Active" },
-    { id: "C-03", with: "Yiwu PolyPack", kind: "Missing Document", linked: "TF-2026-0208", last: "Reminder: packing list still missing.", time: "Yesterday", status: "Awaiting reply" },
+    {
+      id: "C-01",
+      with: "Shenzhen LedTech",
+      kind: "Trade File",
+      linked: "TF-2026-0214",
+      last: "Proforma invoice received — please confirm.",
+      time: "12m ago",
+      status: "Awaiting reply",
+    },
+    {
+      id: "C-02",
+      with: "Canta Support",
+      kind: "Shipment",
+      linked: "SHP-10421",
+      last: "BL uploaded. Vessel ETA 18 Jun.",
+      time: "1h ago",
+      status: "Active",
+    },
+    {
+      id: "C-03",
+      with: "Yiwu PolyPack",
+      kind: "Missing Document",
+      linked: "TF-2026-0208",
+      last: "Reminder: packing list still missing.",
+      time: "Yesterday",
+      status: "Awaiting reply",
+    },
   ],
   global_collections: [
-    { id: "C-01", with: "Lagos Med Clinic", kind: "Payment", linked: "INV-2034", last: "Payment link delivered.", time: "30m ago", status: "Active" },
-    { id: "C-02", with: "Cambridge Int'l", kind: "Support", linked: "SUP-9008", last: "Need help reconciling payment.", time: "3h ago", status: "Awaiting reply" },
+    {
+      id: "C-01",
+      with: "Lagos Med Clinic",
+      kind: "Payment",
+      linked: "INV-2034",
+      last: "Payment link delivered.",
+      time: "30m ago",
+      status: "Active",
+    },
+    {
+      id: "C-02",
+      with: "Cambridge Int'l",
+      kind: "Support",
+      linked: "SUP-9008",
+      last: "Need help reconciling payment.",
+      time: "3h ago",
+      status: "Awaiting reply",
+    },
   ],
   supplier_dashboard: [
-    { id: "C-01", with: "ABC Electronics", kind: "Payment", linked: "INV-2030", last: "Buyer requested escrow release.", time: "1h ago", status: "Awaiting reply" },
-    { id: "C-02", with: "Trade Fair Imports", kind: "Trade File", linked: "TF-2026-0199", last: "Shipment delivered. Thanks.", time: "Yesterday", status: "Resolved" },
+    {
+      id: "C-01",
+      with: "ABC Electronics",
+      kind: "Payment",
+      linked: "INV-2030",
+      last: "Buyer requested escrow release.",
+      time: "1h ago",
+      status: "Awaiting reply",
+    },
+    {
+      id: "C-02",
+      with: "Trade Fair Imports",
+      kind: "Trade File",
+      linked: "TF-2026-0199",
+      last: "Shipment delivered. Thanks.",
+      time: "Yesterday",
+      status: "Resolved",
+    },
   ],
   enterprise_treasury: [
-    { id: "C-01", with: "Canta Support", kind: "Support", linked: "SUP-9101", last: "FX rate confirmation requested.", time: "45m ago", status: "Active" },
+    {
+      id: "C-01",
+      with: "Canta Support",
+      kind: "Support",
+      linked: "SUP-9101",
+      last: "FX rate confirmation requested.",
+      time: "45m ago",
+      status: "Active",
+    },
   ],
   partner_property: [
-    { id: "C-01", with: "Quinn Solicitors", kind: "Payment", linked: "BC-2026-1001", last: "Solicitor confirmed receipt of funds.", time: "1h ago", status: "Resolved" },
+    {
+      id: "C-01",
+      with: "Quinn Solicitors",
+      kind: "Payment",
+      linked: "BC-2026-1001",
+      last: "Solicitor confirmed receipt of funds.",
+      time: "1h ago",
+      status: "Resolved",
+    },
   ],
 };
 
@@ -60,39 +142,59 @@ function WhatsAppCustomer() {
   const [active, setActive] = useState<string>(seed[0]?.id ?? "");
   const [reply, setReply] = useState("");
 
-  useEffect(() => { setConvos(seed); setActive(seed[0]?.id ?? ""); }, [ws.workspace]);
+  useEffect(() => {
+    setConvos(seed);
+    setActive(seed[0]?.id ?? "");
+  }, [ws.workspace]);
 
   const current = convos.find((c) => c.id === active);
 
-  const pageTitle = ws.workspace === "importer_portal" ? "Importer WhatsApp Updates"
-    : ws.workspace === "global_collections" ? "Merchant WhatsApp Support"
-    : ws.workspace === "supplier_dashboard" ? "Supplier WhatsApp Support"
-    : "WhatsApp Updates";
+  const pageTitle =
+    ws.workspace === "importer_portal"
+      ? "Importer WhatsApp Updates"
+      : ws.workspace === "global_collections"
+        ? "Merchant WhatsApp Support"
+        : ws.workspace === "supplier_dashboard"
+          ? "Supplier WhatsApp Support"
+          : "WhatsApp Updates";
 
   const statusTone = (s: Convo["status"]) =>
-    s === "Active" ? "bg-primary/10 text-primary border-primary/30"
-    : s === "Awaiting reply" ? "bg-warning/15 text-warning border-warning/30"
-    : "bg-success/15 text-success border-success/30";
+    s === "Active"
+      ? "bg-primary/10 text-primary border-primary/30"
+      : s === "Awaiting reply"
+        ? "bg-warning/15 text-warning border-warning/30"
+        : "bg-success/15 text-success border-success/30";
 
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold flex items-center gap-2">
-            <span className="h-9 w-9 grid place-items-center rounded-xl bg-success/15 text-success"><MessageCircle className="h-5 w-5" /></span>
+            <span className="h-9 w-9 grid place-items-center rounded-xl bg-success/15 text-success">
+              <MessageCircle className="h-5 w-5" />
+            </span>
             {pageTitle}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
             Your WhatsApp conversations with suppliers, customers and Canta — all in one place.
           </p>
           <div className="flex items-center gap-2 flex-wrap mt-2">
-            <Badge variant="outline" className="text-xs">{ws.badge}</Badge>
-            <Badge className="text-xs bg-primary/10 text-primary border-primary/30">{ws.name} · {ws.title}</Badge>
-            <Badge variant="secondary" className="text-xs">{ws.workspaceLabel}</Badge>
+            <Badge variant="outline" className="text-xs">
+              {ws.badge}
+            </Badge>
+            <Badge className="text-xs bg-primary/10 text-primary border-primary/30">
+              {ws.name} · {ws.title}
+            </Badge>
+            <Badge variant="secondary" className="text-xs">
+              {ws.workspaceLabel}
+            </Badge>
           </div>
         </div>
 
-        <ButtonGroup label="WhatsApp header actions" className="w-auto justify-start sm:justify-end">
+        <ButtonGroup
+          label="WhatsApp header actions"
+          className="w-auto justify-start sm:justify-end"
+        >
           <Button size="sm" variant="outline" onClick={() => openWhatsApp("general")}>
             <MessageCircle className="h-4 w-4 mr-1.5" /> Message Canta
           </Button>
@@ -104,18 +206,39 @@ function WhatsAppCustomer() {
 
       {/* Quick customer-facing actions */}
       <Card className="p-4 shadow-card">
-        <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Quick actions</div>
+        <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+          Quick actions
+        </div>
         <ActionGroup label="WhatsApp quick actions" className="lg:grid-cols-4">
-          <ActionButton onClick={() => toast.success("Upload dialog opened")}><Upload className="h-3.5 w-3.5" /> Upload Document</ActionButton>
-          <ActionButton onClick={() => openWhatsApp("trackShipment")}><Ship className="h-3.5 w-3.5" /> Request Shipment Update</ActionButton>
-          <ActionButton onClick={() => openWhatsApp("landedCost")}><DollarSign className="h-3.5 w-3.5" /> Request Landed Cost</ActionButton>
-          <ActionButton onClick={() => openWhatsApp("missingDocumentReminder")}><Bell className="h-3.5 w-3.5" /> Send Reminder</ActionButton>
-          <ActionButton asChild><Link to="/trade-desk"><FilePlus2 className="h-3.5 w-3.5" /> Upload Bill of Lading</Link></ActionButton>
-          <ActionButton asChild><Link to="/shipments"><Link2 className="h-3.5 w-3.5" /> Link to Shipment</Link></ActionButton>
-          <ActionButton asChild><Link to="/support"><LifeBuoy className="h-3.5 w-3.5" /> Contact Support</Link></ActionButton>
+          <ActionButton onClick={() => toast.success("Upload dialog opened")}>
+            <Upload className="h-3.5 w-3.5" /> Upload Document
+          </ActionButton>
+          <ActionButton onClick={() => openWhatsApp("trackShipment")}>
+            <Ship className="h-3.5 w-3.5" /> Request Shipment Update
+          </ActionButton>
+          <ActionButton onClick={() => openWhatsApp("landedCost")}>
+            <DollarSign className="h-3.5 w-3.5" /> Request Landed Cost
+          </ActionButton>
+          <ActionButton onClick={() => openWhatsApp("missingDocumentReminder")}>
+            <Bell className="h-3.5 w-3.5" /> Send Reminder
+          </ActionButton>
+          <ActionButton asChild>
+            <Link to="/trade-desk">
+              <FilePlus2 className="h-3.5 w-3.5" /> Upload Bill of Lading
+            </Link>
+          </ActionButton>
+          <ActionButton asChild>
+            <Link to="/shipments">
+              <Link2 className="h-3.5 w-3.5" /> Link to Shipment
+            </Link>
+          </ActionButton>
+          <ActionButton asChild>
+            <Link to="/support">
+              <LifeBuoy className="h-3.5 w-3.5" /> Contact Support
+            </Link>
+          </ActionButton>
         </ActionGroup>
       </Card>
-
 
       <Tabs defaultValue="all" className="space-y-3">
         <TabsList>
@@ -127,25 +250,43 @@ function WhatsAppCustomer() {
 
         {(["all", "ship", "trade", "docs"] as const).map((tab) => {
           const list = convos.filter((c) =>
-            tab === "all" ? true :
-            tab === "ship" ? c.kind === "Shipment" :
-            tab === "trade" ? c.kind === "Trade File" :
-            c.kind === "Missing Document"
+            tab === "all"
+              ? true
+              : tab === "ship"
+                ? c.kind === "Shipment"
+                : tab === "trade"
+                  ? c.kind === "Trade File"
+                  : c.kind === "Missing Document",
           );
           return (
             <TabsContent key={tab} value={tab}>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <Card className="lg:col-span-1 p-2 shadow-card max-h-[600px] overflow-y-auto">
-                  {list.length === 0 && <div className="p-6 text-sm text-muted-foreground text-center">No conversations.</div>}
+                  {list.length === 0 && (
+                    <div className="p-6 text-sm text-muted-foreground text-center">
+                      No conversations.
+                    </div>
+                  )}
                   {list.map((c) => (
-                    <button key={c.id} onClick={() => setActive(c.id)} className={`w-full text-left p-3 rounded-lg ${active === c.id ? "bg-primary/5 border border-primary" : "hover:bg-secondary"}`}>
+                    <button
+                      key={c.id}
+                      onClick={() => setActive(c.id)}
+                      className={`w-full text-left p-3 rounded-lg ${active === c.id ? "bg-primary/5 border border-primary" : "hover:bg-secondary"}`}
+                    >
                       <div className="flex items-center justify-between gap-2">
                         <div className="font-medium text-sm truncate">{c.with}</div>
                         <span className="text-[10px] text-muted-foreground">{c.time}</span>
                       </div>
-                      <div className="text-[11px] text-muted-foreground mt-0.5">{c.kind}{c.linked ? ` · ${c.linked}` : ""}</div>
+                      <div className="text-[11px] text-muted-foreground mt-0.5">
+                        {c.kind}
+                        {c.linked ? ` · ${c.linked}` : ""}
+                      </div>
                       <div className="text-xs text-muted-foreground truncate mt-1">{c.last}</div>
-                      <div className="mt-2"><Badge variant="outline" className={`text-[10px] ${statusTone(c.status)}`}>{c.status}</Badge></div>
+                      <div className="mt-2">
+                        <Badge variant="outline" className={`text-[10px] ${statusTone(c.status)}`}>
+                          {c.status}
+                        </Badge>
+                      </div>
                     </button>
                   ))}
                 </Card>
@@ -157,25 +298,49 @@ function WhatsAppCustomer() {
                         <div className="font-semibold text-sm">{current.with}</div>
                         <div className="text-[11px] text-muted-foreground flex items-center gap-2 mt-0.5">
                           <span>{current.kind}</span>
-                          {current.linked && <Badge variant="outline" className="text-[10px]">{current.linked}</Badge>}
+                          {current.linked && (
+                            <Badge variant="outline" className="text-[10px]">
+                              {current.linked}
+                            </Badge>
+                          )}
                         </div>
                       </div>
                       <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-secondary/20">
-                        <div className="bg-card border border-border rounded-2xl px-3 py-2 text-sm max-w-[78%]">{current.last}</div>
-                        <div className="ml-auto bg-success text-white rounded-2xl px-3 py-2 text-sm max-w-[78%]">Thanks — we'll get back to you shortly.</div>
+                        <div className="bg-card border border-border rounded-2xl px-3 py-2 text-sm max-w-[78%]">
+                          {current.last}
+                        </div>
+                        <div className="ml-auto bg-success text-white rounded-2xl px-3 py-2 text-sm max-w-[78%]">
+                          Thanks — we'll get back to you shortly.
+                        </div>
                       </div>
                       <div className="p-3 border-t border-border space-y-2">
-                        <Textarea value={reply} onChange={(e) => setReply(e.target.value)} placeholder="Type a reply…" className="min-h-[60px]" />
+                        <Textarea
+                          value={reply}
+                          onChange={(e) => setReply(e.target.value)}
+                          placeholder="Type a reply…"
+                          className="min-h-[60px]"
+                        />
                         <div className="flex justify-between items-center">
-                          <Button size="sm" variant="ghost"><Paperclip className="h-3.5 w-3.5 mr-1" /> Attach</Button>
-                          <Button size="sm" onClick={() => { if (!reply.trim()) return toast.error("Type a reply"); setReply(""); toast.success("Reply sent"); }}>
+                          <Button size="sm" variant="ghost">
+                            <Paperclip className="h-3.5 w-3.5 mr-1" /> Attach
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              if (!reply.trim()) return toast.error("Type a reply");
+                              setReply("");
+                              toast.success("Reply sent");
+                            }}
+                          >
                             <Send className="h-3.5 w-3.5 mr-1" /> Send
                           </Button>
                         </div>
                       </div>
                     </>
                   ) : (
-                    <div className="flex-1 grid place-items-center text-sm text-muted-foreground">Select a conversation</div>
+                    <div className="flex-1 grid place-items-center text-sm text-muted-foreground">
+                      Select a conversation
+                    </div>
                   )}
                 </Card>
               </div>

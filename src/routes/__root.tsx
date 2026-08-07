@@ -43,9 +43,14 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold">Something went wrong</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Something went wrong. Please try again.</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Something went wrong. Please try again.
+        </p>
         <button
-          onClick={() => { router.invalidate(); reset(); }}
+          onClick={() => {
+            router.invalidate();
+            reset();
+          }}
           className="mt-6 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
         >
           Try again
@@ -67,13 +72,33 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "mobile-web-app-capable", content: "yes" },
 
       { title: "Canta — Cross-Border Payments & FX for Enterprises" },
-      { name: "description", content: "Cross-border payments, FX and trade platform for African and global businesses — importers, suppliers, merchants and enterprises." },
+      {
+        name: "description",
+        content:
+          "Cross-border payments, FX and trade platform for African and global businesses — importers, suppliers, merchants and enterprises.",
+      },
       { property: "og:title", content: "Canta — Cross-Border Payments & FX for Enterprises" },
       { name: "twitter:title", content: "Canta — Cross-Border Payments & FX for Enterprises" },
-      { property: "og:description", content: "Cross-border payments, FX and trade platform for African and global businesses — importers, suppliers, merchants and enterprises." },
-      { name: "twitter:description", content: "Cross-border payments, FX and trade platform for African and global businesses — importers, suppliers, merchants and enterprises." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7bbbef14-bf56-4f1e-8f06-6e3114e00897/id-preview-4e80521b--12388e53-a5ea-4592-8d74-6743c605f92f.lovable.app-1778508840567.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7bbbef14-bf56-4f1e-8f06-6e3114e00897/id-preview-4e80521b--12388e53-a5ea-4592-8d74-6743c605f92f.lovable.app-1778508840567.png" },
+      {
+        property: "og:description",
+        content:
+          "Cross-border payments, FX and trade platform for African and global businesses — importers, suppliers, merchants and enterprises.",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Cross-border payments, FX and trade platform for African and global businesses — importers, suppliers, merchants and enterprises.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7bbbef14-bf56-4f1e-8f06-6e3114e00897/id-preview-4e80521b--12388e53-a5ea-4592-8d74-6743c605f92f.lovable.app-1778508840567.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7bbbef14-bf56-4f1e-8f06-6e3114e00897/id-preview-4e80521b--12388e53-a5ea-4592-8d74-6743c605f92f.lovable.app-1778508840567.png",
+      },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
     ],
@@ -85,9 +110,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", href: "/icon-192.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
+      },
     ],
-
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -98,8 +125,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head><HeadContent /></head>
-      <body>{children}<Scripts /></body>
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+      </body>
     </html>
   );
 }
@@ -108,7 +140,13 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isLanding = pathname === "/";
-  const isPublic = pathname.startsWith("/track") || pathname.startsWith("/pay/") || pathname.startsWith("/p/") || pathname === "/welcome" || pathname === "/onboarding" || pathname === "/kyb-onboarding";
+  const isPublic =
+    pathname.startsWith("/track") ||
+    pathname.startsWith("/pay/") ||
+    pathname.startsWith("/p/") ||
+    pathname === "/welcome" ||
+    pathname === "/onboarding" ||
+    pathname === "/kyb-onboarding";
   // Providers are mounted unconditionally so the React tree shape is identical
   // between SSR and client hydration. Conditionally stripping providers around
   // <Outlet /> caused hydration-time context loss (e.g. useActions null) on
@@ -127,7 +165,9 @@ function RootComponent() {
                   aria-label="Demo environment notice"
                   className="w-full border-b border-amber-300/60 bg-amber-50 px-4 py-2 text-center text-xs font-medium text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200"
                 >
-                  Demo / prototype environment — roles and workspaces are simulated in your browser and are not enforced by a server. Do not enter real personal, financial, or confidential data.
+                  Demo / prototype environment — roles and workspaces are simulated in your browser
+                  and are not enforced by a server. Do not enter real personal, financial, or
+                  confidential data.
                 </div>
                 <Outlet />
               </AppShell>

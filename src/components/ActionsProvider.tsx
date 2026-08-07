@@ -2,16 +2,47 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { Building, Coins, Zap, ArrowDown, Lock, CheckCircle2, Upload, CalendarClock, Trash2, Plus, Paperclip, UserPlus, Loader2, ShieldCheck, AlertTriangle, ArrowLeft, Copy, Landmark, Wallet, ArrowRight, User as UserIcon } from "lucide-react";
+import {
+  Building,
+  Coins,
+  Zap,
+  ArrowDown,
+  Lock,
+  CheckCircle2,
+  Upload,
+  CalendarClock,
+  Trash2,
+  Plus,
+  Paperclip,
+  UserPlus,
+  Loader2,
+  ShieldCheck,
+  AlertTriangle,
+  ArrowLeft,
+  Copy,
+  Landmark,
+  Wallet,
+  ArrowRight,
+  User as UserIcon,
+} from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
@@ -36,7 +67,7 @@ const CTX_KEY = "__CANTA_ACTIONS_CTX__";
 const globalRef = globalThis as unknown as Record<string, unknown>;
 const ActionsCtx =
   (globalRef[CTX_KEY] as React.Context<Ctx | null> | undefined) ??
-  (globalRef[CTX_KEY] = createContext<Ctx | null>(null)) as React.Context<Ctx | null>;
+  ((globalRef[CTX_KEY] = createContext<Ctx | null>(null)) as React.Context<Ctx | null>);
 export const useActions = () => {
   const c = useContext(ActionsCtx);
   if (!c) throw new Error("useActions must be used within ActionsProvider");
@@ -60,8 +91,15 @@ const CURRENCIES = ["USD", "GBP", "EUR", "NGN", "ZAR", "AED", "CNY", "INR"];
 export function ActionsProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const [fund, setFund] = useState<{ open: boolean; ccy: string }>({ open: false, ccy: "NGN" });
-  const [conv, setConv] = useState<{ open: boolean; from: string; to: string }>({ open: false, from: "NGN", to: "USD" });
-  const [send, setSend] = useState<{ open: boolean; beneficiary: string }>({ open: false, beneficiary: "" });
+  const [conv, setConv] = useState<{ open: boolean; from: string; to: string }>({
+    open: false,
+    from: "NGN",
+    to: "USD",
+  });
+  const [send, setSend] = useState<{ open: boolean; beneficiary: string }>({
+    open: false,
+    beneficiary: "",
+  });
   const [addBen, setAddBen] = useState(false);
   const [schedule, setSchedule] = useState(false);
   const [bulk, setBulk] = useState(false);
@@ -147,7 +185,10 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
           </DialogHeader>
           <SendForm
             initialBeneficiary={send.beneficiary}
-            onAddBeneficiary={() => { setSend((s) => ({ ...s, open: false })); setAddBen(true); }}
+            onAddBeneficiary={() => {
+              setSend((s) => ({ ...s, open: false }));
+              setAddBen(true);
+            }}
             onConfirm={(amt, ccy, name, ref) => {
               setSend((s) => ({ ...s, open: false }));
               addTransaction({
@@ -183,9 +224,16 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Schedule Conversion</DialogTitle>
-            <DialogDescription>Auto-convert when your target rate or date is hit.</DialogDescription>
+            <DialogDescription>
+              Auto-convert when your target rate or date is hit.
+            </DialogDescription>
           </DialogHeader>
-          <ScheduleForm onClose={() => { setSchedule(false); navigate({ to: "/transactions" }); }} />
+          <ScheduleForm
+            onClose={() => {
+              setSchedule(false);
+              navigate({ to: "/transactions" });
+            }}
+          />
         </DialogContent>
       </Dialog>
 
@@ -196,7 +244,12 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
             <DialogTitle>Bulk Payments</DialogTitle>
             <DialogDescription>Pay multiple beneficiaries in a single batch run.</DialogDescription>
           </DialogHeader>
-          <BulkPaymentsForm onClose={() => { setBulk(false); navigate({ to: "/transactions" }); }} />
+          <BulkPaymentsForm
+            onClose={() => {
+              setBulk(false);
+              navigate({ to: "/transactions" });
+            }}
+          />
         </DialogContent>
       </Dialog>
 
@@ -239,9 +292,18 @@ function FundFlow({
         const done = idx < i;
         const active = idx === i;
         return (
-          <div key={s.label} className={`flex items-start gap-3 p-3 rounded-xl border ${done ? "border-success/40 bg-success/5" : active ? "border-accent/40 bg-accent/5" : "border-border bg-secondary/30 opacity-60"}`}>
+          <div
+            key={s.label}
+            className={`flex items-start gap-3 p-3 rounded-xl border ${done ? "border-success/40 bg-success/5" : active ? "border-accent/40 bg-accent/5" : "border-border bg-secondary/30 opacity-60"}`}
+          >
             <div className="mt-0.5 h-7 w-7 grid place-items-center rounded-full bg-card border border-border">
-              {done ? <CheckCircle2 className="h-4 w-4 text-success" /> : active ? <Loader2 className="h-4 w-4 animate-spin text-accent" /> : <span className="text-xs">{idx + 1}</span>}
+              {done ? (
+                <CheckCircle2 className="h-4 w-4 text-success" />
+              ) : active ? (
+                <Loader2 className="h-4 w-4 animate-spin text-accent" />
+              ) : (
+                <span className="text-xs">{idx + 1}</span>
+              )}
             </div>
             <div className="flex-1">
               <div className="text-sm font-semibold">{s.label}</div>
@@ -251,13 +313,21 @@ function FundFlow({
         );
       })}
       <div className="text-xs text-muted-foreground text-center pt-1">
-        {i >= steps.length ? "Funds successfully credited. Redirecting…" : "Do not close this window — settling on the corridor."}
+        {i >= steps.length
+          ? "Funds successfully credited. Redirecting…"
+          : "Do not close this window — settling on the corridor."}
       </div>
     </div>
   );
 }
 
-function FundForm({ ccy, onConfirm }: { ccy: string; onConfirm: (amount: number, method: string) => void }) {
+function FundForm({
+  ccy,
+  onConfirm,
+}: {
+  ccy: string;
+  onConfirm: (amount: number, method: string) => void;
+}) {
   const { profile } = useRole();
   const [amount, setAmount] = useState("1000000");
   const [method, setMethod] = useState<string | null>(null);
@@ -282,7 +352,10 @@ function FundForm({ ccy, onConfirm }: { ccy: string; onConfirm: (amount: number,
         ccy={ccy}
         amount={amt}
         accountName={profile.name}
-        onBack={() => { setStage("form"); setMethod(null); }}
+        onBack={() => {
+          setStage("form");
+          setMethod(null);
+        }}
         onPaid={() => setStage("tracker")}
       />
     );
@@ -304,8 +377,17 @@ function FundForm({ ccy, onConfirm }: { ccy: string; onConfirm: (amount: number,
       </div>
       <div className="space-y-2">
         {[
-          { icon: Building, label: "Bank Transfer", desc: "Free · Virtual account in your name", rec: true },
-          { icon: Coins, label: "USDT (TRC20 / ERC20)", desc: "Stablecoin · Auto-converted at mid-market" },
+          {
+            icon: Building,
+            label: "Bank Transfer",
+            desc: "Free · Virtual account in your name",
+            rec: true,
+          },
+          {
+            icon: Coins,
+            label: "USDT (TRC20 / ERC20)",
+            desc: "Stablecoin · Auto-converted at mid-market",
+          },
           { icon: Zap, label: "Pay Without Funding", desc: "Inline · No pre-fund needed" },
         ].map((o) => (
           <button
@@ -324,7 +406,11 @@ function FundForm({ ccy, onConfirm }: { ccy: string; onConfirm: (amount: number,
               <div className="text-sm font-semibold">{o.label}</div>
               <div className="text-xs text-muted-foreground">{o.desc}</div>
             </div>
-            {o.rec && <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/20 text-accent-foreground shrink-0">Recommended</span>}
+            {o.rec && (
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/20 text-accent-foreground shrink-0">
+                Recommended
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -333,14 +419,22 @@ function FundForm({ ccy, onConfirm }: { ccy: string; onConfirm: (amount: number,
 }
 
 function VirtualAccountPanel({
-  ccy, amount, accountName, onBack, onPaid,
+  ccy,
+  amount,
+  accountName,
+  onBack,
+  onPaid,
 }: {
-  ccy: string; amount: number; accountName: string; onBack: () => void; onPaid: () => void;
+  ccy: string;
+  amount: number;
+  accountName: string;
+  onBack: () => void;
+  onPaid: () => void;
 }) {
   // Deterministic-ish mock account number per session
   const acct = useMemo(() => {
     const seed = `${accountName}-${ccy}`.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-    const base = (9000000000 + (seed * 314159) % 999999999).toString().slice(0, 10);
+    const base = (9000000000 + ((seed * 314159) % 999999999)).toString().slice(0, 10);
     return base;
   }, [accountName, ccy]);
   const reference = useMemo(
@@ -348,11 +442,15 @@ function VirtualAccountPanel({
     [ccy],
   );
   const bank =
-    ccy === "NGN" ? "Canta MFB · Wema Bank (sponsor)"
-    : ccy === "USD" ? "Canta Trust · Bank of America"
-    : ccy === "EUR" ? "Canta EU · Modulr (SEPA)"
-    : ccy === "GBP" ? "Canta UK · ClearBank (Faster Payments)"
-    : "Canta Global Settlement";
+    ccy === "NGN"
+      ? "Canta MFB · Wema Bank (sponsor)"
+      : ccy === "USD"
+        ? "Canta Trust · Bank of America"
+        : ccy === "EUR"
+          ? "Canta EU · Modulr (SEPA)"
+          : ccy === "GBP"
+            ? "Canta UK · ClearBank (Faster Payments)"
+            : "Canta Global Settlement";
   const expires = useMemo(() => {
     const d = new Date(Date.now() + 30 * 60 * 1000);
     return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -366,7 +464,10 @@ function VirtualAccountPanel({
 
   return (
     <div className="space-y-4">
-      <button onClick={onBack} className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+      <button
+        onClick={onBack}
+        className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+      >
         <ArrowLeft className="h-3 w-3" /> Back
       </button>
 
@@ -375,8 +476,12 @@ function VirtualAccountPanel({
         <div className="relative space-y-4">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Send exactly</div>
-              <div className="text-2xl font-semibold tabular-nums mt-0.5">{fmtMoney(amount, ccy)}</div>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                Send exactly
+              </div>
+              <div className="text-2xl font-semibold tabular-nums mt-0.5">
+                {fmtMoney(amount, ccy)}
+              </div>
             </div>
             <div className="h-10 w-10 rounded-xl bg-accent/20 grid place-items-center shrink-0">
               <Landmark className="h-5 w-5 text-accent" />
@@ -391,14 +496,17 @@ function VirtualAccountPanel({
           </div>
 
           <div className="flex items-center justify-between text-[11px] text-muted-foreground border-t border-border pt-3">
-            <span className="inline-flex items-center gap-1"><Lock className="h-3 w-3" /> Dedicated to your account</span>
+            <span className="inline-flex items-center gap-1">
+              <Lock className="h-3 w-3" /> Dedicated to your account
+            </span>
             <span>Expires {expires}</span>
           </div>
         </div>
       </div>
 
       <div className="rounded-xl border border-border bg-secondary/40 p-3 text-xs text-muted-foreground">
-        Transfer from any bank app. We'll detect the inflow automatically using your reference and credit your {ccy} wallet.
+        Transfer from any bank app. We'll detect the inflow automatically using your reference and
+        credit your {ccy} wallet.
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -413,16 +521,35 @@ function VirtualAccountPanel({
   );
 }
 
-function AcctRow({ label, value, mono, copy, highlight }: { label: string; value: string; mono?: boolean; copy?: boolean; highlight?: boolean }) {
+function AcctRow({
+  label,
+  value,
+  mono,
+  copy,
+  highlight,
+}: {
+  label: string;
+  value: string;
+  mono?: boolean;
+  copy?: boolean;
+  highlight?: boolean;
+}) {
   return (
-    <div className={`flex items-center justify-between gap-3 rounded-lg px-3 py-2 ${highlight ? "bg-accent/10 border border-accent/30" : "bg-card/60 border border-border"}`}>
+    <div
+      className={`flex items-center justify-between gap-3 rounded-lg px-3 py-2 ${highlight ? "bg-accent/10 border border-accent/30" : "bg-card/60 border border-border"}`}
+    >
       <div className="min-w-0">
         <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
-        <div className={`text-sm font-semibold truncate ${mono ? "tabular-nums" : ""}`}>{value}</div>
+        <div className={`text-sm font-semibold truncate ${mono ? "tabular-nums" : ""}`}>
+          {value}
+        </div>
       </div>
       {copy && (
         <button
-          onClick={() => { navigator.clipboard?.writeText(value); toast.success(`${label} copied`); }}
+          onClick={() => {
+            navigator.clipboard?.writeText(value);
+            toast.success(`${label} copied`);
+          }}
           className="shrink-0 h-7 w-7 grid place-items-center rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground"
           aria-label={`Copy ${label}`}
         >
@@ -434,9 +561,17 @@ function AcctRow({ label, value, mono, copy, highlight }: { label: string; value
 }
 
 function FundTracker({
-  ccy, amount, method, accountName, onDone,
+  ccy,
+  amount,
+  method,
+  accountName,
+  onDone,
 }: {
-  ccy: string; amount: number; method: string; accountName: string; onDone: () => void;
+  ccy: string;
+  amount: number;
+  method: string;
+  accountName: string;
+  onDone: () => void;
 }) {
   const nodes =
     method === "USDT (TRC20 / ERC20)"
@@ -447,18 +582,18 @@ function FundTracker({
           { icon: Wallet, label: `${ccy} Wallet`, sub: fmtMoney(amount, ccy) },
         ]
       : method === "Bank Transfer"
-      ? [
-          { icon: UserIcon, label: accountName.split(" ")[0], sub: "Sender" },
-          { icon: Building, label: "Your Bank", sub: "Outbound transfer" },
-          { icon: Landmark, label: "Canta Vault", sub: "Funds received" },
-          { icon: Wallet, label: `${ccy} Wallet`, sub: fmtMoney(amount, ccy) },
-        ]
-      : [
-          { icon: UserIcon, label: "Buyer", sub: "Card / wallet" },
-          { icon: Zap, label: "Inline auth", sub: "No pre-funding" },
-          { icon: Landmark, label: "Canta Vault", sub: "Fronted" },
-          { icon: Wallet, label: `${ccy} Wallet`, sub: fmtMoney(amount, ccy) },
-        ];
+        ? [
+            { icon: UserIcon, label: accountName.split(" ")[0], sub: "Sender" },
+            { icon: Building, label: "Your Bank", sub: "Outbound transfer" },
+            { icon: Landmark, label: "Canta Vault", sub: "Funds received" },
+            { icon: Wallet, label: `${ccy} Wallet`, sub: fmtMoney(amount, ccy) },
+          ]
+        : [
+            { icon: UserIcon, label: "Buyer", sub: "Card / wallet" },
+            { icon: Zap, label: "Inline auth", sub: "No pre-funding" },
+            { icon: Landmark, label: "Canta Vault", sub: "Fronted" },
+            { icon: Wallet, label: `${ccy} Wallet`, sub: fmtMoney(amount, ccy) },
+          ];
 
   const steps =
     method === "USDT (TRC20 / ERC20)"
@@ -468,16 +603,16 @@ function FundTracker({
           { label: `${fmtMoney(amount, ccy)} credited`, sub: `Available in your ${ccy} wallet` },
         ]
       : method === "Bank Transfer"
-      ? [
-          { label: "Awaiting bank inflow", sub: "Matching reference automatically" },
-          { label: "Funds received by Canta", sub: "Cleared on fast settlement rail" },
-          { label: `${fmtMoney(amount, ccy)} credited`, sub: `Available in your ${ccy} wallet` },
-        ]
-      : [
-          { label: "Inline payment authorised", sub: "Buyer card / wallet captured" },
-          { label: "Auto-routed to beneficiary", sub: "No pre-funding required" },
-          { label: "Settlement booked", sub: `${fmtMoney(amount, ccy)} fronted by Canta` },
-        ];
+        ? [
+            { label: "Awaiting bank inflow", sub: "Matching reference automatically" },
+            { label: "Funds received by Canta", sub: "Cleared on fast settlement rail" },
+            { label: `${fmtMoney(amount, ccy)} credited`, sub: `Available in your ${ccy} wallet` },
+          ]
+        : [
+            { label: "Inline payment authorised", sub: "Buyer card / wallet captured" },
+            { label: "Auto-routed to beneficiary", sub: "No pre-funding required" },
+            { label: "Settlement booked", sub: `${fmtMoney(amount, ccy)} fronted by Canta` },
+          ];
 
   const [i, setI] = useState(0);
   useEffect(() => {
@@ -497,7 +632,10 @@ function FundTracker({
     <div className="space-y-5 py-1">
       {/* Horizontal node tracker */}
       <div className="relative px-1">
-        <div className="grid" style={{ gridTemplateColumns: `repeat(${nodes.length}, minmax(0, 1fr))` }}>
+        <div
+          className="grid"
+          style={{ gridTemplateColumns: `repeat(${nodes.length}, minmax(0, 1fr))` }}
+        >
           {nodes.map((n, idx) => {
             const reached = idx <= Math.ceil(progress);
             const active = idx === Math.ceil(progress) && i < steps.length;
@@ -515,7 +653,9 @@ function FundTracker({
                   <n.icon className="h-5 w-5" />
                 </div>
                 <div className="text-[11px] font-semibold leading-tight">{n.label}</div>
-                <div className="text-[10px] text-muted-foreground leading-tight truncate max-w-full">{n.sub}</div>
+                <div className="text-[10px] text-muted-foreground leading-tight truncate max-w-full">
+                  {n.sub}
+                </div>
               </div>
             );
           })}
@@ -543,8 +683,8 @@ function FundTracker({
                 done
                   ? "border-success/30 bg-success/5"
                   : active
-                  ? "border-accent/40 bg-accent/5"
-                  : "border-border bg-secondary/20 opacity-60"
+                    ? "border-accent/40 bg-accent/5"
+                    : "border-border bg-secondary/20 opacity-60"
               }`}
             >
               <div className="h-7 w-7 grid place-items-center rounded-full bg-card border border-border shrink-0">
@@ -574,9 +714,15 @@ function FundTracker({
   );
 }
 
-
-
-function ConvertForm({ from: f0, to: t0, onConfirm }: { from: string; to: string; onConfirm: (a: number, f: string, t: string, received: number) => void }) {
+function ConvertForm({
+  from: f0,
+  to: t0,
+  onConfirm,
+}: {
+  from: string;
+  to: string;
+  onConfirm: (a: number, f: string, t: string, received: number) => void;
+}) {
   const [from, setFrom] = useState(f0);
   const [to, setTo] = useState(t0);
   const [amount, setAmount] = useState("1000000");
@@ -601,30 +747,59 @@ function ConvertForm({ from: f0, to: t0, onConfirm }: { from: string; to: string
       <div>
         <Label className="text-xs">You send</Label>
         <div className="flex gap-2 p-3 rounded-xl bg-secondary/50 border border-border mt-1">
-          <input value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))} className="flex-1 bg-transparent text-xl font-semibold tabular-nums outline-none" />
-          <select value={from} onChange={(e) => setFrom(e.target.value)} className="bg-card border border-border rounded-lg px-2 text-sm">
-            <option>NGN</option><option>USD</option><option>EUR</option><option>GBP</option>
+          <input
+            value={amount}
+            onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
+            className="flex-1 bg-transparent text-xl font-semibold tabular-nums outline-none"
+          />
+          <select
+            value={from}
+            onChange={(e) => setFrom(e.target.value)}
+            className="bg-card border border-border rounded-lg px-2 text-sm"
+          >
+            <option>NGN</option>
+            <option>USD</option>
+            <option>EUR</option>
+            <option>GBP</option>
           </select>
         </div>
       </div>
       <div className="flex justify-center">
-        <button onClick={() => { setFrom(to); setTo(from); }} className="h-8 w-8 rounded-full bg-primary text-primary-foreground grid place-items-center">
+        <button
+          onClick={() => {
+            setFrom(to);
+            setTo(from);
+          }}
+          className="h-8 w-8 rounded-full bg-primary text-primary-foreground grid place-items-center"
+        >
           <ArrowDown className="h-4 w-4" />
         </button>
       </div>
       <div>
         <Label className="text-xs">Recipient gets</Label>
         <div className="flex gap-2 p-3 rounded-xl bg-secondary/50 border border-border mt-1">
-          <div className="flex-1 text-xl font-semibold tabular-nums">{out.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
-          <select value={to} onChange={(e) => setTo(e.target.value)} className="bg-card border border-border rounded-lg px-2 text-sm">
-            <option>USD</option><option>NGN</option><option>EUR</option><option>GBP</option>
+          <div className="flex-1 text-xl font-semibold tabular-nums">
+            {out.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+          </div>
+          <select
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+            className="bg-card border border-border rounded-lg px-2 text-sm"
+          >
+            <option>USD</option>
+            <option>NGN</option>
+            <option>EUR</option>
+            <option>GBP</option>
           </select>
         </div>
       </div>
       <div className="p-3 rounded-lg bg-accent/10 border border-accent/30 text-xs flex items-center gap-2">
         <Lock className="h-3.5 w-3.5 text-accent" /> Rate locked · 1 {from} = {rate} {to}
       </div>
-      <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90" onClick={() => setConfirming(true)}>
+      <Button
+        className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
+        onClick={() => setConfirming(true)}
+      >
         Confirm Conversion
       </Button>
     </div>
@@ -682,7 +857,8 @@ function SendForm({
           <ShieldCheck className="h-4 w-4 text-warning mt-0.5 shrink-0" />
           <div>
             <div className="font-semibold text-foreground">Verify before you send</div>
-            Funds sent to the wrong account often cannot be recovered. Please check every detail below.
+            Funds sent to the wrong account often cannot be recovered. Please check every detail
+            below.
           </div>
         </div>
         <div className="rounded-xl border divide-y bg-secondary/30">
@@ -696,15 +872,32 @@ function SendForm({
         {(!reference || !narration || !doc) && (
           <div className="rounded-lg border border-warning/30 bg-warning/5 p-3 text-xs flex items-start gap-2">
             <AlertTriangle className="h-4 w-4 text-warning mt-0.5 shrink-0" />
-            <span>Some fields are empty ({[!reference && "reference", !narration && "purpose", !doc && "supporting document"].filter(Boolean).join(", ")}). You can go back and add them, or continue if not required.</span>
+            <span>
+              Some fields are empty (
+              {[!reference && "reference", !narration && "purpose", !doc && "supporting document"]
+                .filter(Boolean)
+                .join(", ")}
+              ). You can go back and add them, or continue if not required.
+            </span>
           </div>
         )}
         <label className="flex items-start gap-2 cursor-pointer text-sm">
-          <Checkbox checked={confirmDetails} onCheckedChange={(v) => setConfirmDetails(Boolean(v))} className="mt-0.5" />
-          <span>I have verified the beneficiary name, bank, account number, currency and amount are correct.</span>
+          <Checkbox
+            checked={confirmDetails}
+            onCheckedChange={(v) => setConfirmDetails(Boolean(v))}
+            className="mt-0.5"
+          />
+          <span>
+            I have verified the beneficiary name, bank, account number, currency and amount are
+            correct.
+          </span>
         </label>
         <label className="flex items-start gap-2 cursor-pointer text-sm">
-          <Checkbox checked={confirmAuth} onCheckedChange={(v) => setConfirmAuth(Boolean(v))} className="mt-0.5" />
+          <Checkbox
+            checked={confirmAuth}
+            onCheckedChange={(v) => setConfirmAuth(Boolean(v))}
+            className="mt-0.5"
+          />
           <span>I authorise Canta to debit my wallet and send these funds to the beneficiary.</span>
         </label>
         <div className="flex gap-2">
@@ -714,7 +907,10 @@ function SendForm({
           <Button
             className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90"
             disabled={!confirmDetails || !confirmAuth}
-            onClick={() => { toast.success("Details verified — sending"); setStage("sending"); }}
+            onClick={() => {
+              toast.success("Details verified — sending");
+              setStage("sending");
+            }}
           >
             Confirm &amp; send
           </Button>
@@ -736,21 +932,38 @@ function SendForm({
             <UserPlus className="h-3 w-3" /> Add new beneficiary
           </button>
         </div>
-        <select value={name} onChange={(e) => setName(e.target.value)} className="w-full p-2.5 rounded-lg border border-border bg-card text-sm">
-          {beneficiaries.map((b) => <option key={b.name}>{b.name}</option>)}
+        <select
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full p-2.5 rounded-lg border border-border bg-card text-sm"
+        >
+          {beneficiaries.map((b) => (
+            <option key={b.name}>{b.name}</option>
+          ))}
         </select>
-        <div className="text-xs text-muted-foreground mt-1">{ben.country} · {ben.bank} · {ben.account}</div>
+        <div className="text-xs text-muted-foreground mt-1">
+          {ben.country} · {ben.bank} · {ben.account}
+        </div>
       </div>
       <div>
         <Label className="text-xs">Amount</Label>
         <div className="flex gap-2 p-3 rounded-xl bg-secondary/50 border border-border mt-1">
-          <input value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))} className="flex-1 bg-transparent text-xl font-semibold tabular-nums outline-none" />
+          <input
+            value={amount}
+            onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
+            className="flex-1 bg-transparent text-xl font-semibold tabular-nums outline-none"
+          />
           <span className="text-sm font-medium grid place-items-center px-2">{ben.ccy}</span>
         </div>
       </div>
       <div>
         <Label className="text-xs">Reference</Label>
-        <Input value={reference} onChange={(e) => setReference(e.target.value)} className="mt-1" placeholder="Invoice #INV-0421" />
+        <Input
+          value={reference}
+          onChange={(e) => setReference(e.target.value)}
+          className="mt-1"
+          placeholder="Invoice #INV-0421"
+        />
       </div>
       <div>
         <Label className="text-xs">Narration / purpose of payment</Label>
@@ -779,13 +992,19 @@ function SendForm({
         </label>
       </div>
       <div className="p-3 rounded-lg bg-success/10 border border-success/30 text-xs">
-        Smart routing selected · Estimated arrival <span className="font-semibold">under 30 seconds</span>
+        Smart routing selected · Estimated arrival{" "}
+        <span className="font-semibold">under 30 seconds</span>
       </div>
       <Button
         className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
         onClick={() => {
-          if (!amt) { toast.error("Enter an amount"); return; }
-          setConfirmDetails(false); setConfirmAuth(false); setStage("review");
+          if (!amt) {
+            toast.error("Enter an amount");
+            return;
+          }
+          setConfirmDetails(false);
+          setConfirmAuth(false);
+          setStage("review");
         }}
       >
         Review payment details
@@ -798,7 +1017,9 @@ function AddBeneficiaryForm({ onClose }: { onClose: () => void }) {
   const [country, setCountry] = useState("US");
   const auto = COUNTRIES.find((c) => c.code === country)?.ccy ?? "USD";
   const [ccy, setCcy] = useState(auto);
-  useEffect(() => { setCcy(auto); }, [auto]);
+  useEffect(() => {
+    setCcy(auto);
+  }, [auto]);
 
   // Predict fields based on currency
   const fields = useMemo(() => {
@@ -848,18 +1069,30 @@ function AddBeneficiaryForm({ onClose }: { onClose: () => void }) {
           <div>
             <Label className="text-xs">Country</Label>
             <Select value={country} onValueChange={setCountry}>
-              <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="mt-1">
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
-                {COUNTRIES.map((c) => <SelectItem key={c.code} value={c.code}>{c.name}</SelectItem>)}
+                {COUNTRIES.map((c) => (
+                  <SelectItem key={c.code} value={c.code}>
+                    {c.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
           <div>
             <Label className="text-xs">Currency</Label>
             <Select value={ccy} onValueChange={setCcy}>
-              <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="mt-1">
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
-                {CURRENCIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                {CURRENCIES.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -876,10 +1109,15 @@ function AddBeneficiaryForm({ onClose }: { onClose: () => void }) {
         </div>
       </div>
       <DialogFooter className="mt-4">
-        <Button variant="outline" onClick={onClose}>Cancel</Button>
+        <Button variant="outline" onClick={onClose}>
+          Cancel
+        </Button>
         <Button
           className="bg-accent text-accent-foreground hover:bg-accent/90"
-          onClick={() => { onClose(); toast.success("Beneficiary added", { description: `Validated for ${ccy} payouts.` }); }}
+          onClick={() => {
+            onClose();
+            toast.success("Beneficiary added", { description: `Validated for ${ccy} payouts.` });
+          }}
         >
           Save Beneficiary
         </Button>
@@ -894,33 +1132,57 @@ function ScheduleForm({ onClose }: { onClose: () => void }) {
   const [amount, setAmount] = useState("50000000");
   const [trigger, setTrigger] = useState("rate");
   const [target, setTarget] = useState("1600");
-  const [date, setDate] = useState(() => new Date(Date.now() + 86400000).toISOString().slice(0, 16));
+  const [date, setDate] = useState(() =>
+    new Date(Date.now() + 86400000).toISOString().slice(0, 16),
+  );
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-3">
         <div>
           <Label className="text-xs">From</Label>
           <Select value={from} onValueChange={setFrom}>
-            <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-            <SelectContent>{["NGN","USD","EUR","GBP"].map(c=><SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+            <SelectTrigger className="mt-1">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {["NGN", "USD", "EUR", "GBP"].map((c) => (
+                <SelectItem key={c} value={c}>
+                  {c}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
         </div>
         <div>
           <Label className="text-xs">To</Label>
           <Select value={to} onValueChange={setTo}>
-            <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-            <SelectContent>{["USD","NGN","EUR","GBP"].map(c=><SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+            <SelectTrigger className="mt-1">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {["USD", "NGN", "EUR", "GBP"].map((c) => (
+                <SelectItem key={c} value={c}>
+                  {c}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
         </div>
       </div>
       <div>
         <Label className="text-xs">Amount ({from})</Label>
-        <Input value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))} className="mt-1" />
+        <Input
+          value={amount}
+          onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
+          className="mt-1"
+        />
       </div>
       <div>
         <Label className="text-xs">Trigger</Label>
         <Select value={trigger} onValueChange={setTrigger}>
-          <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="mt-1">
+            <SelectValue />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="rate">When rate is reached</SelectItem>
             <SelectItem value="date">On a specific date/time</SelectItem>
@@ -930,13 +1192,24 @@ function ScheduleForm({ onClose }: { onClose: () => void }) {
       </div>
       {trigger === "rate" ? (
         <div>
-          <Label className="text-xs">Target rate (1 {to} = ? {from})</Label>
-          <Input value={target} onChange={(e) => setTarget(e.target.value.replace(/[^0-9.]/g, ""))} className="mt-1" />
+          <Label className="text-xs">
+            Target rate (1 {to} = ? {from})
+          </Label>
+          <Input
+            value={target}
+            onChange={(e) => setTarget(e.target.value.replace(/[^0-9.]/g, ""))}
+            className="mt-1"
+          />
         </div>
       ) : (
         <div>
           <Label className="text-xs">{trigger === "date" ? "Execute at" : "Starts on"}</Label>
-          <Input type="datetime-local" value={date} onChange={(e) => setDate(e.target.value)} className="mt-1" />
+          <Input
+            type="datetime-local"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="mt-1"
+          />
         </div>
       )}
       <div className="p-3 rounded-lg bg-accent/10 border border-accent/30 text-xs flex items-center gap-2">
@@ -945,7 +1218,12 @@ function ScheduleForm({ onClose }: { onClose: () => void }) {
       </div>
       <Button
         className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
-        onClick={() => { onClose(); toast.success("Conversion scheduled", { description: `${Number(amount).toLocaleString()} ${from} → ${to}.` }); }}
+        onClick={() => {
+          onClose();
+          toast.success("Conversion scheduled", {
+            description: `${Number(amount).toLocaleString()} ${from} → ${to}.`,
+          });
+        }}
       >
         Schedule Conversion
       </Button>
@@ -956,13 +1234,17 @@ function ScheduleForm({ onClose }: { onClose: () => void }) {
 function BulkPaymentsForm({ onClose }: { onClose: () => void }) {
   type Row = { id: number; name: string; amount: string; ccy: string };
   const [rows, setRows] = useState<Row[]>(
-    beneficiaries.slice(0, 3).map((b, i) => ({ id: i, name: b.name, amount: "10000", ccy: b.ccy }))
+    beneficiaries.slice(0, 3).map((b, i) => ({ id: i, name: b.name, amount: "10000", ccy: b.ccy })),
   );
   const total = rows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
   return (
     <div className="space-y-3">
       <button
-        onClick={() => toast.info("CSV import", { description: "Upload a CSV with name, amount, currency columns." })}
+        onClick={() =>
+          toast.info("CSV import", {
+            description: "Upload a CSV with name, amount, currency columns.",
+          })
+        }
         className="w-full p-4 rounded-xl border-2 border-dashed border-border hover:border-accent text-sm flex items-center justify-center gap-2 text-muted-foreground"
       >
         <Upload className="h-4 w-4" /> Drop CSV here or click to upload
@@ -975,27 +1257,62 @@ function BulkPaymentsForm({ onClose }: { onClose: () => void }) {
           <div className="col-span-1" />
         </div>
         {rows.map((r) => (
-          <div key={r.id} className="grid grid-cols-12 gap-2 px-3 py-2 border-t border-border items-center">
+          <div
+            key={r.id}
+            className="grid grid-cols-12 gap-2 px-3 py-2 border-t border-border items-center"
+          >
             <select
               value={r.name}
-              onChange={(e) => setRows(rows.map(x => x.id === r.id ? { ...x, name: e.target.value, ccy: beneficiaries.find(b=>b.name===e.target.value)?.ccy ?? x.ccy } : x))}
+              onChange={(e) =>
+                setRows(
+                  rows.map((x) =>
+                    x.id === r.id
+                      ? {
+                          ...x,
+                          name: e.target.value,
+                          ccy: beneficiaries.find((b) => b.name === e.target.value)?.ccy ?? x.ccy,
+                        }
+                      : x,
+                  ),
+                )
+              }
               className="col-span-5 bg-card border border-border rounded px-2 py-1 text-sm"
             >
-              {beneficiaries.map((b) => <option key={b.name}>{b.name}</option>)}
+              {beneficiaries.map((b) => (
+                <option key={b.name}>{b.name}</option>
+              ))}
             </select>
             <Input
               value={r.amount}
-              onChange={(e) => setRows(rows.map(x => x.id === r.id ? { ...x, amount: e.target.value.replace(/[^0-9.]/g, "") } : x))}
+              onChange={(e) =>
+                setRows(
+                  rows.map((x) =>
+                    x.id === r.id ? { ...x, amount: e.target.value.replace(/[^0-9.]/g, "") } : x,
+                  ),
+                )
+              }
               className="col-span-4 h-8"
             />
             <div className="col-span-2 text-xs font-medium">{r.ccy}</div>
-            <button onClick={() => setRows(rows.filter(x => x.id !== r.id))} className="col-span-1 text-muted-foreground hover:text-destructive">
+            <button
+              onClick={() => setRows(rows.filter((x) => x.id !== r.id))}
+              className="col-span-1 text-muted-foreground hover:text-destructive"
+            >
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
         ))}
       </div>
-      <Button variant="outline" size="sm" onClick={() => setRows([...rows, { id: Date.now(), name: beneficiaries[0].name, amount: "0", ccy: beneficiaries[0].ccy }])}>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() =>
+          setRows([
+            ...rows,
+            { id: Date.now(), name: beneficiaries[0].name, amount: "0", ccy: beneficiaries[0].ccy },
+          ])
+        }
+      >
         <Plus className="h-3.5 w-3.5 mr-1" /> Add row
       </Button>
       <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 text-sm">
@@ -1017,7 +1334,9 @@ function BulkPaymentsForm({ onClose }: { onClose: () => void }) {
             });
           });
           onClose();
-          toast.success(`${rows.length} payments settled`, { description: "Batch routed on best corridors." });
+          toast.success(`${rows.length} payments settled`, {
+            description: "Batch routed on best corridors.",
+          });
         }}
       >
         Submit Batch
@@ -1034,24 +1353,41 @@ function InviteForm({ onClose }: { onClose: () => void }) {
       <div className="space-y-3">
         <div>
           <Label className="text-xs">Email</Label>
-          <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1" placeholder="name@company.com" />
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="mt-1"
+            placeholder="name@company.com"
+          />
         </div>
         <div>
           <Label className="text-xs">Role</Label>
           <Select value={role} onValueChange={setRole}>
-            <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="mt-1">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
-              {["Admin","Treasury","Finance","Compliance","Viewer"].map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+              {["Admin", "Treasury", "Finance", "Compliance", "Viewer"].map((r) => (
+                <SelectItem key={r} value={r}>
+                  {r}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
       </div>
       <DialogFooter className="mt-4">
-        <Button variant="outline" onClick={onClose}>Cancel</Button>
+        <Button variant="outline" onClick={onClose}>
+          Cancel
+        </Button>
         <Button
           className="bg-accent text-accent-foreground hover:bg-accent/90"
           onClick={() => {
-            if (!email) { toast.error("Email required"); return; }
+            if (!email) {
+              toast.error("Email required");
+              return;
+            }
             onClose();
             toast.success("Invite sent", { description: `${email} invited as ${role}.` });
           }}

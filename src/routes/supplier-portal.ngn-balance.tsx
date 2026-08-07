@@ -5,8 +5,13 @@ import { toast } from "sonner";
 import { Copy, Share2, FileText } from "lucide-react";
 import { AutoConvertCard } from "@/components/supplier/AutoConvertCard";
 import {
-  NGN_COLLECTION_ACCOUNT, copyText, ngnSummary, paymentInstructions, useSimpleInvoices,
-  simpleInvoiceStore, useAutoConvert,
+  NGN_COLLECTION_ACCOUNT,
+  copyText,
+  ngnSummary,
+  paymentInstructions,
+  useSimpleInvoices,
+  simpleInvoiceStore,
+  useAutoConvert,
 } from "@/lib/supplier-simple";
 
 import { useT } from "@/lib/supplier-lang";
@@ -15,7 +20,11 @@ export const Route = createFileRoute("/supplier-portal/ngn-balance")({
   head: () => ({
     meta: [
       { title: "NGN Balance — Supplier Portal — Canta" },
-      { name: "description", content: "Naira paid by your Nigerian buyers, your Canta collection account details and conversion status." },
+      {
+        name: "description",
+        content:
+          "Naira paid by your Nigerian buyers, your Canta collection account details and conversion status.",
+      },
     ],
   }),
   component: NgnBalancePage,
@@ -26,7 +35,6 @@ function NgnBalancePage() {
   const invoices = useSimpleInvoices();
   const autoConvert = useAutoConvert();
   const s = ngnSummary(invoices);
-
 
   return (
     <div className="space-y-4">
@@ -50,21 +58,44 @@ function NgnBalancePage() {
           <Row k="Reference instructions" v={NGN_COLLECTION_ACCOUNT.reference} />
         </div>
         <p className="text-xs text-muted-foreground">
-          Share these details only with Nigerian buyers paying invoices created through Canta. Canta reconciles buyer
-          payments to your invoice before RMB conversion.
+          Share these details only with Nigerian buyers paying invoices created through Canta. Canta
+          reconciles buyer payments to your invoice before RMB conversion.
         </p>
         <div className="flex flex-wrap gap-2">
-          <Button size="sm" variant="outline" onClick={() => { copyText(NGN_COLLECTION_ACCOUNT.accountNumber); toast.success("Account number copied"); }}>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              copyText(NGN_COLLECTION_ACCOUNT.accountNumber);
+              toast.success("Account number copied");
+            }}
+          >
             <Copy className="mr-2 h-4 w-4" /> Copy account number
           </Button>
-          <Button size="sm" variant="outline" onClick={() => { copyText(paymentInstructions()); toast.success("Payment instructions copied"); }}>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              copyText(paymentInstructions());
+              toast.success("Payment instructions copied");
+            }}
+          >
             <Copy className="mr-2 h-4 w-4" /> Copy full payment instructions
           </Button>
-          <Button size="sm" variant="outline" onClick={() => { copyText(paymentInstructions()); toast.success("Instructions ready to share"); }}>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              copyText(paymentInstructions());
+              toast.success("Instructions ready to share");
+            }}
+          >
             <Share2 className="mr-2 h-4 w-4" /> Share payment instructions
           </Button>
           <Button size="sm" asChild>
-            <Link to="/supplier-portal/create-invoice"><FileText className="mr-2 h-4 w-4" /> {t("createInvoice")}</Link>
+            <Link to="/supplier-portal/create-invoice">
+              <FileText className="mr-2 h-4 w-4" /> {t("createInvoice")}
+            </Link>
           </Button>
         </div>
       </Card>
@@ -81,7 +112,6 @@ function NgnBalancePage() {
                 <th className="px-3 py-2 text-right">RMB</th>
                 <th className="px-3 py-2 text-left">Status</th>
                 <th className="px-3 py-2 text-right">Conversion</th>
-
               </tr>
             </thead>
             <tbody>
@@ -89,8 +119,12 @@ function NgnBalancePage() {
                 <tr key={i.id} className="border-t">
                   <td className="px-3 py-2 font-mono text-xs">{i.invoiceNumber}</td>
                   <td className="px-3 py-2 text-xs">{i.buyerCompany}</td>
-                  <td className="px-3 py-2 text-right text-xs tabular-nums">₦{i.amountNgn.toLocaleString()}</td>
-                  <td className="px-3 py-2 text-right text-xs tabular-nums">¥{i.amountRmb.toLocaleString()}</td>
+                  <td className="px-3 py-2 text-right text-xs tabular-nums">
+                    ₦{i.amountNgn.toLocaleString()}
+                  </td>
+                  <td className="px-3 py-2 text-right text-xs tabular-nums">
+                    ¥{i.amountRmb.toLocaleString()}
+                  </td>
                   <td className="px-3 py-2 text-xs">{i.status}</td>
                   <td className="px-3 py-2 text-right">
                     {!autoConvert && i.status === "NGN Received" ? (
@@ -100,21 +134,28 @@ function NgnBalancePage() {
                         className="h-7 text-xs"
                         onClick={() => {
                           const res = simpleInvoiceStore.requestConversion(i.id);
-                          if (res.ok) toast.success("Conversion requested — compliance review started");
+                          if (res.ok)
+                            toast.success("Conversion requested — compliance review started");
                           else toast.error(res.error ?? "Could not request conversion");
                         }}
                       >
                         Request conversion
                       </Button>
                     ) : (
-                      <span className="text-[11px] text-muted-foreground">{autoConvert ? "Automatic" : "—"}</span>
+                      <span className="text-[11px] text-muted-foreground">
+                        {autoConvert ? "Automatic" : "—"}
+                      </span>
                     )}
                   </td>
                 </tr>
               ))}
 
               {s.linked.length === 0 && (
-                <tr><td colSpan={6} className="px-3 py-6 text-center text-xs text-muted-foreground">No NGN payments received yet.</td></tr>
+                <tr>
+                  <td colSpan={6} className="px-3 py-6 text-center text-xs text-muted-foreground">
+                    No NGN payments received yet.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>

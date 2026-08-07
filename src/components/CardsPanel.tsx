@@ -3,11 +3,23 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
-  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import {
-  CreditCard, Snowflake, Flame, Receipt, Clock, TrendingUp,
-  MoreHorizontal, Eye, Upload, Settings, Download,
+  CreditCard,
+  Snowflake,
+  Flame,
+  Receipt,
+  Clock,
+  TrendingUp,
+  MoreHorizontal,
+  Eye,
+  Upload,
+  Settings,
+  Download,
 } from "lucide-react";
 import { toast } from "sonner";
 import { fmtMoney } from "@/lib/mock";
@@ -66,15 +78,25 @@ export function WorkspaceCardsPanel(p: WorkspaceCardsPanelProps) {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-5">
         <Mini label="Active" value={String(active)} tone="bg-success/10 text-success" />
         <Mini label="Monthly spend" value={fmtMoney(totalSpend, "USD")} />
-        <Mini label="Pending approvals" value={String(p.pendingApprovals ?? 0)} tone={(p.pendingApprovals ?? 0) > 0 ? "bg-warning/10 text-warning" : ""} />
+        <Mini
+          label="Pending approvals"
+          value={String(p.pendingApprovals ?? 0)}
+          tone={(p.pendingApprovals ?? 0) > 0 ? "bg-warning/10 text-warning" : ""}
+        />
         <Mini label="Frozen" value={String(frozen)} />
-        <Mini label="Receipts missing" value={String(p.receiptsMissing ?? 0)} tone={(p.receiptsMissing ?? 0) > 0 ? "bg-warning/10 text-warning" : ""} />
+        <Mini
+          label="Receipts missing"
+          value={String(p.receiptsMissing ?? 0)}
+          tone={(p.receiptsMissing ?? 0) > 0 ? "bg-warning/10 text-warning" : ""}
+        />
       </div>
 
       {/* Category chips */}
       <div className="flex flex-wrap gap-1.5 mb-4">
         {p.categories.map((c) => (
-          <Badge key={c} variant="outline" className="text-[10px]">{c}</Badge>
+          <Badge key={c} variant="outline" className="text-[10px]">
+            {c}
+          </Badge>
         ))}
       </div>
 
@@ -83,17 +105,26 @@ export function WorkspaceCardsPanel(p: WorkspaceCardsPanelProps) {
         {p.cards.slice(0, 6).map((c) => {
           const used = Math.min(100, Math.round((c.monthlySpend / Math.max(1, c.limit)) * 100));
           return (
-            <div key={c.id} className="p-3 rounded-xl border border-border bg-secondary/30 hover:border-accent transition">
+            <div
+              key={c.id}
+              className="p-3 rounded-xl border border-border bg-secondary/30 hover:border-accent transition"
+            >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <div className="text-xs font-semibold truncate">{c.label}</div>
                   <div className="text-[11px] text-muted-foreground truncate">{c.holder}</div>
                 </div>
-                <Badge variant="outline" className={`text-[10px] ${tone(c.status)}`}>{c.status}</Badge>
+                <Badge variant="outline" className={`text-[10px] ${tone(c.status)}`}>
+                  {c.status}
+                </Badge>
               </div>
-              <div className="mt-2 font-mono text-[11px] tracking-widest text-muted-foreground">•••• {c.last4}</div>
+              <div className="mt-2 font-mono text-[11px] tracking-widest text-muted-foreground">
+                •••• {c.last4}
+              </div>
               <div className="mt-2 flex items-center justify-between text-[10px] text-muted-foreground">
-                <span>{fmtMoney(c.monthlySpend, "USD")} / {fmtMoney(c.limit, "USD")}</span>
+                <span>
+                  {fmtMoney(c.monthlySpend, "USD")} / {fmtMoney(c.limit, "USD")}
+                </span>
                 <span>{used}%</span>
               </div>
               <Progress value={used} className="h-1 mt-1" />
@@ -114,12 +145,22 @@ export function WorkspaceCardsPanel(p: WorkspaceCardsPanelProps) {
                   variant="ghost"
                   className="h-7 px-2 text-[11px]"
                   onClick={() => {
-                    toast.success(c.status === "Frozen" ? "Card unfrozen successfully." : "Card frozen successfully.");
+                    toast.success(
+                      c.status === "Frozen"
+                        ? "Card unfrozen successfully."
+                        : "Card frozen successfully.",
+                    );
                   }}
                 >
-                  {c.status === "Frozen"
-                    ? <><Flame className="h-3 w-3 mr-1" /> Unfreeze Card</>
-                    : <><Snowflake className="h-3 w-3 mr-1" /> Freeze Card</>}
+                  {c.status === "Frozen" ? (
+                    <>
+                      <Flame className="h-3 w-3 mr-1" /> Unfreeze Card
+                    </>
+                  ) : (
+                    <>
+                      <Snowflake className="h-3 w-3 mr-1" /> Freeze Card
+                    </>
+                  )}
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -143,7 +184,6 @@ export function WorkspaceCardsPanel(p: WorkspaceCardsPanelProps) {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-
             </div>
           );
         })}
@@ -165,7 +205,9 @@ export function WorkspaceCardsPanel(p: WorkspaceCardsPanelProps) {
               <div key={g.label}>
                 <div className="flex items-center justify-between text-[11px] mb-1">
                   <span className="font-medium">{g.label}</span>
-                  <span className="tabular-nums text-muted-foreground">{fmtMoney(g.amount, "USD")}</span>
+                  <span className="tabular-nums text-muted-foreground">
+                    {fmtMoney(g.amount, "USD")}
+                  </span>
                 </div>
                 <Progress value={Math.round((g.amount / maxGroup) * 100)} className="h-1" />
               </div>
@@ -176,7 +218,8 @@ export function WorkspaceCardsPanel(p: WorkspaceCardsPanelProps) {
 
       <div className="mt-5 flex items-center justify-between border-t border-border pt-3">
         <div className="text-[11px] text-muted-foreground flex items-center gap-1.5">
-          <Clock className="h-3 w-3" /> Company cards are optional enterprise spend controls in this demo.
+          <Clock className="h-3 w-3" /> Company cards are optional enterprise spend controls in this
+          demo.
         </div>
       </div>
     </Card>

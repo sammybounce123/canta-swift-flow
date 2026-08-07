@@ -5,10 +5,25 @@ import { Badge } from "@/components/ui/badge";
 import { setActiveMode, type Mode } from "@/components/ModeProvider";
 import { seedDemoSupplierPersona } from "@/lib/demo-supplier";
 import {
-  ArrowRight, Zap, Shield, Sparkles, TrendingUp, CheckCircle2,
-  Building2, Lock, Ship, Brain, FileText,
-  MessageCircle, Factory, Briefcase, Home,
-  ShieldCheck, ScanLine, Receipt, Languages,
+  ArrowRight,
+  Zap,
+  Shield,
+  Sparkles,
+  TrendingUp,
+  CheckCircle2,
+  Building2,
+  Lock,
+  Ship,
+  Brain,
+  FileText,
+  MessageCircle,
+  Factory,
+  Briefcase,
+  Home,
+  ShieldCheck,
+  ScanLine,
+  Receipt,
+  Languages,
 } from "lucide-react";
 
 // Set workspace on click so the destination renders its correct shell, sidebar
@@ -24,21 +39,53 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Canta — Trade & Treasury Operating System" },
-      { name: "description", content: "Canta helps importers, suppliers, enterprises, and partners manage supplier payments, FX, RMB settlement, documents, and treasury workflows from one trusted workspace." },
+      {
+        name: "description",
+        content:
+          "Canta helps importers, suppliers, enterprises, and partners manage supplier payments, FX, RMB settlement, documents, and treasury workflows from one trusted workspace.",
+      },
       { property: "og:title", content: "Canta — Trade & Treasury Operating System" },
-      { property: "og:description", content: "Canta helps importers, suppliers, enterprises, and partners manage supplier payments, FX, RMB settlement, documents, and treasury workflows from one trusted workspace." },
+      {
+        property: "og:description",
+        content:
+          "Canta helps importers, suppliers, enterprises, and partners manage supplier payments, FX, RMB settlement, documents, and treasury workflows from one trusted workspace.",
+      },
     ],
   }),
   component: Landing,
 });
 
 const aiFeatures = [
-  { icon: ScanLine, t: "Document extraction", d: "AI-assisted document review for BLs, invoices and packing lists." },
-  { icon: TrendingUp, t: "Payment & shipment insights", d: "Spot which supplier payments, shipments, documents, and receipts need attention next." },
-  { icon: Brain, t: "AI assistant", d: "Summarize trade conversations, draft replies, and track next steps." },
-      { icon: Receipt, t: "Landed cost estimates", d: "Forecast duty, freight, agent quote inputs and FX before goods ship." },
-  { icon: Languages, t: "WhatsApp onboarding", d: "Onboard importers conversationally — no app required." },
-  { icon: ShieldCheck, t: "Supplier settlement intelligence", d: "Track NGN buyer payments, RMB settlement status, documents, and receipts." },
+  {
+    icon: ScanLine,
+    t: "Document extraction",
+    d: "AI-assisted document review for BLs, invoices and packing lists.",
+  },
+  {
+    icon: TrendingUp,
+    t: "Payment & shipment insights",
+    d: "Spot which supplier payments, shipments, documents, and receipts need attention next.",
+  },
+  {
+    icon: Brain,
+    t: "AI assistant",
+    d: "Summarize trade conversations, draft replies, and track next steps.",
+  },
+  {
+    icon: Receipt,
+    t: "Landed cost estimates",
+    d: "Forecast duty, freight, agent quote inputs and FX before goods ship.",
+  },
+  {
+    icon: Languages,
+    t: "WhatsApp onboarding",
+    d: "Onboard importers conversationally — no app required.",
+  },
+  {
+    icon: ShieldCheck,
+    t: "Supplier settlement intelligence",
+    d: "Track NGN buyer payments, RMB settlement status, documents, and receipts.",
+  },
 ];
 
 const trust = [
@@ -64,19 +111,37 @@ function Landing() {
       <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-border">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-xl bg-gradient-accent grid place-items-center text-sidebar-primary-foreground font-bold shadow-glow">C</div>
+            <div className="h-9 w-9 rounded-xl bg-gradient-accent grid place-items-center text-sidebar-primary-foreground font-bold shadow-glow">
+              C
+            </div>
             <div className="font-semibold tracking-tight">Canta</div>
           </Link>
           <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
-            <a href="#workspaces" className="hover:text-foreground">Workspaces</a>
-            <a href="#ai" className="hover:text-foreground">AI</a>
-            <a href="#trust" className="hover:text-foreground">Trust</a>
-            <a href="#segments" className="hover:text-foreground">Who it's for</a>
+            <a href="#workspaces" className="hover:text-foreground">
+              Workspaces
+            </a>
+            <a href="#ai" className="hover:text-foreground">
+              AI
+            </a>
+            <a href="#trust" className="hover:text-foreground">
+              Trust
+            </a>
+            <a href="#segments" className="hover:text-foreground">
+              Who it's for
+            </a>
           </nav>
           <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm"><Link to="/dashboard">Sign in</Link></Button>
-            <Button asChild size="sm" className="bg-accent text-accent-foreground hover:bg-accent/90">
-              <Link to="/welcome">Get started <ArrowRight className="h-3.5 w-3.5 ml-1" /></Link>
+            <Button asChild variant="ghost" size="sm">
+              <Link to="/dashboard">Sign in</Link>
+            </Button>
+            <Button
+              asChild
+              size="sm"
+              className="bg-accent text-accent-foreground hover:bg-accent/90"
+            >
+              <Link to="/welcome">
+                Get started <ArrowRight className="h-3.5 w-3.5 ml-1" />
+              </Link>
             </Button>
           </div>
         </div>
@@ -98,17 +163,35 @@ function Landing() {
           </h1>
           <p className="mt-6 max-w-3xl mx-auto text-lg text-primary-foreground/80">
             Nigerian importers pay Chinese suppliers safely. Chinese suppliers receive
-            <strong className="text-primary-foreground"> RMB settlement</strong> after buyers pay locally in NGN.
-            Enterprises run FX, wallets and payouts — all from one workspace with full audit trails.
+            <strong className="text-primary-foreground"> RMB settlement</strong> after buyers pay
+            locally in NGN. Enterprises run FX, wallets and payouts — all from one workspace with
+            full audit trails.
           </p>
           <div className="mt-10 flex flex-wrap gap-3 justify-center">
-            <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold">
-              <Link to="/welcome">Try the demo <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
+            <Button
+              asChild
+              size="lg"
+              className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold"
+            >
+              <Link to="/welcome">
+                Try the demo <ArrowRight className="h-4 w-4 ml-1.5" />
+              </Link>
             </Button>
-            <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-              <Link to="/importer" onClick={pickWorkspace("Importer")}>Importer Mode</Link>
+            <Button
+              asChild
+              size="lg"
+              variant="secondary"
+              className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6"
+            >
+              <Link to="/importer" onClick={pickWorkspace("Importer")}>
+                Importer Mode
+              </Link>
             </Button>
-            <Button asChild size="lg" className="bg-[#25D366] text-white hover:bg-[#1FB855] hover:shadow-lg hover:shadow-[#25D366]/30 transition h-12 px-6 font-semibold">
+            <Button
+              asChild
+              size="lg"
+              className="bg-[#25D366] text-white hover:bg-[#1FB855] hover:shadow-lg hover:shadow-[#25D366]/30 transition h-12 px-6 font-semibold"
+            >
               <Link to="/track/whatsapp">
                 <MessageCircle className="h-4 w-4 mr-1.5" /> Track on WhatsApp
               </Link>
@@ -116,32 +199,44 @@ function Landing() {
           </div>
 
           <div className="mt-6 inline-flex items-center gap-2 text-xs text-primary-foreground/70">
-            <ShieldCheck className="h-3.5 w-3.5" /> KYB · Audit trail · Compliance review on every settlement
+            <ShieldCheck className="h-3.5 w-3.5" /> KYB · Audit trail · Compliance review on every
+            settlement
           </div>
 
           <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto w-full items-start">
             {[
               { v: "Pay China suppliers in RMB", l: "Nigerian buyers fund locally in NGN" },
               { v: "4 connected workspaces", l: "Importer · Supplier · Treasury · Partner" },
-              { v: "One trade operating system", l: "Shipments, invoices, FX, payments and documents" },
-              { v: "Audit-ready by design", l: "Every action, approval, payment and receipt recorded" },
+              {
+                v: "One trade operating system",
+                l: "Shipments, invoices, FX, payments and documents",
+              },
+              {
+                v: "Audit-ready by design",
+                l: "Every action, approval, payment and receipt recorded",
+              },
             ].map((s) => (
               <div key={s.l} className="text-center">
-                <div className="text-2xl md:text-3xl font-semibold tabular-nums text-balance">{s.v}</div>
+                <div className="text-2xl md:text-3xl font-semibold tabular-nums text-balance">
+                  {s.v}
+                </div>
                 <div className="text-xs text-primary-foreground/60 mt-1 text-balance">{s.l}</div>
               </div>
             ))}
           </div>
         </div>
-
       </section>
 
       {/* Logo strip */}
       <section className="border-y border-border bg-secondary/30">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
-          <div className="text-xs uppercase tracking-widest text-muted-foreground mr-4">Built for</div>
+          <div className="text-xs uppercase tracking-widest text-muted-foreground mr-4">
+            Built for
+          </div>
           {["Importers", "Suppliers", "Enterprises", "Partners"].map((n) => (
-            <div key={n} className="text-sm font-semibold text-muted-foreground/80 tracking-tight">{n}</div>
+            <div key={n} className="text-sm font-semibold text-muted-foreground/80 tracking-tight">
+              {n}
+            </div>
           ))}
         </div>
       </section>
@@ -149,31 +244,74 @@ function Landing() {
       {/* Workspaces */}
       <section id="workspaces" className="max-w-7xl mx-auto px-6 py-24">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="text-xs uppercase tracking-widest text-accent-foreground/80 font-semibold">Pick your workspace</div>
+          <div className="text-xs uppercase tracking-widest text-accent-foreground/80 font-semibold">
+            Pick your workspace
+          </div>
           <h2 className="text-3xl md:text-5xl font-semibold tracking-tight mt-3">
             Four focused workspaces. One platform.
           </h2>
           <p className="text-muted-foreground mt-4">
-            Each workspace comes with its own dashboard, navigation, and tools — purpose-built for the role.
+            Each workspace comes with its own dashboard, navigation, and tools — purpose-built for
+            the role.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {([
-            { icon: Ship,      tag: "Importer Mode",   desc: "Pay any supplier globally, upload your invoice and BL, track shipments, and download receipts. Your supplier does not need a Canta account.", cta: "Enter Importer Mode", to: "/importer",         mode: "Importer" as Mode,            tone: "bg-accent/15 text-accent" },
-            { icon: Factory,   tag: "Supplier Portal",       desc: "Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta. Suppliers can send payment requests, upload invoices, and track settlement receipts.", cta: "Enter Supplier Portal",     to: "/supplier-portal",  mode: "Supplier" as Mode,            tone: "bg-amber-500/15 text-amber-700" },
-            { icon: Building2, tag: "Enterprise Treasury",   desc: "Multi-currency balances, FX, bulk payouts, approvals, beneficiaries, and treasury reports.",          cta: "Enter Treasury",              to: "/treasury",         mode: "Enterprise Treasury" as Mode, tone: "bg-primary/10 text-primary" },
-            { icon: Home,      tag: "Partner Mode",          desc: "Property and company partners referring clients to Canta. Track referrals, payments and commission.",  cta: "Enter Partner Mode",          to: "/partner",          mode: "Partner Property" as Mode,    tone: "bg-primary/10 text-primary" },
-          ] as const).map((c) => {
+          {(
+            [
+              {
+                icon: Ship,
+                tag: "Importer Mode",
+                desc: "Pay any supplier globally, upload your invoice and BL, track shipments, and download receipts. Your supplier does not need a Canta account.",
+                cta: "Enter Importer Mode",
+                to: "/importer",
+                mode: "Importer" as Mode,
+                tone: "bg-accent/15 text-accent",
+              },
+              {
+                icon: Factory,
+                tag: "Supplier Portal",
+                desc: "Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta. Suppliers can send payment requests, upload invoices, and track settlement receipts.",
+                cta: "Enter Supplier Portal",
+                to: "/supplier-portal",
+                mode: "Supplier" as Mode,
+                tone: "bg-amber-500/15 text-amber-700",
+              },
+              {
+                icon: Building2,
+                tag: "Enterprise Treasury",
+                desc: "Multi-currency balances, FX, bulk payouts, approvals, beneficiaries, and treasury reports.",
+                cta: "Enter Treasury",
+                to: "/treasury",
+                mode: "Enterprise Treasury" as Mode,
+                tone: "bg-primary/10 text-primary",
+              },
+              {
+                icon: Home,
+                tag: "Partner Mode",
+                desc: "Property and company partners referring clients to Canta. Track referrals, payments and commission.",
+                cta: "Enter Partner Mode",
+                to: "/partner",
+                mode: "Partner Property" as Mode,
+                tone: "bg-primary/10 text-primary",
+              },
+            ] as const
+          ).map((c) => {
             const Icon = c.icon;
             return (
-              <Link key={c.tag} to={c.to} onClick={pickWorkspace(c.mode)} className="group p-6 rounded-2xl border border-border bg-card hover:shadow-elevated hover:-translate-y-0.5 transition">
+              <Link
+                key={c.tag}
+                to={c.to}
+                onClick={pickWorkspace(c.mode)}
+                className="group p-6 rounded-2xl border border-border bg-card hover:shadow-elevated hover:-translate-y-0.5 transition"
+              >
                 <div className={`h-12 w-12 rounded-2xl grid place-items-center ${c.tone}`}>
                   <Icon className="h-6 w-6" />
                 </div>
                 <div className="mt-5 text-lg font-semibold tracking-tight">{c.tag}</div>
                 <p className="mt-2 text-sm text-muted-foreground">{c.desc}</p>
                 <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-accent">
-                  {c.cta} <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
+                  {c.cta}{" "}
+                  <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
                 </div>
               </Link>
             );
@@ -217,12 +355,15 @@ function Landing() {
       {/* Trust */}
       <section id="trust" className="max-w-7xl mx-auto px-6 py-24">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="text-xs uppercase tracking-widest text-accent-foreground/80 font-semibold">Trust & Compliance</div>
+          <div className="text-xs uppercase tracking-widest text-accent-foreground/80 font-semibold">
+            Trust & Compliance
+          </div>
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mt-3">
             Built for regulated trade and payments.
           </h2>
           <p className="text-muted-foreground mt-4">
-            Every action — every approval, document and payment — is auditable, reviewable and policy-controlled.
+            Every action — every approval, document and payment — is auditable, reviewable and
+            policy-controlled.
           </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -244,8 +385,10 @@ function Landing() {
       <section id="segments" className="bg-secondary/40 border-y border-border">
         <div className="max-w-7xl mx-auto px-6 py-24">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <div className="text-xs uppercase tracking-widest text-accent-foreground/80 font-semibold">Who Canta serves</div>
-              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mt-3">
+            <div className="text-xs uppercase tracking-widest text-accent-foreground/80 font-semibold">
+              Who Canta serves
+            </div>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mt-3">
               Built for importers, suppliers, enterprises, and partners.
             </h2>
           </div>
@@ -253,7 +396,10 @@ function Landing() {
             {segments.map((s) => {
               const Icon = s.icon;
               return (
-                <div key={s.t} className="p-6 rounded-2xl border border-border bg-card hover:shadow-elevated transition flex items-center gap-3">
+                <div
+                  key={s.t}
+                  className="p-6 rounded-2xl border border-border bg-card hover:shadow-elevated transition flex items-center gap-3"
+                >
                   <div className="h-10 w-10 rounded-xl bg-gradient-accent grid place-items-center text-primary-foreground shadow-glow">
                     <Icon className="h-5 w-5" />
                   </div>
@@ -273,7 +419,8 @@ function Landing() {
             Built for documented trade.
           </p>
           <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-3xl leading-relaxed">
-            Keep invoices, payment requests, FX quotes, compliance checks, receipts, and settlement updates in one auditable workspace.
+            Keep invoices, payment requests, FX quotes, compliance checks, receipts, and settlement
+            updates in one auditable workspace.
           </p>
         </div>
       </section>
@@ -288,23 +435,42 @@ function Landing() {
               One trusted workspace. Supplier payments. Shipments. Treasury.
             </h2>
             <p className="text-primary-foreground/75 mt-4">
-              Step into a Canta workspace and feel the platform — from supplier payments to FX,
-              from supplier settlement to payouts.
+              Step into a Canta workspace and feel the platform — from supplier payments to FX, from
+              supplier settlement to payouts.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold">
-                <Link to="/importer" onClick={pickWorkspace("Importer")}>Start with Importer Mode <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
+              <Button
+                asChild
+                size="lg"
+                className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-6 font-semibold"
+              >
+                <Link to="/importer" onClick={pickWorkspace("Importer")}>
+                  Start with Importer Mode <ArrowRight className="h-4 w-4 ml-1.5" />
+                </Link>
               </Button>
-              <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
-                <Link to="/treasury" onClick={pickWorkspace("Enterprise Treasury")}>Explore Enterprise Treasury</Link>
+              <Button
+                asChild
+                size="lg"
+                variant="secondary"
+                className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6"
+              >
+                <Link to="/treasury" onClick={pickWorkspace("Enterprise Treasury")}>
+                  Explore Enterprise Treasury
+                </Link>
               </Button>
-              <Button asChild size="lg" variant="secondary" className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6">
+              <Button
+                asChild
+                size="lg"
+                variant="secondary"
+                className="bg-white/10 text-primary-foreground border border-white/15 hover:bg-white/15 h-12 px-6"
+              >
                 <Link to="/welcome">All Workspaces</Link>
               </Button>
             </div>
             <div className="mt-8 flex items-center gap-2 text-xs text-primary-foreground/70">
               <MessageCircle className="h-3.5 w-3.5" />
-              Prefer WhatsApp? Send your BL, container number, or shipment details and Canta will guide you from there.
+              Prefer WhatsApp? Send your BL, container number, or shipment details and Canta will
+              guide you from there.
             </div>
           </div>
         </div>
@@ -312,11 +478,20 @@ function Landing() {
 
       <footer className="border-t border-border">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-wrap items-center justify-between gap-4 text-xs text-muted-foreground">
-          <div>© {new Date().getFullYear()} Canta Financial Technologies. The trade & treasury operating system.</div>
+          <div>
+            © {new Date().getFullYear()} Canta Financial Technologies. The trade & treasury
+            operating system.
+          </div>
           <div className="flex gap-5">
-            <a href="#" className="hover:text-foreground">Privacy</a>
-            <a href="#" className="hover:text-foreground">Terms</a>
-            <a href="#" className="hover:text-foreground">Compliance</a>
+            <a href="#" className="hover:text-foreground">
+              Privacy
+            </a>
+            <a href="#" className="hover:text-foreground">
+              Terms
+            </a>
+            <a href="#" className="hover:text-foreground">
+              Compliance
+            </a>
           </div>
         </div>
       </footer>

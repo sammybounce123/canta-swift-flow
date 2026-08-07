@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
@@ -6,12 +7,29 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { Link as LinkIcon, Plus, Copy, Trash2, ExternalLink, ArrowRight, TrendingUp } from "lucide-react";
+import {
+  Link as LinkIcon,
+  Plus,
+  Copy,
+  Trash2,
+  ExternalLink,
+  ArrowRight,
+  TrendingUp,
+} from "lucide-react";
 import { toast } from "sonner";
 import { fmtMoney } from "@/lib/mock";
 import { ReadinessBar } from "@/components/ReadinessBar";
@@ -46,13 +64,13 @@ type PaymentLink = {
   id: string;
   invoiceId?: string;
   label: string;
-  path: string;           // relative path; absolute url computed at render time
-  settleAmount: number;   // amount supplier receives (main)
-  settleCcy: string;      // supplier currency (main)
-  chargeCcy: string;      // currency customer pays in
-  rate: number;           // 1 settleCcy = rate chargeCcy (locked at creation)
-  amount: number;         // legacy: settleAmount (kept for fmtMoney listing)
-  ccy: string;            // legacy: settleCcy
+  path: string; // relative path; absolute url computed at render time
+  settleAmount: number; // amount supplier receives (main)
+  settleCcy: string; // supplier currency (main)
+  chargeCcy: string; // currency customer pays in
+  rate: number; // 1 settleCcy = rate chargeCcy (locked at creation)
+  amount: number; // legacy: settleAmount (kept for fmtMoney listing)
+  ccy: string; // legacy: settleCcy
   status: "Active" | "Paid" | "Expired";
   createdAt: string;
 };
@@ -65,9 +83,45 @@ const absUrl = (path: string) => {
 };
 
 const SEED: PaymentLink[] = [
-  { id: "PL-DEMO-001", label: "Tuition — Spring 2026",  path: payPath("PL-DEMO-001"), settleAmount: 8500, settleCcy: "USD", chargeCcy: "NGN", rate: getRate("USD","NGN"), amount: 8500, ccy: "USD", status: "Active", createdAt: "2026-06-12" },
-  { id: "PL-DEMO-002", label: "Donation — June Drive",  path: payPath("PL-DEMO-002"), settleAmount: 2500, settleCcy: "USD", chargeCcy: "USD", rate: 1,                       amount: 2500, ccy: "USD", status: "Paid",   createdAt: "2026-06-11" },
-  { id: "PL-DEMO-003", label: "Conference ticket",      path: payPath("PL-DEMO-003"), settleAmount: 350,  settleCcy: "EUR", chargeCcy: "GBP", rate: getRate("EUR","GBP"),    amount: 350,  ccy: "EUR", status: "Active", createdAt: "2026-06-10" },
+  {
+    id: "PL-DEMO-001",
+    label: "Tuition — Spring 2026",
+    path: payPath("PL-DEMO-001"),
+    settleAmount: 8500,
+    settleCcy: "USD",
+    chargeCcy: "NGN",
+    rate: getRate("USD", "NGN"),
+    amount: 8500,
+    ccy: "USD",
+    status: "Active",
+    createdAt: "2026-06-12",
+  },
+  {
+    id: "PL-DEMO-002",
+    label: "Donation — June Drive",
+    path: payPath("PL-DEMO-002"),
+    settleAmount: 2500,
+    settleCcy: "USD",
+    chargeCcy: "USD",
+    rate: 1,
+    amount: 2500,
+    ccy: "USD",
+    status: "Paid",
+    createdAt: "2026-06-11",
+  },
+  {
+    id: "PL-DEMO-003",
+    label: "Conference ticket",
+    path: payPath("PL-DEMO-003"),
+    settleAmount: 350,
+    settleCcy: "EUR",
+    chargeCcy: "GBP",
+    rate: getRate("EUR", "GBP"),
+    amount: 350,
+    ccy: "EUR",
+    status: "Active",
+    createdAt: "2026-06-10",
+  },
 ];
 
 function readLS(): PaymentLink[] {
@@ -95,10 +149,16 @@ function readLS(): PaymentLink[] {
       };
     });
     return [...norm, ...SEED];
-  } catch { return SEED; }
+  } catch {
+    return SEED;
+  }
 }
 function writeLS(arr: PaymentLink[]) {
-  try { localStorage.setItem(LS_KEY, JSON.stringify(arr)); } catch {}
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(arr));
+  } catch {
+    /* ignore */
+  }
 }
 
 function PaymentLinksPage() {
@@ -106,33 +166,50 @@ function PaymentLinksPage() {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => { setList(readLS()); setMounted(true); }, []);
+  useEffect(() => {
+    setList(readLS());
+    setMounted(true);
+  }, []);
 
   const add = (p: PaymentLink) => {
     const next = [p, ...list];
-    setList(next); writeLS(next);
+    setList(next);
+    writeLS(next);
     const url = absUrl(p.path);
     toast.success("Payment link created", {
       description: url,
-      action: { label: "Copy", onClick: () => { navigator.clipboard?.writeText(url); toast.success("Link copied"); } },
+      action: {
+        label: "Copy",
+        onClick: () => {
+          navigator.clipboard?.writeText(url);
+          toast.success("Link copied");
+        },
+      },
     });
     setOpen(false);
   };
   const remove = (id: string) => {
-    const next = list.filter(l => l.id !== id);
-    setList(next); writeLS(next);
+    const next = list.filter((l) => l.id !== id);
+    setList(next);
+    writeLS(next);
     toast.success("Payment link removed");
   };
 
   return (
     <div className="space-y-6">
-      <ReadinessBar status="Demo Preview" cue="Payment links include payer and reconciliation references." />
+      <ReadinessBar
+        status="Demo Preview"
+        cue="Payment links include payer and reconciliation references."
+      />
       <div className="flex items-end justify-between flex-wrap gap-3">
         <div className="min-w-0">
-          <Badge variant="outline" className="gap-1"><LinkIcon className="h-3 w-3" /> Payment Links</Badge>
+          <Badge variant="outline" className="gap-1">
+            <LinkIcon className="h-3 w-3" /> Payment Links
+          </Badge>
           <h1 className="text-2xl font-semibold tracking-tight mt-2">Payment Links</h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            Shareable links for tuition, donations, products and bookings. Customers pay in their local currency — you settle in yours.
+            Shareable links for tuition, donations, products and bookings. Customers pay in their
+            local currency — you settle in yours.
           </p>
         </div>
         <NewLinkDialog open={open} setOpen={setOpen} onAdd={add} />
@@ -160,31 +237,62 @@ function PaymentLinksPage() {
                   <tr key={p.id} className="border-t border-border hover:bg-secondary/30">
                     <td className="px-4 py-3">
                       <div className="font-medium">{p.label}</div>
-                      <div className="text-[11px] text-muted-foreground font-mono truncate max-w-[280px]">{url}</div>
+                      <div className="text-[11px] text-muted-foreground font-mono truncate max-w-[280px]">
+                        {url}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-xs font-mono">{p.invoiceId ?? p.id}</td>
-                    <td className="px-4 py-3 text-right tabular-nums font-semibold">{fmtMoney(p.settleAmount, p.settleCcy)}</td>
+                    <td className="px-4 py-3 text-right tabular-nums font-semibold">
+                      {fmtMoney(p.settleAmount, p.settleCcy)}
+                    </td>
                     <td className="px-4 py-3 text-right tabular-nums">
-                      {p.chargeCcy === p.settleCcy ? <span className="text-muted-foreground">—</span> : fmtMoney(customerAmount, p.chargeCcy)}
+                      {p.chargeCcy === p.settleCcy ? (
+                        <span className="text-muted-foreground">—</span>
+                      ) : (
+                        fmtMoney(customerAmount, p.chargeCcy)
+                      )}
                     </td>
                     <td className="px-4 py-3 text-[11px] text-muted-foreground tabular-nums">
-                      {p.chargeCcy === p.settleCcy ? "—" : `1 ${p.settleCcy} = ${p.rate.toFixed(p.rate < 1 ? 4 : 2)} ${p.chargeCcy}`}
+                      {p.chargeCcy === p.settleCcy
+                        ? "—"
+                        : `1 ${p.settleCcy} = ${p.rate.toFixed(p.rate < 1 ? 4 : 2)} ${p.chargeCcy}`}
                     </td>
                     <td className="px-4 py-3">
-                      <Badge variant="outline" className={
-                        p.status === "Paid" ? "border-success/30 text-success bg-success/10 text-[10px]"
-                        : p.status === "Expired" ? "border-border text-muted-foreground text-[10px]"
-                        : "border-primary/30 text-primary bg-primary/10 text-[10px]"
-                      }>{p.status}</Badge>
+                      <Badge
+                        variant="outline"
+                        className={
+                          p.status === "Paid"
+                            ? "border-success/30 text-success bg-success/10 text-[10px]"
+                            : p.status === "Expired"
+                              ? "border-border text-muted-foreground text-[10px]"
+                              : "border-primary/30 text-primary bg-primary/10 text-[10px]"
+                        }
+                      >
+                        {p.status}
+                      </Badge>
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <Button size="sm" variant="ghost" onClick={() => { navigator.clipboard?.writeText(url); toast.success("Link copied"); }}>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          navigator.clipboard?.writeText(url);
+                          toast.success("Link copied");
+                        }}
+                      >
                         <Copy className="h-3.5 w-3.5 mr-1" /> Copy
                       </Button>
                       <Button size="sm" variant="ghost" asChild>
-                        <a href={url} target="_blank" rel="noreferrer"><ExternalLink className="h-3.5 w-3.5" /></a>
+                        <a href={url} target="_blank" rel="noreferrer">
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
                       </Button>
-                      <Button size="sm" variant="ghost" onClick={() => remove(p.id)} aria-label="Remove">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => remove(p.id)}
+                        aria-label="Remove"
+                      >
                         <Trash2 className="h-3.5 w-3.5 text-destructive" />
                       </Button>
                     </td>
@@ -192,7 +300,11 @@ function PaymentLinksPage() {
                 );
               })}
               {list.length === 0 && (
-                <tr><td colSpan={7} className="px-4 py-10 text-center text-xs text-muted-foreground">No payment links yet — create your first.</td></tr>
+                <tr>
+                  <td colSpan={7} className="px-4 py-10 text-center text-xs text-muted-foreground">
+                    No payment links yet — create your first.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
@@ -202,7 +314,15 @@ function PaymentLinksPage() {
   );
 }
 
-function NewLinkDialog({ open, setOpen, onAdd }: { open: boolean; setOpen: (o: boolean) => void; onAdd: (p: PaymentLink) => void }) {
+function NewLinkDialog({
+  open,
+  setOpen,
+  onAdd,
+}: {
+  open: boolean;
+  setOpen: (o: boolean) => void;
+  onAdd: (p: PaymentLink) => void;
+}) {
   const [d, setD] = useState({ label: "", amount: "", settleCcy: "USD", chargeCcy: "NGN" });
 
   const rate = useMemo(() => getRate(d.settleCcy, d.chargeCcy), [d.settleCcy, d.chargeCcy]);
@@ -211,7 +331,10 @@ function NewLinkDialog({ open, setOpen, onAdd }: { open: boolean; setOpen: (o: b
   const sameCcy = d.settleCcy === d.chargeCcy;
 
   const submit = () => {
-    if (!d.label.trim() || !d.amount) { toast.error("Label and amount are required"); return; }
+    if (!d.label.trim() || !d.amount) {
+      toast.error("Label and amount are required");
+      return;
+    }
     const id = `PL-${Math.floor(1000 + Math.random() * 9000)}`;
     onAdd({
       id,
@@ -232,41 +355,71 @@ function NewLinkDialog({ open, setOpen, onAdd }: { open: boolean; setOpen: (o: b
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-primary"><Plus className="h-4 w-4 mr-1.5" /> Create payment link</Button>
+        <Button className="bg-primary">
+          <Plus className="h-4 w-4 mr-1.5" /> Create payment link
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle>Create payment link</DialogTitle>
           <p className="text-xs text-muted-foreground mt-1">
-            Set what you (the supplier) want to receive. We show your customer the converted amount in their currency at today's rate.
+            Set what you (the supplier) want to receive. We show your customer the converted amount
+            in their currency at today's rate.
           </p>
         </DialogHeader>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Field label="Label *" wide>
-            <Input value={d.label} onChange={(e) => setD({ ...d, label: e.target.value })} placeholder="Tuition — Spring 2026" />
+            <Input
+              value={d.label}
+              onChange={(e) => setD({ ...d, label: e.target.value })}
+              placeholder="Tuition — Spring 2026"
+            />
           </Field>
 
           <Field label="Settles in (you receive) *">
             <Select value={d.settleCcy} onValueChange={(v) => setD({ ...d, settleCcy: v })}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>{CCYS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CCYS.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
           </Field>
           <Field label="Amount to receive *">
-            <Input type="number" value={d.amount} onChange={(e) => setD({ ...d, amount: e.target.value })} placeholder="1500" />
+            <Input
+              type="number"
+              value={d.amount}
+              onChange={(e) => setD({ ...d, amount: e.target.value })}
+              placeholder="1500"
+            />
           </Field>
 
           <Field label="Customer pays in">
             <Select value={d.chargeCcy} onValueChange={(v) => setD({ ...d, chargeCcy: v })}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>{CCYS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CCYS.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
           </Field>
           <Field label="Today's rate">
             <div className="h-9 rounded-md border border-input bg-secondary/30 px-3 flex items-center text-xs font-mono">
               <TrendingUp className="h-3.5 w-3.5 mr-1.5 text-primary" />
-              {sameCcy ? "Same currency" : `1 ${d.settleCcy} = ${rate.toFixed(rate < 1 ? 4 : 2)} ${d.chargeCcy}`}
+              {sameCcy
+                ? "Same currency"
+                : `1 ${d.settleCcy} = ${rate.toFixed(rate < 1 ? 4 : 2)} ${d.chargeCcy}`}
             </div>
           </Field>
         </div>
@@ -274,34 +427,59 @@ function NewLinkDialog({ open, setOpen, onAdd }: { open: boolean; setOpen: (o: b
         <Card className="p-3 bg-secondary/30 border-dashed">
           <div className="flex items-center justify-between gap-3 text-sm">
             <div>
-              <div className="text-[10px] uppercase text-muted-foreground tracking-wider">You receive</div>
-              <div className="font-semibold tabular-nums">{settleAmount ? fmtMoney(settleAmount, d.settleCcy) : `— ${d.settleCcy}`}</div>
+              <div className="text-[10px] uppercase text-muted-foreground tracking-wider">
+                You receive
+              </div>
+              <div className="font-semibold tabular-nums">
+                {settleAmount ? fmtMoney(settleAmount, d.settleCcy) : `— ${d.settleCcy}`}
+              </div>
             </div>
             <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
             <div className="text-right">
-              <div className="text-[10px] uppercase text-muted-foreground tracking-wider">Customer pays</div>
+              <div className="text-[10px] uppercase text-muted-foreground tracking-wider">
+                Customer pays
+              </div>
               <div className="font-semibold tabular-nums">
-                {sameCcy ? <span className="text-muted-foreground">Same currency</span> : (settleAmount ? fmtMoney(customerAmount, d.chargeCcy) : `— ${d.chargeCcy}`)}
+                {sameCcy ? (
+                  <span className="text-muted-foreground">Same currency</span>
+                ) : settleAmount ? (
+                  fmtMoney(customerAmount, d.chargeCcy)
+                ) : (
+                  `— ${d.chargeCcy}`
+                )}
               </div>
             </div>
           </div>
           {!sameCcy && (
             <div className="mt-2 text-[10px] text-muted-foreground">
-              Rate is locked when the link is created. Canta absorbs intraday movement up to settlement.
+              Rate is locked when the link is created. Canta absorbs intraday movement up to
+              settlement.
             </div>
           )}
         </Card>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-          <Button className="bg-primary" onClick={submit}>Create link</Button>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button className="bg-primary" onClick={submit}>
+            Create link
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
 
-function Field({ label, children, wide }: { label: string; children: React.ReactNode; wide?: boolean }) {
+function Field({
+  label,
+  children,
+  wide,
+}: {
+  label: string;
+  children: React.ReactNode;
+  wide?: boolean;
+}) {
   return (
     <div className={wide ? "sm:col-span-2" : ""}>
       <Label className="text-xs">{label}</Label>

@@ -5,18 +5,28 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { FileText } from "lucide-react";
 import {
-  useSimpleInvoices, simpleInvoiceStore, INVOICE_STATUS_TONE, isInvoiceQuoteExpired,
-  copyText, wechatMessage, useAutoConvert, SETTLEMENT_NEXT_LABEL, type SimpleInvoice,
+  useSimpleInvoices,
+  simpleInvoiceStore,
+  INVOICE_STATUS_TONE,
+  isInvoiceQuoteExpired,
+  copyText,
+  wechatMessage,
+  useAutoConvert,
+  SETTLEMENT_NEXT_LABEL,
+  type SimpleInvoice,
 } from "@/lib/supplier-simple";
 import { useConversionBlockers } from "@/components/supplier/AutoConvertCard";
 import { useT } from "@/lib/supplier-lang";
-
 
 export const Route = createFileRoute("/supplier-portal/invoices")({
   head: () => ({
     meta: [
       { title: "Invoice History — Supplier Portal — Canta" },
-      { name: "description", content: "Every invoice you sent to Nigerian buyers, with payment, conversion and settlement status." },
+      {
+        name: "description",
+        content:
+          "Every invoice you sent to Nigerian buyers, with payment, conversion and settlement status.",
+      },
     ],
   }),
   component: InvoiceHistory,
@@ -42,7 +52,12 @@ function actionsFor(inv: SimpleInvoice, ctx: Ctx): Array<{ label: string; run: (
     label,
     run: () => {
       const res = simpleInvoiceStore.advanceSettlement(inv.id);
-      if (res.ok) toast.success(res.status === "RMB Paid" ? "Provider confirmed payout — RMB paid, receipt available" : `Moved to ${res.status}`);
+      if (res.ok)
+        toast.success(
+          res.status === "RMB Paid"
+            ? "Provider confirmed payout — RMB paid, receipt available"
+            : `Moved to ${res.status}`,
+        );
       else toast.error(res.error ?? "Could not advance settlement");
     },
   });
@@ -58,7 +73,11 @@ function actionsFor(inv: SimpleInvoice, ctx: Ctx): Array<{ label: string; run: (
       };
     }
     if (ctx.blockers.length > 0) {
-      return { label: "Action needed", run: () => toast.error(`Action needed before automatic conversion: ${ctx.blockers.join(", ")}`) };
+      return {
+        label: "Action needed",
+        run: () =>
+          toast.error(`Action needed before automatic conversion: ${ctx.blockers.join(", ")}`),
+      };
     }
     return advance(SETTLEMENT_NEXT_LABEL["NGN Received"] ?? "Continue conversion");
   };
@@ -67,11 +86,24 @@ function actionsFor(inv: SimpleInvoice, ctx: Ctx): Array<{ label: string; run: (
     case "Draft":
       return [
         { label: "Continue", run: () => toast.info(`Continue ${inv.invoiceNumber}`) },
-        { label: "Delete", run: () => { simpleInvoiceStore.remove(inv.id); toast.success("Draft deleted"); } },
+        {
+          label: "Delete",
+          run: () => {
+            simpleInvoiceStore.remove(inv.id);
+            toast.success("Draft deleted");
+          },
+        },
       ];
     case "Quote Locked":
       return [
-        { label: "Send invoice", run: () => { copyText(wechatMessage(inv)); simpleInvoiceStore.update(inv.id, { status: "Sent to Buyer" }); toast.success("Invoice message copied — paste it to your buyer"); } },
+        {
+          label: "Send invoice",
+          run: () => {
+            copyText(wechatMessage(inv));
+            simpleInvoiceStore.update(inv.id, { status: "Sent to Buyer" });
+            toast.success("Invoice message copied — paste it to your buyer");
+          },
+        },
         { label: "Download PDF", run: () => toast.success("Invoice PDF downloaded") },
         simulatePayment,
         timeline,
@@ -79,21 +111,53 @@ function actionsFor(inv: SimpleInvoice, ctx: Ctx): Array<{ label: string; run: (
     case "Sent to Buyer":
     case "Buyer Viewed":
       return [
-        { label: "Remind buyer", run: () => { copyText(wechatMessage(inv)); toast.success("Reminder message copied — send it to your buyer"); } },
-        { label: "Copy payment link", run: () => { copyText(inv.paymentLink); toast.success("Payment link copied"); } },
+        {
+          label: "Remind buyer",
+          run: () => {
+            copyText(wechatMessage(inv));
+            toast.success("Reminder message copied — send it to your buyer");
+          },
+        },
+        {
+          label: "Copy payment link",
+          run: () => {
+            copyText(inv.paymentLink);
+            toast.success("Payment link copied");
+          },
+        },
         simulatePayment,
         timeline,
       ];
     case "Awaiting NGN Payment":
       return [
-        { label: "Copy payment link", run: () => { copyText(inv.paymentLink); toast.success("Payment link copied"); } },
-        { label: "Remind buyer", run: () => { copyText(wechatMessage(inv)); toast.success("Reminder message copied — send it to your buyer"); } },
+        {
+          label: "Copy payment link",
+          run: () => {
+            copyText(inv.paymentLink);
+            toast.success("Payment link copied");
+          },
+        },
+        {
+          label: "Remind buyer",
+          run: () => {
+            copyText(wechatMessage(inv));
+            toast.success("Reminder message copied — send it to your buyer");
+          },
+        },
         simulatePayment,
         timeline,
       ];
     case "NGN Received":
       return [
-        { label: "View conversion status", run: () => toast.info(ctx.autoConvert ? "NGN received — compliance review runs before automatic conversion" : "Automatic Convert is OFF — NGN stays in your balance until you request conversion") },
+        {
+          label: "View conversion status",
+          run: () =>
+            toast.info(
+              ctx.autoConvert
+                ? "NGN received — compliance review runs before automatic conversion"
+                : "Automatic Convert is OFF — NGN stays in your balance until you request conversion",
+            ),
+        },
         conversion(),
         timeline,
       ];
@@ -111,25 +175,54 @@ function actionsFor(inv: SimpleInvoice, ctx: Ctx): Array<{ label: string; run: (
       ];
     case "RMB Settlement Pending":
       return [
-        { label: "View settlement", run: () => toast.info("Payout to your verified RMB bank account is queued") },
+        {
+          label: "View settlement",
+          run: () => toast.info("Payout to your verified RMB bank account is queued"),
+        },
         advance(SETTLEMENT_NEXT_LABEL["RMB Settlement Pending"]!),
         timeline,
       ];
     case "RMB Paid":
-      return [{ label: "Download receipt", run: () => toast.success(`Settlement receipt ${inv.receiptId ?? ""} downloaded`) }, timeline];
+      return [
+        {
+          label: "Download receipt",
+          run: () => toast.success(`Settlement receipt ${inv.receiptId ?? ""} downloaded`),
+        },
+        timeline,
+      ];
     case "Expired":
       return [
-        { label: "Refresh quote", run: () => { simpleInvoiceStore.refreshQuote(inv.id); toast.success("New rate locked"); } },
-        { label: "Duplicate invoice", run: () => { simpleInvoiceStore.duplicate(inv.id); toast.success("Invoice duplicated"); } },
+        {
+          label: "Refresh quote",
+          run: () => {
+            simpleInvoiceStore.refreshQuote(inv.id);
+            toast.success("New rate locked");
+          },
+        },
+        {
+          label: "Duplicate invoice",
+          run: () => {
+            simpleInvoiceStore.duplicate(inv.id);
+            toast.success("Invoice duplicated");
+          },
+        },
         timeline,
       ];
     case "Cancelled":
-      return [{ label: "Duplicate invoice", run: () => { simpleInvoiceStore.duplicate(inv.id); toast.success("Invoice duplicated"); } }, timeline];
+      return [
+        {
+          label: "Duplicate invoice",
+          run: () => {
+            simpleInvoiceStore.duplicate(inv.id);
+            toast.success("Invoice duplicated");
+          },
+        },
+        timeline,
+      ];
     default:
       return [timeline];
   }
 }
-
 
 function InvoiceHistory() {
   const invoices = useSimpleInvoices();
@@ -142,15 +235,21 @@ function InvoiceHistory() {
 
   const ctx: Ctx = { autoConvert, blockers };
 
-
   return (
     <Card className="space-y-3 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <div className="text-sm font-semibold">{t("invoiceHistory")}</div>
-          <div className="text-xs text-muted-foreground">Every invoice links to its buyer, payment request, FX rate, quote expiry and settlement status.</div>
+          <div className="text-xs text-muted-foreground">
+            Every invoice links to its buyer, payment request, FX rate, quote expiry and settlement
+            status.
+          </div>
         </div>
-        <Button size="sm" asChild><Link to="/supplier-portal/create-invoice"><FileText className="mr-2 h-4 w-4" /> {t("createInvoice")}</Link></Button>
+        <Button size="sm" asChild>
+          <Link to="/supplier-portal/create-invoice">
+            <FileText className="mr-2 h-4 w-4" /> {t("createInvoice")}
+          </Link>
+        </Button>
       </div>
 
       <div className="overflow-x-auto rounded-lg border">
@@ -169,7 +268,8 @@ function InvoiceHistory() {
           </thead>
           <tbody>
             {invoices.map((i) => {
-              const status = isInvoiceQuoteExpired(i) && i.status !== "Cancelled" ? "Expired" : i.status;
+              const status =
+                isInvoiceQuoteExpired(i) && i.status !== "Cancelled" ? "Expired" : i.status;
               return (
                 <tr key={i.id} className="border-t align-top">
                   <td className="px-3 py-2 font-mono text-xs">
@@ -177,15 +277,29 @@ function InvoiceHistory() {
                     <div className="text-[10px] text-muted-foreground">{i.paymentRequestId}</div>
                   </td>
                   <td className="px-3 py-2 text-xs">{i.buyerCompany}</td>
-                  <td className="px-3 py-2 text-right text-xs tabular-nums">¥{i.amountRmb.toLocaleString()}</td>
-                  <td className="px-3 py-2 text-right text-xs tabular-nums">₦{i.amountNgn.toLocaleString()}</td>
-                  <td className="px-3 py-2"><Badge className={INVOICE_STATUS_TONE[status]}>{status}</Badge></td>
+                  <td className="px-3 py-2 text-right text-xs tabular-nums">
+                    ¥{i.amountRmb.toLocaleString()}
+                  </td>
+                  <td className="px-3 py-2 text-right text-xs tabular-nums">
+                    ₦{i.amountNgn.toLocaleString()}
+                  </td>
+                  <td className="px-3 py-2">
+                    <Badge className={INVOICE_STATUS_TONE[status]}>{status}</Badge>
+                  </td>
                   <td className="px-3 py-2 text-xs">{i.sentBy}</td>
                   <td className="px-3 py-2 text-xs">{i.createdAt}</td>
                   <td className="px-3 py-2">
                     <div className="flex flex-wrap justify-end gap-1.5">
                       {actionsFor(i, ctx).map((a) => (
-                        <Button key={a.label} size="sm" variant="outline" className="h-7 text-xs" onClick={a.run}>{a.label}</Button>
+                        <Button
+                          key={a.label}
+                          size="sm"
+                          variant="outline"
+                          className="h-7 text-xs"
+                          onClick={a.run}
+                        >
+                          {a.label}
+                        </Button>
                       ))}
                     </div>
                   </td>
@@ -193,7 +307,11 @@ function InvoiceHistory() {
               );
             })}
             {invoices.length === 0 && (
-              <tr><td colSpan={8} className="px-3 py-8 text-center text-xs text-muted-foreground">No invoices yet.</td></tr>
+              <tr>
+                <td colSpan={8} className="px-3 py-8 text-center text-xs text-muted-foreground">
+                  No invoices yet.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

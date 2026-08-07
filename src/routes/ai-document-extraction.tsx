@@ -6,11 +6,23 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import {
-  Brain, Upload, FileText, Paperclip, MessageCircle, ShieldAlert,
-  Plus, Link as LinkIcon, FileSearch, CheckCircle2,
+  Brain,
+  Upload,
+  FileText,
+  Paperclip,
+  MessageCircle,
+  ShieldAlert,
+  Plus,
+  Link as LinkIcon,
+  FileSearch,
+  CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -20,8 +32,14 @@ export const Route = createFileRoute("/ai-document-extraction")({
 });
 
 const DOC_TYPES = [
-  "Supplier Invoice", "Bill of Lading", "Packing List", "Payment Receipt",
-  "Freight Invoice", "Solicitor Payment Instruction", "KYC Document", "Proof of Funds",
+  "Supplier Invoice",
+  "Bill of Lading",
+  "Packing List",
+  "Payment Receipt",
+  "Freight Invoice",
+  "Solicitor Payment Instruction",
+  "KYC Document",
+  "Proof of Funds",
 ];
 
 const SAMPLES: Record<string, { fileName: string; fields: { label: string; value: string }[] }> = {
@@ -64,14 +82,16 @@ const SAMPLES: Record<string, { fileName: string; fields: { label: string; value
 };
 
 function pickSample(t: string) {
-  return SAMPLES[t] ?? {
-    fileName: t.toLowerCase().replace(/\s+/g, "-") + ".pdf",
-    fields: [
-      { label: "Document type", value: t },
-      { label: "Document date", value: "2026-06-12" },
-      { label: "Reference", value: "REF-" + Math.floor(Math.random() * 9000 + 1000) },
-    ],
-  };
+  return (
+    SAMPLES[t] ?? {
+      fileName: t.toLowerCase().replace(/\s+/g, "-") + ".pdf",
+      fields: [
+        { label: "Document type", value: t },
+        { label: "Document date", value: "2026-06-12" },
+        { label: "Reference", value: "REF-" + Math.floor(Math.random() * 9000 + 1000) },
+      ],
+    }
+  );
 }
 
 function AIDocExtraction() {
@@ -92,11 +112,14 @@ function AIDocExtraction() {
   return (
     <div className="space-y-6">
       <header>
-        <Badge variant="outline" className="gap-1"><Brain className="h-3 w-3" /> AI Tools</Badge>
+        <Badge variant="outline" className="gap-1">
+          <Brain className="h-3 w-3" /> AI Tools
+        </Badge>
         <h1 className="text-2xl font-semibold tracking-tight mt-2">AI Document Extraction</h1>
         <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-          Upload supplier invoices, BLs, packing lists, freight invoices, payment instructions and KYC documents. Canta extracts key
-          fields and lets you create or attach them to a Trade File or Payment Case in one click.
+          Upload supplier invoices, BLs, packing lists, freight invoices, payment instructions and
+          KYC documents. Canta extracts key fields and lets you create or attach them to a Trade
+          File or Payment Case in one click.
         </p>
       </header>
 
@@ -106,9 +129,15 @@ function AIDocExtraction() {
           <div>
             <Label className="text-xs">Document type</Label>
             <Select value={docType} onValueChange={setDocType}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
-                {DOC_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                {DOC_TYPES.map((t) => (
+                  <SelectItem key={t} value={t}>
+                    {t}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -140,7 +169,9 @@ function AIDocExtraction() {
               <div className="grid grid-cols-2 gap-3 text-sm">
                 {extracted.fields.map((f) => (
                   <div key={f.label} className="border rounded-lg p-2.5">
-                    <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{f.label}</div>
+                    <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                      {f.label}
+                    </div>
                     <div className="font-medium mt-0.5">{f.value}</div>
                   </div>
                 ))}
@@ -153,22 +184,39 @@ function AIDocExtraction() {
                 <Button size="sm" onClick={() => toast.success("Payment Case draft created")}>
                   <Plus className="h-3 w-3 mr-1" /> Create Payment Case
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => toast.success("Attached to existing case")}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => toast.success("Attached to existing case")}
+                >
                   <LinkIcon className="h-3 w-3 mr-1" /> Attach to existing
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => toast.success("Missing document requested")}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => toast.success("Missing document requested")}
+                >
                   <Paperclip className="h-3 w-3 mr-1" /> Request missing doc
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => toast.success("WhatsApp follow-up queued")}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => toast.success("WhatsApp follow-up queued")}
+                >
                   <MessageCircle className="h-3 w-3 mr-1" /> WhatsApp follow-up
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => toast.success("Flagged for compliance review")}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => toast.success("Flagged for compliance review")}
+                >
                   <ShieldAlert className="h-3 w-3 mr-1" /> Flag for compliance
                 </Button>
               </div>
 
               <div className="text-[11px] text-muted-foreground flex items-center gap-1 border-t pt-3">
-                <CheckCircle2 className="h-3 w-3 text-success" /> Confidence: 96% · Reviewer can edit any field before saving.
+                <CheckCircle2 className="h-3 w-3 text-success" /> Confidence: 96% · Reviewer can
+                edit any field before saving.
               </div>
             </>
           )}

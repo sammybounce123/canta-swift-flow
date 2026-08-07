@@ -2,10 +2,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Sparkles, X } from "lucide-react";
-import {
-  dismissWelcome, getSegment, isWelcomeDismissed,
-  type WorkspaceType,
-} from "@/lib/profile";
+import { dismissWelcome, getSegment, isWelcomeDismissed, type WorkspaceType } from "@/lib/profile";
 
 export function WorkspaceWelcome({ workspace }: { workspace: WorkspaceType }) {
   const segment = getSegment(workspace);
@@ -27,8 +24,12 @@ export function WorkspaceWelcome({ workspace }: { workspace: WorkspaceType }) {
         <div className="text-xs text-muted-foreground mt-0.5">{segment.welcome}</div>
       </div>
       <Button
-        size="sm" variant="ghost"
-        onClick={() => { dismissWelcome(workspace); setShow(false); }}
+        size="sm"
+        variant="ghost"
+        onClick={() => {
+          dismissWelcome(workspace);
+          setShow(false);
+        }}
         className="flex-shrink-0"
         aria-label="Dismiss welcome"
       >

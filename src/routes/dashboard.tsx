@@ -3,11 +3,25 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  ArrowUpRight, ArrowDownRight, Plus, ArrowLeftRight, Send, Sparkles,
-  Wallet as WalletIcon, Zap, Eye, EyeOff,
+  ArrowUpRight,
+  ArrowDownRight,
+  Plus,
+  ArrowLeftRight,
+  Send,
+  Sparkles,
+  Wallet as WalletIcon,
+  Zap,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import {
-  AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid,
+  AreaChart,
+  Area,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
 } from "recharts";
 import { wallets, transactions, cashFlow, fmtMoney, fmtNGN } from "@/lib/mock";
 import { StatusPill } from "@/components/StatusPill";
@@ -19,7 +33,13 @@ import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { FileText, TrendingUp } from "lucide-react";
 import { useRequireWorkspace } from "@/lib/workspace-guard";
 
@@ -27,7 +47,6 @@ export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Canta" }] }),
   component: Dashboard,
 });
-
 
 const MASK = "•••••••";
 
@@ -43,10 +62,15 @@ function Dashboard() {
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem("canta.onboarding.v1");
-      if (!raw) { setOnboardingDone(false); return; }
+      if (!raw) {
+        setOnboardingDone(false);
+        return;
+      }
       const parsed = JSON.parse(raw);
       setOnboardingDone(Boolean(parsed?.completedAt));
-    } catch { setOnboardingDone(false); }
+    } catch {
+      setOnboardingDone(false);
+    }
   }, []);
   const totalNGN = 2_847_120_000;
   const greet = role === "Viewer" ? "Welcome" : role === "Compliance" ? "Hello" : "Good morning";
@@ -54,22 +78,49 @@ function Dashboard() {
     <div className="space-y-6">
       <Card className="p-4 flex flex-wrap items-center gap-3 justify-between bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="h-9 w-9 rounded-lg bg-primary/10 grid place-items-center text-primary font-bold text-xs flex-shrink-0">{mode.split(" ").map((w) => w[0]).join("").slice(0, 2)}</div>
+          <div className="h-9 w-9 rounded-lg bg-primary/10 grid place-items-center text-primary font-bold text-xs flex-shrink-0">
+            {mode
+              .split(" ")
+              .map((w) => w[0])
+              .join("")
+              .slice(0, 2)}
+          </div>
           <div className="min-w-0">
             <div className="text-sm font-semibold truncate">{mode} Mode</div>
             <div className="text-xs text-muted-foreground">
-              {mode === "Importer" ? "Track shipments, documents, suppliers and landed cost."
-              : mode === "Supplier" ? "Issue invoices, escrow & global settlement."
-              : mode === "Global Merchant" ? "Collect locally, settle globally."
-              : "Move money, FX, wallets and settlements at enterprise scale."}
+              {mode === "Importer"
+                ? "Track shipments, documents, suppliers and landed cost."
+                : mode === "Supplier"
+                  ? "Issue invoices, escrow & global settlement."
+                  : mode === "Global Merchant"
+                    ? "Collect locally, settle globally."
+                    : "Move money, FX, wallets and settlements at enterprise scale."}
             </div>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          {mode === "Importer" && <Button asChild size="sm" variant="outline"><Link to="/importer">Open Importer Portal</Link></Button>}
-          {mode === "Supplier" && <Button asChild size="sm" variant="outline"><Link to="/supplier-portal">Open Supplier Portal</Link></Button>}
-          {mode === "Global Merchant" && <Button asChild size="sm" variant="outline"><Link to="/collections">Open Collections</Link></Button>}
-          {mode === "Importer" && <Button asChild size="sm" variant="ghost"><Link to="/importer/payments" search={{ tab: "new" }}>Pay Supplier</Link></Button>}
+          {mode === "Importer" && (
+            <Button asChild size="sm" variant="outline">
+              <Link to="/importer">Open Importer Portal</Link>
+            </Button>
+          )}
+          {mode === "Supplier" && (
+            <Button asChild size="sm" variant="outline">
+              <Link to="/supplier-portal">Open Supplier Portal</Link>
+            </Button>
+          )}
+          {mode === "Global Merchant" && (
+            <Button asChild size="sm" variant="outline">
+              <Link to="/collections">Open Collections</Link>
+            </Button>
+          )}
+          {mode === "Importer" && (
+            <Button asChild size="sm" variant="ghost">
+              <Link to="/importer/payments" search={{ tab: "new" }}>
+                Pay Supplier
+              </Link>
+            </Button>
+          )}
         </div>
       </Card>
       {!onboardingDone && (
@@ -80,23 +131,30 @@ function Dashboard() {
             </div>
             <div className="min-w-0">
               <div className="text-sm font-semibold">Complete your enterprise onboarding</div>
-              <div className="text-xs text-muted-foreground">Verify your business to unlock institutional FX, higher limits and unlimited corridors.</div>
+              <div className="text-xs text-muted-foreground">
+                Verify your business to unlock institutional FX, higher limits and unlimited
+                corridors.
+              </div>
             </div>
           </div>
           <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
-            <Link to="/onboarding">Continue onboarding <ArrowUpRight className="h-4 w-4 ml-1" /></Link>
+            <Link to="/onboarding">
+              Continue onboarding <ArrowUpRight className="h-4 w-4 ml-1" />
+            </Link>
           </Button>
         </Card>
       )}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">{greet}, {profile.name.split(" ")[0]}</h1>
+          <h1 className="text-2xl font-semibold">
+            {greet}, {profile.name.split(" ")[0]}
+          </h1>
           <p className="text-sm text-muted-foreground mt-1">
             {role === "Compliance"
               ? "Review pending approvals and audit recent activity."
               : role === "Viewer"
-              ? "Read-only view of treasury activity."
-              : `Here's what's happening in your ${mode} workspace today.`}
+                ? "Read-only view of treasury activity."
+                : `Here's what's happening in your ${mode} workspace today.`}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -107,8 +165,8 @@ function Dashboard() {
           {(() => {
             const modeLabel: Record<string, string> = {
               "Enterprise Treasury": "Treasury Mode",
-              "Importer": "Importer Mode",
-              "Supplier": "Supplier Mode",
+              Importer: "Importer Mode",
+              Supplier: "Supplier Mode",
               "Canta Ops": "Ops Mode",
               "Global Merchant": "Merchant Mode",
               "Partner Property": "Partner Mode",
@@ -134,7 +192,10 @@ function Dashboard() {
                   <span className="text-[10px] uppercase tracking-widest text-primary-foreground/60">
                     Total balance
                   </span>
-                  <Badge variant="outline" className="h-5 text-[9px] px-1.5 border-white/20 text-primary-foreground/70">
+                  <Badge
+                    variant="outline"
+                    className="h-5 text-[9px] px-1.5 border-white/20 text-primary-foreground/70"
+                  >
                     NGN equivalent
                   </Badge>
                 </div>
@@ -149,7 +210,7 @@ function Dashboard() {
                 {wallets.map((w) => (
                   <button
                     key={w.ccy}
-                    onClick={() => can("initiate_tx") ? openFund(w.ccy) : undefined}
+                    onClick={() => (can("initiate_tx") ? openFund(w.ccy) : undefined)}
                     disabled={!can("initiate_tx")}
                     className="text-left rounded-xl bg-white/5 backdrop-blur border border-white/10 px-3 py-2 hover:bg-white/10 transition disabled:cursor-not-allowed disabled:hover:bg-white/5"
                   >
@@ -188,13 +249,24 @@ function Dashboard() {
 
             {can("initiate_tx") && mode !== "Supplier" ? (
               <div className="flex flex-wrap gap-1.5">
-                <Button onClick={() => openFund("NGN")} className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold h-7 text-[11px] px-2.5">
+                <Button
+                  onClick={() => openFund("NGN")}
+                  className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold h-7 text-[11px] px-2.5"
+                >
                   <Plus className="h-3 w-3 mr-1" /> Fund Wallet
                 </Button>
-                <Button onClick={() => openConvert("NGN", "USD")} variant="secondary" className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15 h-7 text-[11px] px-2.5">
+                <Button
+                  onClick={() => openConvert("NGN", "USD")}
+                  variant="secondary"
+                  className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15 h-7 text-[11px] px-2.5"
+                >
                   <ArrowLeftRight className="h-3 w-3 mr-1" /> Convert Currency
                 </Button>
-                <Button onClick={() => openSend()} variant="secondary" className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15 h-7 text-[11px] px-2.5">
+                <Button
+                  onClick={() => openSend()}
+                  variant="secondary"
+                  className="bg-white/10 hover:bg-white/15 text-primary-foreground border border-white/15 h-7 text-[11px] px-2.5"
+                >
                   <Send className="h-3 w-3 mr-1" /> Send Payment
                 </Button>
               </div>
@@ -202,37 +274,48 @@ function Dashboard() {
           </div>
         </Card>
 
-        {mode === "Supplier" ? <SupplierFxQuoteCard /> : (
-        <Card className="p-6 shadow-card h-full flex flex-col">
-          <div className="flex items-center justify-between">
-            <div className="text-sm font-semibold">Illustrative FX rates</div>
-            <div className="text-[10px] text-muted-foreground">Demo data</div>
-          </div>
-          <div className="mt-4 space-y-3 flex-1">
-
-            {[
-              { p: "USD/NGN", r: "1,612.45", c: "+0.32%", up: true },
-              { p: "EUR/NGN", r: "1,745.10", c: "-0.18%", up: false },
-              { p: "GBP/NGN", r: "2,048.77", c: "+0.21%", up: true },
-            ].map((r) => (
-              <div key={r.p} className="flex items-center justify-between p-3 rounded-lg bg-secondary/50">
-                <div>
-                  <div className="text-sm font-medium">{r.p}</div>
-                  <div className="text-[11px] text-muted-foreground">Mid-market</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm font-semibold tabular-nums">{r.r}</div>
-                  <div className={`text-[11px] flex items-center gap-0.5 justify-end ${r.up ? "text-success" : "text-destructive"}`}>
-                    {r.up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}{r.c}
+        {mode === "Supplier" ? (
+          <SupplierFxQuoteCard />
+        ) : (
+          <Card className="p-6 shadow-card h-full flex flex-col">
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-semibold">Illustrative FX rates</div>
+              <div className="text-[10px] text-muted-foreground">Demo data</div>
+            </div>
+            <div className="mt-4 space-y-3 flex-1">
+              {[
+                { p: "USD/NGN", r: "1,612.45", c: "+0.32%", up: true },
+                { p: "EUR/NGN", r: "1,745.10", c: "-0.18%", up: false },
+                { p: "GBP/NGN", r: "2,048.77", c: "+0.21%", up: true },
+              ].map((r) => (
+                <div
+                  key={r.p}
+                  className="flex items-center justify-between p-3 rounded-lg bg-secondary/50"
+                >
+                  <div>
+                    <div className="text-sm font-medium">{r.p}</div>
+                    <div className="text-[11px] text-muted-foreground">Mid-market</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm font-semibold tabular-nums">{r.r}</div>
+                    <div
+                      className={`text-[11px] flex items-center gap-0.5 justify-end ${r.up ? "text-success" : "text-destructive"}`}
+                    >
+                      {r.up ? (
+                        <ArrowUpRight className="h-3 w-3" />
+                      ) : (
+                        <ArrowDownRight className="h-3 w-3" />
+                      )}
+                      {r.c}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          <Button asChild variant="outline" className="w-full mt-auto pt-0">
-            <Link to="/fx">Open Exchange</Link>
-          </Button>
-        </Card>
+              ))}
+            </div>
+            <Button asChild variant="outline" className="w-full mt-auto pt-0">
+              <Link to="/fx">Open Exchange</Link>
+            </Button>
+          </Card>
         )}
       </div>
 
@@ -245,7 +328,12 @@ function Dashboard() {
             </div>
             <div className="flex gap-1 text-xs">
               {["7D", "30D", "90D"].map((p, i) => (
-                <button key={p} className={`px-2.5 py-1 rounded-md ${i === 0 ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}>{p}</button>
+                <button
+                  key={p}
+                  className={`px-2.5 py-1 rounded-md ${i === 0 ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+                >
+                  {p}
+                </button>
               ))}
             </div>
           </div>
@@ -262,12 +350,43 @@ function Dashboard() {
                     <stop offset="100%" stopColor="oklch(0.36 0.12 260)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.92 0.01 250)" vertical={false} />
-                <XAxis dataKey="d" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "oklch(0.5 0.03 258)" }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "oklch(0.5 0.03 258)" }} />
-                <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid oklch(0.92 0.01 250)", fontSize: 12 }} />
-                <Area type="monotone" dataKey="inflow" stroke="oklch(0.78 0.16 175)" strokeWidth={2} fill="url(#g1)" />
-                <Area type="monotone" dataKey="outflow" stroke="oklch(0.36 0.12 260)" strokeWidth={2} fill="url(#g2)" />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="oklch(0.92 0.01 250)"
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="d"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 11, fill: "oklch(0.5 0.03 258)" }}
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 11, fill: "oklch(0.5 0.03 258)" }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: 12,
+                    border: "1px solid oklch(0.92 0.01 250)",
+                    fontSize: 12,
+                  }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="inflow"
+                  stroke="oklch(0.78 0.16 175)"
+                  strokeWidth={2}
+                  fill="url(#g1)"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="outflow"
+                  stroke="oklch(0.36 0.12 260)"
+                  strokeWidth={2}
+                  fill="url(#g2)"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -281,16 +400,21 @@ function Dashboard() {
               </div>
               <div className="text-sm font-semibold">AI Insight</div>
             </div>
-            <Badge variant="outline" className="text-[10px]">Sample AI output</Badge>
+            <Badge variant="outline" className="text-[10px]">
+              Sample AI output
+            </Badge>
           </div>
           <p className="mt-4 text-base font-medium leading-snug">
             FX movement may affect this payment window.
           </p>
           <p className="text-sm text-muted-foreground mt-2">
-            Review the quote expiry before sending the buyer link, and consider converting export proceeds within your usual treasury cadence.
+            Review the quote expiry before sending the buyer link, and consider converting export
+            proceeds within your usual treasury cadence.
           </p>
           <div className="mt-4 flex items-center gap-2 text-xs">
-            <Badge variant="secondary" className="text-[10px]">Demo insight · not financial advice</Badge>
+            <Badge variant="secondary" className="text-[10px]">
+              Demo insight · not financial advice
+            </Badge>
           </div>
           <Button
             onClick={() => openConvert("NGN", "USD")}
@@ -308,7 +432,9 @@ function Dashboard() {
             <div className="text-sm font-semibold">Recent transactions</div>
             <div className="text-xs text-muted-foreground">Last 24 hours</div>
           </div>
-          <Button asChild variant="ghost" size="sm"><Link to="/transactions">View all</Link></Button>
+          <Button asChild variant="ghost" size="sm">
+            <Link to="/transactions">View all</Link>
+          </Button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -329,9 +455,17 @@ function Dashboard() {
                     <div className="font-medium">{t.desc}</div>
                     <div className="text-xs text-muted-foreground">{t.date}</div>
                   </td>
-                  <td className="px-5 py-3"><span className="text-xs px-2 py-0.5 rounded bg-secondary text-secondary-foreground">{t.type}</span></td>
-                  <td className="px-5 py-3 text-right tabular-nums font-semibold">{hidden ? MASK : fmtMoney(t.amount, t.ccy)}</td>
-                  <td className="px-5 py-3"><StatusPill status={t.status} /></td>
+                  <td className="px-5 py-3">
+                    <span className="text-xs px-2 py-0.5 rounded bg-secondary text-secondary-foreground">
+                      {t.type}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3 text-right tabular-nums font-semibold">
+                    {hidden ? MASK : fmtMoney(t.amount, t.ccy)}
+                  </td>
+                  <td className="px-5 py-3">
+                    <StatusPill status={t.status} />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -349,7 +483,9 @@ function Dashboard() {
             <div className="text-xs text-muted-foreground">Sample routing output · Demo data</div>
           </div>
         </div>
-        <Badge className="bg-success/15 text-success border-success/30 hover:bg-success/15">Settlement tracking</Badge>
+        <Badge className="bg-success/15 text-success border-success/30 hover:bg-success/15">
+          Settlement tracking
+        </Badge>
       </Card>
     </div>
   );
@@ -358,11 +494,16 @@ function Dashboard() {
 const FX_PAIRS = [
   { from: "USD", to: "NGN", rate: 1612.45, flag: "🇺🇸" },
   { from: "RMB", to: "NGN", rate: 223.18, flag: "🇨🇳" },
-  { from: "EUR", to: "NGN", rate: 1745.10, flag: "🇪🇺" },
+  { from: "EUR", to: "NGN", rate: 1745.1, flag: "🇪🇺" },
   { from: "GBP", to: "NGN", rate: 2048.77, flag: "🇬🇧" },
 ];
 
-const DEFAULT_BUYERS = ["Lagos Trading Co.", "Accra Imports Ltd.", "Nairobi Wholesale", "Cairo Distributors"];
+const DEFAULT_BUYERS = [
+  "Lagos Trading Co.",
+  "Accra Imports Ltd.",
+  "Nairobi Wholesale",
+  "Cairo Distributors",
+];
 
 function SupplierFxQuoteCard() {
   const navigate = useNavigate();
@@ -384,18 +525,33 @@ function SupplierFxQuoteCard() {
           setBuyer(parsed[0] ?? DEFAULT_BUYERS[0]);
         }
       }
-    } catch {}
+    } catch {
+      /* ignore */
+    }
   }, []);
 
   function saveBuyers(next: string[]) {
     setBuyers(next);
-    try { window.localStorage.setItem("canta.buyers", JSON.stringify(next)); } catch {}
+    try {
+      window.localStorage.setItem("canta.buyers", JSON.stringify(next));
+    } catch {
+      /* ignore */
+    }
   }
 
   function confirmAddBuyer() {
     const name = newBuyer.trim();
-    if (!name) { toast.error("Enter a buyer name"); return; }
-    if (buyers.includes(name)) { toast.error("Buyer already exists"); setBuyer(name); setAddingBuyer(false); setNewBuyer(""); return; }
+    if (!name) {
+      toast.error("Enter a buyer name");
+      return;
+    }
+    if (buyers.includes(name)) {
+      toast.error("Buyer already exists");
+      setBuyer(name);
+      setAddingBuyer(false);
+      setNewBuyer("");
+      return;
+    }
     const next = [name, ...buyers];
     saveBuyers(next);
     setBuyer(name);
@@ -414,8 +570,14 @@ function SupplierFxQuoteCard() {
   const expiresIn = "15:00";
 
   function generateInvoice() {
-    if (!amt) { toast.error("Enter an amount"); return; }
-    if (!buyer.trim()) { toast.error("Enter buyer name"); return; }
+    if (!amt) {
+      toast.error("Enter an amount");
+      return;
+    }
+    if (!buyer.trim()) {
+      toast.error("Enter buyer name");
+      return;
+    }
     const quote = {
       id: `Q-${Math.floor(1000 + Math.random() * 9000)}`,
       buyer: buyer.trim(),
@@ -426,8 +588,14 @@ function SupplierFxQuoteCard() {
       converted,
       createdAt: new Date().toISOString(),
     };
-    try { window.sessionStorage.setItem("canta.fx.quote", JSON.stringify(quote)); } catch {}
-    toast.success(`Invoice draft prepared at ${pair.from}/${pair.to} = ${pair.rate.toLocaleString()}`);
+    try {
+      window.sessionStorage.setItem("canta.fx.quote", JSON.stringify(quote));
+    } catch {
+      /* ignore */
+    }
+    toast.success(
+      `Invoice draft prepared at ${pair.from}/${pair.to} = ${pair.rate.toLocaleString()}`,
+    );
     navigate({ to: "/supplier-portal/invoices" });
   }
 
@@ -440,17 +608,24 @@ function SupplierFxQuoteCard() {
           </div>
           <div>
             <div className="text-sm font-semibold">FX Quote</div>
-            <div className="text-[11px] text-muted-foreground">Illustrative rate · expires in {expiresIn}</div>
+            <div className="text-[11px] text-muted-foreground">
+              Illustrative rate · expires in {expiresIn}
+            </div>
           </div>
         </div>
-        <Badge variant="outline" className="text-[10px]"><span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse mr-1 inline-block" /> Live</Badge>
+        <Badge variant="outline" className="text-[10px]">
+          <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse mr-1 inline-block" />{" "}
+          Live
+        </Badge>
       </div>
 
       <div className="mt-4 space-y-3">
         <div>
           <Label className="text-xs">Currency pair</Label>
           <Select value={pairKey} onValueChange={setPairKey}>
-            <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="mt-1">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               {FX_PAIRS.map((p) => (
                 <SelectItem key={`${p.from}-${p.to}`} value={`${p.from}-${p.to}`}>
@@ -463,7 +638,12 @@ function SupplierFxQuoteCard() {
         <div className="grid grid-cols-2 gap-2">
           <div>
             <Label className="text-xs">Amount ({pair.from})</Label>
-            <Input value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" className="mt-1 tabular-nums" />
+            <Input
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              inputMode="decimal"
+              className="mt-1 tabular-nums"
+            />
           </div>
           <div>
             <div className="flex items-center justify-between">
@@ -485,17 +665,38 @@ function SupplierFxQuoteCard() {
                   onChange={(e) => setNewBuyer(e.target.value)}
                   placeholder="Buyer name"
                   autoFocus
-                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); confirmAddBuyer(); } }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      confirmAddBuyer();
+                    }
+                  }}
                 />
-                <Button type="button" size="sm" onClick={confirmAddBuyer}>Add</Button>
-                <Button type="button" size="sm" variant="ghost" onClick={() => { setAddingBuyer(false); setNewBuyer(""); }}>×</Button>
+                <Button type="button" size="sm" onClick={confirmAddBuyer}>
+                  Add
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    setAddingBuyer(false);
+                    setNewBuyer("");
+                  }}
+                >
+                  ×
+                </Button>
               </div>
             ) : (
               <Select value={buyer} onValueChange={setBuyer}>
-                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1">
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   {buyers.map((b) => (
-                    <SelectItem key={b} value={b}>{b}</SelectItem>
+                    <SelectItem key={b} value={b}>
+                      {b}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -513,7 +714,10 @@ function SupplierFxQuoteCard() {
         </div>
       </div>
 
-      <Button onClick={generateInvoice} className="w-full mt-4 bg-accent text-accent-foreground hover:bg-accent/90">
+      <Button
+        onClick={generateInvoice}
+        className="w-full mt-4 bg-accent text-accent-foreground hover:bg-accent/90"
+      >
         <FileText className="h-4 w-4 mr-1.5" /> Generate invoice with this quote
       </Button>
     </Card>

@@ -34,13 +34,22 @@ export function StartHereCard({
       asChild={!!(primary.to || primary.href)}
     >
       {primary.to ? (
-        <Link to={primary.to} search={(primary.search ?? undefined) as never} className="inline-flex items-center gap-2">
+        <Link
+          to={primary.to}
+          search={(primary.search ?? undefined) as never}
+          className="inline-flex items-center gap-2"
+        >
           <Sparkles className="h-4 w-4 shrink-0" />
           <span>{primary.label}</span>
           <ArrowRight className="h-4 w-4 shrink-0" />
         </Link>
       ) : primary.href ? (
-        <a href={primary.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
+        <a
+          href={primary.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2"
+        >
           <Sparkles className="h-4 w-4 shrink-0" />
           <span>{primary.label}</span>
           <ArrowRight className="h-4 w-4 shrink-0" />
@@ -59,7 +68,9 @@ export function StartHereCard({
     <Card className="p-5 md:p-6 shadow-card border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent">
       <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
-          <div className="text-[11px] uppercase tracking-widest text-primary font-semibold">{eyebrow}</div>
+          <div className="text-[11px] uppercase tracking-widest text-primary font-semibold">
+            {eyebrow}
+          </div>
           <h2 className="text-xl md:text-2xl font-semibold mt-1">{title}</h2>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">{description}</p>
         </div>
@@ -69,13 +80,31 @@ export function StartHereCard({
       {secondary && secondary.length > 0 && (
         <div className="mt-4 flex flex-wrap gap-2">
           {secondary.map((s, i) => (
-            <Button key={i} size="sm" variant="outline" onClick={s.onClick} asChild={!!(s.to || s.href)}>
+            <Button
+              key={i}
+              size="sm"
+              variant="outline"
+              onClick={s.onClick}
+              asChild={!!(s.to || s.href)}
+            >
               {s.to ? (
-                <Link to={s.to} search={(s.search ?? undefined) as never}>{s.icon}{s.icon && " "}{s.label}</Link>
+                <Link to={s.to} search={(s.search ?? undefined) as never}>
+                  {s.icon}
+                  {s.icon && " "}
+                  {s.label}
+                </Link>
               ) : s.href ? (
-                <a href={s.href} target="_blank" rel="noopener noreferrer">{s.icon}{s.icon && " "}{s.label}</a>
+                <a href={s.href} target="_blank" rel="noopener noreferrer">
+                  {s.icon}
+                  {s.icon && " "}
+                  {s.label}
+                </a>
               ) : (
-                <span>{s.icon}{s.icon && " "}{s.label}</span>
+                <span>
+                  {s.icon}
+                  {s.icon && " "}
+                  {s.label}
+                </span>
               )}
             </Button>
           ))}

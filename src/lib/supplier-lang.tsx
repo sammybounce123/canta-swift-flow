@@ -23,14 +23,21 @@ export const langStore = {
   getServer: (): SupplierLang => "en",
   set: (v: SupplierLang) => {
     lang = v;
-    try { window.localStorage.setItem(KEY, v); } catch { /* ignore */ }
+    try {
+      window.localStorage.setItem(KEY, v);
+    } catch {
+      /* ignore */
+    }
     subs.forEach((f) => f());
   },
   subscribe: (f: () => void) => {
     if (!hydrated) {
       hydrated = true;
       const stored = initial();
-      if (stored !== lang) { lang = stored; queueMicrotask(() => subs.forEach((s) => s())); }
+      if (stored !== lang) {
+        lang = stored;
+        queueMicrotask(() => subs.forEach((s) => s()));
+      }
     }
     subs.add(f);
     return () => subs.delete(f);
@@ -44,7 +51,6 @@ export function useSupplierLang(): SupplierLang {
   const value = useSyncExternalStore(langStore.subscribe, langStore.get, langStore.getServer);
   return hydrated ? value : langStore.getServer();
 }
-
 
 /** Lightweight label dictionary for the Supplier Portal only. */
 const DICT: Record<string, [string, string]> = {

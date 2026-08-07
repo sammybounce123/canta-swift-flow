@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Event-driven Trade File creation.
 // A draft Trade File is created automatically in response to an upstream
 // event (BL upload, invoice, payment request, payment link accepted, staff
@@ -94,24 +95,24 @@ export function createDraftTradeFile(event: TradeFileEvent, ctx: Ctx = {}) {
       const raw = window.localStorage.getItem("canta:tradeFiles");
       const arr = raw ? JSON.parse(raw) : [];
       arr.unshift(draft);
-      window.localStorage.setItem(
-        "canta:tradeFiles",
-        JSON.stringify(arr.slice(0, 100)),
-      );
+      window.localStorage.setItem("canta:tradeFiles", JSON.stringify(arr.slice(0, 100)));
     }
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return { id, draft };
 }
 
 export function readDraftTradeFiles(): any[] {
   try {
-    const raw = typeof window !== "undefined"
-      ? window.localStorage.getItem("canta:tradeFiles")
-      : null;
+    const raw =
+      typeof window !== "undefined" ? window.localStorage.getItem("canta:tradeFiles") : null;
     if (!raw) return [];
     const arr = JSON.parse(raw);
     return Array.isArray(arr) ? arr : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 export function findDraftTradeFile(id: string) {

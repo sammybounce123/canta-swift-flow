@@ -17,8 +17,8 @@ export const ALL_MODES: { id: Mode; tag: string; desc: string }[] = [
 
 export const MODE_DISPLAY_LABEL: Record<Mode, string> = {
   "Enterprise Treasury": "Enterprise Treasury",
-  "Importer": "Importer Mode",
-  "Supplier": "Supplier Portal",
+  Importer: "Importer Mode",
+  Supplier: "Supplier Portal",
   "Global Merchant": "Global Merchant",
   "Partner Property": "Partner",
   "Canta Ops": "Canta Ops",
@@ -68,7 +68,6 @@ function persistMode(mode: Mode) {
   if (workspace) window.localStorage.setItem("canta:active_workspace", workspace);
   window.localStorage.setItem("canta:mode", mode);
 }
-
 
 type Ctx = { mode: Mode; setMode: (m: Mode) => void };
 const ModeCtx = createContext<Ctx | null>(null);

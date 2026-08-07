@@ -23,7 +23,9 @@ function PartnerShell() {
           </div>
           <div>
             <div className="text-sm font-semibold leading-none">{PARTNER_ORG.name}</div>
-            <div className="text-[11px] text-muted-foreground">{PARTNER_ORG.type} · {PARTNER_ORG.country}</div>
+            <div className="text-[11px] text-muted-foreground">
+              {PARTNER_ORG.type} · {PARTNER_ORG.country}
+            </div>
           </div>
         </div>
         <Badge variant="outline" className="ml-2 text-[10px]">

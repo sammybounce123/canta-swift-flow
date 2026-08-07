@@ -2,8 +2,16 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  ShieldCheck, Factory, Users, FileText, Receipt, Banknote, Globe, MessageSquare,
-  ArrowRight, Handshake,
+  ShieldCheck,
+  Factory,
+  Users,
+  FileText,
+  Receipt,
+  Banknote,
+  Globe,
+  MessageSquare,
+  ArrowRight,
+  Handshake,
 } from "lucide-react";
 import { loadProfile } from "@/lib/profile";
 import { SUPPLIERS, BUYERS } from "@/lib/trade-network";
@@ -19,20 +27,76 @@ function TradeNetworkPage() {
   const isImporter = profile?.workspace_type === "importer_portal";
 
   const supplierTiles = [
-    { to: "/verified-buyers", label: "Verified Buyers", desc: "Discover screened African buyers ready to import.", icon: Users, count: BUYERS.length },
-    { to: "/buyers", label: "Buyer Requests", desc: "Quote requests sent by buyers to your business.", icon: MessageSquare },
-    { to: "/invoices", label: "Invoices", desc: "Invoice buyers and track payment status.", icon: Receipt },
-    { to: "/escrow", label: "Escrow", desc: "Hold funds securely until shipment milestones.", icon: ShieldCheck },
-    { to: "/collections", label: "Settlements", desc: "Receive global settlement in your local currency.", icon: Banknote },
-    { to: "/documents", label: "Trade Documents", desc: "BLs, packing lists, certificates of origin.", icon: FileText },
+    {
+      to: "/verified-buyers",
+      label: "Verified Buyers",
+      desc: "Discover screened African buyers ready to import.",
+      icon: Users,
+      count: BUYERS.length,
+    },
+    {
+      to: "/buyers",
+      label: "Buyer Requests",
+      desc: "Quote requests sent by buyers to your business.",
+      icon: MessageSquare,
+    },
+    {
+      to: "/invoices",
+      label: "Invoices",
+      desc: "Invoice buyers and track payment status.",
+      icon: Receipt,
+    },
+    {
+      to: "/escrow",
+      label: "Escrow",
+      desc: "Hold funds securely until shipment milestones.",
+      icon: ShieldCheck,
+    },
+    {
+      to: "/collections",
+      label: "Settlements",
+      desc: "Receive global settlement in your local currency.",
+      icon: Banknote,
+    },
+    {
+      to: "/documents",
+      label: "Trade Documents",
+      desc: "BLs, packing lists, certificates of origin.",
+      icon: FileText,
+    },
   ];
 
   const importerTiles = [
-    { to: "/my-suppliers", label: "My Suppliers", desc: "Your private supplier list and trade history.", icon: Factory },
-    { to: "/trade-desk", label: "Trade Files & Quotes", desc: "Quote requests, POs and supplier invoices.", icon: FileText },
-    { to: "/verification-center", label: "Supplier Verification", desc: "Ask Canta to verify any supplier you trade with.", icon: ShieldCheck },
-    { to: "/payments", label: "Supplier Payments", desc: "Pay suppliers via FX, escrow or stablecoin.", icon: Banknote },
-    { to: "/shipments", label: "Shipments", desc: "Track containers, ETAs and arrival readiness.", icon: Globe },
+    {
+      to: "/my-suppliers",
+      label: "My Suppliers",
+      desc: "Your private supplier list and trade history.",
+      icon: Factory,
+    },
+    {
+      to: "/trade-desk",
+      label: "Trade Files & Quotes",
+      desc: "Quote requests, POs and supplier invoices.",
+      icon: FileText,
+    },
+    {
+      to: "/verification-center",
+      label: "Supplier Verification",
+      desc: "Ask Canta to verify any supplier you trade with.",
+      icon: ShieldCheck,
+    },
+    {
+      to: "/payments",
+      label: "Supplier Payments",
+      desc: "Pay suppliers via FX, escrow or stablecoin.",
+      icon: Banknote,
+    },
+    {
+      to: "/shipments",
+      label: "Shipments",
+      desc: "Track containers, ETAs and arrival readiness.",
+      icon: Globe,
+    },
   ];
 
   const tiles = isSupplier ? supplierTiles : isImporter ? importerTiles : importerTiles;
@@ -40,11 +104,16 @@ function TradeNetworkPage() {
   return (
     <div className="space-y-6">
       <header className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-accent/5 to-transparent p-6">
-        <Badge variant="outline" className="gap-1 mb-3"><Handshake className="h-3 w-3" /> Canta Trade Network</Badge>
-        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">A trusted network for African trade</h1>
+        <Badge variant="outline" className="gap-1 mb-3">
+          <Handshake className="h-3 w-3" /> Canta Trade Network
+        </Badge>
+        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
+          A trusted network for African trade
+        </h1>
         <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
-          Canta connects screened suppliers in China, Turkey, UAE and India with verified African buyers — backed by escrow, KYB,
-          dispute history and payment reliability scores. Every counterparty is checked before contact details are shared.
+          Canta connects screened suppliers in China, Turkey, UAE and India with verified African
+          buyers — backed by escrow, KYB, dispute history and payment reliability scores. Every
+          counterparty is checked before contact details are shared.
         </p>
         <div className="mt-4 flex flex-wrap gap-2 text-xs">
           <Badge variant="secondary">{SUPPLIERS.length} verified suppliers</Badge>
@@ -62,7 +131,9 @@ function TradeNetworkPage() {
                   <t.icon className="h-5 w-5" />
                 </div>
                 {"count" in t && typeof (t as { count?: number }).count === "number" && (
-                  <Badge variant="secondary" className="text-[10px]">{(t as { count: number }).count} listed</Badge>
+                  <Badge variant="secondary" className="text-[10px]">
+                    {(t as { count: number }).count} listed
+                  </Badge>
                 )}
               </div>
               <div className="mt-3 font-semibold">{t.label}</div>

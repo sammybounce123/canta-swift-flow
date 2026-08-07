@@ -4,7 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { listHooks, createHook, advanceHook, subscribeInsurance, INSURANCE_PARTNERS, type InsuranceRiskType } from "@/lib/insurance-store";
+import {
+  listHooks,
+  createHook,
+  advanceHook,
+  subscribeInsurance,
+  INSURANCE_PARTNERS,
+  type InsuranceRiskType,
+} from "@/lib/insurance-store";
 
 type Props = {
   title: string;
@@ -34,7 +41,10 @@ export function InsuranceHookCard(props: Props) {
       partner: INSURANCE_PARTNERS[0],
     });
     toast.success(`Insurance quote requested from ${h.partner}`);
-    setTimeout(() => { advanceHook(h.id, { quoteStatus: "Quote Received" }); toast.info("Quote received — review terms"); }, 1500);
+    setTimeout(() => {
+      advanceHook(h.id, { quoteStatus: "Quote Received" });
+      toast.info("Quote received — review terms");
+    }, 1500);
   };
 
   return (
@@ -46,19 +56,38 @@ export function InsuranceHookCard(props: Props) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <div className="text-sm font-semibold">{props.title}</div>
-            <Badge variant="outline" className="text-[10px]"><Sparkles className="h-3 w-3 mr-1" /> Embedded</Badge>
+            <Badge variant="outline" className="text-[10px]">
+              <Sparkles className="h-3 w-3 mr-1" /> Embedded
+            </Badge>
           </div>
           <p className="text-xs text-muted-foreground mt-1">{props.description}</p>
           {active ? (
             <div className="mt-3 flex items-center gap-2 text-xs">
-              <Badge variant="outline" className="bg-accent/15 text-accent border-accent/30">{active.quoteStatus}</Badge>
+              <Badge variant="outline" className="bg-accent/15 text-accent border-accent/30">
+                {active.quoteStatus}
+              </Badge>
               <span className="text-muted-foreground">via {active.partner}</span>
               {active.quoteStatus === "Quote Received" && (
-                <Button size="sm" variant="outline" className="ml-auto" onClick={() => { advanceHook(active.id, { quoteStatus: "Accepted", policyStatus: "Policy Active" }); toast.success("Policy activated"); }}>Accept</Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="ml-auto"
+                  onClick={() => {
+                    advanceHook(active.id, {
+                      quoteStatus: "Accepted",
+                      policyStatus: "Policy Active",
+                    });
+                    toast.success("Policy activated");
+                  }}
+                >
+                  Accept
+                </Button>
               )}
             </div>
           ) : (
-            <Button size="sm" className="mt-3" onClick={request}>Request insurance quote</Button>
+            <Button size="sm" className="mt-3" onClick={request}>
+              Request insurance quote
+            </Button>
           )}
         </div>
       </div>
