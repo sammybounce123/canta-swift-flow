@@ -268,6 +268,21 @@ function RemittanceQuote({ method, amount }: { method: "NGN" | "USDT"; amount: n
   const expired = !!quote && left <= 0;
   const mmss = `${String(Math.floor(left / 60)).padStart(2, "0")}:${String(left % 60).padStart(2, "0")}`;
 
+  // Live (un-locked) indicative equivalent for any currency, mirroring the
+  // locked-quote math so values stay consistent before/after locking.
+  const liveReceive = (code: string) => {
+    const fee = amount * REMITTANCE_FEE_PCT;
+    const net = Math.max(0, amount - fee);
+    const src = method === "NGN" ? 1 : WALLET_NGN_RATE.USDT;
+    const rate = src / ngnRateOf(code);
+    return net * rate;
+  };
+  const liveFee = amount * REMITTANCE_FEE_PCT;
+  const liveNet = Math.max(0, amount - liveFee);
+
+  // Most-relevant destination currencies shown as a live preview grid.
+  const previewCcys = GLOBAL_SEND_CCYS.filter((c) => c.code !== method);
+
   return (
     <div className="rounded-lg border border-border p-3 space-y-2">
       <div className="flex items-center justify-between gap-2">
@@ -279,12 +294,46 @@ function RemittanceQuote({ method, amount }: { method: "NGN" | "USDT"; amount: n
         currency, whether or not you hold that wallet.
       </p>
 
+      {amount > 0 && (
+        <div className="space-y-1.5">
+          <div className="flex justify-between text-xs">
+            <span className="text-muted-foreground">Conversion fee (0.4%)</span>
+            <span className="font-medium">{fmtWallet(liveFee, method)}</span>
+          </div>
+          <div className="flex justify-between text-xs">
+            <span className="text-muted-foreground">Net after fee</span>
+            <span className="font-medium">{fmtWallet(liveNet, method)}</span>
+          </div>
+        </div>
+      )}
+
       <div>
-        <Label className="text-[11px] text-muted-foreground">Quote against</Label>
+        <Label className="text-[11px] text-muted-foreground">Live equivalents · {method} to</Label>
+        <div className="grid grid-cols-2 gap-1.5">
+          {previewCcys.map((c) => (
+            <button
+              key={c.code}
+              type="button"
+              onClick={() => setTarget(c.code)}
+              className={`text-left rounded-md border px-2 py-1.5 transition ${target === c.code ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}
+            >
+              <div className="flex items-center justify-between gap-1">
+                <span className="text-[11px] text-muted-foreground">{c.code}</span>
+                <span className={`text-xs font-medium tabular-nums ${amount > 0 ? "" : "text-muted-foreground"}`}>
+                  {amount > 0 ? fmtAnyCcy(liveReceive(c.code), c.code) : "—"}
+                </span>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <Label className="text-[11px] text-muted-foreground">Quote against (lock rate)</Label>
         <Select value={target} onValueChange={setTarget}>
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent className="max-h-64">
-            {GLOBAL_SEND_CCYS.filter((c) => c.code !== method).map((c) => (
+            {previewCcys.map((c) => (
               <SelectItem key={c.code} value={c.code}>{c.code} — {c.name}</SelectItem>
             ))}
           </SelectContent>
