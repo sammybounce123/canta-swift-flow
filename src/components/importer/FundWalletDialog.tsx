@@ -128,6 +128,9 @@ export function FundWalletDialog({
               <Label>Funding purpose (optional)</Label>
               <Input value={purpose} onChange={(e) => setPurpose(e.target.value)} placeholder="Supplier payment top-up" />
             </div>
+
+            <RemittanceQuote method={method} amount={n} />
+
             {method === "USDT" && (
               <p className="text-xs rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 flex gap-2">
                 <AlertTriangle className="h-4 w-4 shrink-0 text-destructive" />
