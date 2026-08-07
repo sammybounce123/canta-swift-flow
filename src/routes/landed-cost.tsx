@@ -105,22 +105,23 @@ function LandedCostPage() {
         </div>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">
-        <Card className="p-4 shadow-card">
-          <div className="flex items-center justify-between mb-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <Card className="min-w-0 p-4 shadow-card">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <div className="text-sm font-semibold">Cost breakdown</div>
-            <Button size="sm" variant="outline" onClick={add}><Plus className="h-3.5 w-3.5 mr-1" /> Add cost</Button>
+            <Button size="sm" variant="outline" className="shrink-0" onClick={add}><Plus className="h-3.5 w-3.5 mr-1" /> Add cost</Button>
           </div>
           <div className="space-y-2">
             {lines.map((l) => (
-              <div key={l.id} className="grid grid-cols-[1fr_140px_auto] gap-2 items-center">
-                <Input value={l.label} onChange={(e) => update(l.id, { label: e.target.value })} />
-                <Input type="number" value={l.amount} onChange={(e) => update(l.id, { amount: Number(e.target.value) || 0 })} />
-                <Button size="icon" variant="ghost" onClick={() => remove(l.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+              <div key={l.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 sm:grid-cols-[minmax(0,1fr)_140px_auto]">
+                <Input className="col-span-2 min-w-0 sm:col-span-1" value={l.label} onChange={(e) => update(l.id, { label: e.target.value })} />
+                <Input className="min-w-0" type="number" value={l.amount} onChange={(e) => update(l.id, { amount: Number(e.target.value) || 0 })} />
+                <Button size="icon" variant="ghost" className="shrink-0" onClick={() => remove(l.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
               </div>
             ))}
           </div>
         </Card>
+
 
         <Card className="p-4 shadow-card h-fit space-y-3">
           <div className="text-sm font-semibold">Summary</div>
