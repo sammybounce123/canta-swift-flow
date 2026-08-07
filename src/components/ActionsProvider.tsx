@@ -321,6 +321,58 @@ function FundFlow({
   );
 }
 
+function FundFxQuote({ ccy, amount }: { ccy: string; amount: number }) {
+  const [target, setTarget] = useState(() =>
+    ccy !== "NGN" && GLOBAL_SEND_CCYS.some((c) => c.code === ccy) ? ccy : "USD",
+  );
+  const rate = 1 / ngnRateOf(target);
+  const ngnAmount = ccy === "NGN" ? amount : amount * ngnRateOf(ccy);
+  const receive = ngnAmount * rate;
+
+  return (
+    <div className="rounded-xl border border-border bg-secondary/30 p-3 space-y-2">
+      <div className="flex items-center justify-between">
+        <div className="text-xs font-semibold">FX quote</div>
+        <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+          Illustrative rates
+        </span>
+      </div>
+      <div>
+        <Label className="text-[11px] text-muted-foreground">Quote NGN against</Label>
+        <Select value={target} onValueChange={setTarget}>
+          <SelectTrigger className="mt-1">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="max-h-64">
+            {GLOBAL_SEND_CCYS.map((c) => (
+              <SelectItem key={c.code} value={c.code}>
+                {c.code} · {c.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-muted-foreground">Indicative rate</span>
+        <span className="font-medium tabular-nums">
+          1 NGN = {rate >= 1 ? rate.toFixed(2) : rate.toFixed(6)} {target}
+        </span>
+      </div>
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-muted-foreground">
+          {fmtAnyCcy(ngnAmount, "NGN")} converts to approximately
+        </span>
+        <span className="font-semibold tabular-nums">{fmtAnyCcy(receive, target)}</span>
+      </div>
+      {ccy !== "NGN" && (
+        <div className="text-[11px] text-muted-foreground">
+          Based on the NGN value of {fmtMoney(amount, ccy)} at demo rates.
+        </div>
+      )}
+    </div>
+  );
+}
+
 function FundForm({
   ccy,
   onConfirm,
@@ -375,6 +427,7 @@ function FundForm({
           Funding as <span className="font-medium text-foreground">{profile.name}</span>
         </div>
       </div>
+      <FundFxQuote ccy={ccy} amount={amt} />
       <div className="space-y-2">
         {[
           {
