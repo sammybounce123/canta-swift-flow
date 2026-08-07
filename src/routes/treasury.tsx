@@ -14,7 +14,7 @@ import {
   CartesianGrid,
   Legend,
 } from "recharts";
-import { Calendar, Layers } from "lucide-react";
+import { ArrowLeftRight, Calendar, Layers, Send } from "lucide-react";
 import { useActions } from "@/components/actions-context";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import { StartHereCard } from "@/components/StartHereCard";
@@ -47,7 +47,7 @@ export const Route = createFileRoute("/treasury")({
 });
 
 function Treasury() {
-  const { openBulk, openSchedule } = useActions();
+  const { openBulk, openSchedule, openConvert, openSend } = useActions();
   return (
     <div className="space-y-6">
       <ReadinessBar
@@ -67,16 +67,22 @@ function Treasury() {
           <Button variant="outline" onClick={openBulk}>
             <Layers className="h-4 w-4 mr-1.5" /> Bulk Payments
           </Button>
-          <Button className="bg-primary" onClick={openSchedule}>
+          <Button variant="outline" onClick={openSchedule}>
             <Calendar className="h-4 w-4 mr-1.5" /> Schedule Conversion
+          </Button>
+          <Button variant="outline" onClick={() => openConvert()}>
+            <ArrowLeftRight className="h-4 w-4 mr-1.5" /> Convert
+          </Button>
+          <Button className="bg-primary" onClick={() => openSend()}>
+            <Send className="h-4 w-4 mr-1.5" /> Convert &amp; Send
           </Button>
         </div>
       </div>
 
       <StartHereCard
-        title="Start FX Transfer"
-        description="Convert funds, manage beneficiaries, and track approvals from one treasury workspace."
-        primary={{ label: "Start FX Conversion", to: "/fx" }}
+        title="Convert or Convert & Send"
+        description="Convert moves money between your own treasury wallets. Convert & Send converts and pays a beneficiary, subject to approval rules."
+        primary={{ label: "Open FX / Convert", to: "/fx" }}
         secondary={[
           { label: "Add Beneficiary", to: "/beneficiaries" },
           { label: "View Transactions", to: "/transactions" },

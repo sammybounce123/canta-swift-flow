@@ -127,8 +127,10 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
       <Dialog open={conv.open} onOpenChange={(o) => setConv((s) => ({ ...s, open: o }))}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Convert Currency</DialogTitle>
-            <DialogDescription>Lock a rate and settle in seconds.</DialogDescription>
+            <DialogTitle>Convert</DialogTitle>
+            <DialogDescription>
+              Move money between your Canta wallets. No recipient needed.
+            </DialogDescription>
           </DialogHeader>
           <ConvertForm
             from={conv.from}
@@ -156,8 +158,10 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
       <Dialog open={send.open} onOpenChange={(o) => setSend((s) => ({ ...s, open: o }))}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Send Payment</DialogTitle>
-            <DialogDescription>Send to a saved beneficiary or new recipient.</DialogDescription>
+            <DialogTitle>Convert &amp; Send</DialogTitle>
+            <DialogDescription>
+              Convert funds and send to a supplier or beneficiary after review.
+            </DialogDescription>
           </DialogHeader>
           <SendForm
             initialBeneficiary={send.beneficiary}
@@ -482,7 +486,6 @@ function FundForm({
     </div>
   );
 }
-
 
 function VirtualAccountPanel({
   ccy,
@@ -811,7 +814,7 @@ function ConvertForm({
   return (
     <div className="space-y-3">
       <div>
-        <Label className="text-xs">You send</Label>
+        <Label className="text-xs">You convert (from wallet)</Label>
         <div className="flex gap-2 p-3 rounded-xl bg-secondary/50 border border-border mt-1">
           <input
             value={amount}
@@ -842,7 +845,7 @@ function ConvertForm({
         </button>
       </div>
       <div>
-        <Label className="text-xs">Recipient gets</Label>
+        <Label className="text-xs">Destination wallet receives</Label>
         <div className="flex gap-2 p-3 rounded-xl bg-secondary/50 border border-border mt-1">
           <div className="flex-1 text-xl font-semibold tabular-nums">
             {out.toLocaleString(undefined, { maximumFractionDigits: 2 })}

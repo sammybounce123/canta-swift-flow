@@ -91,8 +91,11 @@ function Beneficiaries() {
                 onClick={() => openSend(b.name)}
                 className="w-full mt-4 bg-accent text-accent-foreground hover:bg-accent/90"
               >
-                <Send className="h-3.5 w-3.5 mr-1.5" /> Send Payment
+                <Send className="h-3.5 w-3.5 mr-1.5" /> Convert &amp; Send
               </Button>
+              <p className="text-[11px] text-muted-foreground mt-2">
+                Convert funds and send to this beneficiary after review.
+              </p>
             </Card>
           ))}
         </div>

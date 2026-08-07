@@ -40,7 +40,7 @@ import { ReadinessBar } from "@/components/ReadinessBar";
 import { useActions } from "@/components/actions-context";
 
 export const Route = createFileRoute("/fx")({
-  head: () => ({ meta: [{ title: "FX / Exchange — Canta" }] }),
+  head: () => ({ meta: [{ title: "FX / Convert — Canta" }] }),
   component: FX,
 });
 
@@ -123,7 +123,7 @@ function FX() {
         cue="FX rates are indicative and confirmed at settlement."
       />
       <div>
-        <h1 className="text-2xl font-semibold">FX / Exchange</h1>
+        <h1 className="text-2xl font-semibold">FX / Convert</h1>
         <p className="text-sm text-muted-foreground mt-1">
           Convert between currencies at the best available rate.
         </p>
