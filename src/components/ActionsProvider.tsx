@@ -437,7 +437,22 @@ function FundForm({
           Funding as <span className="font-medium text-foreground">{profile.name}</span>
         </div>
       </div>
-      <FundFxQuote fundCcy={fundCcy} target={ccy} amount={amt} />
+      <div>
+        <Label className="text-xs">Quote against</Label>
+        <Select value={target} onValueChange={setTarget}>
+          <SelectTrigger className="mt-1">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {WALLET_CCYS.map((c) => (
+              <SelectItem key={c} value={c}>
+                {c}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <FundFxQuote fundCcy={fundCcy} target={target} amount={amt} />
       <div className="space-y-2">
         {methods.map((o) => (
           <button
