@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Building2, FileText, UserCheck, Landmark, Upload, Lock } from "lucide-react";
 import { toast } from "sonner";
-import { Check, useVerified, verifiedStore, isDemoApproved } from "@/lib/supplier-data";
+import { Check, useVerified, verifiedStore, useDemoApproved } from "@/lib/supplier-data";
 
 export const Route = createFileRoute("/supplier-portal/verification")({
   head: () => ({ meta: [{ title: "Verification — Supplier Portal — Canta" }] }),
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/supplier-portal/verification")({
 
 function VerificationPanel() {
   const verified = useVerified();
-  const demo = isDemoApproved();
+  const demo = useDemoApproved();
   return (
     <div className="space-y-4">
       {demo ? (

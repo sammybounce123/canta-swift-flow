@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { useHydrated } from "@tanstack/react-router";
 
 // ---------------------------------------------------------------------------
 // Automatic Convert toggle
@@ -34,8 +35,13 @@ export const autoConvertStore = {
 };
 
 export function useAutoConvert() {
-  return useSyncExternalStore(autoConvertStore.subscribe, autoConvertStore.get, autoConvertStore.getServer);
+  // Render the SSR default until hydration completes, so the persisted value
+  // never changes rendered attributes during the hydration pass.
+  const hydrated = useHydrated();
+  const value = useSyncExternalStore(autoConvertStore.subscribe, autoConvertStore.get, autoConvertStore.getServer);
+  return hydrated ? value : autoConvertStore.getServer();
 }
+
 
 // ---------------------------------------------------------------------------
 // RMB bank accounts (settlement destinations)

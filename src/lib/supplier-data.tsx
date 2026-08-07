@@ -1,4 +1,6 @@
 import { useSyncExternalStore } from "react";
+import { useHydrated } from "@tanstack/react-router";
+
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -145,13 +147,24 @@ export const verifiedStore = {
 };
 
 export function useVerified() {
-  return useSyncExternalStore(verifiedStore.subscribe, verifiedStore.get, () => false);
+  // SSR renders the unverified state; the persisted/seeded flag is only applied
+  // after hydration so no attribute changes during the hydration pass.
+  const hydrated = useHydrated();
+  const value = useSyncExternalStore(verifiedStore.subscribe, verifiedStore.get, () => false);
+  return hydrated ? value : false;
 }
 
 export function isDemoApproved(): boolean {
   if (typeof window === "undefined") return false;
   try { return window.localStorage.getItem("canta:persona") === "supplier_demo"; } catch { return false; }
 }
+
+/** Hydration-safe variant of isDemoApproved() for use during render. */
+export function useDemoApproved(): boolean {
+  const hydrated = useHydrated();
+  return hydrated ? isDemoApproved() : false;
+}
+
 
 // --- FX quote store ----------------------------------------------------------
 

@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { useHydrated } from "@tanstack/react-router";
 
 export type SupplierLang = "en" | "zh";
 
@@ -37,8 +38,13 @@ export const langStore = {
 };
 
 export function useSupplierLang(): SupplierLang {
-  return useSyncExternalStore(langStore.subscribe, langStore.get, langStore.getServer);
+  // Persisted language is applied only after hydration to keep SSR and the
+  // first client render byte-identical.
+  const hydrated = useHydrated();
+  const value = useSyncExternalStore(langStore.subscribe, langStore.get, langStore.getServer);
+  return hydrated ? value : langStore.getServer();
 }
+
 
 /** Lightweight label dictionary for the Supplier Portal only. */
 const DICT: Record<string, [string, string]> = {

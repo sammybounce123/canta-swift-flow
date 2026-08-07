@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
-import { isDemoApproved } from "@/lib/supplier-data";
+import { useDemoApproved } from "@/lib/supplier-data";
 
 export const Route = createFileRoute("/suppliers/kyb")({
   head: () => ({ meta: [{ title: "Supplier KYB — Canta" }] }),
@@ -48,7 +48,7 @@ function overallStatus(docs: Doc[]): "Incomplete" | "In Review" | "Approved" {
 }
 
 function SupplierKybPage() {
-  const demo = isDemoApproved();
+  const demo = useDemoApproved();
   const [docs, setDocs] = useState<Doc[]>(SEED);
   const [status, setStatus] = useState<KybStatus>(demo ? "Approved" : "Approved");
   const [uploadFor, setUploadFor] = useState<Doc | null>(null);
