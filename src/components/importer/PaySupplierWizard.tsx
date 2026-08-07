@@ -47,7 +47,7 @@ const STEPS = [
   "Supplier",
   "Payment details",
   "Documents",
-  "FX quote",
+  "Convert & Send to Supplier",
   "Funding",
   "Review & submit",
 ];

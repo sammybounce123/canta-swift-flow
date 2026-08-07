@@ -37,6 +37,7 @@ import { fxHistory, beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { useActions } from "@/components/actions-context";
 
 export const Route = createFileRoute("/fx")({
   head: () => ({ meta: [{ title: "FX / Exchange — Canta" }] }),
@@ -47,6 +48,7 @@ type Beneficiary = (typeof beneficiaries)[number];
 
 function FX() {
   const navigate = useNavigate();
+  const { openConvert, openSend } = useActions();
   const [from, setFrom] = useState("NGN");
   const [to, setTo] = useState("USD");
   const [amount, setAmount] = useState("50000000");
@@ -125,6 +127,22 @@ function FX() {
         <p className="text-sm text-muted-foreground mt-1">
           Convert between currencies at the best available rate.
         </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Button onClick={() => openConvert("NGN", "USD")}>Convert</Button>
+          <Button variant="outline" onClick={() => openSend()}>
+            Convert &amp; Send
+          </Button>
+        </div>
+        <div className="mt-2 grid gap-1 text-[11px] text-muted-foreground">
+          <span>
+            <strong className="text-foreground">Convert</strong> — move money between your Canta
+            wallets. No recipient needed.
+          </span>
+          <span>
+            <strong className="text-foreground">Convert &amp; Send</strong> — convert funds and send
+            to a supplier or beneficiary after review.
+          </span>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">

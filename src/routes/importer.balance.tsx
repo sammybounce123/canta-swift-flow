@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,9 +13,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Wallet, Plus, Download, Share2, LifeBuoy, Receipt } from "lucide-react";
+import {
+  Wallet,
+  Plus,
+  Download,
+  Share2,
+  LifeBuoy,
+  Receipt,
+  ArrowLeftRight,
+  Send,
+} from "lucide-react";
 import { ReadinessBar } from "@/components/ReadinessBar";
 import { FundWalletDialog } from "@/components/importer/FundWalletDialog";
+import { ConvertDialog } from "@/components/importer/ConvertDialog";
 import {
   useImporter,
   fmtWallet,
@@ -62,8 +72,12 @@ const TX_TYPES = [
 
 function BalancePage() {
   const s = useImporter();
+  const navigate = useNavigate();
   const [fundOpen, setFundOpen] = useState(false);
   const [fundMethod, setFundMethod] = useState<"NGN" | "USDT">("NGN");
+  const [convOpen, setConvOpen] = useState(false);
+  const [convFrom, setConvFrom] = useState<WalletCcy>("NGN");
+  const [convTo, setConvTo] = useState<WalletCcy>("USD");
   const [fCcy, setFCcy] = useState("all");
   const [fType, setFType] = useState("all");
   const [fStatus, setFStatus] = useState("all");
@@ -72,6 +86,12 @@ function BalancePage() {
   const openFund = (m: "NGN" | "USDT") => {
     setFundMethod(m);
     setFundOpen(true);
+  };
+
+  const openConvert = (from: WalletCcy, to: WalletCcy) => {
+    setConvFrom(from);
+    setConvTo(to);
+    setConvOpen(true);
   };
 
   const pending = s.funding.filter((f) => FUNDING_OPEN.includes(f.status));
@@ -110,11 +130,30 @@ function BalancePage() {
         <Button variant="outline" onClick={() => openFund("USDT")}>
           Fund USDT wallet
         </Button>
+        <Button variant="secondary" onClick={() => openConvert("NGN", "USD")}>
+          <ArrowLeftRight className="h-4 w-4" /> Convert
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => navigate({ to: "/importer/payments", search: { tab: "new" } })}
+        >
+          <Send className="h-4 w-4" /> Convert &amp; Send
+        </Button>
         {pending.length > 0 && (
           <Badge variant="outline" className="self-center text-[10px]">
             {pending.length} funding request{pending.length === 1 ? "" : "s"} in progress
           </Badge>
         )}
+      </div>
+      <div className="grid gap-1 text-[11px] text-muted-foreground -mt-3">
+        <span>
+          <strong className="text-foreground">Convert</strong> — move money between your Canta
+          wallets. No recipient needed.
+        </span>
+        <span>
+          <strong className="text-foreground">Convert &amp; Send</strong> — convert funds and send
+          to a supplier or beneficiary after review.
+        </span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
@@ -156,6 +195,20 @@ function BalancePage() {
                   Fund wallet
                 </Button>
               )}
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => openConvert(w.ccy, w.ccy === "NGN" ? "USD" : "NGN")}
+              >
+                Convert
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => navigate({ to: "/importer/payments", search: { tab: "new" } })}
+              >
+                Convert &amp; Send
+              </Button>
               <Button
                 size="sm"
                 variant="ghost"
@@ -200,6 +253,7 @@ function BalancePage() {
           <TabsTrigger value="funding">Funding requests</TabsTrigger>
           <TabsTrigger value="history">Transaction history</TabsTrigger>
           <TabsTrigger value="receipts">Funding receipts</TabsTrigger>
+          <TabsTrigger value="conversions">Conversions</TabsTrigger>
         </TabsList>
 
         <TabsContent value="funding" className="mt-4">
@@ -377,9 +431,66 @@ function BalancePage() {
             )}
           </div>
         </TabsContent>
+
+        <TabsContent value="conversions" className="mt-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            {s.conversionReceipts.map((r) => (
+              <Card key={r.receiptNo} className="p-4 shadow-card">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="font-semibold flex items-center gap-1.5">
+                    <ArrowLeftRight className="h-4 w-4 text-primary" /> {r.receiptNo}
+                  </div>
+                  <Badge variant="outline" className="text-[10px]">
+                    {r.status}
+                  </Badge>
+                </div>
+                <dl className="mt-3 text-xs space-y-1">
+                  <Line k="Conversion reference" v={r.conversionRef} />
+                  <Line k="Source wallet" v={`${r.from} Wallet`} />
+                  <Line k="Destination wallet" v={`${r.to} Wallet`} />
+                  <Line k="Amount debited" v={fmtWallet(r.debit, r.from)} />
+                  <Line k="Amount credited" v={fmtWallet(r.credit, r.to)} />
+                  <Line
+                    k="FX rate"
+                    v={`1 ${r.from} = ${r.rate.toLocaleString("en-US", { maximumFractionDigits: 6 })} ${r.to}`}
+                  />
+                  <Line k="Canta fee" v={fmtWallet(r.fee, r.from)} />
+                  <Line k="Date" v={r.at} />
+                </dl>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  <Button size="sm" onClick={() => toast.success("Receipt download started")}>
+                    <Download className="h-3.5 w-3.5" /> Download
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setFCcy(r.to);
+                      toast.success("Wallet transaction filtered");
+                    }}
+                  >
+                    View wallet transaction
+                  </Button>
+                </div>
+              </Card>
+            ))}
+            {s.conversionReceipts.length === 0 && (
+              <div className="col-span-full text-center text-sm text-muted-foreground py-10">
+                No conversions yet. Use Convert to move money between your own wallets.
+              </div>
+            )}
+          </div>
+        </TabsContent>
       </Tabs>
 
       <FundWalletDialog open={fundOpen} onOpenChange={setFundOpen} initialMethod={fundMethod} />
+      <ConvertDialog
+        open={convOpen}
+        onOpenChange={setConvOpen}
+        initialFrom={convFrom}
+        initialTo={convTo}
+      />
+
       <p className="text-[11px] text-muted-foreground">
         Total available:{" "}
         {s.wallets.map((w) => fmtWallet(walletOf(s, w.ccy)?.available ?? 0, w.ccy)).join(" · ")}
