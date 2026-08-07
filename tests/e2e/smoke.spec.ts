@@ -347,3 +347,56 @@ test("Importer overview contains no 'escrow option'", async ({ page }) => {
   const body = (await page.textContent("body")) ?? "";
   expect(body).not.toContain("escrow option");
 });
+
+/**
+ * Convert (wallet-to-wallet) vs Convert & Send (pay another party).
+ */
+test("Importer Balance exposes Convert and Convert & Send as separate actions", async ({
+  page,
+}) => {
+  await clearStorage(page);
+  await seedWorkspace(page, "importer_portal", "Importer");
+  await page.goto("/importer/balance");
+  await expect(page.getByRole("button", { name: "Convert", exact: true }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "Convert & Send" }).first()).toBeVisible();
+});
+
+test("Convert dialog is wallet-to-wallet only and issues a conversion receipt", async ({
+  page,
+}) => {
+  await clearStorage(page);
+  await seedWorkspace(page, "importer_portal", "Importer");
+  await page.goto("/importer/balance");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "Convert", exact: true }).first().click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toContainText("No recipient needed");
+  await expect(dialog).not.toContainText(/beneficiary/i);
+  await dialog.getByPlaceholder("0.00").fill("100000");
+  await dialog.getByRole("button", { name: "Show FX quote" }).click();
+  await expect(dialog).toContainText("FX rate");
+  await expect(dialog).toContainText("Canta fee");
+  await expect(dialog).toContainText("Quote expiry");
+  await dialog.getByRole("button", { name: "Accept quote" }).click();
+  await dialog.getByRole("button", { name: "Confirm conversion" }).click();
+  await expect(dialog).toContainText("Conversion receipt");
+});
+
+test("Convert blocks an amount above the source wallet balance", async ({ page }) => {
+  await clearStorage(page);
+  await seedWorkspace(page, "importer_portal", "Importer");
+  await page.goto("/importer/balance");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "Convert", exact: true }).first().click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByPlaceholder("0.00").fill("999999999999");
+  await expect(dialog).toContainText("Insufficient balance");
+  await expect(dialog.getByRole("button", { name: "Show FX quote" })).toBeDisabled();
+});
+
+test("Pay Supplier wizard labels its FX step Convert & Send to Supplier", async ({ page }) => {
+  await clearStorage(page);
+  await seedWorkspace(page, "importer_portal", "Importer");
+  await page.goto("/importer/payments?tab=new");
+  await expect(page.getByText("Convert & Send to Supplier").first()).toBeVisible();
+});

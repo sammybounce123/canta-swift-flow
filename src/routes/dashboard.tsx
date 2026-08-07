@@ -313,7 +313,7 @@ function Dashboard() {
               ))}
             </div>
             <Button asChild variant="outline" className="w-full mt-auto pt-0">
-              <Link to="/fx">Open Exchange</Link>
+              <Link to="/fx">Open FX / Convert</Link>
             </Button>
           </Card>
         )}

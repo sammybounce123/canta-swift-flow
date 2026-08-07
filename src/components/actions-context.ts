@@ -15,9 +15,9 @@ const globalRef = globalThis as unknown as Record<string, unknown>;
 
 export const ActionsContext =
   (globalRef[CONTEXT_KEY] as React.Context<ActionsContextValue | null> | undefined) ??
-  ((globalRef[CONTEXT_KEY] = createContext<ActionsContextValue | null>(null)) as React.Context<
-    ActionsContextValue | null
-  >);
+  ((globalRef[CONTEXT_KEY] = createContext<ActionsContextValue | null>(
+    null,
+  )) as React.Context<ActionsContextValue | null>);
 
 export function useActions() {
   const context = useContext(ActionsContext);

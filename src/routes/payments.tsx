@@ -229,7 +229,7 @@ function PaymentsPage() {
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button>
-                <Plus className="h-4 w-4 mr-1.5" /> Create Payout
+                <Plus className="h-4 w-4 mr-1.5" /> Convert &amp; Send
               </Button>
             </DialogTrigger>
             <CreatePayoutDialog
@@ -455,7 +455,7 @@ function PaymentsPage() {
           </div>
           <Button asChild variant="outline" className="shrink-0">
             <Link to="/fx">
-              Open FX Conversion <ArrowRight className="h-4 w-4 ml-1" />
+              Open FX / Convert <ArrowRight className="h-4 w-4 ml-1" />
             </Link>
           </Button>
         </div>
@@ -593,7 +593,7 @@ function CreatePayoutDialog({
   return (
     <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
       <DialogHeader>
-        <DialogTitle>Create Payout</DialogTitle>
+        <DialogTitle>Convert &amp; Send</DialogTitle>
       </DialogHeader>
       <Tabs value={mode} onValueChange={(v) => setMode(v as typeof mode)}>
         <TabsList>
