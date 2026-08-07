@@ -9,7 +9,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { shipments, shippingLines, fmtMoney, type Shipment, type ShipmentVertical } from "@/lib/mock";
-import { Plus, Search, Ship, Anchor, Truck, Plane, Package, Calendar as CalendarIcon, List, FileText, ExternalLink, PackageSearch } from "lucide-react";
+import { Plus, Search, Ship, Anchor, Truck, Plane, Package, Calendar as CalendarIcon, List, FileText, ExternalLink, PackageSearch, BellRing } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
@@ -19,14 +19,27 @@ export const Route = createFileRoute("/shipments")({
   component: ShipmentsPage,
 });
 
-const STATUS_CARDS: { label: string; statuses: Shipment["status"][]; tone: string }[] = [
+// Tracking-only statuses. Canta records movement up to arrival ("landed").
+// Anything after arrival (customs clearance, release, delivery) is NOT tracked
+// automatically — the importer records it manually.
+const TRACKED_STATUSES = ["Booked", "At Origin", "Loaded", "On Vessel", "Arrived", "Delayed"] as const;
+type TrackedStatus = (typeof TRACKED_STATUSES)[number];
+
+function trackedStatus(s: Shipment): TrackedStatus {
+  if (s.status === "Customs" || s.status === "Released" || s.status === "Delivered") return "Arrived";
+  return s.status as TrackedStatus;
+}
+
+export const CLEARANCE_OPTIONS = ["Not updated", "Clearing started", "Duty paid", "Cleared", "Delivered"] as const;
+type Clearance = (typeof CLEARANCE_OPTIONS)[number];
+
+const STATUS_CARDS: { label: string; statuses: TrackedStatus[]; tone: string }[] = [
   { label: "Active", statuses: ["Booked", "At Origin", "Loaded"], tone: "bg-primary/10 text-primary border-primary/20" },
   { label: "On Vessel", statuses: ["On Vessel"], tone: "bg-blue-500/10 text-blue-700 border-blue-500/20" },
-  { label: "Arrived", statuses: ["Arrived"], tone: "bg-amber-500/10 text-amber-700 border-amber-500/20" },
-  { label: "Clearing", statuses: ["Customs"], tone: "bg-orange-500/10 text-orange-700 border-orange-500/20" },
-  { label: "Delivered", statuses: ["Released", "Delivered"], tone: "bg-success/10 text-success border-success/20" },
+  { label: "Landed", statuses: ["Arrived"], tone: "bg-amber-500/10 text-amber-700 border-amber-500/20" },
   { label: "Delayed", statuses: ["Delayed"], tone: "bg-destructive/10 text-destructive border-destructive/20" },
 ];
+
 
 function ShipmentsPage() {
   const [q, setQ] = useState("");
