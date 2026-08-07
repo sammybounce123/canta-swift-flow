@@ -26,6 +26,17 @@ type Ctx = {
   ccy?: string;
   forwarder?: string;
   eta?: string;
+  // External supplier beneficiary details (supplier never needs a Canta account)
+  supplierCountry?: string;
+  supplierContact?: string;
+  supplierEmail?: string;
+  bankName?: string;
+  bankAccount?: string;
+  swift?: string;
+  settlementCcy?: string;
+  compliancePurpose?: string;
+  notes?: string;
+  supplierType?: "External supplier" | "Canta supplier";
 };
 
 const LABELS: Record<TradeFileEvent, string> = {
