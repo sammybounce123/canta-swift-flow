@@ -46,7 +46,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
-import { GLOBAL_SEND_CCYS, ngnRateOf, fmtAnyCcy } from "@/lib/importer-store";
+import { ngnRateOf, fmtAnyCcy } from "@/lib/importer-store";
 import { useRole } from "@/components/RoleProvider";
 
 type Ctx = {
