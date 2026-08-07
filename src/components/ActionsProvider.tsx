@@ -899,7 +899,7 @@ function SendForm({
   useEffect(() => {
     setQuoteCcy(ben.ccy);
   }, [ben.ccy]);
-  const sourceAmt = (amt * ngnRateOf(quoteCcy)) / ngnRateOf(payCcy);
+  const receiveAmt = (amt * ngnRateOf(payCcy)) / ngnRateOf(quoteCcy);
 
 
 
