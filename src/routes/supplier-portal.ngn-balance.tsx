@@ -6,7 +6,9 @@ import { Copy, Share2, FileText } from "lucide-react";
 import { AutoConvertCard } from "@/components/supplier/AutoConvertCard";
 import {
   NGN_COLLECTION_ACCOUNT, copyText, ngnSummary, paymentInstructions, useSimpleInvoices,
+  simpleInvoiceStore, useAutoConvert,
 } from "@/lib/supplier-simple";
+
 import { useT } from "@/lib/supplier-lang";
 
 export const Route = createFileRoute("/supplier-portal/ngn-balance")({
@@ -22,7 +24,9 @@ export const Route = createFileRoute("/supplier-portal/ngn-balance")({
 function NgnBalancePage() {
   const t = useT();
   const invoices = useSimpleInvoices();
+  const autoConvert = useAutoConvert();
   const s = ngnSummary(invoices);
+
 
   return (
     <div className="space-y-4">
@@ -76,6 +80,8 @@ function NgnBalancePage() {
                 <th className="px-3 py-2 text-right">NGN</th>
                 <th className="px-3 py-2 text-right">RMB</th>
                 <th className="px-3 py-2 text-left">Status</th>
+                <th className="px-3 py-2 text-right">Conversion</th>
+
               </tr>
             </thead>
             <tbody>
@@ -86,10 +92,29 @@ function NgnBalancePage() {
                   <td className="px-3 py-2 text-right text-xs tabular-nums">₦{i.amountNgn.toLocaleString()}</td>
                   <td className="px-3 py-2 text-right text-xs tabular-nums">¥{i.amountRmb.toLocaleString()}</td>
                   <td className="px-3 py-2 text-xs">{i.status}</td>
+                  <td className="px-3 py-2 text-right">
+                    {!autoConvert && i.status === "NGN Received" ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 text-xs"
+                        onClick={() => {
+                          const res = simpleInvoiceStore.requestConversion(i.id);
+                          if (res.ok) toast.success("Conversion requested — compliance review started");
+                          else toast.error(res.error ?? "Could not request conversion");
+                        }}
+                      >
+                        Request conversion
+                      </Button>
+                    ) : (
+                      <span className="text-[11px] text-muted-foreground">{autoConvert ? "Automatic" : "—"}</span>
+                    )}
+                  </td>
                 </tr>
               ))}
+
               {s.linked.length === 0 && (
-                <tr><td colSpan={5} className="px-3 py-6 text-center text-xs text-muted-foreground">No NGN payments received yet.</td></tr>
+                <tr><td colSpan={6} className="px-3 py-6 text-center text-xs text-muted-foreground">No NGN payments received yet.</td></tr>
               )}
             </tbody>
           </table>

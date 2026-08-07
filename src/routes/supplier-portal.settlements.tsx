@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useRmbBanks, useSimpleInvoices, ngnSummary, maskAccount, type SimpleInvoice } from "@/lib/supplier-simple";
+import { useRmbBanks, useSimpleInvoices, simpleInvoiceStore, SETTLEMENT_NEXT_LABEL, ngnSummary, maskAccount, type SimpleInvoice } from "@/lib/supplier-simple";
 
 export const Route = createFileRoute("/supplier-portal/settlements")({
   head: () => ({
@@ -74,19 +74,34 @@ function SettlementsPage() {
                     <div className="font-mono text-xs">{inv.invoiceNumber} · {inv.paymentRequestId}</div>
                     <div className="text-xs text-muted-foreground">{inv.buyerCompany} · ¥{inv.amountRmb.toLocaleString()} · ₦{inv.amountNgn.toLocaleString()}</div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <Badge variant="outline" className="text-[10px]">{inv.status}</Badge>
+                    {SETTLEMENT_NEXT_LABEL[inv.status] && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 text-xs"
+                        onClick={() => {
+                          const res = simpleInvoiceStore.advanceSettlement(inv.id);
+                          if (res.ok) toast.success(res.status === "RMB Paid" ? "Provider confirmed payout — receipt available" : `Moved to ${res.status}`);
+                          else toast.error(res.error ?? "Could not advance settlement");
+                        }}
+                      >
+                        {SETTLEMENT_NEXT_LABEL[inv.status]}
+                      </Button>
+                    )}
                     <Button
                       size="sm"
                       variant="outline"
                       className="h-7 text-xs"
-                      disabled={inv.status !== "RMB Paid"}
-                      onClick={() => toast.success("Settlement receipt downloaded")}
+                      disabled={!inv.providerConfirmed}
+                      onClick={() => toast.success(`Settlement receipt ${inv.receiptId ?? ""} downloaded`)}
                     >
                       Receipt
                     </Button>
                   </div>
                 </div>
+
                 <ol className="mt-3 grid gap-2 text-xs sm:grid-cols-4 xl:grid-cols-7">
                   {STEPS.map((st, i) => (
                     <li key={st} className={`rounded-md border p-2 ${i === idx ? "border-primary bg-primary/5" : i < idx ? "border-emerald-300 bg-emerald-50" : "border-border"}`}>

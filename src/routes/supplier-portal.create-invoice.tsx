@@ -177,11 +177,12 @@ function CreateInvoicePage() {
               <Button size="sm" onClick={() => {
                 simpleInvoiceStore.update(invoice.id, { status: "Sent to Buyer", sentBy: "WhatsApp" });
                 window.open(`https://wa.me/${invoice.buyerWhatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(wechatMessage(invoice))}`, "_blank", "noopener");
-                toast.success("Opening WhatsApp");
+                toast.success("Opening WhatsApp — review and send the message yourself. Canta does not send it for you.");
               }}><MessageCircle className="mr-2 h-4 w-4" /> Send by WhatsApp</Button>
               <Button size="sm" variant="outline" onClick={() => {
                 simpleInvoiceStore.update(invoice.id, { status: "Sent to Buyer", sentBy: "Email" });
                 window.location.href = `mailto:${invoice.buyerEmail}?subject=${encodeURIComponent(`Invoice ${invoice.invoiceNumber}`)}&body=${encodeURIComponent(wechatMessage(invoice))}`;
+                toast.success("Opening your email app — Canta does not send the email for you.");
               }}><Mail className="mr-2 h-4 w-4" /> Send by Email</Button>
               <Button size="sm" variant="outline" onClick={() => {
                 simpleInvoiceStore.update(invoice.id, { status: "Sent to Buyer", sentBy: "WeChat" });

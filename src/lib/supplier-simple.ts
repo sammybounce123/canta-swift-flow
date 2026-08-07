@@ -189,6 +189,9 @@ export type SimpleInvoice = {
   status: SimpleInvoiceStatus;
   sentBy: SendChannel;
   createdAt: string;
+  receiptId?: string;
+  providerConfirmed?: boolean;
+
 };
 
 export const FX_RATE = 204.35;
@@ -200,9 +203,11 @@ export function quoteFor(amountRmb: number, rate = FX_RATE) {
   return { rate, feeNgn, amountNgn: gross + feeNgn };
 }
 
-// Deterministic seed timestamps keep SSR and client markup identical.
-const SEED_NOW = 1_735_689_600_000;
+// Seed timestamps are relative to today, floored to midnight UTC so SSR and
+// client render identical markup while demo dates never drift into the past.
 const DAY = 86_400_000;
+const SEED_NOW = Math.floor(Date.now() / DAY) * DAY;
+const dayStamp = (offsetDays: number) => new Date(SEED_NOW + offsetDays * DAY).toISOString().slice(0, 10);
 
 let invSeq = 48;
 export function nextInvoiceNumber() {
@@ -219,9 +224,10 @@ function seed(
   amountRmb: number,
   status: SimpleInvoiceStatus,
   sentBy: SendChannel,
-  expiryOffset: number,
-  createdAt: string,
+  expiryOffsetDays: number,
+  createdOffsetDays: number,
 ): SimpleInvoice {
+  const createdAt = dayStamp(createdOffsetDays);
   const q = quoteFor(amountRmb);
   return {
     id: `si_${n}`,
@@ -235,22 +241,25 @@ function seed(
     fxRate: q.rate,
     feeNgn: q.feeNgn,
     amountNgn: q.amountNgn,
-    quoteExpiresAt: SEED_NOW + expiryOffset,
-    dueDate: "2026-08-30",
+    quoteExpiresAt: SEED_NOW + expiryOffsetDays * DAY,
+    dueDate: dayStamp(21),
     paymentLink: `https://canta.pay/i/${`INV-2026-0${n}`.toLowerCase()}`,
     payoutAccountId: "RB-1001",
     status,
     sentBy,
     createdAt,
+    receiptId: status === "RMB Paid" ? `RC-30${n}` : undefined,
+    providerConfirmed: status === "RMB Paid",
   };
+
 }
 
 const SIMPLE_INVOICES: SimpleInvoice[] = [
-  seed(41, "Zenith Imports Nigeria", "Bluetooth speakers x 500", 94_500, "RMB Paid", "WhatsApp", -3 * DAY, "2026-07-18"),
-  seed(44, "Abuja Imports Ltd", "LED panels x 220", 42_300, "Auto-Converting", "Email", -1 * DAY, "2026-07-28"),
-  seed(45, "Kano Distributors", "Industrial sewing machines", 69_100, "NGN Received", "WhatsApp", -1 * DAY, "2026-07-30"),
-  seed(46, "Port Harcourt Trading", "Solar inverters x 60", 34_200, "Awaiting NGN Payment", "WeChat", 10 * DAY, "2026-08-02"),
-  seed(47, "Zenith Imports Nigeria", "Plastic injection moulds", 29_900, "Expired", "WhatsApp", -5 * DAY, "2026-07-22"),
+  seed(41, "Zenith Imports Nigeria", "Bluetooth speakers x 500", 94_500, "RMB Paid", "WhatsApp", -3, -14),
+  seed(44, "Abuja Imports Ltd", "LED panels x 220", 42_300, "Auto-Converting", "Email", 5, -4),
+  seed(45, "Kano Distributors", "Industrial sewing machines", 69_100, "NGN Received", "WhatsApp", 6, -2),
+  seed(46, "Port Harcourt Trading", "Solar inverters x 60", 34_200, "Awaiting NGN Payment", "WeChat", 10, -1),
+  seed(47, "Zenith Imports Nigeria", "Plastic injection moulds", 29_900, "Expired", "WhatsApp", -5, -8),
 ];
 
 let invVersion = 0;
@@ -309,9 +318,61 @@ export const simpleInvoiceStore = {
       status: "Quote Locked",
     });
   },
+  /** Demo only: a Nigerian buyer pays the NGN amount and the provider confirms it. */
+  simulateBuyerPayment: (id: string): { ok: boolean; error?: string } => {
+    const inv = SIMPLE_INVOICES.find((i) => i.id === id);
+    if (!inv) return { ok: false, error: "Invoice not found." };
+    if (!AWAITING_PAYMENT.includes(inv.status)) return { ok: false, error: "This invoice is not awaiting buyer payment." };
+    if (isInvoiceQuoteExpired(inv)) return { ok: false, error: "Quote expired — refresh the quote before payment." };
+    simpleInvoiceStore.update(id, { status: "NGN Received" });
+    return { ok: true };
+  },
+  /** Manual conversion request, used when Automatic Convert is OFF. */
+  requestConversion: (id: string): { ok: boolean; error?: string } => {
+    const inv = SIMPLE_INVOICES.find((i) => i.id === id);
+    if (!inv) return { ok: false, error: "Invoice not found." };
+    if (inv.status !== "NGN Received") return { ok: false, error: "Conversion can only be requested once NGN is received." };
+    simpleInvoiceStore.update(id, { status: "Compliance Review" });
+    return { ok: true };
+  },
+  /**
+   * Advance one settlement stage. RMB Paid is only ever reached through an
+   * explicit payout-provider confirmation, which also issues the receipt.
+   */
+  advanceSettlement: (id: string): { ok: boolean; status?: SimpleInvoiceStatus; error?: string } => {
+    const inv = SIMPLE_INVOICES.find((i) => i.id === id);
+    if (!inv) return { ok: false, error: "Invoice not found." };
+    const next = SETTLEMENT_NEXT[inv.status];
+    if (!next) return { ok: false, error: "No further settlement stage for this invoice." };
+    const patch: Partial<SimpleInvoice> = { status: next };
+    if (next === "RMB Paid") {
+      patch.receiptId = `RC-${inv.paymentRequestId.replace("PR-", "")}`;
+      patch.providerConfirmed = true;
+    }
+    simpleInvoiceStore.update(id, patch);
+    return { ok: true, status: next };
+  },
   subscribe: (f: () => void) => { invSubs.add(f); return () => invSubs.delete(f); },
   getVersion: () => invVersion,
 };
+
+const AWAITING_PAYMENT: SimpleInvoiceStatus[] = ["Quote Locked", "Sent to Buyer", "Buyer Viewed", "Awaiting NGN Payment"];
+
+const SETTLEMENT_NEXT: Partial<Record<SimpleInvoiceStatus, SimpleInvoiceStatus>> = {
+  "NGN Received": "Compliance Review",
+  "Compliance Review": "Auto-Converting",
+  "Auto-Converting": "RMB Settlement Pending",
+  "RMB Settlement Pending": "RMB Paid",
+};
+
+/** Label for the next demo step in the settlement chain. */
+export const SETTLEMENT_NEXT_LABEL: Partial<Record<SimpleInvoiceStatus, string>> = {
+  "NGN Received": "Simulate compliance review",
+  "Compliance Review": "Simulate conversion",
+  "Auto-Converting": "Simulate payout initiated",
+  "RMB Settlement Pending": "Simulate provider confirmation",
+};
+
 
 export function useSimpleInvoices() {
   useSyncExternalStore(simpleInvoiceStore.subscribe, simpleInvoiceStore.getVersion, simpleInvoiceStore.getVersion);
