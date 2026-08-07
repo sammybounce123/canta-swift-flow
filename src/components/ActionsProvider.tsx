@@ -352,6 +352,7 @@ function FundForm({
 }) {
   const { profile } = useRole();
   const [fundCcy, setFundCcy] = useState<FundingCcy>(ccy === "USDT" ? "USDT" : "NGN");
+  const [target, setTarget] = useState<string>(ccy);
   const [amount, setAmount] = useState(ccy === "USDT" ? "1000" : "1000000");
   const [method, setMethod] = useState<string | null>(null);
   const [stage, setStage] = useState<"form" | "vaccount" | "tracker">("form");
