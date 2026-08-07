@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 import { fmtMoney } from "@/lib/mock";
 import { getBatches, subscribeBatches } from "@/lib/bulk-payout-store";
+import { BulkPayoutForm } from "@/components/treasury/BulkPayoutForm";
 import { useActions } from "@/components/actions-context";
 import { toast } from "sonner";
 
@@ -516,7 +517,7 @@ function BulkPayoutBatches() {
                 "Source wallet",
                 "Currency",
                 "Total amount",
-                "Recipients",
+                "Saved beneficiaries",
                 "Approval",
                 "Payout",
                 "Created by",
@@ -605,6 +606,7 @@ function CreatePayoutDialog({
   onCreate: (rows: Payment[]) => void;
 }) {
   const [mode, setMode] = useState<"single" | "bulk">("single");
+  const { openAddBeneficiary } = useActions();
   const [single, setSingle] = useState<SingleForm>(emptySingle());
   const [batchCcy, setBatchCcy] = useState("USD");
   const [bulkRows, setBulkRows] = useState<BulkRow[]>([
