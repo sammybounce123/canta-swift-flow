@@ -59,6 +59,13 @@ const RECENT_ACTIVITY = [
   { at: "3h ago", kind: "Payment", text: "PR-3055 failed at settlement rail — retry queued", to: "/treasury" },
 ];
 
+const TRADE_FILE_MONITOR: { id: string; supplier: string; importer: string; amount: string; stage: string; type: "External supplier" | "Canta supplier" }[] = [
+  { id: "TF-2026-0214", supplier: "Shenzhen Hua Tech Co.", importer: "ABC Electronics", amount: "USD 184,000", stage: "Compliance review", type: "External supplier" },
+  { id: "TF-2026-0211", supplier: "Yiwu General Trading", importer: "Balogun Trade Hub", amount: "RMB 620,400", stage: "Awaiting NGN funding", type: "Canta supplier" },
+  { id: "TF-2026-0208", supplier: "Meridian Supplies Ltd", importer: "Global Motors", amount: "GBP 92,400", stage: "Settlement in progress", type: "External supplier" },
+  { id: "TF-2026-0203", supplier: "Contoso Industries", importer: "Dav Excel Autos", amount: "EUR 48,900", stage: "Receipt issued", type: "External supplier" },
+];
+
 function toneClasses(t: Metric["tone"]) {
   switch (t) {
     case "warn": return "border-amber-500/40 bg-amber-500/5";
