@@ -88,8 +88,8 @@ function Solicitors() {
         <div>
           <h1 className="text-2xl font-semibold">Solicitor directory</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Saved solicitor beneficiaries linked to your Kingsbridge Property Partners referrals. Bank details
-            are masked by default.
+            Saved solicitor beneficiaries linked to your Kingsbridge Property Partners referrals.
+            Bank details are masked by default.
           </p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>

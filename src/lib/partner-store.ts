@@ -253,8 +253,7 @@ function seedLinkFor(c: PaymentCase, quote?: FxQuote): PaymentLink | undefined {
     status,
     createdAt,
     sentAt: status === "Active" ? undefined : `${c.createdAt}T10:25:00.000Z`,
-    openedAt:
-      status === "Active" || status === "Sent" ? undefined : `${c.createdAt}T12:05:00.000Z`,
+    openedAt: status === "Active" || status === "Sent" ? undefined : `${c.createdAt}T12:05:00.000Z`,
   };
 }
 

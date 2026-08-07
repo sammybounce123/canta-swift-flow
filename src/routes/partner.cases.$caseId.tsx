@@ -751,9 +751,9 @@ function VerificationTab({ c }: any) {
         </dl>
       )}
       <div className="mt-4 text-[11px] text-muted-foreground italic border-t pt-3">
-        BVN is collected by Canta directly from the client. Kingsbridge Property Partners users cannot enter a
-        BVN on behalf of the client and never see the raw or masked BVN — only the status (BVN
-        Pending / Submitted / Verified / Failed).
+        BVN is collected by Canta directly from the client. Kingsbridge Property Partners users
+        cannot enter a BVN on behalf of the client and never see the raw or masked BVN — only the
+        status (BVN Pending / Submitted / Verified / Failed).
       </div>
     </Card>
   );

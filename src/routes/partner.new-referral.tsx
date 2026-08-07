@@ -214,7 +214,6 @@ function NewReferral() {
         </p>
       </div>
 
-
       <Card className="p-6 shadow-card space-y-6">
         <Section title="Referral owner">
           <div className="md:col-span-2 flex items-center gap-3 p-3 rounded-lg border bg-secondary/30">
@@ -400,7 +399,11 @@ function NewReferral() {
                 <Link2 className="h-4 w-4 mr-1.5" /> Generate Payment Link
               </Button>
             </div>
-            <Button className="bg-primary" onClick={submit} disabled={!canCreateCase || !!createdCaseId}>
+            <Button
+              className="bg-primary"
+              onClick={submit}
+              disabled={!canCreateCase || !!createdCaseId}
+            >
               <Send className="h-4 w-4 mr-1.5" /> Create Payment Case
             </Button>
           </div>
