@@ -68,7 +68,7 @@ type IssuedCard = {
   spendByDim: Record<string, { label: string; amount: number }[]>;
 };
 
-let _idSeq = 1;
+const _idSeq = 1;
 const nextId = () => `CRD-${(Math.floor(Math.random() * 90000) + 10000).toString()}`;
 
 export function WorkspaceCardsHub({
