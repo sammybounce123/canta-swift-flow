@@ -460,7 +460,7 @@ function FundGate({ c, quote, docsConfirmed, onPaid }: any) {
     { ok: !!v?.sourceOfFunds, label: "Source of funds declared" },
     { ok: !!v?.consent?.propertyPurpose, label: "Payment purpose confirmed" },
     { ok: !!v?.consent?.canta, label: "Consent: Canta to process this property payment" },
-    { ok: !!v?.consent?.sharedDocs, label: "Consent: use of B&C-shared KYC documents" },
+    { ok: !!v?.consent?.sharedDocs, label: "Consent: use of partner-shared KYC documents" },
     { ok: !!v?.consent?.terms, label: "Canta Terms of Service accepted" },
     { ok: !!v?.consent?.privacy, label: "Canta Privacy & Data Processing Policy accepted" },
     { ok: !!docsConfirmed, label: "Required documents uploaded or confirmed" },

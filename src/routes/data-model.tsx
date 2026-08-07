@@ -227,7 +227,7 @@ const ENTITIES: Entity[] = [
   },
   {
     name: "partner_marketers",
-    purpose: "B&C marketer attribution",
+    purpose: "partner marketer attribution",
     keyFields: ["id", "name", "manager_id"],
     modules: ["Partner Property"],
     relationships: ["partner_cases", "partner_commissions"],

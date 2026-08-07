@@ -175,30 +175,30 @@ const GROUPS: Group[] = [
     persona: "Partner Property — Kingsbridge Property Partners",
     route: "/partner",
     tagline:
-      "B&C marketers, admins, finance and compliance routing African property buyers through Canta to UK solicitors.",
+      "partner marketers, admins, finance and compliance routing African property buyers through Canta to UK solicitors.",
     stories: [
       {
-        as: "a B&C marketer",
+        as: "a partner marketer",
         want: "to create a referral that generates a payment link",
         so: "my client can pay safely through Canta",
       },
       {
-        as: "a B&C client",
+        as: "a partner client",
         want: "to complete BVN entry, DOB, full-name confirmation, source of funds, payment purpose and 5 named consents before any funding instructions are shown",
         so: "I am only funding once compliance is satisfied",
       },
       {
-        as: "a B&C client",
+        as: "a partner client",
         want: "the FX quote to still be valid and required documents to be confirmed before funding instructions appear",
         so: "I never fund against an expired quote",
       },
       {
         as: "Canta compliance",
-        want: "B&C users to never enter BVN on behalf of the client and to never see the raw or masked BVN — only BVN Pending / Submitted / Verified / Failed",
+        want: "partner users to never enter BVN on behalf of the client and to never see the raw or masked BVN — only BVN Pending / Submitted / Verified / Failed",
         so: "client PII stays protected",
       },
       {
-        as: "a B&C marketer",
+        as: "a partner marketer",
         want: "to see every quote, payment link, funding and payout attributed to me in /partner/marketers and /partner/commissions",
         so: "my book of business is transparent",
       },

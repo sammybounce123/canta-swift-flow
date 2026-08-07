@@ -142,7 +142,7 @@ export const PARTNER_ORG = {
 export const MARKETERS: Marketer[] = [
   {
     id: "U-ADMIN",
-    name: "Charlotte Baron",
+    name: "Charlotte Hayes",
     email: "charlotte@kingsbridgepartners.co.uk",
     phone: "+44 20 7946 1100",
     role: "partner_admin",
@@ -154,7 +154,7 @@ export const MARKETERS: Marketer[] = [
   },
   {
     id: "U-MGR-1",
-    name: "Marcus Cabot",
+    name: "Marcus Whitfield",
     email: "marcus@kingsbridgepartners.co.uk",
     phone: "+44 20 7946 1101",
     role: "partner_manager",

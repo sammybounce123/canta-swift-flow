@@ -183,7 +183,7 @@ const WORKSPACE_PROFILES: Record<import("@/lib/profile").WorkspaceType, Workspac
     badge: "Supplier Mode",
   },
   partner_property: {
-    name: "Charlotte Baron",
+    name: "Charlotte Hayes",
     initials: "CB",
     title: "Partner Admin",
     badge: "Partner Mode",

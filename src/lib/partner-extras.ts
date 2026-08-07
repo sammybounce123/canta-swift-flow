@@ -1,5 +1,5 @@
 // Extensions layered on top of partner-store: solicitor verification state,
-// commission ledger, document audit trail, and B&C settings (commissions toggle).
+// commission ledger, document audit trail, and partner settings (commissions toggle).
 // All client-only, persisted to localStorage.
 
 import type { PartnerRole } from "./partner";
