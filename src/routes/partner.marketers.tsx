@@ -11,6 +11,7 @@ import {
   canSeeAllMarketers,
 } from "@/lib/partner";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
+import { demoToast } from "@/lib/partner-demo";
 
 export const Route = createFileRoute("/partner/marketers")({
   head: () => ({ meta: [{ title: "Marketers — Kingsbridge Property Partners" }] }),
@@ -92,10 +93,14 @@ function Marketers() {
               </dl>
 
               <div className="mt-4 flex gap-2">
-                <Button size="sm" variant="outline" className="flex-1">
-                  View clients
+                <Button size="sm" variant="outline" className="flex-1" asChild>
+                  <Link to="/partner/clients">View clients</Link>
                 </Button>
-                <Button size="sm" variant="ghost">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => demoToast(`Message ${r.name}`)}
+                >
                   Message
                 </Button>
               </div>

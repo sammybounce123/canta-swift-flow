@@ -41,6 +41,7 @@ import {
 } from "@/lib/partner";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { downloadCsv } from "@/lib/partner-demo";
 
 export const Route = createFileRoute("/partner/payouts")({
   head: () => ({ meta: [{ title: "Solicitor Payouts — Kingsbridge Property Partners" }] }),
@@ -102,8 +103,8 @@ function Payouts() {
   return (
     <div className="space-y-5">
       <ReadinessBar
-        status="Requires Setup"
-        cue="Solicitor payouts are tracked from payment case to receipt."
+        status={total > 0 ? "Payout tracking active" : "Provider confirmation required"}
+        cue="Track payouts to verified solicitor accounts from client funding to receipt."
       />
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
@@ -114,7 +115,7 @@ function Payouts() {
               : "Every payout sent to UK solicitors on behalf of Kingsbridge Property Partners clients."}
           </p>
         </div>
-        <Button variant="outline">
+        <Button variant="outline" onClick={exportCsv}>
           <Download className="h-4 w-4 mr-1.5" /> Export
         </Button>
       </div>
@@ -239,11 +240,27 @@ function Payouts() {
                       </Badge>
                     </td>
                     <td className="py-3 px-3 text-xs text-muted-foreground">
-                      {c.paymentReference ?? `BC/${c.id}/COMPL`}
+                      {c.paymentReference ?? `KPP/${c.id}/COMPL`}
                     </td>
                     <td className="py-3 px-3">
                       {receipted ? (
-                        <Button size="sm" variant="ghost" className="text-success">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-success"
+                          onClick={() =>
+                            downloadCsv(`receipt-${c.id}.csv`, [
+                              ["Case", "Client", "Amount GBP", "Reference", "Status"],
+                              [
+                                c.ref,
+                                c.clientName,
+                                c.amountGBP,
+                                c.paymentReference ?? `KPP/${c.id}/COMPL`,
+                                c.status,
+                              ],
+                            ])
+                          }
+                        >
                           <FileCheck2 className="h-3.5 w-3.5 mr-1" /> Download
                         </Button>
                       ) : (

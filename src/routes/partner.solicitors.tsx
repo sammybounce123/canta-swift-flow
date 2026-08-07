@@ -46,6 +46,7 @@ import {
 } from "@/lib/partner-extras";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { demoToast, downloadCsv } from "@/lib/partner-demo";
 
 export const Route = createFileRoute("/partner/solicitors")({
   head: () => ({ meta: [{ title: "Solicitors — Kingsbridge Property Partners" }] }),
@@ -255,13 +256,26 @@ function Solicitors() {
                     ))}
                   </SelectContent>
                 </Select>
-                <Button size="sm" variant="ghost">
-                  <Users className="h-3.5 w-3.5 mr-1.5" /> Clients
+                <Button size="sm" variant="ghost" asChild>
+                  <Link to="/partner/clients">
+                    <Users className="h-3.5 w-3.5 mr-1.5" /> Clients
+                  </Link>
                 </Button>
-                <Button size="sm" variant="ghost">
-                  <History className="h-3.5 w-3.5 mr-1.5" /> Payouts
+                <Button size="sm" variant="ghost" asChild>
+                  <Link to="/partner/payouts">
+                    <History className="h-3.5 w-3.5 mr-1.5" /> Payouts
+                  </Link>
                 </Button>
-                <Button size="sm" variant="ghost">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() =>
+                    downloadCsv(`solicitor-${s.id}-confirmation.csv`, [
+                      ["Firm", "Contact", "Country", "Currency", "Bank", "Status"],
+                      [s.firm, s.contact, s.country, s.currency, s.bank, state.status],
+                    ])
+                  }
+                >
                   <Download className="h-3.5 w-3.5 mr-1.5" /> Confirmation
                 </Button>
               </div>

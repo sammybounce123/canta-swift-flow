@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import { CASES, SOLICITORS, formatGBP, getSolicitor } from "@/lib/partner";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { demoToast, downloadCsv } from "@/lib/partner-demo";
 
 export const Route = createFileRoute("/partner/reports")({
   head: () => ({ meta: [{ title: "Reports — Kingsbridge Property Partners" }] }),
@@ -68,13 +69,13 @@ function Reports() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => exportCsv("partner-report.csv")}>
             <FileText className="h-4 w-4 mr-1.5" /> CSV
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => exportCsv("partner-report-excel.csv")}>
             <FileSpreadsheet className="h-4 w-4 mr-1.5" /> Excel
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => demoToast("PDF export")}>
             <Download className="h-4 w-4 mr-1.5" /> PDF
           </Button>
         </div>

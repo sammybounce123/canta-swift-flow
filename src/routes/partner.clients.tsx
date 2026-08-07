@@ -22,6 +22,7 @@ import {
   type CaseStatus,
 } from "@/lib/partner";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
+import { downloadCsv } from "@/lib/partner-demo";
 
 export const Route = createFileRoute("/partner/clients")({
   head: () => ({ meta: [{ title: "Partner Clients — Kingsbridge Property Partners" }] }),
@@ -113,7 +114,7 @@ function PartnerClientsPage() {
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <Button variant="outline">
+          <Button variant="outline" onClick={exportCsv}>
             <Download className="h-4 w-4 mr-1.5" /> Export
           </Button>
           <Button asChild>
