@@ -75,6 +75,19 @@ function FX() {
   const [chosenBeneficiary, setChosenBeneficiary] = useState<Beneficiary | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
+  /** Only currencies the customer holds a wallet in. */
+  const walletCcys: string[] = wallets.map((w) => w.ccy);
+
+  useEffect(() => {
+    if (walletCcys.length && !walletCcys.includes(from)) setFrom(walletCcys[0]!);
+    if (walletCcys.length && (to === from || !walletCcys.includes(to))) {
+      const alt = walletCcys.find((c) => c !== from);
+      if (alt) setTo(alt);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [from, to]);
+
+
   useEffect(() => {
     const i = setInterval(() => setTimer((t) => (t > 0 ? t - 1 : 30)), 1000);
     return () => clearInterval(i);
