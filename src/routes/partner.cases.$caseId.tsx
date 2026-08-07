@@ -332,7 +332,8 @@ function CaseDetail() {
 
 /* ---------- Tabs ---------- */
 
-function DocumentsTab({ caseId, docs, actor }: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+function DocumentsTab({ caseId, docs, actor }: any) {
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   const [type, setType] = useState<(typeof DOC_TYPES)[number]>("International passport");
   const [name, setName] = useState("");
   const add = () => {
@@ -356,7 +357,9 @@ function DocumentsTab({ caseId, docs, actor }: any) { // eslint-disable-line @ty
       <Card className="p-5 shadow-card">
         <div className="text-sm font-semibold mb-3">Upload document on behalf of client</div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <Select value={type} onValueChange={(v) => setType(v as any)}> // eslint-disable-line @typescript-eslint/no-explicit-any
+          <Select value={type} onValueChange={(v) => setType(v as any)}>
+            {" "}
+            // eslint-disable-line @typescript-eslint/no-explicit-any
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -388,23 +391,27 @@ function DocumentsTab({ caseId, docs, actor }: any) { // eslint-disable-line @ty
           </div>
         ) : (
           <ul className="text-sm divide-y border rounded-lg">
-            {docs.map((d: any) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
-              <li key={d.id} className="px-3 py-2.5 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2 min-w-0">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                  <div className="min-w-0">
-                    <div className="font-medium truncate">{d.name}</div>
-                    <div className="text-[11px] text-muted-foreground">
-                      {d.type} · uploaded by {d.uploadedByName} ({d.uploadedByRole}) ·{" "}
-                      {new Date(d.uploadedAt).toLocaleString()}
+            {docs.map(
+              (
+                d: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+              ) => (
+                <li key={d.id} className="px-3 py-2.5 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <FileText className="h-4 w-4 text-muted-foreground" />
+                    <div className="min-w-0">
+                      <div className="font-medium truncate">{d.name}</div>
+                      <div className="text-[11px] text-muted-foreground">
+                        {d.type} · uploaded by {d.uploadedByName} ({d.uploadedByRole}) ·{" "}
+                        {new Date(d.uploadedAt).toLocaleString()}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <Button size="sm" variant="ghost">
-                  <Download className="h-3.5 w-3.5" />
-                </Button>
-              </li>
-            ))}
+                  <Button size="sm" variant="ghost">
+                    <Download className="h-3.5 w-3.5" />
+                  </Button>
+                </li>
+              ),
+            )}
           </ul>
         )}
       </Card>
@@ -644,7 +651,8 @@ function FxQuoteTab({
   );
 }
 
-function PaymentLinkTab({ c, actor }: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+function PaymentLinkTab({ c, actor }: any) {
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   const link = c.paymentLink;
   const copy = () => {
     if (!link || typeof window === "undefined") return;
@@ -719,7 +727,8 @@ function PaymentLinkTab({ c, actor }: any) { // eslint-disable-line @typescript-
   );
 }
 
-function VerificationTab({ c }: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+function VerificationTab({ c }: any) {
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   const v = c.verification;
   return (
     <Card className="p-6 shadow-card">
@@ -757,7 +766,8 @@ function VerificationTab({ c }: any) { // eslint-disable-line @typescript-eslint
   );
 }
 
-function FundingTab({ c, actor }: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+function FundingTab({ c, actor }: any) {
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   const f = c.funding;
   const [payer, setPayer] = useState(c.clientName);
   const [amount, setAmount] = useState("");

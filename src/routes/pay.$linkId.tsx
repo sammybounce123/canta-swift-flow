@@ -226,7 +226,8 @@ function Stepper({ step }: { step: Step }) {
   );
 }
 
-function ReviewStep({ c, quote, sol, onNext }: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+function ReviewStep({ c, quote, sol, onNext }: any) {
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   return (
     <Card className="p-6 shadow-card space-y-4">
       <div className="text-sm font-semibold">Review your payment</div>
@@ -259,7 +260,8 @@ function ReviewStep({ c, quote, sol, onNext }: any) { // eslint-disable-line @ty
   );
 }
 
-function VerifyStep({ caseId, clientName, onDone }: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+function VerifyStep({ caseId, clientName, onDone }: any) {
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   const [bvn, setBvn] = useState("");
   const [dob, setDob] = useState("");
   const [name, setName] = useState(false);
@@ -391,7 +393,8 @@ function ConsentRow({
   );
 }
 
-function DocStep({ c, confirmed, setConfirmed, onNext }: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+function DocStep({ c, confirmed, setConfirmed, onNext }: any) {
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   return (
     <Card className="p-6 shadow-card space-y-4">
       <div className="text-sm font-semibold flex items-center gap-2">
@@ -403,27 +406,31 @@ function DocStep({ c, confirmed, setConfirmed, onNext }: any) { // eslint-disabl
             Documents already provided by Baron &amp; Cabot:
           </div>
           <ul className="text-sm border rounded-lg divide-y">
-            {c.documents.map((d: any) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
-              <li
-                key={d.id}
-                className="px-3 py-2 flex justify-between"
-                onClick={() =>
-                  appendDocAudit({
-                    caseId: c.id,
-                    docType: d.type,
-                    action: "Document viewed by client",
-                    actorId: "client",
-                    actorName: c.clientName,
-                    actorRole: "client",
-                  })
-                }
-              >
-                <span className="flex items-center gap-2">
-                  <FileText className="h-3.5 w-3.5 text-muted-foreground" /> {d.type}
-                </span>
-                <span className="text-[11px] text-muted-foreground">{d.name}</span>
-              </li>
-            ))}
+            {c.documents.map(
+              (
+                d: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+              ) => (
+                <li
+                  key={d.id}
+                  className="px-3 py-2 flex justify-between"
+                  onClick={() =>
+                    appendDocAudit({
+                      caseId: c.id,
+                      docType: d.type,
+                      action: "Document viewed by client",
+                      actorId: "client",
+                      actorName: c.clientName,
+                      actorRole: "client",
+                    })
+                  }
+                >
+                  <span className="flex items-center gap-2">
+                    <FileText className="h-3.5 w-3.5 text-muted-foreground" /> {d.type}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground">{d.name}</span>
+                </li>
+              ),
+            )}
           </ul>
         </>
       ) : (
@@ -448,7 +455,8 @@ function DocStep({ c, confirmed, setConfirmed, onNext }: any) { // eslint-disabl
   );
 }
 
-function FundGate({ c, quote, docsConfirmed, onPaid }: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+function FundGate({ c, quote, docsConfirmed, onPaid }: any) {
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   // Build the required checklist
   const v = c.verification;
   const expiresMs = quote ? new Date(quote.expiresAt).getTime() - Date.now() : 0;
@@ -498,7 +506,8 @@ function FundGate({ c, quote, docsConfirmed, onPaid }: any) { // eslint-disable-
   return <FundStep c={c} quote={quote} onPaid={onPaid} />;
 }
 
-function FundStep({ c, quote, onPaid }: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+function FundStep({ c, quote, onPaid }: any) {
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   const copy = (s: string) => {
     navigator.clipboard?.writeText(s);
     toast.success("Copied");

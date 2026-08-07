@@ -37,7 +37,8 @@ export const Route = createFileRoute("/collections/new")({
   component: NewCollectionPage,
 });
 
-const ICON: Record<string, any> = { // eslint-disable-line @typescript-eslint/no-explicit-any
+const ICON: Record<string, any> = {
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   tuition: GraduationCap,
   medical: Stethoscope,
   property: Home,
@@ -90,7 +91,8 @@ function NewCollectionPage() {
   );
 }
 
-function pushLS(key: string, value: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+function pushLS(key: string, value: any) {
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   try {
     const raw = localStorage.getItem(key);
     const arr = raw ? JSON.parse(raw) : [];

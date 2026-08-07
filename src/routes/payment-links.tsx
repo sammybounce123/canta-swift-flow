@@ -128,7 +128,8 @@ function readLS(): PaymentLink[] {
     const raw = localStorage.getItem(LS_KEY);
     if (!raw) return SEED;
     const arr = JSON.parse(raw);
-    const norm: PaymentLink[] = (Array.isArray(arr) ? arr : []).map((x: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+    const norm: PaymentLink[] = (Array.isArray(arr) ? arr : []).map((x: any) => {
+      // eslint-disable-line @typescript-eslint/no-explicit-any
       const settleCcy = x.settleCcy ?? x.ccy ?? "USD";
       const chargeCcy = x.chargeCcy ?? settleCcy;
       const settleAmount = Number(x.settleAmount ?? x.amount) || 0;

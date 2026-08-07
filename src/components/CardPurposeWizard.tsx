@@ -79,7 +79,8 @@ export type CardDraft = {
   blockedCategories: string[];
 };
 
-const PURPOSES: { l: CardPurpose; i: any; d: string; tone: string }[] = [ // eslint-disable-line @typescript-eslint/no-explicit-any
+const PURPOSES: { l: CardPurpose; i: any; d: string; tone: string }[] = [
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   {
     l: "Business Expenses",
     i: Briefcase,
