@@ -108,39 +108,13 @@ function SettlementsPage() {
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant="outline" className="text-[10px]">
-                      {inv.status}
+                      {inv.status === "RMB Settlement Pending"
+                        ? "Provider Confirmation Pending"
+                        : inv.status}
                     </Badge>
-                    {SETTLEMENT_NEXT_LABEL[inv.status] && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-7 text-xs"
-                        onClick={() => {
-                          const res = simpleInvoiceStore.advanceSettlement(inv.id);
-                          if (res.ok)
-                            toast.success(
-                              res.status === "RMB Paid"
-                                ? "Provider confirmed payout — receipt available"
-                                : `Moved to ${res.status}`,
-                            );
-                          else toast.error(res.error ?? "Could not advance settlement");
-                        }}
-                      >
-                        {SETTLEMENT_NEXT_LABEL[inv.status]}
-                      </Button>
-                    )}
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="h-7 text-xs"
-                      disabled={!inv.providerConfirmed}
-                      onClick={() =>
-                        toast.success(`Settlement receipt ${inv.receiptId ?? ""} downloaded`)
-                      }
-                    >
-                      Receipt
-                    </Button>
+                    <SupplierInvoiceActions invoice={inv} className="flex flex-wrap gap-1.5" />
                   </div>
+
                 </div>
 
                 <ol className="mt-3 grid gap-2 text-xs sm:grid-cols-4 xl:grid-cols-7">
