@@ -46,7 +46,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
-import { ngnRateOf, fmtAnyCcy, WALLET_CCYS } from "@/lib/importer-store";
+import { ngnRateOf, fmtAnyCcy, WALLET_CCYS, GLOBAL_SEND_CCYS } from "@/lib/importer-store";
 import { useRole } from "@/components/RoleProvider";
 import { ActionsContext, type ActionsContextValue } from "@/components/actions-context";
 
@@ -444,9 +444,9 @@ function FundForm({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {WALLET_CCYS.map((c) => (
-              <SelectItem key={c} value={c}>
-                {c}
+            {GLOBAL_SEND_CCYS.map((c) => (
+              <SelectItem key={c.code} value={c.code}>
+                {c.code} · {c.name}
               </SelectItem>
             ))}
           </SelectContent>
