@@ -34,7 +34,7 @@ export const Route = createFileRoute("/")({
 
 const aiFeatures = [
   { icon: ScanLine, t: "Document extraction", d: "AI-assisted document review for BLs, invoices and packing lists." },
-  { icon: TrendingUp, t: "Trade file insights", d: "Spot which shipments, suppliers and payments need attention next." },
+  { icon: TrendingUp, t: "Payment & shipment insights", d: "Spot which supplier payments, shipments, documents, and receipts need attention next." },
   { icon: Brain, t: "AI assistant", d: "Summarize trade conversations, draft replies, and track next steps." },
       { icon: Receipt, t: "Landed cost estimates", d: "Forecast duty, freight, agent quote inputs and FX before goods ship." },
   { icon: Languages, t: "WhatsApp onboarding", d: "Onboard importers conversationally — no app required." },
