@@ -266,7 +266,22 @@ function seed(): ImporterState {
   return {
     ngnBalance: 24_500_000,
     usdtBalance: 3_200,
+    wallets: [
+      { ccy: "NGN", available: 24_500_000, pending: 6_000_000, status: "Active", lastActivity: iso(-1) },
+      { ccy: "USDT", available: 3_200, pending: 0, status: "Active", lastActivity: iso(-5) },
+    ],
+    walletTx: [
+      { id: "WT-9001", at: iso(-9), ccy: "NGN", type: "Wallet funding", amount: 20_000_000, status: "Completed", reference: "FD-1042", receiptNo: "FR-1042" },
+      { id: "WT-9002", at: iso(-5), ccy: "USDT", type: "Wallet funding", amount: 3_200, status: "Completed", reference: "FD-1043", receiptNo: "FR-1043" },
+      { id: "WT-9003", at: iso(-1), ccy: "NGN", type: "Wallet funding", amount: 6_000_000, status: "Pending", reference: "FD-1044" },
+    ],
+    fundingReceipts: [
+      { receiptNo: "FR-1042", fundingRef: "FD-1042", ccy: "NGN", amount: 20_000_000, method: "NGN bank transfer", providerRef: "PRV-NGN-448120", at: iso(-9), status: "Wallet credited" },
+      { receiptNo: "FR-1043", fundingRef: "FD-1043", ccy: "USDT", amount: 3_200, method: "USDT transfer (TRC20)", providerRef: "PRV-USDT-771903", at: iso(-5), status: "Wallet credited" },
+    ],
+    drafts: [],
     suppliers: [
+
       { id: "SUP-001", name: "Yiwu Fashion Co.", country: "China", contact: "Mei Lin", contactChannel: "mei@yiwufashion.cn", bankName: "Bank of China", accountName: "Yiwu Fashion Co. Ltd", accountNumber: "6217 0021 8899 4410", swift: "BKCHCNBJ", currency: "RMB", status: "Details checked", lastPayment: iso(-12) },
       { id: "SUP-002", name: "Istanbul Textiles", country: "Turkey", contact: "Ahmet K.", contactChannel: "ahmet@istex.tr", bankName: "Ziraat Bankasi", accountName: "Istanbul Textiles A.S.", accountNumber: "TR33 0006 1005 1978 6457", swift: "TCZBTR2A", currency: "EUR", status: "Saved", lastPayment: iso(-40) },
       { id: "SUP-003", name: "Northwind Trading FZE", country: "United Arab Emirates", contact: "Sara N.", contactChannel: "sara@northwind.ae", bankName: "Emirates NBD", accountName: "Northwind Trading FZE", accountNumber: "AE07 0331 2345 6789 0123", swift: "EBILAEAD", currency: "USD", status: "Saved" },
