@@ -202,7 +202,7 @@ function FX() {
               </button>
             </div>
 
-            <label className="text-xs text-muted-foreground">Recipient gets</label>
+            <label className="text-xs text-muted-foreground">You receive in your {to} wallet</label>
             <div className="grid grid-cols-[1fr_auto] items-center gap-2 p-3 rounded-xl bg-secondary/50 border border-border">
               <div
                 style={{ wordBreak: "normal", overflowWrap: "normal" }}
