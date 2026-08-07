@@ -110,12 +110,32 @@ function BalancePage() {
         <Button variant="outline" onClick={() => openFund("USDT")}>
           Fund USDT wallet
         </Button>
+        <Button variant="secondary" onClick={() => openConvert("NGN", "USD")}>
+          <ArrowLeftRight className="h-4 w-4" /> Convert
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => navigate({ to: "/importer/payments", search: { tab: "new" } })}
+        >
+          <Send className="h-4 w-4" /> Convert &amp; Send
+        </Button>
         {pending.length > 0 && (
           <Badge variant="outline" className="self-center text-[10px]">
             {pending.length} funding request{pending.length === 1 ? "" : "s"} in progress
           </Badge>
         )}
       </div>
+      <div className="grid gap-1 text-[11px] text-muted-foreground -mt-3">
+        <span>
+          <strong className="text-foreground">Convert</strong> — move money between your Canta
+          wallets. No recipient needed.
+        </span>
+        <span>
+          <strong className="text-foreground">Convert &amp; Send</strong> — convert funds and send
+          to a supplier or beneficiary after review.
+        </span>
+      </div>
+
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
         {s.wallets.map((w) => (
