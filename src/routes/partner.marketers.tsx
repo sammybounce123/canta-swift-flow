@@ -27,8 +27,8 @@ function Marketers() {
         <ShieldAlert className="h-10 w-10 mx-auto text-muted-foreground" />
         <div className="mt-3 text-base font-semibold">Restricted view</div>
         <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
-          Only Partner Admins and Partner Managers can view marketer performance. Ask a Partner
-          Baron for access.
+          Only Partner Admins and Partner Managers can view marketer performance. Ask your Partner
+          Admin for access.
         </p>
       </Card>
     );
