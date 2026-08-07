@@ -1184,7 +1184,12 @@ function AddBeneficiaryForm({ onClose }: { onClose: () => void }) {
       <div className="space-y-3">
         <div>
           <Label className="text-xs">Full name / Company</Label>
-          <Input className="mt-1" placeholder="Acme Energy Ltd" />
+          <Input
+            className="mt-1"
+            placeholder="Acme Energy Ltd"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -1203,7 +1208,7 @@ function AddBeneficiaryForm({ onClose }: { onClose: () => void }) {
             </Select>
           </div>
           <div>
-            <Label className="text-xs">Currency</Label>
+            <Label className="text-xs">Receiving currency</Label>
             <Select value={ccy} onValueChange={setCcy}>
               <SelectTrigger className="mt-1">
                 <SelectValue />
@@ -1221,13 +1226,22 @@ function AddBeneficiaryForm({ onClose }: { onClose: () => void }) {
         {fields.map((f) => (
           <div key={f.key}>
             <Label className="text-xs">{f.label}</Label>
-            <Input className="mt-1" placeholder={f.placeholder} />
+            <Input
+              className="mt-1"
+              placeholder={f.placeholder}
+              value={vals[f.key] ?? ""}
+              onChange={(e) => setVals((v) => ({ ...v, [f.key]: e.target.value }))}
+            />
           </div>
         ))}
         <div>
           <Label className="text-xs">Email (for remittance advice)</Label>
           <Input className="mt-1" type="email" placeholder="ap@acmeenergy.com" />
         </div>
+        <p className="text-[11px] text-muted-foreground">
+          Bulk Payout uses saved beneficiaries only. The beneficiary currency must match the source
+          wallet currency.
+        </p>
       </div>
       <DialogFooter className="mt-4">
         <Button variant="outline" onClick={onClose}>
@@ -1236,13 +1250,24 @@ function AddBeneficiaryForm({ onClose }: { onClose: () => void }) {
         <Button
           className="bg-accent text-accent-foreground hover:bg-accent/90"
           onClick={() => {
+            const created = addBeneficiary({
+              name: name.trim() || "New Beneficiary",
+              country: COUNTRIES.find((c) => c.code === country)?.name ?? country,
+              bank: vals.bank || "Demo Bank",
+              account: vals.account || vals.iban || "•••• 0000",
+              ccy,
+              status: "Verified",
+            });
             onClose();
-            toast.success("Beneficiary added", { description: `Validated for ${ccy} payouts.` });
+            toast.success("Beneficiary saved and verified", {
+              description: `${created.name} (${created.id}) is ready for ${ccy} payouts.`,
+            });
           }}
         >
           Save Beneficiary
         </Button>
       </DialogFooter>
+
     </>
   );
 }
