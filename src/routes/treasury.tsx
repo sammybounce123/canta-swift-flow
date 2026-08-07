@@ -65,7 +65,7 @@ function Treasury() {
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" onClick={openBulk}>
-            <Layers className="h-4 w-4 mr-1.5" /> Bulk Payments
+            <Layers className="h-4 w-4 mr-1.5" /> Bulk Payout
           </Button>
           <Button variant="outline" onClick={openSchedule}>
             <Calendar className="h-4 w-4 mr-1.5" /> Schedule Conversion

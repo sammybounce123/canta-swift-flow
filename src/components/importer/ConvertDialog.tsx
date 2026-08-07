@@ -91,11 +91,11 @@ export function ConvertDialog({
   /** Only currencies the customer actually holds a wallet in. */
   const availableCcys = useMemo(
     () => WALLET_CCYS.filter((c) => s.wallets.some((w) => w.ccy === c)),
-    [s.wallets]
+    [s.wallets],
   );
   const destinations = useMemo(
     () => availableCcys.filter((c) => c !== from),
-    [availableCcys, from]
+    [availableCcys, from],
   );
 
   useEffect(() => {
@@ -107,7 +107,6 @@ export function ConvertDialog({
     if (destinations.length === 0) return;
     if (!destinations.includes(to)) setTo(destinations[0]!);
   }, [destinations, to]);
-
 
   const getQuote = () => {
     if (amt <= 0) return toast.error("Enter an amount to convert");
@@ -222,7 +221,6 @@ export function ConvertDialog({
                     </SelectItem>
                   ))}
                 </SelectContent>
-
               </Select>
               <p className="text-[11px] text-muted-foreground mt-1">
                 Available: {fmtWallet(available, from)}

@@ -87,7 +87,6 @@ function FX() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [from, to]);
 
-
   useEffect(() => {
     const i = setInterval(() => setTimer((t) => (t > 0 ? t - 1 : 30)), 1000);
     return () => clearInterval(i);
@@ -124,8 +123,6 @@ function FX() {
     setPhase("convert");
     navigate({ to: "/transactions" });
   };
-
-
 
   if (phase === "beneficiary" && pendingConversion) {
     return (
@@ -218,7 +215,6 @@ function FX() {
                 {walletCcys.map((c) => (
                   <option key={c}>{c}</option>
                 ))}
-
               </select>
             </div>
 
@@ -252,7 +248,6 @@ function FX() {
                   .map((c) => (
                     <option key={c}>{c}</option>
                   ))}
-
               </select>
             </div>
           </div>
@@ -301,8 +296,8 @@ function FX() {
                       {rate.toFixed(7)} {to}.
                     </div>
                     <div className="text-xs">
-                      Rates are indicative and confirmed at settlement. This moves funds between your
-                      own wallets — no recipient involved.
+                      Rates are indicative and confirmed at settlement. This moves funds between
+                      your own wallets — no recipient involved.
                     </div>
                   </div>
                 </AlertDialogDescription>
@@ -313,7 +308,6 @@ function FX() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-
         </Card>
 
         <Card className="lg:col-span-3 p-6 shadow-card">
