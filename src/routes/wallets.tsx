@@ -12,7 +12,7 @@ export const Route = createFileRoute("/wallets")({
 });
 
 function Wallets() {
-  const { openFund, openSend } = useActions();
+  const { openFund, openSend, openConvert } = useActions();
   return (
     <div className="space-y-6">
       <ReadinessBar status="Demo Preview" cue="Wallet balances reflect cleared funds only." />
