@@ -395,28 +395,166 @@ export function setPaymentStatus(id: string, status: PaymentStatus) {
   update((s) => ({ ...s, payments: s.payments.map((p) => (p.id === id ? { ...p, status } : p)) }));
 }
 
-export function debitBalance(amount: number) {
-  update((s) => ({ ...s, ngnBalance: Math.max(0, s.ngnBalance - amount) }));
+/* ---------------------------------------------------------------- wallets */
+
+export const NGN_COLLECTION_ACCOUNT = {
+  bank: "Providus Bank",
+  accountName: "Canta Collections / Bakare Imports Ltd",
+  accountNumber: "9901234567",
+};
+
+export const USDT_ADDRESSES: Record<UsdtNetwork, string> = {
+  TRC20: "TXk9QeDemoWalletAddressNotReal4421",
+  ERC20: "0xDemoWalletAddressNotReal00000000000a41c9",
+  BEP20: "0xDemoBep20AddressNotReal0000000000b7712d",
+};
+
+export const USDT_CONFIRMATIONS: Record<UsdtNetwork, number> = { TRC20: 19, ERC20: 12, BEP20: 15 };
+
+export const walletOf = (s: ImporterState, ccy: WalletCcy) => s.wallets.find((w) => w.ccy === ccy);
+
+export const fmtWallet = (n: number, ccy: WalletCcy) =>
+  ccy === "NGN" ? fmtNGN(n)
+    : ccy === "USDT" ? `${n.toLocaleString("en-US", { maximumFractionDigits: 2 })} USDT`
+    : `${ccy === "USD" ? "$" : ccy === "GBP" ? "£" : "€"}${n.toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
+
+const today = () => new Date().toISOString().slice(0, 10);
+
+export function createWallet(ccy: WalletCcy) {
+  update((s) =>
+    s.wallets.some((w) => w.ccy === ccy)
+      ? s
+      : {
+          ...s,
+          wallets: [...s.wallets, { ccy, available: 0, pending: 0, status: "Active", lastActivity: today() }],
+          walletTx: [
+            { id: `WT-${Date.now()}`, at: today(), ccy, type: "Wallet funding", amount: 0, status: "Completed", reference: `Wallet created — ${ccy}` },
+            ...s.walletTx,
+          ],
+        },
+  );
+  notify("Balance", `${ccy} wallet created.`);
 }
 
-export function addFunding(method: FundingEntry["method"], amount: number) {
+function applyWallet(s: ImporterState, ccy: WalletCcy, patch: (w: ImporterWallet) => ImporterWallet): ImporterState {
+  const wallets = s.wallets.map((w) => (w.ccy === ccy ? { ...patch(w), lastActivity: today() } : w));
+  const ngn = wallets.find((w) => w.ccy === "NGN");
+  const usdt = wallets.find((w) => w.ccy === "USDT");
+  return { ...s, wallets, ngnBalance: ngn?.available ?? s.ngnBalance, usdtBalance: usdt?.available ?? s.usdtBalance };
+}
+
+export function creditWallet(ccy: WalletCcy, amount: number) {
+  update((s) => applyWallet(s, ccy, (w) => ({ ...w, available: w.available + amount })));
+}
+
+export function debitWallet(ccy: WalletCcy, amount: number) {
+  update((s) => applyWallet(s, ccy, (w) => ({ ...w, available: Math.max(0, w.available - amount) })));
+}
+
+export function addWalletTx(tx: Omit<WalletTx, "id" | "at"> & { at?: string }) {
+  update((s) => ({ ...s, walletTx: [{ id: `WT-${Date.now()}-${Math.floor(Math.random() * 1000)}`, at: tx.at ?? today(), ...tx }, ...s.walletTx] }));
+}
+
+/* ---------------------------------------------------------------- funding */
+
+export function startFunding(input: {
+  method: "NGN" | "USDT";
+  amount: number;
+  network?: UsdtNetwork;
+  purpose?: string;
+}) {
   const id = `FD-${Math.floor(1100 + Math.random() * 800)}`;
-  update((s) => ({ ...s, funding: [{ id, method, amount, status: "Awaiting payment", createdAt: new Date().toISOString().slice(0, 10) }, ...s.funding] }));
-  notify("Balance", `Funding request ${id} created — awaiting payment.`);
+  const entry: FundingEntry = {
+    id,
+    method: input.method,
+    network: input.network,
+    amount: input.amount,
+    purpose: input.purpose,
+    reference: `CANTA-${id}`,
+    address: input.method === "USDT" && input.network ? USDT_ADDRESSES[input.network] : undefined,
+    status: input.method === "NGN" ? "Awaiting NGN Payment" : "Awaiting USDT Transfer",
+    createdAt: today(),
+    expiresAt: new Date(Date.now() + 2 * 3600_000).toISOString(),
+  };
+  update((s) => applyWallet({ ...s, funding: [entry, ...s.funding] }, input.method, (w) => ({ ...w, pending: w.pending + input.amount })));
+  addWalletTx({ ccy: input.method, type: "Wallet funding", amount: input.amount, status: "Pending", reference: id });
+  notify("Balance", `Funding request ${id} created — ${entry.status.toLowerCase()}.`);
   return id;
 }
 
-export function advanceFunding(id: string) {
-  const order: FundingEntry["status"][] = ["Awaiting payment", "Payment received", "Under review", "Balance credited"];
+export function confirmFundingSent(id: string) {
   update((s) => ({
     ...s,
-    funding: s.funding.map((f) => {
-      if (f.id !== id) return f;
-      const i = order.indexOf(f.status);
-      return { ...f, status: order[Math.min(i + 1, order.length - 1)] };
-    }),
+    funding: s.funding.map((f) =>
+      f.id === id
+        ? { ...f, status: f.method === "NGN" ? "Payment confirmation submitted" : "Transfer confirmation submitted" }
+        : f,
+    ),
   }));
 }
+
+/** Demo-only: stands in for the payment provider / blockchain callback. */
+export function simulateProviderConfirmation(id: string) {
+  const f = read().funding.find((x) => x.id === id);
+  if (!f || f.status === "Wallet credited") return;
+  const receiptNo = `FR-${id.replace("FD-", "")}`;
+  const providerRef = `PRV-${f.method}-${Math.floor(100000 + Math.random() * 899999)}`;
+  update((s) => {
+    const withWallet = applyWallet(s, f.method, (w) => ({
+      ...w,
+      available: w.available + f.amount,
+      pending: Math.max(0, w.pending - f.amount),
+    }));
+    return {
+      ...withWallet,
+      funding: withWallet.funding.map((x) => (x.id === id ? { ...x, status: "Wallet credited", providerRef, receiptNo } : x)),
+      fundingReceipts: [
+        {
+          receiptNo,
+          fundingRef: id,
+          ccy: f.method as WalletCcy,
+          amount: f.amount,
+          method: f.method === "NGN" ? "NGN bank transfer" : `USDT transfer (${f.network ?? "TRC20"})`,
+          providerRef,
+          at: today(),
+          status: "Wallet credited" as const,
+        },
+        ...withWallet.fundingReceipts,
+      ],
+      walletTx: withWallet.walletTx.map((t) =>
+        t.reference === id && t.type === "Wallet funding" ? { ...t, status: "Completed" as const, receiptNo } : t,
+      ),
+    };
+  });
+  notify("Balance", `${f.method} wallet credited — funding ${id} confirmed. Receipt ${receiptNo} is available.`);
+  return receiptNo;
+}
+
+export function cancelFunding(id: string) {
+  const f = read().funding.find((x) => x.id === id);
+  if (!f) return;
+  update((s) => {
+    const withWallet = applyWallet(s, f.method, (w) => ({ ...w, pending: Math.max(0, w.pending - f.amount) }));
+    return {
+      ...withWallet,
+      funding: withWallet.funding.map((x) => (x.id === id ? { ...x, status: "Cancelled" as const } : x)),
+      walletTx: withWallet.walletTx.filter((t) => t.reference !== id),
+    };
+  });
+}
+
+/* --------------------------------------------------------- payment drafts */
+
+export function saveDraft(d: Omit<PaymentDraft, "id" | "at">) {
+  const id = `DR-${Math.floor(1000 + Math.random() * 9000)}`;
+  update((s) => ({ ...s, drafts: [{ id, at: today(), ...d }, ...s.drafts] }));
+  return id;
+}
+
+export function removeDraft(id: string) {
+  update((s) => ({ ...s, drafts: s.drafts.filter((d) => d.id !== id) }));
+}
+
 
 export function addDocument(d: Omit<ImporterDoc, "id" | "uploadedAt" | "status"> & { status?: ImporterDoc["status"] }) {
   const id = `DOC-${Math.floor(3000 + Math.random() * 900)}`;
