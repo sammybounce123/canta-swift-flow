@@ -219,7 +219,28 @@ export type SimpleInvoice = {
   createdAt: string;
   receiptId?: string;
   providerConfirmed?: boolean;
+  providerRef?: string;
+  settledAt?: number;
+  events: TimelineEvent[];
 };
+
+export type TimelineEvent = {
+  id: string;
+  label: string;
+  detail?: string;
+  at: number;
+};
+
+let evtSeq = 0;
+export function makeEvent(label: string, detail?: string, at = Date.now()): TimelineEvent {
+  evtSeq++;
+  return { id: `ev_${evtSeq}`, label, detail, at };
+}
+
+/** Deterministic, locale-free timestamp so SSR and client agree. */
+export function formatStamp(ts: number) {
+  return `${new Date(ts).toISOString().replace("T", " ").slice(0, 16)} UTC`;
+}
 
 export const FX_RATE = 204.35;
 export const FEE_RATE = 0.009; // 0.9% Canta fee, shown on every quote
