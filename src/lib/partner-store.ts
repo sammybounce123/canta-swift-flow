@@ -182,8 +182,8 @@ const QUOTE_STATUSES: CaseStatus[] = [
 
 // Statuses that imply a payment link already exists on the case.
 const LINK_STATUSES: CaseStatus[] = QUOTE_STATUSES.filter(
-  (s) => s !== "FX Quote Generated" && s !== "FX Quote Sent" && s !== "Expired Quote",
-).concat(["FX Quote Sent"]);
+  (s) => s !== "FX Quote Generated" && s !== "Expired Quote",
+);
 
 const FUNDED_STATUSES: CaseStatus[] = [
   "Funding Received",
