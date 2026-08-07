@@ -30,9 +30,29 @@ export const Route = createFileRoute("/trade-desk/$fileId")({
 function TradeFileDetail() {
   const { fileId } = Route.useParams();
   const navigate = useNavigate();
-  const file = (tradeFiles.find((f) => f.id === fileId)
+  const known = (tradeFiles.find((f) => f.id === fileId)
     ?? (findDraftTradeFile(fileId) as (typeof tradeFiles)[number] | null));
-  if (!file) throw notFound();
+  // A Trade File reference may exist on a draft created in another session or
+  // referenced from Ops. Render a placeholder payment case instead of a 404.
+  const file: (typeof tradeFiles)[number] = known ?? ({
+    id: fileId,
+    name: `${fileId} — supplier payment`,
+    importer: "—",
+    supplier: "External supplier",
+    origin: "—",
+    destination: "—",
+    goods: "—",
+    invoiceValue: 0,
+    ccy: "USD",
+    status: "Drafting",
+    paymentStatus: "Pending",
+    risk: "Low",
+    forwarder: "—",
+    eta: "—",
+    escrow: "Not requested",
+  } as unknown as (typeof tradeFiles)[number]);
+
+
 
   const reachedIdx =
     file.status === "Drafting" ? 1 :
