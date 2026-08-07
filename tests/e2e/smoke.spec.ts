@@ -408,6 +408,7 @@ test("Bulk Payout dialog states the same-currency rule and hides FX language", a
   await clearStorage(page);
   await seedWorkspace(page, "enterprise_treasury", "Treasury");
   await page.goto("/treasury");
+  await page.waitForLoadState("networkidle");
   await page.getByRole("button", { name: "Bulk Payout" }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toContainText("Send multiple payouts in the same currency from one wallet");
@@ -421,6 +422,7 @@ test("Bulk Payout blocks a mismatched recipient currency and offers Convert & Se
   await clearStorage(page);
   await seedWorkspace(page, "enterprise_treasury", "Treasury");
   await page.goto("/treasury");
+  await page.waitForLoadState("networkidle");
   await page.getByRole("button", { name: "Bulk Payout" }).click();
   const dialog = page.getByRole("dialog");
   await dialog.getByRole("button", { name: "Continue" }).click();
@@ -439,6 +441,7 @@ test("Bulk Payout accepts a same-currency batch and submits for approval", async
   await clearStorage(page);
   await seedWorkspace(page, "enterprise_treasury", "Treasury");
   await page.goto("/treasury");
+  await page.waitForLoadState("networkidle");
   await page.getByRole("button", { name: "Bulk Payout" }).click();
   const dialog = page.getByRole("dialog");
   await dialog.getByRole("button", { name: "Continue" }).click();

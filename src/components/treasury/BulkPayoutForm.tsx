@@ -109,11 +109,6 @@ export function BulkPayoutForm({
 
   return (
     <div className="space-y-4">
-      <p className="text-xs text-muted-foreground">
-        Send multiple payouts in the same currency from one wallet. For cross-currency payments, use
-        Convert &amp; Send.
-      </p>
-
       <div className="flex items-center gap-2 text-[11px]">
         {["Source wallet", "Recipients", "Review"].map((s, i) => (
           <div key={s} className="flex items-center gap-2">
