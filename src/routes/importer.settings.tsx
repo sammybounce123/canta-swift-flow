@@ -143,6 +143,16 @@ function ImporterSettingsPage() {
           <Row label="Save supplier bank details by default" hint="Keep new supplier accounts for future payments.">
             <Switch checked={s.prefs.saveSupplierByDefault} onCheckedChange={(v) => setPref("saveSupplierByDefault", v)} />
           </Row>
+          <Row label="USDT funding warnings" hint="Show the wrong-network warning before every USDT deposit.">
+            <Switch checked={s.prefs.usdtWarnings} onCheckedChange={(v) => setPref("usdtWarnings", v)} />
+          </Row>
+          <Row label="Email funding receipts" hint="Send a receipt by email each time a wallet is credited.">
+            <Switch checked={s.prefs.emailFundingReceipts} onCheckedChange={(v) => setPref("emailFundingReceipts", v)} />
+          </Row>
+          <Row label="WhatsApp payment notifications" hint="Payment and payout updates on WhatsApp.">
+            <Switch checked={s.prefs.whatsappPaymentNotifications} onCheckedChange={(v) => setPref("whatsappPaymentNotifications", v)} />
+          </Row>
+
         </div>
       </Card>
 
