@@ -2,11 +2,7 @@
 // It never converts, never quotes FX, never mixes currencies, and never accepts
 // manually entered bank details. Cross-currency payouts use Convert & Send.
 
-import {
-  findBeneficiary,
-  getBeneficiaries,
-  type SavedBeneficiary,
-} from "@/lib/beneficiary-store";
+import { findBeneficiary, getBeneficiaries, type SavedBeneficiary } from "@/lib/beneficiary-store";
 
 export type BulkRow = {
   rowId: string;

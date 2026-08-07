@@ -15,11 +15,7 @@ import { Upload, Trash2, AlertTriangle, ArrowRight, ArrowLeft, UserPlus } from "
 import { toast } from "sonner";
 import { wallets, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
-import {
-  getBeneficiaries,
-  subscribeBeneficiaries,
-  findBeneficiary,
-} from "@/lib/beneficiary-store";
+import { getBeneficiaries, subscribeBeneficiaries, findBeneficiary } from "@/lib/beneficiary-store";
 import {
   addBatch,
   emptyRow,
@@ -91,9 +87,7 @@ export function BulkPayoutForm({
   }
 
   function downloadTemplate() {
-    const url = URL.createObjectURL(
-      new Blob([csvTemplateFor(walletCcy)], { type: "text/csv" }),
-    );
+    const url = URL.createObjectURL(new Blob([csvTemplateFor(walletCcy)], { type: "text/csv" }));
     const a = document.createElement("a");
     a.href = url;
     a.download = "bulk-payout-template.csv";

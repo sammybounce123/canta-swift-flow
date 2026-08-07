@@ -639,7 +639,6 @@ function CreatePayoutDialog({
     toast.success(`Payout ${row.id} created as draft`);
   }
 
-
   return (
     <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
       <DialogHeader>
@@ -754,7 +753,6 @@ function CreatePayoutDialog({
             onConvertAndSend={() => setMode("single")}
           />
         </TabsContent>
-
       </Tabs>
     </DialogContent>
   );

@@ -238,7 +238,6 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
               setSend({ open: true, beneficiary: "" });
             }}
           />
-
         </DialogContent>
       </Dialog>
 
@@ -1274,7 +1273,6 @@ function AddBeneficiaryForm({ onClose }: { onClose: () => void }) {
           Save Beneficiary
         </Button>
       </DialogFooter>
-
     </>
   );
 }
