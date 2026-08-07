@@ -58,15 +58,8 @@ function SettlementsPage() {
   const s = ngnSummary(invoices);
   const dest = banks.find((b) => b.isSettlementDestination);
 
-  const rows = invoices.filter((i) =>
-    [
-      "NGN Received",
-      "Compliance Review",
-      "Auto-Converting",
-      "RMB Settlement Pending",
-      "RMB Paid",
-    ].includes(i.status),
-  );
+  const rows = invoices.filter((i) => SETTLEMENT_STATUSES.includes(i.status));
+
 
   return (
     <div className="space-y-4">
