@@ -309,15 +309,28 @@ export function PaySupplierWizard() {
       <AddSupplierDialog
         open={addOpen}
         onOpenChange={setAddOpen}
-        onSaved={(id) => { pickSaved(id); setAddOpen(false); toast.success("Supplier bank details added."); }}
+        onSaved={(id, d) => {
+          setF((x) => ({
+            ...x, supplierId: id, name: d.name, country: d.country, contact: d.contact,
+            channel: d.channel, bankName: d.bankName, accountName: d.accountName,
+            accountNumber: d.accountNumber, swift: d.swift, bankAddress: d.bankAddress, currency: d.currency,
+          }));
+          setAddOpen(false);
+          toast.success("Supplier bank details added.");
+        }}
       />
       <FundWalletDialog open={fundOpen} onOpenChange={setFundOpen} initialMethod={f.fundingWallet} />
     </div>
   );
 }
 
-function AddSupplierDialog({ open, onOpenChange, onSaved }: { open: boolean; onOpenChange: (v: boolean) => void; onSaved: (id: string) => void }) {
-  const [d, setD] = useState({
+type NewSupplier = {
+  name: string; country: string; contact: string; channel: string; bankName: string;
+  accountName: string; accountNumber: string; swift: string; bankAddress: string; currency: string;
+};
+
+function AddSupplierDialog({ open, onOpenChange, onSaved }: { open: boolean; onOpenChange: (v: boolean) => void; onSaved: (id: string, d: NewSupplier) => void }) {
+  const [d, setD] = useState<NewSupplier>({
     name: "", country: "", contact: "", channel: "", bankName: "", accountName: "",
     accountNumber: "", swift: "", bankAddress: "", currency: "RMB",
   });
@@ -363,7 +376,7 @@ function AddSupplierDialog({ open, onOpenChange, onSaved }: { open: boolean; onO
               bankName: d.bankName, accountName: d.accountName, accountNumber: d.accountNumber,
               swift: d.swift, bankAddress: d.bankAddress, currency: d.currency,
             });
-            onSaved(id);
+            onSaved(id, d);
           }}
         >Save supplier bank details</Button>
       </DialogContent>
