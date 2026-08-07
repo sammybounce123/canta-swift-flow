@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building, Zap, Coins } from "lucide-react";
+import { Building, Coins } from "lucide-react";
 import { wallets, fmtMoney } from "@/lib/mock";
 import { useActions } from "@/components/ActionsProvider";
 import { ReadinessBar } from "@/components/ReadinessBar";
