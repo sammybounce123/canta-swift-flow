@@ -355,7 +355,7 @@ function TradeFileActions({
   };
   const actions = [
     { label: "Add supplier details", icon: UserPlus,
-      onClick: () => go("/suppliers", `Add ${supplier}'s bank details to your beneficiaries`) },
+      onClick: () => go("/my-suppliers", `Add ${supplier}'s bank details to your beneficiaries`) },
     { label: "Save supplier beneficiary", icon: Mail,
       onClick: () => go("/my-suppliers", `Save ${supplier} as a reusable beneficiary`) },
     { label: "Link Supplier Payment Request", icon: LinkIcon,
