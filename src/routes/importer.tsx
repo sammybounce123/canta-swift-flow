@@ -150,7 +150,7 @@ function ImporterPortal() {
             </div>
           </div>
           <Button asChild size="sm" variant="outline">
-            <Link to="/cards">Learn more</Link>
+            <Link to="/importer/cards">Learn more</Link>
           </Button>
         </div>
       </Card>
