@@ -234,10 +234,12 @@ function FX() {
                 onChange={(e) => setTo(e.target.value)}
                 className="bg-card border border-border rounded-lg px-2 py-1.5 text-sm font-medium"
               >
-                <option>USD</option>
-                <option>NGN</option>
-                <option>EUR</option>
-                <option>GBP</option>
+                {walletCcys
+                  .filter((c) => c !== from)
+                  .map((c) => (
+                    <option key={c}>{c}</option>
+                  ))}
+
               </select>
             </div>
           </div>
