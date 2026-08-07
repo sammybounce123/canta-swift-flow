@@ -25,6 +25,13 @@ function ImporterHome() {
   const pending = s.payments.filter((p) => !["Supplier paid", "Receipt available", "Refunded", "Failed"].includes(p.status));
   const shipping = s.shipments.filter((sh) => !["Delivered"].includes(sh.status));
   const receipts = s.payments.filter((p) => p.receiptNo);
+  const pendingFunding = s.funding.filter((f) => FUNDING_OPEN.includes(f.status));
+  const ngn = walletOf(s, "NGN");
+  const usdt = walletOf(s, "USDT");
+  const totalNgnEquivalent = s.wallets.reduce(
+    (sum, w) => sum + (w.ccy === "NGN" ? w.available : w.available * (FX_RATES[w.ccy === "USDT" ? "USD" : w.ccy] ?? 0)),
+    0,
+  );
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
@@ -42,15 +49,35 @@ function ImporterHome() {
       </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
-        <StatCard icon={Wallet} label="Available balance" value={fmtNGN(s.ngnBalance)}
-          helper="Use this balance to pay suppliers, freight, clearing, or other approved international payments." to="/importer/balance" />
+        <StatCard icon={Wallet} label="Total available balance" value={fmtNGN(totalNgnEquivalent)}
+          helper={`NGN ${fmtNGN(ngn?.available ?? 0)} · USDT ${(usdt?.available ?? 0).toLocaleString()} (illustrative conversion).`} to="/importer/balance" />
+        <StatCard icon={Wallet} label="Pending funding" value={`${pendingFunding.length} request${pendingFunding.length === 1 ? "" : "s"}`}
+          helper="Deposits waiting for provider or blockchain confirmation before your wallet is credited." to="/importer/balance" />
         <StatCard icon={Send} label="Pending supplier payments" value={`${pending.length} payment${pending.length === 1 ? "" : "s"}`}
           helper="Payments awaiting funding, FX quote, compliance review, or payout confirmation." to="/importer/payments" />
-        <StatCard icon={Ship} label="Shipments in progress" value={`${shipping.length} shipment${shipping.length === 1 ? "" : "s"}`}
-          helper="Track BL uploads, shipping updates, and delivery progress." to="/importer/shipments" />
         <StatCard icon={Receipt} label="Receipts available" value={`${receipts.length} receipt${receipts.length === 1 ? "" : "s"}`}
           helper="Download payment and settlement receipts for your records." to="/importer/payments" />
       </div>
+
+      <Card className="p-4 sm:p-5 shadow-card">
+        <div className="text-xs uppercase tracking-widest text-muted-foreground">Your wallets</div>
+        <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2">
+          {WALLET_CCYS.map((c) => {
+            const w = walletOf(s, c);
+            return (
+              <div key={c} className="rounded-lg border border-border p-3">
+                <div className="text-xs text-muted-foreground">{c} Wallet</div>
+                <div className="text-sm font-semibold mt-1 break-words">{w ? fmtWallet(w.available, c) : "Not created"}</div>
+                <Badge variant="outline" className="text-[10px] mt-1">{w ? w.status : "Create wallet"}</Badge>
+              </div>
+            );
+          })}
+        </div>
+        <div className="text-xs text-muted-foreground mt-2">
+          Shipments in progress: {shipping.length}
+        </div>
+      </Card>
+
 
       <Card className="p-4 sm:p-5 shadow-card">
         <div className="text-xs uppercase tracking-widest text-muted-foreground">Quick actions</div>
