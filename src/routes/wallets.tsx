@@ -48,13 +48,25 @@ function Wallets() {
             <div className="text-2xl font-semibold tabular-nums mt-1">
               {fmtMoney(w.balance, w.ccy)}
             </div>
-            <div className="mt-5 flex gap-2">
+            <div className="mt-5 flex flex-wrap gap-2">
               <Button
                 size="sm"
                 onClick={() => openFund(w.ccy)}
                 className={i === 0 ? "bg-accent text-accent-foreground hover:bg-accent/90" : ""}
               >
                 Fund
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => openConvert(w.ccy, w.ccy === "NGN" ? "USD" : "NGN")}
+                variant={i === 0 ? "secondary" : "outline"}
+                className={
+                  i === 0
+                    ? "bg-white/10 text-primary-foreground border-white/15 hover:bg-white/15"
+                    : ""
+                }
+              >
+                Convert
               </Button>
               <Button
                 size="sm"
@@ -66,9 +78,10 @@ function Wallets() {
                     : ""
                 }
               >
-                Send
+                Convert &amp; Send
               </Button>
             </div>
+
           </Card>
         ))}
       </div>
