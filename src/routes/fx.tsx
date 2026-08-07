@@ -5,6 +5,16 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useEffect, useState } from "react";
 import {
   ArrowDown,
@@ -63,6 +73,7 @@ function FX() {
     rate: number;
   } | null>(null);
   const [chosenBeneficiary, setChosenBeneficiary] = useState<Beneficiary | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   useEffect(() => {
     const i = setInterval(() => setTimer((t) => (t > 0 ? t - 1 : 30)), 1000);
@@ -74,6 +85,12 @@ function FX() {
 
   const num = Number(amount) || 0;
   const out = num * rate;
+
+  const requestConfirm = () => {
+    if (num <= 0) return toast.error("Enter an amount to convert");
+    if (from === to) return toast.error("Choose two different wallets");
+    setConfirmOpen(true);
+  };
 
   const confirm = () => {
     if (num <= 0) return toast.error("Enter an amount to convert");
@@ -88,11 +105,13 @@ function FX() {
     toast.success("Conversion settled", {
       description: `${fmtMoney(num, from)} → ${fmtMoney(out, to)} · Funds are in your ${to} wallet.`,
     });
+    setConfirmOpen(false);
     setPendingConversion(null);
     setChosenBeneficiary(null);
     setPhase("convert");
     navigate({ to: "/transactions" });
   };
+
 
 
   if (phase === "beneficiary" && pendingConversion) {
@@ -244,11 +263,42 @@ function FX() {
           </div>
 
           <Button
-            onClick={confirm}
+            onClick={requestConfirm}
             className="w-full mt-5 bg-accent text-accent-foreground hover:bg-accent/90 h-11 font-semibold"
           >
             Confirm Conversion
           </Button>
+
+          <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Confirm this conversion?</AlertDialogTitle>
+                <AlertDialogDescription asChild>
+                  <div className="space-y-2 text-sm">
+                    <div>
+                      You are converting{" "}
+                      <strong className="text-foreground">{fmtMoney(num, from)}</strong> from your{" "}
+                      {from} wallet.
+                    </div>
+                    <div>
+                      Your {to} wallet will receive{" "}
+                      <strong className="text-foreground">{fmtMoney(out, to)}</strong> at 1 {from} ={" "}
+                      {rate.toFixed(7)} {to}.
+                    </div>
+                    <div className="text-xs">
+                      Rates are indicative and confirmed at settlement. This moves funds between your
+                      own wallets — no recipient involved.
+                    </div>
+                  </div>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={confirm}>Yes, convert</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
         </Card>
 
         <Card className="lg:col-span-3 p-6 shadow-card">
