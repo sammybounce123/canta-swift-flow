@@ -183,7 +183,7 @@ function NewReferral() {
       <div>
         <h1 className="text-2xl font-semibold">New client referral</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Submit a Baron &amp; Cabot client for property payment processing.
+          Submit a Kingsbridge Property Partners client for property payment processing.
         </p>
       </div>
 

@@ -660,7 +660,7 @@ function PaymentLinkTab({ c, actor }: any) {
           <div>
             <div className="text-sm font-semibold">Branded client payment link</div>
             <div className="text-xs text-muted-foreground">
-              Canta × Baron &amp; Cabot — expires when the FX quote expires.
+              Canta × Kingsbridge Property Partners — expires when the FX quote expires.
             </div>
           </div>
           <Button
@@ -751,7 +751,7 @@ function VerificationTab({ c }: any) {
         </dl>
       )}
       <div className="mt-4 text-[11px] text-muted-foreground italic border-t pt-3">
-        BVN is collected by Canta directly from the client. Baron &amp; Cabot users cannot enter a
+        BVN is collected by Canta directly from the client. Kingsbridge Property Partners users cannot enter a
         BVN on behalf of the client and never see the raw or masked BVN — only the status (BVN
         Pending / Submitted / Verified / Failed).
       </div>

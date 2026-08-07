@@ -64,7 +64,7 @@ function Reports() {
         <div>
           <h1 className="text-2xl font-semibold">Partner reports</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Reporting on every client referred by Baron &amp; Cabot.
+            Reporting on every client referred by Kingsbridge Property Partners.
           </p>
         </div>
         <div className="flex gap-2">

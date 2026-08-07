@@ -312,7 +312,7 @@ export function createCase(input: {
 }): ExtendedCase {
   const num = 1000 + readStore().length + 1;
   const id = `CS-${num}`;
-  const ref = `BC-2026-${num}`;
+  const ref = `KPP-2026-${num}`;
   const officer = getMarketer(input.assignedMarketerId)?.name ?? "Unassigned";
   const c: ExtendedCase = {
     id,
