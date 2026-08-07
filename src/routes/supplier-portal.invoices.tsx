@@ -22,6 +22,10 @@ export const Route = createFileRoute("/supplier-portal/invoices")({
 
 function actionsFor(inv: SimpleInvoice): Array<{ label: string; run: () => void }> {
   const status = isInvoiceQuoteExpired(inv) && inv.status !== "Cancelled" ? "Expired" : inv.status;
+  const timeline = {
+    label: "View timeline",
+    run: () => toast.info(`${inv.invoiceNumber}: ${status} · ${inv.buyerCompany}`),
+  };
   switch (status) {
     case "Draft":
       return [
@@ -32,36 +36,47 @@ function actionsFor(inv: SimpleInvoice): Array<{ label: string; run: () => void 
       return [
         { label: "Send invoice", run: () => { copyText(wechatMessage(inv)); simpleInvoiceStore.update(inv.id, { status: "Sent to Buyer" }); toast.success("Invoice message copied and marked as sent"); } },
         { label: "Download PDF", run: () => toast.success("Invoice PDF downloaded") },
+        timeline,
       ];
     case "Sent to Buyer":
     case "Buyer Viewed":
       return [
         { label: "Remind buyer", run: () => toast.success("Reminder sent to buyer") },
-        { label: "View", run: () => toast.info(`${inv.invoiceNumber} · ${inv.buyerCompany}`) },
+        { label: "Copy payment link", run: () => { copyText(inv.paymentLink); toast.success("Payment link copied"); } },
+        timeline,
       ];
     case "Awaiting NGN Payment":
       return [
         { label: "Copy payment link", run: () => { copyText(inv.paymentLink); toast.success("Payment link copied"); } },
         { label: "Remind buyer", run: () => toast.success("Reminder sent to buyer") },
+        timeline,
       ];
     case "NGN Received":
-      return [{ label: "View conversion status", run: () => toast.info("NGN received — awaiting compliance review before conversion") }];
+      return [
+        { label: "View conversion status", run: () => toast.info("NGN received — awaiting compliance review before conversion") },
+        timeline,
+      ];
     case "Compliance Review":
-      return [{ label: "View review status", run: () => toast.info("Compliance review in progress") }];
+      return [{ label: "View review status", run: () => toast.info("Compliance review in progress") }, timeline];
     case "Auto-Converting":
-      return [{ label: "View FX status", run: () => toast.info(`Converting at ₦${inv.fxRate} / ¥1`) }];
+      return [{ label: "View FX status", run: () => toast.info(`Converting at ₦${inv.fxRate} / ¥1`) }, timeline];
     case "RMB Settlement Pending":
-      return [{ label: "View settlement", run: () => toast.info("Payout to your verified RMB bank account is queued") }];
+      return [{ label: "View settlement", run: () => toast.info("Payout to your verified RMB bank account is queued") }, timeline];
     case "RMB Paid":
-      return [{ label: "Download receipt", run: () => toast.success("Settlement receipt downloaded") }];
+      return [{ label: "Download receipt", run: () => toast.success("Settlement receipt downloaded") }, timeline];
     case "Expired":
-      return [{ label: "Refresh quote", run: () => { simpleInvoiceStore.refreshQuote(inv.id); toast.success("New rate locked"); } }];
+      return [
+        { label: "Refresh quote", run: () => { simpleInvoiceStore.refreshQuote(inv.id); toast.success("New rate locked"); } },
+        { label: "Duplicate invoice", run: () => { simpleInvoiceStore.duplicate(inv.id); toast.success("Invoice duplicated"); } },
+        timeline,
+      ];
     case "Cancelled":
-      return [{ label: "Duplicate invoice", run: () => { simpleInvoiceStore.duplicate(inv.id); toast.success("Invoice duplicated"); } }];
+      return [{ label: "Duplicate invoice", run: () => { simpleInvoiceStore.duplicate(inv.id); toast.success("Invoice duplicated"); } }, timeline];
     default:
-      return [];
+      return [timeline];
   }
 }
+
 
 function InvoiceHistory() {
   const invoices = useSimpleInvoices();
