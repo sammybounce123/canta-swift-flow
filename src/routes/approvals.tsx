@@ -64,7 +64,7 @@ const seed: Request[] = [
     currency: "USD",
     customer: "Guangzhou Electronics Co.",
     riskScore: 42,
-    tradeFile: "TF-2418",
+    tradeFile: "PR-2418",
     documents: ["Pro-forma Invoice", "BL Draft", "Packing List"],
     status: "Pending",
     submitted: "Jun 8, 09:12",
@@ -73,13 +73,13 @@ const seed: Request[] = [
   },
   {
     id: "APR-9820",
-    type: "Escrow release",
-    requester: "Tunde Bakare",
+    type: "Supplier payout release",
+    requester: "Chidi Nwosu",
     amount: 92_500,
     currency: "USD",
     customer: "Shenzhen LED Ltd",
     riskScore: 28,
-    tradeFile: "TF-2410",
+    tradeFile: "PR-2410",
     documents: ["BL Final", "Inspection Report"],
     status: "Pending",
     submitted: "Jun 8, 08:40",
@@ -102,7 +102,7 @@ const seed: Request[] = [
   {
     id: "APR-9815",
     type: "High-value FX conversion",
-    requester: "Tunde Bakare",
+    requester: "Chidi Nwosu",
     amount: 2_400_000,
     currency: "USD",
     riskScore: 18,
@@ -133,7 +133,7 @@ const seed: Request[] = [
     currency: "USD",
     customer: "Maersk Lagos",
     riskScore: 22,
-    tradeFile: "TF-2401",
+    tradeFile: "PR-2401",
     documents: ["Freight Invoice", "Arrival Notice"],
     status: "Pending",
     submitted: "Jun 7, 14:11",
@@ -158,9 +158,9 @@ const seed: Request[] = [
     id: "APR-9802",
     type: "Document approval",
     requester: "Procurement Officer",
-    customer: "TF-2392 · Auto Parts",
+    customer: "PR-2392 · Auto Parts",
     riskScore: 14,
-    tradeFile: "TF-2392",
+    tradeFile: "PR-2392",
     documents: ["Revised Invoice", "HS Code Update"],
     status: "Pending",
     submitted: "Jun 7, 18:05",
@@ -188,12 +188,12 @@ const seed: Request[] = [
   {
     id: "APR-9795",
     type: "Trade finance request",
-    requester: "Importer Owner",
+    requester: "Trade Finance Lead",
     amount: 350_000,
     currency: "USD",
     customer: "Lagos Hardware Imports",
     riskScore: 55,
-    tradeFile: "TF-2388",
+    tradeFile: "PR-2388",
     documents: ["Financials FY25", "Trade History"],
     status: "Pending",
     submitted: "Jun 8, 10:14",
@@ -208,7 +208,7 @@ const seed: Request[] = [
     currency: "USD",
     customer: "Dubai Auto Spares LLC",
     riskScore: 24,
-    tradeFile: "TF-2380",
+    tradeFile: "PR-2380",
     documents: ["Invoice"],
     status: "Approved",
     submitted: "Jun 7, 11:30",
@@ -246,7 +246,7 @@ const seed: Request[] = [
 const workflowDefs = [
   { type: "Supplier payment", steps: ["Finance review", "Treasury approval", "Compliance check"] },
   { type: "New beneficiary", steps: ["Compliance KYB", "Treasury approval"] },
-  { type: "Escrow release", steps: ["Document review", "Treasury approval"] },
+  { type: "Supplier payout release", steps: ["Document review", "Treasury approval"] },
   { type: "Freight invoice approval", steps: ["Operations check", "Finance approval"] },
   { type: "Expense policy update", steps: ["Admin approval", "Finance check"] },
   { type: "High-value FX conversion", steps: ["Treasury", "Owner sign-off"] },
@@ -425,7 +425,7 @@ function Approvals() {
                     )}
                     {r.tradeFile && (
                       <div>
-                        <div className="text-muted-foreground">Trade file</div>
+                        <div className="text-muted-foreground">Payment reference</div>
                         <div className="font-medium mt-0.5">{r.tradeFile}</div>
                       </div>
                     )}
@@ -614,7 +614,7 @@ function Approvals() {
                       : "—"
                   }
                 />
-                <Detail label="Trade file" value={openItem.tradeFile ?? "—"} />
+                <Detail label="Payment reference" value={openItem.tradeFile ?? "—"} />
                 <Detail label="Risk score" value={String(openItem.riskScore)} />
                 <Detail label="Due" value={openItem.due} />
               </div>
