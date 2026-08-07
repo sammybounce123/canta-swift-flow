@@ -96,7 +96,7 @@ function pushLS(key: string, value: any) {
     const arr = raw ? JSON.parse(raw) : [];
     arr.unshift(value);
     localStorage.setItem(key, JSON.stringify(arr.slice(0, 200)));
-  } catch {}
+  } catch { /* ignore */ }
 }
 
 function TemplateForm({ tpl, onBack }: { tpl: CollectionTemplate; onBack: () => void }) {

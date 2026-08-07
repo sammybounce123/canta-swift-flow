@@ -111,7 +111,7 @@ function pushLS(inv: Invoice) {
     const arr = raw ? JSON.parse(raw) : [];
     arr.unshift(inv);
     localStorage.setItem(LS_KEY, JSON.stringify(arr.slice(0, 200)));
-  } catch {}
+  } catch { /* ignore */ }
 }
 
 function InvoicesPage() {

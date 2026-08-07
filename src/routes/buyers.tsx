@@ -93,7 +93,7 @@ function readLS(): Buyer[] {
 function writeLS(arr: Buyer[]) {
   try {
     localStorage.setItem(LS_KEY, JSON.stringify(arr));
-  } catch {}
+  } catch { /* ignore */ }
 }
 
 function BuyersPage() {

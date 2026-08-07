@@ -9,10 +9,10 @@ async function clearStorage(page: Page) {
   await page.evaluate(() => {
     try {
       window.localStorage.clear();
-    } catch {}
+    } catch { /* ignore */ }
     try {
       window.sessionStorage.clear();
-    } catch {}
+    } catch { /* ignore */ }
   });
 }
 
