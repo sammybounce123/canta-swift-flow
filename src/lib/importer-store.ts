@@ -219,6 +219,8 @@ export type ImporterState = {
   wallets: ImporterWallet[];
   walletTx: WalletTx[];
   fundingReceipts: FundingReceipt[];
+  conversions: Conversion[];
+  conversionReceipts: ConversionReceipt[];
   drafts: PaymentDraft[];
   suppliers: SupplierRecord[];
   payments: SupplierPayment[];
