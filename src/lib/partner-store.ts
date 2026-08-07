@@ -141,7 +141,7 @@ export type ExtendedCase = PaymentCase & {
   activity: ActivityEntry[];
 };
 
-const STORE_KEY = "canta:partner:cases:v1";
+const STORE_KEY = "canta:partner:cases:v2";
 const CHANGE_EVENT = "partner-data-change";
 
 function uid(prefix: string) {
