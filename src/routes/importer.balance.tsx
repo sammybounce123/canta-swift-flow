@@ -13,9 +13,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Wallet, Plus, Download, Share2, LifeBuoy, Receipt } from "lucide-react";
+import {
+  Wallet,
+  Plus,
+  Download,
+  Share2,
+  LifeBuoy,
+  Receipt,
+  ArrowLeftRight,
+  Send,
+} from "lucide-react";
 import { ReadinessBar } from "@/components/ReadinessBar";
 import { FundWalletDialog } from "@/components/importer/FundWalletDialog";
+import { ConvertDialog } from "@/components/importer/ConvertDialog";
 import {
   useImporter,
   fmtWallet,
