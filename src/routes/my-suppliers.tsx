@@ -9,6 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 import { Factory, Plus, Search, Mail, Phone, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
@@ -124,7 +127,14 @@ function AddSupplierDialog({ onSubmit, onClose }: { onSubmit: (d: Omit<Supplier,
       <DialogHeader><DialogTitle>Add supplier</DialogTitle></DialogHeader>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="sm:col-span-2"><Label>Company name *</Label><Input value={f.name} onChange={set("name")} placeholder="Yiwu Fashion Co." /></div>
-        <div><Label>Country</Label><Input value={f.country} onChange={set("country")} placeholder="China" /></div>
+        <div><Label>Country</Label>
+          <Select value={f.country} onValueChange={(v) => setF((s) => ({ ...s, country: v }))}>
+            <SelectTrigger><SelectValue placeholder="Select country" /></SelectTrigger>
+            <SelectContent>
+              {["China","Turkey","India","Vietnam","Nigeria","Ghana","Kenya","South Africa","United Kingdom","USA","Germany","UAE"].map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
         <div><Label>Category</Label><Input value={f.category} onChange={set("category")} placeholder="Apparel" /></div>
         <div><Label>Contact person</Label><Input value={f.contact} onChange={set("contact")} placeholder="Mei Lin" /></div>
         <div><Label>Email</Label><Input value={f.email} onChange={set("email")} placeholder="sales@supplier.com" /></div>
