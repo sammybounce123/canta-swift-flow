@@ -90,21 +90,19 @@ function KybOnboardingPage() {
     { key: "addr", label: "Proof of business address" },
   ];
 
-  const emailValid = !director.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(director.email);
+  // Demo onboarding: no validation — every step can be skipped.
   const errors = {
-    name: !biz.name ? "Add your registered business name so we can verify it." : "",
-    regNo: !biz.regNo ? "Enter your CAC / incorporation number (e.g. RC-1234567)." : "",
-    address: !biz.address ? "A registered address helps speed up verification." : "",
-    dirName: !director.name ? "Add at least one director or beneficial owner." : "",
-    dirEmail: !director.email
-      ? "We'll email verification updates here."
-      : !emailValid ? "That doesn't look like a valid email address." : "",
+    name: "",
+    regNo: "",
+    address: "",
+    dirName: "",
+    dirEmail: "",
   };
   const missingDocs = requiredDocs.filter((d) => !docs[d.key]);
 
   const stepValid: Record<StepKey, boolean> = {
-    business: !errors.name && !errors.regNo && !errors.address,
-    directors: !errors.dirName && !errors.dirEmail,
+    business: true,
+    directors: true,
     documents: true,
     review: true,
   };
