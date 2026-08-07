@@ -6,11 +6,11 @@ import { toast } from "sonner";
 import { createDraftTradeFile, type TradeFileEvent } from "@/lib/trade-file-auto";
 
 const STEPS = [
-  { icon: Upload,   t: "Trigger",    d: "A BL, invoice, packing list, payment request or new case starts things off." },
-  { icon: FileText, t: "Auto draft", d: "Canta opens a Trade File automatically and assigns a reference — no manual step." },
-  { icon: Ship,     t: "Track",      d: "Supplier, shipment, documents, landed cost and payments — in one place." },
-  { icon: Wallet,   t: "Act",        d: "Request quotes, verify supplier, get clearing bids, and manage payments." },
-  { icon: Bell,     t: "Stay ahead", d: "Reminders before goods arrive and clearing starts." },
+  { icon: Upload,   t: "Create",     d: "Open a Trade File for the payment — from a document, an invoice or manually." },
+  { icon: FileText, t: "Add supplier", d: "Enter supplier company, country, contact and bank details. No supplier account needed." },
+  { icon: Ship,     t: "Quote",      d: "Upload the invoice, get an FX quote and accept the rate you want." },
+  { icon: Wallet,   t: "Fund & pay", d: "Fund in NGN or USDT. Canta reviews compliance and pays the supplier's bank." },
+  { icon: Bell,     t: "Settle",     d: "Track settlement and download the payment receipt and confirmation." },
 ];
 
 type ContextualAction = {
