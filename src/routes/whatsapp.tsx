@@ -33,7 +33,7 @@ export const Route = createFileRoute("/whatsapp")({
 type Convo = {
   id: string;
   with: string;
-  kind: "Shipment" | "Trade File" | "Missing Document" | "Support" | "Payment";
+  kind: "Shipment" | "Supplier Payment" | "Missing Document" | "Support" | "Payment";
   linked?: string;
   last: string;
   time: string;
@@ -45,8 +45,8 @@ const SEED_BY_WS: Record<string, Convo[]> = {
     {
       id: "C-01",
       with: "Shenzhen LedTech",
-      kind: "Trade File",
-      linked: "TF-2026-0214",
+      kind: "Supplier Payment",
+      linked: "PR-2026-0214",
       last: "Proforma invoice received — please confirm.",
       time: "12m ago",
       status: "Awaiting reply",
@@ -64,7 +64,7 @@ const SEED_BY_WS: Record<string, Convo[]> = {
       id: "C-03",
       with: "Yiwu PolyPack",
       kind: "Missing Document",
-      linked: "TF-2026-0208",
+      linked: "PR-2026-0208",
       last: "Reminder: packing list still missing.",
       time: "Yesterday",
       status: "Awaiting reply",
@@ -103,8 +103,8 @@ const SEED_BY_WS: Record<string, Convo[]> = {
     {
       id: "C-02",
       with: "Trade Fair Imports",
-      kind: "Trade File",
-      linked: "TF-2026-0199",
+      kind: "Supplier Payment",
+      linked: "PR-2026-0199",
       last: "Shipment delivered. Thanks.",
       time: "Yesterday",
       status: "Resolved",
@@ -244,7 +244,7 @@ function WhatsAppCustomer() {
         <TabsList>
           <TabsTrigger value="all">My WhatsApp Updates</TabsTrigger>
           <TabsTrigger value="ship">Shipment Conversations</TabsTrigger>
-          <TabsTrigger value="trade">Trade File Conversations</TabsTrigger>
+          <TabsTrigger value="trade">Supplier Payment Conversations</TabsTrigger>
           <TabsTrigger value="docs">Missing Document Requests</TabsTrigger>
         </TabsList>
 
@@ -255,7 +255,7 @@ function WhatsAppCustomer() {
               : tab === "ship"
                 ? c.kind === "Shipment"
                 : tab === "trade"
-                  ? c.kind === "Trade File"
+                  ? c.kind === "Supplier Payment"
                   : c.kind === "Missing Document",
           );
           return (
