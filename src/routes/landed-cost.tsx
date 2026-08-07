@@ -145,9 +145,10 @@ function LandedCostPage() {
 
 function Row({ label, value, tone }: { label: string; value: string; tone?: string }) {
   return (
-    <div className="flex items-center justify-between">
-      <span className="text-xs text-muted-foreground">{label}</span>
-      <span className={`text-sm font-semibold tabular-nums ${tone ?? ""}`}>{value}</span>
+    <div className="flex items-center justify-between gap-2">
+      <span className="min-w-0 truncate text-xs text-muted-foreground">{label}</span>
+      <span className={`shrink-0 text-sm font-semibold tabular-nums ${tone ?? ""}`}>{value}</span>
     </div>
   );
 }
+
