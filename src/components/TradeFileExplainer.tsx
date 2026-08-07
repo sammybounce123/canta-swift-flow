@@ -46,10 +46,11 @@ export function TradeFileExplainer() {
       <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
         <div className="min-w-0">
           <div className="text-[11px] uppercase tracking-widest text-muted-foreground font-semibold">What is a Trade File?</div>
-          <h3 className="text-lg font-semibold mt-1">Trade Files open themselves. You just start the work.</h3>
+          <h3 className="text-lg font-semibold mt-1">One Trade File. Every supplier, invoice, shipment, document and payment connected to the trade.</h3>
           <p className="text-sm text-muted-foreground mt-1 max-w-3xl">
-            Upload a BL, add an invoice, track a container or start a payment — Canta opens the Trade File automatically,
-            assigns a reference and takes you straight to the review screen. No more blank forms.
+            A Trade File is your private payment case. Create one to pay any supplier globally — add supplier bank details,
+            upload invoice documents, accept an FX quote, fund in NGN or USDT, and track settlement.
+            Your supplier does not need a Canta account.
           </p>
         </div>
       </div>
