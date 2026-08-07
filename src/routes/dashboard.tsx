@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileText, TrendingUp } from "lucide-react";
+import { useRequireWorkspace } from "@/lib/workspace-guard";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Canta" }] }),
@@ -31,6 +32,9 @@ export const Route = createFileRoute("/dashboard")({
 const MASK = "•••••••";
 
 function Dashboard() {
+  // Cold start (no chosen workspace) must land on /welcome instead of
+  // defaulting to an Enterprise Treasury identity.
+  useRequireWorkspace();
   const { openFund, openConvert, openSend } = useActions();
   const { profile, role, can } = useRole();
   const { mode } = useMode();

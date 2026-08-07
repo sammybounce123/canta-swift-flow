@@ -137,6 +137,19 @@ export type ImporterState = {
   shipments: ImporterShipment[];
   notifications: ImporterNotification[];
   notifySettings: { whatsapp: boolean; email: boolean; inApp: boolean };
+  alerts: {
+    paymentUpdates: boolean;
+    fxExpiry: boolean;
+    shipmentUpdates: boolean;
+    receiptAvailable: boolean;
+    blTracking: boolean;
+  };
+  prefs: {
+    fundingCurrency: "NGN" | "USDT";
+    settlementCurrency: string;
+    saveSupplierByDefault: boolean;
+  };
+  business: { name: string; contact: string; email: string; phone: string; address: string };
 };
 
 function iso(daysFromNow: number) {
@@ -190,6 +203,9 @@ function seed(): ImporterState {
       { id: "N-3", kind: "Receipt", text: "Receipt RC-2026-0139 is ready to download.", at: iso(-11), read: true },
     ],
     notifySettings: { whatsapp: true, email: true, inApp: true },
+    alerts: { paymentUpdates: true, fxExpiry: true, shipmentUpdates: true, receiptAvailable: true, blTracking: true },
+    prefs: { fundingCurrency: "NGN", settlementCurrency: "RMB", saveSupplierByDefault: true },
+    business: { name: "Bakare Imports Ltd", contact: "Tunde Bakare", email: "tunde@bakareimports.ng", phone: "+234 803 000 0000", address: "12 Balogun Street, Lagos Island, Lagos" },
   };
 }
 
@@ -313,6 +329,18 @@ export function updateShipment(id: string, patch: Partial<ImporterShipment>) {
 
 export function markAllRead() {
   update((s) => ({ ...s, notifications: s.notifications.map((n) => ({ ...n, read: true })) }));
+}
+
+export function setAlert(k: keyof ImporterState["alerts"], v: boolean) {
+  update((s) => ({ ...s, alerts: { ...s.alerts, [k]: v } }));
+}
+
+export function setPref<K extends keyof ImporterState["prefs"]>(k: K, v: ImporterState["prefs"][K]) {
+  update((s) => ({ ...s, prefs: { ...s.prefs, [k]: v } }));
+}
+
+export function setBusiness(patch: Partial<ImporterState["business"]>) {
+  update((s) => ({ ...s, business: { ...s.business, ...patch } }));
 }
 
 export function setNotifySetting(k: keyof ImporterState["notifySettings"], v: boolean) {
