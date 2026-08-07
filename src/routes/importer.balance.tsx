@@ -199,6 +199,20 @@ function BalancePage() {
               )}
               <Button
                 size="sm"
+                variant="secondary"
+                onClick={() => openConvert(w.ccy, w.ccy === "NGN" ? "USD" : "NGN")}
+              >
+                Convert
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => navigate({ to: "/importer/payments", search: { tab: "new" } })}
+              >
+                Convert &amp; Send
+              </Button>
+              <Button
+                size="sm"
                 variant="ghost"
                 onClick={() => {
                   setFCcy(w.ccy);
@@ -207,6 +221,7 @@ function BalancePage() {
               >
                 View transactions
               </Button>
+
             </div>
           </Card>
         ))}
