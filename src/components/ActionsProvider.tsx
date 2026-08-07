@@ -327,18 +327,19 @@ function FundFxQuote({
           Illustrative rates
         </span>
       </div>
-      <div className="flex items-center justify-between text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs">
         <span className="text-muted-foreground">Indicative rate</span>
         <span className="font-medium tabular-nums">
           1 {fundCcy} = {rate >= 1 ? rate.toFixed(2) : rate.toFixed(6)} {target}
         </span>
       </div>
-      <div className="flex items-center justify-between text-xs">
-        <span className="text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs">
+        <span className="min-w-0 text-muted-foreground">
           {fmtAnyCcy(amount, fundCcy)} credits approximately
         </span>
         <span className="font-semibold tabular-nums">{fmtAnyCcy(receive, target)}</span>
       </div>
+
       {fundCcy !== target && (
         <div className="text-[11px] text-muted-foreground">
           Funding is accepted in NGN or USDT only; the balance is converted to {target} on credit.
