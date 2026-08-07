@@ -82,22 +82,23 @@ function TradeFileDetail() {
             <div className="text-xs uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
               <Factory className="h-3.5 w-3.5" /> Supplier collaboration
             </div>
-            <div className="text-sm font-semibold mt-1">Supplier Portal · {file.supplier}</div>
+            <div className="text-sm font-semibold mt-1">Supplier · {file.supplier}</div>
             <div className="text-xs text-muted-foreground mt-1 max-w-xl">
               Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta.
             </div>
           </div>
           <ButtonGroup label="Supplier collaboration actions" className="w-auto justify-start sm:justify-end">
             <Button asChild size="sm" variant="outline">
-              <Link to="/supplier-portal">Invite Supplier</Link>
+              <Link to="/my-suppliers">Manage Suppliers</Link>
             </Button>
             <Button asChild size="sm" variant="outline">
-              <Link to="/supplier-portal">Open Supplier Portal Preview</Link>
+              <Link to="/documents">Supplier Documents</Link>
             </Button>
             <Button asChild size="sm">
-              <Link to="/supplier-portal">View Supplier RMB Settlement</Link>
+              <Link to="/payments">View Supplier Payment Status</Link>
             </Button>
           </ButtonGroup>
+
         </div>
         <div className="mt-4 grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-3 text-xs">
           <Field label="Supplier name" value={file.supplier} />
