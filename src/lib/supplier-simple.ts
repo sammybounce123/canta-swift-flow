@@ -406,8 +406,9 @@ export const simpleInvoiceStore = {
       | "createdAt"
       | "status"
       | "sentBy"
+      | "events"
     > &
-      Partial<Pick<SimpleInvoice, "status" | "sentBy">>,
+      Partial<Pick<SimpleInvoice, "status" | "sentBy" | "events">>,
   ) => {
     const invoiceNumber = nextInvoiceNumber();
     const paymentRequestId = nextPaymentRequestId();
@@ -416,11 +417,12 @@ export const simpleInvoiceStore = {
       id: `si_${Date.now().toString(36)}`,
       invoiceNumber,
       paymentRequestId,
-      paymentLink: `https://canta.pay/i/${invoiceNumber.toLowerCase()}`,
+      paymentLink: paymentPath(paymentRequestId),
       createdAt: new Date().toISOString().slice(0, 10),
       status: data.status ?? "Quote Locked",
       sentBy: data.sentBy ?? "Not sent",
       ...data,
+      events: [makeEvent("Invoice created"), makeEvent("Quote generated")],
     };
     SIMPLE_INVOICES.unshift(full);
     notifyInv();
