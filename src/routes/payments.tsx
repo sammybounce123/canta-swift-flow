@@ -788,154 +788,18 @@ function CreatePayoutDialog({
           </DialogFooter>
         </TabsContent>
         <TabsContent value="bulk" className="mt-4 space-y-3">
-          <div className="space-y-2">
-            <div className="text-xs text-muted-foreground">
-              Bulk payout sends multiple payouts in the same currency from one wallet. For
-              cross-currency payments, use Convert &amp; Send. Add one row per beneficiary; fields
-              marked * are required.
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-medium">Source wallet / batch currency</span>
-              <Select
-                value={batchCcy}
-                onValueChange={(v) => {
-                  setBatchCcy(v);
-                  setBulkRows((rows) => rows.map((r) => ({ ...r, ccy: v })));
-                }}
-              >
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {["NGN", "USD", "EUR", "GBP", "USDT"].map((c) => (
-                    <SelectItem key={c} value={c}>
-                      {c}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <p className="text-[11px] text-muted-foreground">
-              Bulk payout only supports same-currency payouts. The source wallet currency must match
-              every recipient&apos;s receiving currency.
-            </p>
-          </div>
-          <div className="space-y-3 max-h-[45vh] overflow-y-auto pr-1">
-            {bulkRows.map((r, i) => (
-              <Card
-                key={r.rowId}
-                className={`p-3 ${
-                  r.ccy !== batchCcy ? "border-destructive bg-destructive/5" : "border-dashed"
-                }`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-xs font-semibold text-muted-foreground">Row {i + 1}</div>
-                  {bulkRows.length > 1 && (
-                    <Button size="sm" variant="ghost" onClick={() => removeBulkRow(r.rowId)}>
-                      <Trash2 className="h-3.5 w-3.5 text-destructive" />
-                    </Button>
-                  )}
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  <Input
-                    value={r.beneficiary}
-                    onChange={(e) => updateBulkRow(r.rowId, { beneficiary: e.target.value })}
-                    placeholder="Beneficiary *"
-                    className="col-span-2 sm:col-span-1"
-                  />
-                  <Select
-                    value={r.kind}
-                    onValueChange={(v) => updateBulkRow(r.rowId, { kind: v as Payment["kind"] })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {(["Supplier", "Forwarder", "Customs", "Other"] as const).map((k) => (
-                        <SelectItem key={k} value={k}>
-                          {k}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Select value={r.ccy} onValueChange={(v) => updateBulkRow(r.rowId, { ccy: v })}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {["NGN", "USD", "EUR", "GBP", "USDT"].map((c) => (
-                        <SelectItem key={c} value={c}>
-                          {c}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Input
-                    type="number"
-                    value={r.amount}
-                    onChange={(e) => updateBulkRow(r.rowId, { amount: e.target.value })}
-                    placeholder="Amount *"
-                  />
-                  <Input
-                    value={r.reference}
-                    onChange={(e) => updateBulkRow(r.rowId, { reference: e.target.value })}
-                    placeholder="Reference"
-                  />
-                  <Input
-                    value={r.purpose}
-                    onChange={(e) => updateBulkRow(r.rowId, { purpose: e.target.value })}
-                    placeholder="Purpose *"
-                  />
-                  <Input
-                    value={r.account}
-                    onChange={(e) => updateBulkRow(r.rowId, { account: e.target.value })}
-                    placeholder="Payout account *"
-                    className="col-span-2 sm:col-span-3"
-                  />
-                </div>
-              </Card>
-            ))}
-          </div>
-          <Button variant="outline" size="sm" onClick={addBulkRow}>
-            <Plus className="h-3.5 w-3.5 mr-1" /> Add row
-          </Button>
-          {bulkMismatch.length > 0 && (
-            <Card className="p-3 border-destructive/40 bg-destructive/5 space-y-2">
-              <div className="text-xs font-semibold text-destructive">
-                Bulk payout only supports same-currency payouts. Change recipient currency to{" "}
-                {batchCcy} or use Convert &amp; Send.
-              </div>
-              <div className="space-y-1">
-                {bulkMismatch.map((r) => (
-                  <div key={r.rowId} className="text-[11px] text-muted-foreground">
-                    Row {bulkRows.indexOf(r) + 1} · {r.beneficiary || "Unnamed recipient"} · {r.ccy}{" "}
-                    → expected {batchCcy} · change the currency or pay it with Convert &amp; Send
-                  </div>
-                ))}
-              </div>
-              {new Set(bulkMismatch.map((r) => r.ccy)).size > 1 && (
-                <div className="text-[11px] text-muted-foreground">
-                  Create separate same-currency batches, or use Convert &amp; Send for each
-                  cross-currency payout.
-                </div>
-              )}
-              <Button size="sm" variant="outline" onClick={() => setMode("single")}>
-                Use Convert &amp; Send
-              </Button>
-              <p className="text-[11px] text-muted-foreground">
-                Convert &amp; Send lets you convert funds and pay a beneficiary in another currency.
-              </p>
-            </Card>
-          )}
-          <DialogFooter className="mt-2">
-            <Button variant="ghost" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button disabled={bulkMismatch.length > 0} onClick={submitBulk}>
-              Create {bulkRows.length} payout{bulkRows.length > 1 ? "s" : ""}
-            </Button>
-          </DialogFooter>
+          <p className="text-xs text-muted-foreground">
+            Bulk Payout pays many saved beneficiaries in the same currency from one wallet. Bank
+            details cannot be entered here — add a beneficiary first. For cross-currency payments,
+            use Convert &amp; Send.
+          </p>
+          <BulkPayoutForm
+            onClose={onClose}
+            onAddBeneficiary={openAddBeneficiary}
+            onConvertAndSend={() => setMode("single")}
+          />
         </TabsContent>
+
       </Tabs>
     </DialogContent>
   );
