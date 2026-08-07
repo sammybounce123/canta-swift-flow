@@ -434,9 +434,66 @@ function BalancePage() {
             )}
           </div>
         </TabsContent>
+
+        <TabsContent value="conversions" className="mt-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            {s.conversionReceipts.map((r) => (
+              <Card key={r.receiptNo} className="p-4 shadow-card">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="font-semibold flex items-center gap-1.5">
+                    <ArrowLeftRight className="h-4 w-4 text-primary" /> {r.receiptNo}
+                  </div>
+                  <Badge variant="outline" className="text-[10px]">
+                    {r.status}
+                  </Badge>
+                </div>
+                <dl className="mt-3 text-xs space-y-1">
+                  <Line k="Conversion reference" v={r.conversionRef} />
+                  <Line k="Source wallet" v={`${r.from} Wallet`} />
+                  <Line k="Destination wallet" v={`${r.to} Wallet`} />
+                  <Line k="Amount debited" v={fmtWallet(r.debit, r.from)} />
+                  <Line k="Amount credited" v={fmtWallet(r.credit, r.to)} />
+                  <Line
+                    k="FX rate"
+                    v={`1 ${r.from} = ${r.rate.toLocaleString("en-US", { maximumFractionDigits: 6 })} ${r.to}`}
+                  />
+                  <Line k="Canta fee" v={fmtWallet(r.fee, r.from)} />
+                  <Line k="Date" v={r.at} />
+                </dl>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  <Button size="sm" onClick={() => toast.success("Receipt download started")}>
+                    <Download className="h-3.5 w-3.5" /> Download
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setFCcy(r.to);
+                      toast.success("Wallet transaction filtered");
+                    }}
+                  >
+                    View wallet transaction
+                  </Button>
+                </div>
+              </Card>
+            ))}
+            {s.conversionReceipts.length === 0 && (
+              <div className="col-span-full text-center text-sm text-muted-foreground py-10">
+                No conversions yet. Use Convert to move money between your own wallets.
+              </div>
+            )}
+          </div>
+        </TabsContent>
       </Tabs>
 
       <FundWalletDialog open={fundOpen} onOpenChange={setFundOpen} initialMethod={fundMethod} />
+      <ConvertDialog
+        open={convOpen}
+        onOpenChange={setConvOpen}
+        initialFrom={convFrom}
+        initialTo={convTo}
+      />
+
       <p className="text-[11px] text-muted-foreground">
         Total available:{" "}
         {s.wallets.map((w) => fmtWallet(walletOf(s, w.ccy)?.available ?? 0, w.ccy)).join(" · ")}
