@@ -455,11 +455,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   // Derive the active workspace from path first, then fall back to saved mode.
   const pathWorkspace = workspaceFromPath(pathname);
   const hydrated = useHydrated();
-  const activeWorkspace =
-    pathWorkspace ??
-    (hydrated ? resolveActiveWorkspace(pathname, mode) : null) ??
-    "importer_portal";
+  const resolvedWorkspace =
+    pathWorkspace ?? (hydrated ? resolveActiveWorkspace(pathname, mode) : null);
+  const pendingWorkspace = resolvedWorkspace === null;
+  const activeWorkspace = resolvedWorkspace ?? "importer_portal";
   const displayMode: Mode = WORKSPACE_TO_MODE[activeWorkspace];
+
 
   // Persist the inferred mode so other surfaces (dashboard hero, etc.) follow.
   useEffect(() => {
