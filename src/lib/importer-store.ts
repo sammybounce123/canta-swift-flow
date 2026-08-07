@@ -6,7 +6,7 @@
 
 import { useSyncExternalStore } from "react";
 
-const KEY = "canta:importer:v1";
+const KEY = "canta:importer:v2";
 
 export type PaymentStatus =
   | "Draft"
