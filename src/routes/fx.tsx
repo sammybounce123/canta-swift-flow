@@ -37,6 +37,7 @@ import { fxHistory, beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { useActions } from "@/components/actions-context";
 
 export const Route = createFileRoute("/fx")({
   head: () => ({ meta: [{ title: "FX / Exchange — Canta" }] }),
