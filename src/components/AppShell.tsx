@@ -534,7 +534,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Menu className="h-5 w-5" />
             </button>
 
-            <ModeSwitcher displayMode={displayMode} />
+            {pendingWorkspace ? (
+              <div className="h-8 w-40 rounded-lg bg-secondary animate-pulse" />
+            ) : (
+              <ModeSwitcher displayMode={displayMode} />
+            )}
+
 
             {!isPartner && (
               <div className="hidden lg:flex items-center gap-2 flex-1 max-w-md ml-2">
