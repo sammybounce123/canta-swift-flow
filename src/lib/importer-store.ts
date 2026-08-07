@@ -315,7 +315,7 @@ function seed(): ImporterState {
     ],
     notifySettings: { whatsapp: true, email: true, inApp: true },
     alerts: { paymentUpdates: true, fxExpiry: true, shipmentUpdates: true, receiptAvailable: true, blTracking: true },
-    prefs: { fundingCurrency: "NGN", settlementCurrency: "RMB", saveSupplierByDefault: true },
+    prefs: { fundingCurrency: "NGN", settlementCurrency: "RMB", saveSupplierByDefault: true, usdtWarnings: true, emailFundingReceipts: true, whatsappPaymentNotifications: true },
     business: { name: "Bakare Imports Ltd", contact: "Tunde Bakare", email: "tunde@bakareimports.ng", phone: "+234 803 000 0000", address: "12 Balogun Street, Lagos Island, Lagos" },
   };
 }
