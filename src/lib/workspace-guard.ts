@@ -107,7 +107,10 @@ export function workspaceFromPath(pathname: string): WorkspaceType | null {
   if (pathname.startsWith("/collections") || pathname.startsWith("/merchant") || pathname.startsWith("/payment-links") || pathname.startsWith("/payers") || pathname.startsWith("/reconciliation")) return "global_collections";
   if (pathname.startsWith("/supplier-portal")) return "supplier_dashboard";
   if (pathname.startsWith("/escrow")) return "importer_portal";
-  if (pathname.startsWith("/importer") || pathname.startsWith("/trade-desk") || pathname.startsWith("/my-suppliers") || pathname.startsWith("/landed-cost") || pathname.startsWith("/shipments")) return "importer_portal";
+  // /trade-desk is the internal Trade File console (ops/admin only) — importer
+  // customers use the /importer/* supplier payment screens instead.
+  if (pathname.startsWith("/trade-desk")) return "canta_ops";
+  if (pathname.startsWith("/importer") || pathname.startsWith("/my-suppliers") || pathname.startsWith("/landed-cost") || pathname.startsWith("/shipments")) return "importer_portal";
   if (pathname.startsWith("/suppliers") || pathname.startsWith("/buyers") || pathname.startsWith("/verified-buyers")) return "supplier_dashboard";
   if (pathname === "/cards" || pathname.startsWith("/cards/")) return null;
   if (pathname.startsWith("/treasury") || pathname.startsWith("/wallets") || pathname.startsWith("/fx") || pathname.startsWith("/beneficiaries")) return "enterprise_treasury";
