@@ -646,3 +646,68 @@ export function remittanceQuote(method: "NGN" | "USDT", amount: number): {
   });
   return { fee, net, legs };
 }
+
+/* ------------------------------------ global send currencies + lock ------ */
+
+/**
+ * Popular destination currencies importers send to. Suppliers do not need a
+ * Canta wallet, so quoting is not limited to wallet currencies.
+ * Values are indicative NGN per 1 unit (demo rates).
+ */
+export const GLOBAL_SEND_CCYS: { code: string; name: string; ngnRate: number }[] = [
+  { code: "USD", name: "US Dollar", ngnRate: FX_RATES.USD },
+  { code: "EUR", name: "Euro", ngnRate: FX_RATES.EUR },
+  { code: "GBP", name: "British Pound", ngnRate: FX_RATES.GBP },
+  { code: "CNY", name: "Chinese Yuan", ngnRate: FX_RATES.RMB },
+  { code: "AED", name: "UAE Dirham", ngnRate: FX_RATES.AED },
+  { code: "INR", name: "Indian Rupee", ngnRate: FX_RATES.INR },
+  { code: "TRY", name: "Turkish Lira", ngnRate: FX_RATES.TRY },
+  { code: "CAD", name: "Canadian Dollar", ngnRate: FX_RATES.CAD },
+  { code: "JPY", name: "Japanese Yen", ngnRate: 11 },
+  { code: "CHF", name: "Swiss Franc", ngnRate: 1880 },
+  { code: "AUD", name: "Australian Dollar", ngnRate: 1080 },
+  { code: "ZAR", name: "South African Rand", ngnRate: 90 },
+  { code: "SGD", name: "Singapore Dollar", ngnRate: 1230 },
+  { code: "HKD", name: "Hong Kong Dollar", ngnRate: 212 },
+  { code: "KES", name: "Kenyan Shilling", ngnRate: 12.8 },
+  { code: "GHS", name: "Ghanaian Cedi", ngnRate: 105 },
+  { code: "USDT", name: "Tether USDT", ngnRate: WALLET_NGN_RATE.USDT },
+];
+
+export const ngnRateOf = (code: string) =>
+  GLOBAL_SEND_CCYS.find((c) => c.code === code)?.ngnRate ?? WALLET_NGN_RATE.NGN;
+
+/** Generic formatter that works for any send currency, not just wallets. */
+export const fmtAnyCcy = (n: number, code: string) => {
+  if (code === "NGN") return fmtNGN(n);
+  if (code === "USDT") return `${n.toLocaleString("en-US", { maximumFractionDigits: 2 })} USDT`;
+  try {
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: code, maximumFractionDigits: 2 }).format(n);
+  } catch {
+    return `${n.toLocaleString("en-US", { maximumFractionDigits: 2 })} ${code}`;
+  }
+};
+
+/** Seconds a remittance quote stays locked before it must be refreshed. */
+export const QUOTE_LOCK_SECONDS = 90;
+
+export type LockedQuote = {
+  method: "NGN" | "USDT";
+  amount: number;
+  target: string;
+  fee: number;
+  net: number;
+  rate: number;
+  receive: number;
+  lockedAt: number;
+  expiresAt: number;
+};
+
+export function buildLockedQuote(method: "NGN" | "USDT", amount: number, target: string): LockedQuote {
+  const fee = Math.round(amount * REMITTANCE_FEE_PCT * 100) / 100;
+  const net = Math.max(0, amount - fee);
+  const src = method === "NGN" ? 1 : WALLET_NGN_RATE.USDT;
+  const rate = src / ngnRateOf(target);
+  const lockedAt = Date.now();
+  return { method, amount, target, fee, net, rate, receive: net * rate, lockedAt, expiresAt: lockedAt + QUOTE_LOCK_SECONDS * 1000 };
+}
