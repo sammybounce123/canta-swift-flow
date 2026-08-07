@@ -4,6 +4,11 @@ export const CANTA_WHATSAPP_NUMBER =
   (import.meta.env.VITE_CANTA_WHATSAPP_NUMBER as string | undefined)?.replace(/\D/g, "") ||
   "2348000000000";
 
+// Shipment-tracking WhatsApp bot. Configure via VITE_CANTA_WHATSAPP_BOT_NUMBER
+// (E.164 digits only, no + sign). Empty when not configured — never invent one.
+export const CANTA_WHATSAPP_BOT_NUMBER =
+  (import.meta.env.VITE_CANTA_WHATSAPP_BOT_NUMBER as string | undefined)?.replace(/\D/g, "") || "";
+
 export type WhatsAppTemplateKey =
   | "sendInvoice"
   | "trackShipment"
