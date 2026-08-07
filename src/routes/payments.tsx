@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRequireWorkspace } from "@/lib/workspace-guard";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,6 +41,8 @@ import {
   Send,
 } from "lucide-react";
 import { fmtMoney } from "@/lib/mock";
+import { getBatches, subscribeBatches } from "@/lib/bulk-payout-store";
+import { useActions } from "@/components/actions-context";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/payments")({
@@ -242,6 +244,8 @@ function PaymentsPage() {
           </Dialog>
         </div>
       </header>
+
+      <BulkPayoutBatches />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <Stat
@@ -486,6 +490,89 @@ function Stat({
   );
 }
 
+function BulkPayoutBatches() {
+  const batches = useSyncExternalStore(subscribeBatches, getBatches, getBatches);
+  const { openBulk } = useActions();
+  return (
+    <Card className="p-4 shadow-card">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <div className="text-sm font-semibold">Bulk Payout</div>
+          <p className="text-xs text-muted-foreground mt-0.5 max-w-xl">
+            Send multiple payouts in the same currency from one wallet. For cross-currency payments,
+            use Convert &amp; Send.
+          </p>
+        </div>
+        <Button size="sm" variant="outline" onClick={openBulk}>
+          <Plus className="h-3.5 w-3.5 mr-1" /> New batch
+        </Button>
+      </div>
+      <div className="mt-3 overflow-x-auto">
+        <table className="w-full text-xs">
+          <thead className="text-muted-foreground">
+            <tr className="text-left">
+              {[
+                "Batch ID",
+                "Source wallet",
+                "Currency",
+                "Total amount",
+                "Recipients",
+                "Approval",
+                "Payout",
+                "Created by",
+                "Date",
+                "Actions",
+              ].map((h) => (
+                <th key={h} className="font-medium py-2 pr-4 whitespace-nowrap">
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {batches.map((b) => (
+              <tr key={b.id} className="border-t border-border">
+                <td className="py-2 pr-4 font-medium whitespace-nowrap">{b.id}</td>
+                <td className="py-2 pr-4 whitespace-nowrap">{b.sourceWallet}</td>
+                <td className="py-2 pr-4">{b.currency}</td>
+                <td className="py-2 pr-4 tabular-nums whitespace-nowrap">
+                  {fmtMoney(b.total, b.currency)}
+                </td>
+                <td className="py-2 pr-4">{b.recipients}</td>
+                <td className="py-2 pr-4 whitespace-nowrap">
+                  <Badge variant="outline" className="text-[10px]">
+                    {b.approval}
+                  </Badge>
+                </td>
+                <td className="py-2 pr-4 whitespace-nowrap">
+                  <Badge variant="outline" className="text-[10px]">
+                    {b.payout}
+                  </Badge>
+                </td>
+                <td className="py-2 pr-4 whitespace-nowrap">{b.createdBy}</td>
+                <td className="py-2 pr-4 whitespace-nowrap">{b.date}</td>
+                <td className="py-2 pr-4">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() =>
+                      toast.info(`${b.id}`, {
+                        description: `${b.recipients} same-currency ${b.currency} payouts · fee ${fmtMoney(b.fee, b.currency)}`,
+                      })
+                    }
+                  >
+                    View
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  );
+}
+
 type SingleForm = {
   beneficiary: string;
   kind: Payment["kind"];
@@ -519,9 +606,11 @@ function CreatePayoutDialog({
 }) {
   const [mode, setMode] = useState<"single" | "bulk">("single");
   const [single, setSingle] = useState<SingleForm>(emptySingle());
+  const [batchCcy, setBatchCcy] = useState("USD");
   const [bulkRows, setBulkRows] = useState<BulkRow[]>([
     { ...emptySingle(), rowId: crypto.randomUUID() },
   ]);
+  const bulkMismatch = bulkRows.filter((r) => r.ccy !== batchCcy);
 
   function validateRow(f: SingleForm): string | null {
     if (!f.beneficiary.trim()) return "Beneficiary is required";
@@ -563,6 +652,12 @@ function CreatePayoutDialog({
     setBulkRows((r) => r.map((x) => (x.rowId === rowId ? { ...x, ...patch } : x)));
   }
   function submitBulk() {
+    if (bulkMismatch.length) {
+      toast.error(
+        `Bulk payout only supports same-currency payouts. Change recipient currency to ${batchCcy} or use Convert & Send.`,
+      );
+      return;
+    }
     const errors: string[] = [];
     bulkRows.forEach((r, i) => {
       const e = validateRow(r);
@@ -580,7 +675,7 @@ function CreatePayoutDialog({
       kind: r.kind,
       reference: r.reference || `REF-${Date.now().toString().slice(-6)}`,
       amount: Number(r.amount),
-      ccy: r.ccy,
+      ccy: batchCcy,
       date: new Date().toISOString().slice(0, 10),
       status: "Draft",
       purpose: r.purpose,
@@ -598,7 +693,7 @@ function CreatePayoutDialog({
       <Tabs value={mode} onValueChange={(v) => setMode(v as typeof mode)}>
         <TabsList>
           <TabsTrigger value="single">Single payout</TabsTrigger>
-          <TabsTrigger value="bulk">Bulk payout</TabsTrigger>
+          <TabsTrigger value="bulk">Bulk payout (same currency)</TabsTrigger>
         </TabsList>
         <TabsContent value="single" className="mt-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -693,12 +788,46 @@ function CreatePayoutDialog({
           </DialogFooter>
         </TabsContent>
         <TabsContent value="bulk" className="mt-4 space-y-3">
-          <div className="text-xs text-muted-foreground">
-            Add one row per beneficiary. All fields marked * are required per row.
+          <div className="space-y-2">
+            <div className="text-xs text-muted-foreground">
+              Bulk payout sends multiple payouts in the same currency from one wallet. For
+              cross-currency payments, use Convert &amp; Send. Add one row per beneficiary; fields
+              marked * are required.
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-medium">Source wallet / batch currency</span>
+              <Select
+                value={batchCcy}
+                onValueChange={(v) => {
+                  setBatchCcy(v);
+                  setBulkRows((rows) => rows.map((r) => ({ ...r, ccy: v })));
+                }}
+              >
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {["NGN", "USD", "EUR", "GBP", "USDT"].map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              Bulk payout only supports same-currency payouts. The source wallet currency must match
+              every recipient&apos;s receiving currency.
+            </p>
           </div>
           <div className="space-y-3 max-h-[45vh] overflow-y-auto pr-1">
             {bulkRows.map((r, i) => (
-              <Card key={r.rowId} className="p-3 border-dashed">
+              <Card
+                key={r.rowId}
+                className={`p-3 ${
+                  r.ccy !== batchCcy ? "border-destructive bg-destructive/5" : "border-dashed"
+                }`}
+              >
                 <div className="flex items-center justify-between mb-2">
                   <div className="text-xs font-semibold text-muted-foreground">Row {i + 1}</div>
                   {bulkRows.length > 1 && (
@@ -734,7 +863,7 @@ function CreatePayoutDialog({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {["USD", "EUR", "GBP", "RMB", "AED"].map((c) => (
+                      {["NGN", "USD", "EUR", "GBP", "USDT"].map((c) => (
                         <SelectItem key={c} value={c}>
                           {c}
                         </SelectItem>
@@ -770,11 +899,39 @@ function CreatePayoutDialog({
           <Button variant="outline" size="sm" onClick={addBulkRow}>
             <Plus className="h-3.5 w-3.5 mr-1" /> Add row
           </Button>
+          {bulkMismatch.length > 0 && (
+            <Card className="p-3 border-destructive/40 bg-destructive/5 space-y-2">
+              <div className="text-xs font-semibold text-destructive">
+                Bulk payout only supports same-currency payouts. Change recipient currency to{" "}
+                {batchCcy} or use Convert &amp; Send.
+              </div>
+              <div className="space-y-1">
+                {bulkMismatch.map((r) => (
+                  <div key={r.rowId} className="text-[11px] text-muted-foreground">
+                    Row {bulkRows.indexOf(r) + 1} · {r.beneficiary || "Unnamed recipient"} · {r.ccy}{" "}
+                    → expected {batchCcy} · change the currency or pay it with Convert &amp; Send
+                  </div>
+                ))}
+              </div>
+              {new Set(bulkMismatch.map((r) => r.ccy)).size > 1 && (
+                <div className="text-[11px] text-muted-foreground">
+                  Create separate same-currency batches, or use Convert &amp; Send for each
+                  cross-currency payout.
+                </div>
+              )}
+              <Button size="sm" variant="outline" onClick={() => setMode("single")}>
+                Use Convert &amp; Send
+              </Button>
+              <p className="text-[11px] text-muted-foreground">
+                Convert &amp; Send lets you convert funds and pay a beneficiary in another currency.
+              </p>
+            </Card>
+          )}
           <DialogFooter className="mt-2">
             <Button variant="ghost" onClick={onClose}>
               Cancel
             </Button>
-            <Button onClick={submitBulk}>
+            <Button disabled={bulkMismatch.length > 0} onClick={submitBulk}>
               Create {bulkRows.length} payout{bulkRows.length > 1 ? "s" : ""}
             </Button>
           </DialogFooter>

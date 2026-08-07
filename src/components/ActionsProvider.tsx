@@ -45,6 +45,7 @@ import {
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { beneficiaries, fmtMoney } from "@/lib/mock";
+import { BulkPayoutForm } from "@/components/treasury/BulkPayoutForm";
 import { addTransaction } from "@/lib/tx-store";
 import { ngnRateOf, fmtAnyCcy, WALLET_CCYS, GLOBAL_SEND_CCYS } from "@/lib/importer-store";
 import { useRole } from "@/components/RoleProvider";
@@ -157,7 +158,6 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
       {/* SEND */}
       <Dialog open={send.open} onOpenChange={(o) => setSend((s) => ({ ...s, open: o }))}>
         <DialogContent className="w-[calc(100vw-2rem)] max-w-md max-h-[85vh] overflow-y-auto">
-
           <DialogHeader>
             <DialogTitle>Convert &amp; Send</DialogTitle>
             <DialogDescription>
@@ -222,13 +222,17 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
       <Dialog open={bulk} onOpenChange={setBulk}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Bulk Payments</DialogTitle>
-            <DialogDescription>Pay multiple beneficiaries in a single batch run.</DialogDescription>
+            <DialogTitle>Bulk Payout</DialogTitle>
+            <DialogDescription>
+              Send multiple payouts in the same currency from one wallet. For cross-currency
+              payments, use Convert &amp; Send.
+            </DialogDescription>
           </DialogHeader>
-          <BulkPaymentsForm
-            onClose={() => {
+          <BulkPayoutForm
+            onClose={() => setBulk(false)}
+            onConvertAndSend={() => {
               setBulk(false);
-              navigate({ to: "/transactions" });
+              setSend({ open: true, beneficiary: "" });
             }}
           />
         </DialogContent>
@@ -903,8 +907,6 @@ function SendForm({
   }, [ben.ccy]);
   const receiveAmt = (amt * ngnRateOf(payCcy)) / ngnRateOf(quoteCcy);
 
-
-
   if (stage === "sending") {
     return (
       <FundFlow
@@ -1074,7 +1076,6 @@ function SendForm({
         </div>
       </div>
       <FundFxQuote fundCcy={payCcy} target={quoteCcy} amount={amt} />
-
 
       <div>
         <Label className="text-xs">Reference</Label>
@@ -1346,120 +1347,6 @@ function ScheduleForm({ onClose }: { onClose: () => void }) {
         }}
       >
         Schedule Conversion
-      </Button>
-    </div>
-  );
-}
-
-function BulkPaymentsForm({ onClose }: { onClose: () => void }) {
-  type Row = { id: number; name: string; amount: string; ccy: string };
-  const [rows, setRows] = useState<Row[]>(
-    beneficiaries.slice(0, 3).map((b, i) => ({ id: i, name: b.name, amount: "10000", ccy: b.ccy })),
-  );
-  const total = rows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
-  return (
-    <div className="space-y-3">
-      <button
-        onClick={() =>
-          toast.info("CSV import", {
-            description: "Upload a CSV with name, amount, currency columns.",
-          })
-        }
-        className="w-full p-4 rounded-xl border-2 border-dashed border-border hover:border-accent text-sm flex items-center justify-center gap-2 text-muted-foreground"
-      >
-        <Upload className="h-4 w-4" /> Drop CSV here or click to upload
-      </button>
-      <div className="rounded-xl border border-border overflow-hidden">
-        <div className="grid grid-cols-12 gap-2 text-xs font-medium bg-secondary/50 px-3 py-2 text-muted-foreground">
-          <div className="col-span-5">Beneficiary</div>
-          <div className="col-span-4">Amount</div>
-          <div className="col-span-2">Ccy</div>
-          <div className="col-span-1" />
-        </div>
-        {rows.map((r) => (
-          <div
-            key={r.id}
-            className="grid grid-cols-12 gap-2 px-3 py-2 border-t border-border items-center"
-          >
-            <select
-              value={r.name}
-              onChange={(e) =>
-                setRows(
-                  rows.map((x) =>
-                    x.id === r.id
-                      ? {
-                          ...x,
-                          name: e.target.value,
-                          ccy: beneficiaries.find((b) => b.name === e.target.value)?.ccy ?? x.ccy,
-                        }
-                      : x,
-                  ),
-                )
-              }
-              className="col-span-5 bg-card border border-border rounded px-2 py-1 text-sm"
-            >
-              {beneficiaries.map((b) => (
-                <option key={b.name}>{b.name}</option>
-              ))}
-            </select>
-            <Input
-              value={r.amount}
-              onChange={(e) =>
-                setRows(
-                  rows.map((x) =>
-                    x.id === r.id ? { ...x, amount: e.target.value.replace(/[^0-9.]/g, "") } : x,
-                  ),
-                )
-              }
-              className="col-span-4 h-8"
-            />
-            <div className="col-span-2 text-xs font-medium">{r.ccy}</div>
-            <button
-              onClick={() => setRows(rows.filter((x) => x.id !== r.id))}
-              className="col-span-1 text-muted-foreground hover:text-destructive"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </div>
-        ))}
-      </div>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() =>
-          setRows([
-            ...rows,
-            { id: Date.now(), name: beneficiaries[0].name, amount: "0", ccy: beneficiaries[0].ccy },
-          ])
-        }
-      >
-        <Plus className="h-3.5 w-3.5 mr-1" /> Add row
-      </Button>
-      <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 text-sm">
-        <span className="text-muted-foreground">{rows.length} payments</span>
-        <span className="font-semibold tabular-nums">Total ≈ {total.toLocaleString()}</span>
-      </div>
-      <Button
-        className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
-        onClick={() => {
-          rows.forEach((r) => {
-            const amt = Number(r.amount) || 0;
-            if (!amt) return;
-            addTransaction({
-              type: "Outgoing",
-              desc: `Bulk batch · ${r.name}`,
-              amount: amt,
-              ccy: r.ccy,
-              status: "Completed",
-            });
-          });
-          onClose();
-          toast.success(`${rows.length} payments settled`, {
-            description: "Batch routed on best corridors.",
-          });
-        }}
-      >
-        Submit Batch
       </Button>
     </div>
   );

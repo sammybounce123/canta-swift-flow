@@ -400,3 +400,68 @@ test("Pay Supplier wizard labels its FX step Convert & Send to Supplier", async 
   await page.goto("/importer/payments?tab=new");
   await expect(page.getByText("Convert & Send to Supplier").first()).toBeVisible();
 });
+
+/**
+ * Bulk Payout is same-currency only — never an FX product.
+ */
+test("Bulk Payout dialog states the same-currency rule and hides FX language", async ({ page }) => {
+  await clearStorage(page);
+  await seedWorkspace(page, "enterprise_treasury", "Treasury");
+  await page.goto("/treasury");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "Bulk Payout" }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toContainText("Send multiple payouts in the same currency from one wallet");
+  await expect(dialog).toContainText("Bulk payout only supports same-currency payouts");
+  await expect(dialog).not.toContainText(/exchange rate|fx quote/i);
+});
+
+test("Bulk Payout blocks a mismatched recipient currency and offers Convert & Send", async ({
+  page,
+}) => {
+  await clearStorage(page);
+  await seedWorkspace(page, "enterprise_treasury", "Treasury");
+  await page.goto("/treasury");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "Bulk Payout" }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByRole("button", { name: "Continue" }).click();
+  await dialog.getByPlaceholder("Beneficiary name *").fill("Northwind Trading Co");
+  await dialog.getByPlaceholder("Bank name *").fill("Demo Bank NA");
+  await dialog.getByPlaceholder("Account number / IBAN *").fill("00112233");
+  await dialog.getByPlaceholder("Amount *").fill("5000");
+  await dialog.getByPlaceholder("Purpose / reference *").fill("Invoice 1042");
+  await dialog.getByPlaceholder("Receiving currency *").fill("EUR");
+  await expect(dialog).toContainText("Change recipient currency to USD or use Convert & Send");
+  await expect(dialog.getByRole("button", { name: "Review batch" })).toBeDisabled();
+  await expect(dialog.getByRole("button", { name: "Use Convert & Send" })).toBeVisible();
+});
+
+test("Bulk Payout accepts a same-currency batch and submits for approval", async ({ page }) => {
+  await clearStorage(page);
+  await seedWorkspace(page, "enterprise_treasury", "Treasury");
+  await page.goto("/treasury");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "Bulk Payout" }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByRole("button", { name: "Continue" }).click();
+  await dialog.getByPlaceholder("Beneficiary name *").fill("Northwind Trading Co");
+  await dialog.getByPlaceholder("Bank name *").fill("Demo Bank NA");
+  await dialog.getByPlaceholder("Account number / IBAN *").fill("00112233");
+  await dialog.getByPlaceholder("Amount *").fill("5000");
+  await dialog.getByPlaceholder("Purpose / reference *").fill("Invoice 1042");
+  await dialog.getByRole("button", { name: "Review batch" }).click();
+  await expect(dialog).toContainText("Batch currency");
+  await dialog.getByRole("button", { name: "Submit for approval" }).click();
+  await expect(page.getByText("Batch submitted for approval")).toBeVisible();
+});
+
+test("Payouts page lists bulk batches without FX columns", async ({ page }) => {
+  await clearStorage(page);
+  await seedWorkspace(page, "enterprise_treasury", "Treasury");
+  await page.goto("/payments");
+  await expect(page.getByText("Batch ID")).toBeVisible();
+  await expect(page.getByText("Source wallet").first()).toBeVisible();
+  const table = page.locator("table").first();
+  await expect(table).not.toContainText(/FX rate|Exchange rate|Conversion fee/i);
+});
