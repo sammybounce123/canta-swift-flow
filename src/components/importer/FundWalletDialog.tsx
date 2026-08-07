@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { AlertTriangle, Check, Copy, QrCode } from "lucide-react";
 import {
   useImporter, startFunding, confirmFundingSent, simulateProviderConfirmation, cancelFunding,
-  fmtWallet, NGN_COLLECTION_ACCOUNT, USDT_ADDRESSES, USDT_CONFIRMATIONS, USDT_NETWORKS,
+  fmtWallet, remittanceQuote, WALLET_CCYS, NGN_COLLECTION_ACCOUNT, USDT_ADDRESSES, USDT_CONFIRMATIONS, USDT_NETWORKS,
   type UsdtNetwork,
 } from "@/lib/importer-store";
 
@@ -243,6 +243,49 @@ export function FundWalletDialog({
         )}
       </DialogContent>
     </Dialog>
+  );
+}
+
+function RemittanceQuote({ method, amount }: { method: "NGN" | "USDT"; amount: number }) {
+  const { fee, net, legs } = remittanceQuote(method, amount);
+  return (
+    <div className="rounded-lg border border-border p-3 space-y-2">
+      <div className="flex items-center justify-between gap-2">
+        <div className="text-xs font-semibold">Remittance quote</div>
+        <Badge variant="outline" className="text-[10px]">Illustrative rates</Badge>
+      </div>
+      <p className="text-[11px] text-muted-foreground">
+        All wallets are funded with NGN or USDT only. Below is the indicative amount you would receive if you
+        convert this {method} funding into another wallet currency.
+      </p>
+      {amount > 0 ? (
+        <>
+          <div className="flex justify-between text-xs">
+            <span className="text-muted-foreground">Conversion fee (0.4%)</span>
+            <span className="font-medium">{fmtWallet(fee, method)}</span>
+          </div>
+          <div className="flex justify-between text-xs">
+            <span className="text-muted-foreground">Convertible amount</span>
+            <span className="font-medium">{fmtWallet(net, method)}</span>
+          </div>
+          <div className="divide-y divide-border rounded-md border border-border">
+            {legs.map((l) => (
+              <div key={l.ccy} className="flex items-center justify-between gap-2 px-2.5 py-1.5">
+                <span className="text-xs font-medium">{l.ccy}</span>
+                <span className="text-[11px] text-muted-foreground">
+                  1 {method} = {l.rate >= 1 ? l.rate.toFixed(2) : l.rate.toFixed(6)} {l.ccy}
+                </span>
+                <span className="text-xs font-semibold">{fmtWallet(l.receive, l.ccy)}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <p className="text-[11px] text-muted-foreground">
+          Enter an amount to see {WALLET_CCYS.filter((c) => c !== method).join(", ")} equivalents.
+        </p>
+      )}
+    </div>
   );
 }
 
