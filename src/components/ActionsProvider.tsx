@@ -156,7 +156,8 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
 
       {/* SEND */}
       <Dialog open={send.open} onOpenChange={(o) => setSend((s) => ({ ...s, open: o }))}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="w-[calc(100vw-2rem)] max-w-md max-h-[85vh] overflow-y-auto">
+
           <DialogHeader>
             <DialogTitle>Convert &amp; Send</DialogTitle>
             <DialogDescription>
