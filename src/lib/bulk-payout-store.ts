@@ -1,29 +1,12 @@
-// Bulk Payout is a SAME-CURRENCY payout batch engine.
-// It never converts, never quotes FX and never mixes currencies in one batch.
-// Cross-currency payouts must go through Convert & Send.
+// Bulk Payout is a SAME-CURRENCY payout batch engine over SAVED beneficiaries.
+// It never converts, never quotes FX, never mixes currencies, and never accepts
+// manually entered bank details. Cross-currency payouts use Convert & Send.
 
-export const BULK_WALLET_CCYS = ["NGN", "USD", "EUR", "GBP", "USDT"] as const;
-export type BulkCcy = (typeof BULK_WALLET_CCYS)[number];
+import { findBeneficiary, getBeneficiaries, type SavedBeneficiary } from "@/lib/beneficiary-store";
 
-export const KNOWN_CCYS = [
-  ...BULK_WALLET_CCYS,
-  "ZAR",
-  "AED",
-  "CNY",
-  "RMB",
-  "INR",
-  "JPY",
-  "CAD",
-  "AUD",
-  "CHF",
-] as const;
-
-export type BulkRecipient = {
+export type BulkRow = {
   rowId: string;
-  name: string;
-  bank: string;
-  account: string;
-  currency: string;
+  beneficiaryId: string;
   amount: string;
   purpose: string;
 };
@@ -38,17 +21,14 @@ export type RowError = {
   suggestion: string;
 };
 
-export const emptyRecipient = (currency: string): BulkRecipient => ({
+export const emptyRow = (beneficiaryId = ""): BulkRow => ({
   rowId: crypto.randomUUID(),
-  name: "",
-  bank: "",
-  account: "",
-  currency,
+  beneficiaryId,
   amount: "",
   purpose: "",
 });
 
-// Flat same-currency payout fee per recipient (no FX, no conversion fee).
+// Flat same-currency payout fee per beneficiary (no FX, no conversion fee).
 export const PAYOUT_FEE_PER_RECIPIENT: Record<string, number> = {
   NGN: 500,
   USD: 4,
@@ -59,96 +39,133 @@ export const PAYOUT_FEE_PER_RECIPIENT: Record<string, number> = {
 
 export const feeFor = (ccy: string, count: number) => (PAYOUT_FEE_PER_RECIPIENT[ccy] ?? 4) * count;
 
-export const totalOf = (rows: BulkRecipient[]) =>
-  rows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+export const totalOf = (rows: BulkRow[]) => rows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
 
-export function validateRows(rows: BulkRecipient[], sourceCcy: string): RowError[] {
-  const errs: RowError[] = [];
+export function validateRows(
+  rows: BulkRow[],
+  sourceCcy: string,
+  balance?: number,
+): { errors: RowError[]; mismatchedCurrencies: string[] } {
+  const errors: RowError[] = [];
+  const mismatched = new Set<string>();
+  const seen = new Map<string, number>();
+
   rows.forEach((r, i) => {
     const n = i + 1;
-    const base = { rowId: r.rowId, rowNumber: n, name: r.name || `Row ${n}`, expected: sourceCcy };
-    const cur = r.currency.trim().toUpperCase();
-    if (!r.name.trim())
-      errs.push({
-        ...base,
-        uploaded: cur || "—",
-        reason: "Recipient name is required",
-        suggestion: "Add the recipient name",
-      });
-    if (!r.account.trim())
-      errs.push({
-        ...base,
-        uploaded: cur || "—",
-        reason: "Account number / IBAN is required",
-        suggestion: "Add the recipient account number or IBAN",
-      });
-    if (!r.bank.trim())
-      errs.push({
-        ...base,
-        uploaded: cur || "—",
-        reason: "Bank name is required",
-        suggestion: "Add the recipient bank name",
-      });
-    if (!cur)
-      errs.push({
+    const ben = r.beneficiaryId ? findBeneficiary(r.beneficiaryId) : undefined;
+    const base = {
+      rowId: r.rowId,
+      rowNumber: n,
+      name: ben?.name || r.beneficiaryId || `Row ${n}`,
+      expected: sourceCcy,
+    };
+    if (!r.beneficiaryId) {
+      errors.push({
         ...base,
         uploaded: "—",
-        reason: "Currency is required",
-        suggestion: `Set the recipient currency to ${sourceCcy}`,
+        reason: "No saved beneficiary selected",
+        suggestion: "Pick a saved beneficiary or add one first",
       });
-    else if (!(KNOWN_CCYS as readonly string[]).includes(cur))
-      errs.push({
+    } else if (!ben) {
+      errors.push({
         ...base,
-        uploaded: cur,
-        reason: "Invalid currency code",
-        suggestion: `Use a valid code — this batch pays out in ${sourceCcy}`,
+        uploaded: "—",
+        reason: "Beneficiary not found",
+        suggestion: "Add this beneficiary before using Bulk Payout",
       });
-    else if (cur !== sourceCcy)
-      errs.push({
-        ...base,
-        uploaded: cur,
-        reason: `Recipient currency differs from the source wallet (${sourceCcy})`,
-        suggestion: `Change recipient currency to ${sourceCcy} or use Convert & Send`,
-      });
+    } else {
+      if (ben.ccy.toUpperCase() !== sourceCcy.toUpperCase()) {
+        mismatched.add(ben.ccy.toUpperCase());
+        errors.push({
+          ...base,
+          uploaded: ben.ccy,
+          reason: `Currency mismatch. This beneficiary receives ${ben.ccy}, but the selected wallet is ${sourceCcy}`,
+          suggestion: `Select a ${ben.ccy} wallet or use Convert & Send`,
+        });
+      }
+      if (ben.status !== "Verified") {
+        errors.push({
+          ...base,
+          uploaded: ben.ccy,
+          reason: "Beneficiary not verified",
+          suggestion: "Verify beneficiary before payout",
+        });
+      }
+      const prev = seen.get(ben.id);
+      if (prev) {
+        errors.push({
+          ...base,
+          uploaded: ben.ccy,
+          reason: `Duplicate beneficiary found (also row ${prev})`,
+          suggestion: "Combine amounts or remove duplicate row",
+        });
+      } else {
+        seen.set(ben.id, n);
+      }
+    }
     if (!r.amount || Number(r.amount) <= 0)
-      errs.push({
+      errors.push({
         ...base,
-        uploaded: cur || "—",
+        uploaded: ben?.ccy ?? "—",
         reason: "Amount must be greater than zero",
         suggestion: "Enter a payout amount",
       });
     if (!r.purpose.trim())
-      errs.push({
+      errors.push({
         ...base,
-        uploaded: cur || "—",
+        uploaded: ben?.ccy ?? "—",
         reason: "Purpose / reference is required",
         suggestion: "Add a payout purpose",
       });
   });
-  return errs;
+
+  if (!rows.length) {
+    errors.push({
+      rowId: "none",
+      rowNumber: 0,
+      name: "—",
+      uploaded: "—",
+      expected: sourceCcy,
+      reason: "No saved beneficiaries selected",
+      suggestion: "Select at least one saved beneficiary",
+    });
+  }
+
+  const total = totalOf(rows) + feeFor(sourceCcy, rows.length);
+  if (typeof balance === "number" && total > balance) {
+    errors.push({
+      rowId: "balance",
+      rowNumber: 0,
+      name: "—",
+      uploaded: sourceCcy,
+      expected: sourceCcy,
+      reason: "Insufficient source wallet balance",
+      suggestion: "Reduce the batch amount or fund the wallet",
+    });
+  }
+
+  return { errors, mismatchedCurrencies: Array.from(mismatched) };
 }
 
-export const mismatchedCurrencies = (rows: BulkRecipient[], sourceCcy: string) =>
-  Array.from(
-    new Set(
-      rows
-        .map((r) => r.currency.trim().toUpperCase())
-        .filter((c) => c && c !== sourceCcy.toUpperCase()),
-    ),
-  );
+// ---- CSV: references saved beneficiaries only ---------------------------
 
-export const REQUIRED_CSV_COLUMNS = [
-  "recipient_name",
-  "account_number",
+export const REQUIRED_CSV_COLUMNS = ["beneficiary_id", "amount", "purpose"];
+export const FORBIDDEN_CSV_COLUMNS = [
   "bank_name",
+  "bank",
+  "account_number",
+  "account",
+  "iban",
+  "swift",
+  "bic",
   "currency",
-  "amount",
-  "purpose",
 ];
 
 export type CsvParseResult = {
-  rows: BulkRecipient[];
+  rows: BulkRow[];
   missingColumns: string[];
+  forbiddenColumns: string[];
+  unknown: string[];
 };
 
 export function parseCsv(text: string): CsvParseResult {
@@ -156,7 +173,8 @@ export function parseCsv(text: string): CsvParseResult {
     .split(/\r?\n/)
     .map((l) => l.trim())
     .filter(Boolean);
-  if (!lines.length) return { rows: [], missingColumns: REQUIRED_CSV_COLUMNS };
+  if (!lines.length)
+    return { rows: [], missingColumns: REQUIRED_CSV_COLUMNS, forbiddenColumns: [], unknown: [] };
   const split = (l: string) => l.split(",").map((c) => c.trim().replace(/^"|"$/g, ""));
   const header = split(lines[0]).map((h) => h.toLowerCase());
   const idx = (...names: string[]) => {
@@ -167,38 +185,46 @@ export function parseCsv(text: string): CsvParseResult {
     return -1;
   };
   const cols = {
-    name: idx("recipient_name", "name", "beneficiary"),
-    account: idx("account_number", "iban", "account"),
-    bank: idx("bank_name", "bank"),
-    currency: idx("currency", "ccy"),
+    ben: idx("beneficiary_id", "beneficiary_name", "beneficiary"),
     amount: idx("amount"),
     purpose: idx("purpose", "reference"),
+    memo: idx("memo"),
   };
   const missingColumns: string[] = [];
-  if (cols.name < 0) missingColumns.push("recipient_name");
-  if (cols.account < 0) missingColumns.push("account_number / iban");
-  if (cols.bank < 0) missingColumns.push("bank_name");
-  if (cols.currency < 0) missingColumns.push("currency");
+  if (cols.ben < 0) missingColumns.push("beneficiary_id / beneficiary_name");
   if (cols.amount < 0) missingColumns.push("amount");
   if (cols.purpose < 0) missingColumns.push("purpose");
 
+  const forbiddenColumns = header.filter((h) => FORBIDDEN_CSV_COLUMNS.includes(h));
+
+  const unknown: string[] = [];
   const rows = lines.slice(1).map((l) => {
     const c = split(l);
     const at = (i: number) => (i >= 0 ? (c[i] ?? "") : "");
+    const key = at(cols.ben);
+    const ben = key ? findBeneficiary(key) : undefined;
+    if (key && !ben) unknown.push(key);
+    const memo = at(cols.memo);
     return {
       rowId: crypto.randomUUID(),
-      name: at(cols.name),
-      bank: at(cols.bank),
-      account: at(cols.account),
-      currency: at(cols.currency).toUpperCase(),
+      beneficiaryId: ben?.id ?? key,
       amount: at(cols.amount).replace(/[^0-9.]/g, ""),
-      purpose: at(cols.purpose),
+      purpose: [at(cols.purpose), memo].filter(Boolean).join(" · "),
     };
   });
-  return { rows, missingColumns };
+  return { rows, missingColumns, forbiddenColumns, unknown };
 }
 
-export const CSV_TEMPLATE = `recipient_name,account_number,bank_name,currency,amount,purpose\nNorthwind Trading Co,GB29NWBK60161331926819,Demo Bank UK,GBP,12500,Supplier invoice INV-1042\n`;
+export function csvTemplateFor(ccy: string) {
+  const sample = getBeneficiaries().filter(
+    (b) => b.ccy.toUpperCase() === ccy.toUpperCase() && b.status === "Verified",
+  );
+  const body = (sample.length ? sample : ([] as SavedBeneficiary[]))
+    .slice(0, 2)
+    .map((b) => `${b.id},10000,Supplier invoice INV-1042`)
+    .join("\n");
+  return `beneficiary_id,amount,purpose,memo\n${body}\n`;
+}
 
 // ---- Batch records -------------------------------------------------------
 
@@ -242,10 +268,10 @@ let batches: BulkBatch[] = [
   },
 ];
 
-const listeners = new Set<() => void>();
+const batchListeners = new Set<() => void>();
 export const subscribeBatches = (l: () => void) => {
-  listeners.add(l);
-  return () => listeners.delete(l);
+  batchListeners.add(l);
+  return () => batchListeners.delete(l);
 };
 export const getBatches = () => batches;
 
@@ -257,6 +283,6 @@ export function addBatch(b: Omit<BulkBatch, "id" | "date" | "createdBy"> & { cre
     ...b,
   };
   batches = [full, ...batches];
-  listeners.forEach((l) => l());
+  batchListeners.forEach((l) => l());
   return full;
 }
