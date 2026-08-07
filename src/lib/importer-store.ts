@@ -361,6 +361,8 @@ function seed(): ImporterState {
         reference: "FD-1044",
       },
     ],
+    conversions: [],
+    conversionReceipts: [],
     fundingReceipts: [
       {
         receiptNo: "FR-1042",
