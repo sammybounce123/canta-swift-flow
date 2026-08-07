@@ -249,57 +249,112 @@ function RiskBadge({ risk }: { risk: string }) {
   return <span className={`text-[10px] px-2 py-0.5 rounded-full border ${cls}`}>{risk}</span>;
 }
 
+const SETTLEMENT_CCY = ["RMB", "USD", "EUR", "AED", "GBP", "TRY", "INR", "ZAR"];
+const PURPOSES = [
+  "Goods import payment",
+  "Raw materials purchase",
+  "Machinery / equipment purchase",
+  "Professional services",
+  "Freight and logistics",
+  "Other (explain in notes)",
+];
+
 function NewTradeFileDialog({ open, setOpen }: { open: boolean; setOpen: (o: boolean) => void }) {
   const navigate = useNavigate();
   const [d, setD] = useState({
-    name: "", importer: "", supplier: "", origin: "", destination: "",
-    goods: "", invoiceValue: "", ccy: "USD",
+    name: "", supplier: "", supplierCountry: "", supplierContact: "", supplierEmail: "",
+    bankName: "", bankAccount: "", swift: "",
+    settlementCcy: "USD", invoiceValue: "", goods: "",
+    compliancePurpose: PURPOSES[0], notes: "",
   });
+  const [invoiceFile, setInvoiceFile] = useState("");
+  const [supportDocs, setSupportDocs] = useState<string[]>([]);
+
   const submit = () => {
-    if (!d.name.trim() || !d.supplier.trim()) { toast.error("File name and supplier are required"); return; }
-    const id = `TR-${Math.floor(2100 + Math.random() * 9000)}`;
-    const draft = {
-      id, name: d.name.trim(),
-      importer: d.importer || "—", supplier: d.supplier.trim(),
-      origin: d.origin || "—", destination: d.destination || "—",
-      goods: d.goods || "—",
-      invoiceValue: Number(d.invoiceValue) || 0, ccy: d.ccy,
-      status: "Drafting", paymentStatus: "Pending", risk: "Low",
-      forwarder: "—", eta: "—",
-      createdAt: new Date().toISOString().slice(0, 10),
-    };
-    try {
-      const raw = localStorage.getItem("canta:tradeFiles");
-      const arr = raw ? JSON.parse(raw) : [];
-      arr.unshift(draft);
-      localStorage.setItem("canta:tradeFiles", JSON.stringify(arr.slice(0, 100)));
-    } catch {}
+    if (!d.supplier.trim() || !d.supplierCountry.trim() || !d.bankAccount.trim()) {
+      toast.error("Supplier name, country and bank account are required");
+      return;
+    }
+    const { id } = createDraftTradeFile("manual", {
+      name: d.name.trim() || `${d.supplier.trim()} — supplier payment`,
+      supplier: d.supplier.trim(),
+      supplierCountry: d.supplierCountry.trim(),
+      supplierContact: d.supplierContact.trim(),
+      supplierEmail: d.supplierEmail.trim(),
+      bankName: d.bankName.trim(),
+      bankAccount: d.bankAccount.trim(),
+      swift: d.swift.trim(),
+      settlementCcy: d.settlementCcy,
+      ccy: d.settlementCcy,
+      invoiceValue: Number(d.invoiceValue) || 0,
+      goods: d.goods.trim(),
+      compliancePurpose: d.compliancePurpose,
+      notes: d.notes.trim(),
+      supplierType: "External supplier",
+    });
     setOpen(false);
-    toast.success("Trade file drafted", { description: `${id} — ${draft.name}` });
-    setTimeout(() => navigate({ to: "/trade-desk" }), 400);
+    toast.success("Trade File created", { description: `${id} — supplier beneficiary saved. No supplier account needed.` });
+    setTimeout(() => navigate({ to: "/trade-desk/$fileId", params: { fileId: id } }), 300);
   };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-xl">
-        <DialogHeader><DialogTitle>New trade file</DialogTitle></DialogHeader>
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>New Trade File</DialogTitle>
+          <p className="text-xs text-muted-foreground">
+            Pay any supplier globally. Add supplier details and bank account — your supplier does not need a Canta account.
+          </p>
+        </DialogHeader>
+
+        <div className="text-[11px] uppercase tracking-widest text-muted-foreground">Supplier beneficiary</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Field label="File name *" wide><Input value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} placeholder="Guangzhou Q3 Electronics" /></Field>
-          <Field label="Importer"><Input value={d.importer} onChange={(e) => setD({ ...d, importer: e.target.value })} placeholder="ABC Electronics Ltd" /></Field>
-          <Field label="Supplier *"><Input value={d.supplier} onChange={(e) => setD({ ...d, supplier: e.target.value })} placeholder="Shenzhen Hua Tech Co." /></Field>
-          <Field label="Origin"><Input value={d.origin} onChange={(e) => setD({ ...d, origin: e.target.value })} placeholder="Shenzhen, CN" /></Field>
-          <Field label="Destination"><Input value={d.destination} onChange={(e) => setD({ ...d, destination: e.target.value })} placeholder="Lagos, NG" /></Field>
-          <Field label="Goods" wide><Input value={d.goods} onChange={(e) => setD({ ...d, goods: e.target.value })} placeholder="240 cartons of mixed electronics" /></Field>
-          <Field label="Invoice value"><Input type="number" value={d.invoiceValue} onChange={(e) => setD({ ...d, invoiceValue: e.target.value })} placeholder="184000" /></Field>
-          <Field label="Currency">
-            <Select value={d.ccy} onValueChange={(v) => setD({ ...d, ccy: v })}>
+          <Field label="Supplier company name *"><Input value={d.supplier} onChange={(e) => setD({ ...d, supplier: e.target.value })} placeholder="Shenzhen Hua Tech Co." /></Field>
+          <Field label="Supplier country *"><Input value={d.supplierCountry} onChange={(e) => setD({ ...d, supplierCountry: e.target.value })} placeholder="China" /></Field>
+          <Field label="Supplier contact name"><Input value={d.supplierContact} onChange={(e) => setD({ ...d, supplierContact: e.target.value })} placeholder="Li Wei" /></Field>
+          <Field label="Supplier email / WhatsApp (optional)"><Input value={d.supplierEmail} onChange={(e) => setD({ ...d, supplierEmail: e.target.value })} placeholder="li@huatech.cn" /></Field>
+          <Field label="Bank name"><Input value={d.bankName} onChange={(e) => setD({ ...d, bankName: e.target.value })} placeholder="Bank of China" /></Field>
+          <Field label="Bank account / IBAN *"><Input value={d.bankAccount} onChange={(e) => setD({ ...d, bankAccount: e.target.value })} placeholder="6210 **** 1144" /></Field>
+          <Field label="SWIFT / routing"><Input value={d.swift} onChange={(e) => setD({ ...d, swift: e.target.value })} placeholder="BKCHCNBJ" /></Field>
+          <Field label="Settlement currency">
+            <Select value={d.settlementCcy} onValueChange={(v) => setD({ ...d, settlementCcy: v })}>
               <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>{["USD","EUR","RMB","AED","GBP"].map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+              <SelectContent>{SETTLEMENT_CCY.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
             </Select>
           </Field>
         </div>
+
+        <div className="text-[11px] uppercase tracking-widest text-muted-foreground pt-1">Invoice & documents</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Field label="Trade File name"><Input value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} placeholder="Guangzhou Q3 Electronics" /></Field>
+          <Field label="Invoice amount"><Input type="number" value={d.invoiceValue} onChange={(e) => setD({ ...d, invoiceValue: e.target.value })} placeholder="184000" /></Field>
+          <Field label="Goods / service description" wide><Input value={d.goods} onChange={(e) => setD({ ...d, goods: e.target.value })} placeholder="240 cartons of mixed electronics" /></Field>
+          <Field label="Invoice upload">
+            <label className="flex items-center gap-2 rounded-md border border-dashed px-3 py-2 text-xs text-muted-foreground cursor-pointer hover:border-primary hover:bg-primary/5">
+              <Upload className="h-3.5 w-3.5" />
+              <span className="truncate">{invoiceFile || "Upload supplier invoice"}</span>
+              <Input type="file" className="hidden" onChange={(e) => setInvoiceFile(e.target.files?.[0]?.name ?? "invoice.pdf")} />
+            </label>
+          </Field>
+          <Field label="Supporting documents">
+            <label className="flex items-center gap-2 rounded-md border border-dashed px-3 py-2 text-xs text-muted-foreground cursor-pointer hover:border-primary hover:bg-primary/5">
+              <Upload className="h-3.5 w-3.5" />
+              <span className="truncate">{supportDocs.length ? `${supportDocs.length} file(s) attached` : "Proforma, PO, BL, packing list"}</span>
+              <Input type="file" multiple className="hidden" onChange={(e) => setSupportDocs(Array.from(e.target.files ?? []).map((f) => f.name))} />
+            </label>
+          </Field>
+          <Field label="Compliance purpose">
+            <Select value={d.compliancePurpose} onValueChange={(v) => setD({ ...d, compliancePurpose: v })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>{PURPOSES.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
+            </Select>
+          </Field>
+          <Field label="Notes" wide><Input value={d.notes} onChange={(e) => setD({ ...d, notes: e.target.value })} placeholder="Anything Canta compliance should know" /></Field>
+        </div>
+
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-          <Button className="bg-primary" onClick={submit}>Create draft</Button>
+          <Button className="bg-primary" onClick={submit}>Create Trade File</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
