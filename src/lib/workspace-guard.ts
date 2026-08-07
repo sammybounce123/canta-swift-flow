@@ -100,6 +100,9 @@ export function isSharedWorkspacePath(pathname: string) {
 }
 
 export function workspaceFromPath(pathname: string): WorkspaceType | null {
+  // Internal Ops console is always Canta Ops context — resolving it from the
+  // path (never from stored client state) keeps SSR and client identical.
+  if (pathname === "/ops" || pathname.startsWith("/ops/")) return "canta_ops";
   if (pathname.startsWith("/partner")) return "partner_property";
   if (pathname.startsWith("/collections") || pathname.startsWith("/merchant") || pathname.startsWith("/payment-links") || pathname.startsWith("/payers") || pathname.startsWith("/reconciliation")) return "global_collections";
   if (pathname.startsWith("/supplier-portal")) return "supplier_dashboard";
