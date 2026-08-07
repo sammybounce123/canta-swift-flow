@@ -171,7 +171,11 @@ function Settings() {
               chain: "Finance → Treasury → Compliance",
             },
             { name: "New beneficiary", threshold: "Always", chain: "Compliance KYB → Treasury" },
-            { name: "Supplier payout release", threshold: "Always", chain: "Document review → Treasury" },
+            {
+              name: "Supplier payout release",
+              threshold: "Always",
+              chain: "Document review → Treasury",
+            },
             {
               name: "Document approval",
               threshold: "Sensitive docs",

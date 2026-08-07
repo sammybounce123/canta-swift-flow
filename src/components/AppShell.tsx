@@ -275,68 +275,67 @@ function SidebarContent({
         )}
         {!pendingWorkspace &&
           groups.map((g) => (
-
-          <div key={g}>
-            <div className="px-3 mb-1 text-[10px] uppercase tracking-widest text-sidebar-foreground/40">
-              {g}
+            <div key={g}>
+              <div className="px-3 mb-1 text-[10px] uppercase tracking-widest text-sidebar-foreground/40">
+                {g}
+              </div>
+              <div className="space-y-0.5">
+                {items
+                  .filter((n) => n.group === g)
+                  .map((item) => {
+                    const searchMatches = (it: SidebarItem) =>
+                      it.search
+                        ? Object.entries(it.search).every(
+                            ([key, value]) =>
+                              (search?.[key] ??
+                                (key === "tab" && pathname === "/supplier-portal"
+                                  ? "overview"
+                                  : undefined)) === value,
+                          )
+                        : true;
+                    const pathMatches = (it: SidebarItem) =>
+                      it.exact
+                        ? pathname === it.to
+                        : pathname === it.to || pathname.startsWith(it.to + "/");
+                    // Mode-aware active: only the most specific matching item in
+                    // the current sidebar highlights. Ties broken by whether the
+                    // item declares a `search` (more specific) and by label to
+                    // stay deterministic across renders.
+                    const bestMatch = items
+                      .filter((it) => pathMatches(it) && searchMatches(it))
+                      .sort((a, b) => {
+                        if (b.to.length !== a.to.length) return b.to.length - a.to.length;
+                        const aHas = a.search ? 1 : 0;
+                        const bHas = b.search ? 1 : 0;
+                        if (bHas !== aHas) return bHas - aHas;
+                        return a.label.localeCompare(b.label);
+                      })[0];
+                    const active = bestMatch === item;
+                    const Icon = ICONS[item.iconKey] ?? LayoutDashboard;
+                    return (
+                      <Link
+                        key={`${item.to}-${item.label}`}
+                        to={item.to as never}
+                        search={item.search as never}
+                        onClick={() => {
+                          saveActiveWorkspace(workspace);
+                          setMode(WORKSPACE_TO_MODE[workspace]);
+                          onNavigate?.();
+                        }}
+                        className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                          active
+                            ? "bg-sidebar-accent text-sidebar-accent-foreground border-l-2 border-sidebar-primary"
+                            : "text-sidebar-foreground/75 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
+                        }`}
+                      >
+                        <Icon className="h-4 w-4 shrink-0" />
+                        <span>{item.label}</span>
+                      </Link>
+                    );
+                  })}
+              </div>
             </div>
-            <div className="space-y-0.5">
-              {items
-                .filter((n) => n.group === g)
-                .map((item) => {
-                  const searchMatches = (it: SidebarItem) =>
-                    it.search
-                      ? Object.entries(it.search).every(
-                          ([key, value]) =>
-                            (search?.[key] ??
-                              (key === "tab" && pathname === "/supplier-portal"
-                                ? "overview"
-                                : undefined)) === value,
-                        )
-                      : true;
-                  const pathMatches = (it: SidebarItem) =>
-                    it.exact
-                      ? pathname === it.to
-                      : pathname === it.to || pathname.startsWith(it.to + "/");
-                  // Mode-aware active: only the most specific matching item in
-                  // the current sidebar highlights. Ties broken by whether the
-                  // item declares a `search` (more specific) and by label to
-                  // stay deterministic across renders.
-                  const bestMatch = items
-                    .filter((it) => pathMatches(it) && searchMatches(it))
-                    .sort((a, b) => {
-                      if (b.to.length !== a.to.length) return b.to.length - a.to.length;
-                      const aHas = a.search ? 1 : 0;
-                      const bHas = b.search ? 1 : 0;
-                      if (bHas !== aHas) return bHas - aHas;
-                      return a.label.localeCompare(b.label);
-                    })[0];
-                  const active = bestMatch === item;
-                  const Icon = ICONS[item.iconKey] ?? LayoutDashboard;
-                  return (
-                    <Link
-                      key={`${item.to}-${item.label}`}
-                      to={item.to as never}
-                      search={item.search as never}
-                      onClick={() => {
-                        saveActiveWorkspace(workspace);
-                        setMode(WORKSPACE_TO_MODE[workspace]);
-                        onNavigate?.();
-                      }}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                        active
-                          ? "bg-sidebar-accent text-sidebar-accent-foreground border-l-2 border-sidebar-primary"
-                          : "text-sidebar-foreground/75 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
-                      }`}
-                    >
-                      <Icon className="h-4 w-4 shrink-0" />
-                      <span>{item.label}</span>
-                    </Link>
-                  );
-                })}
-            </div>
-          </div>
-        ))}
+          ))}
       </nav>
 
       <div className="p-4 border-t border-sidebar-border space-y-3">
@@ -363,7 +362,6 @@ function SidebarContent({
               <div className="text-[10px] text-sidebar-foreground/50 mt-1">{wsProfile.badge}</div>
             </>
           )}
-
         </div>
       </div>
     </div>
@@ -461,7 +459,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const activeWorkspace = resolvedWorkspace ?? "importer_portal";
   const displayMode: Mode = WORKSPACE_TO_MODE[activeWorkspace];
 
-
   // Persist the inferred mode so other surfaces (dashboard hero, etc.) follow.
   useEffect(() => {
     if (pathWorkspace && pathWorkspace !== "canta_ops") saveActiveWorkspace(pathWorkspace);
@@ -540,7 +537,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <ModeSwitcher displayMode={displayMode} />
             )}
 
-
             {!isPartner && (
               <div className="hidden lg:flex items-center gap-2 flex-1 max-w-md ml-2">
                 <div className="relative w-full">
@@ -589,7 +585,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         </>
                       )}
                     </div>
-
 
                     <ChevronDown className="h-3.5 w-3.5 text-muted-foreground hidden sm:block" />
                   </button>
