@@ -43,7 +43,7 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
-import { fxHistory, beneficiaries, fmtMoney } from "@/lib/mock";
+import { fxHistory, beneficiaries, fmtMoney, wallets } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
@@ -74,6 +74,19 @@ function FX() {
   } | null>(null);
   const [chosenBeneficiary, setChosenBeneficiary] = useState<Beneficiary | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+
+  /** Only currencies the customer holds a wallet in. */
+  const walletCcys: string[] = wallets.map((w) => w.ccy);
+
+  useEffect(() => {
+    if (walletCcys.length && !walletCcys.includes(from)) setFrom(walletCcys[0]!);
+    if (walletCcys.length && (to === from || !walletCcys.includes(to))) {
+      const alt = walletCcys.find((c) => c !== from);
+      if (alt) setTo(alt);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [from, to]);
+
 
   useEffect(() => {
     const i = setInterval(() => setTimer((t) => (t > 0 ? t - 1 : 30)), 1000);
@@ -202,10 +215,10 @@ function FX() {
                 onChange={(e) => setFrom(e.target.value)}
                 className="bg-card border border-border rounded-lg px-2 py-1.5 text-sm font-medium"
               >
-                <option>NGN</option>
-                <option>USD</option>
-                <option>EUR</option>
-                <option>GBP</option>
+                {walletCcys.map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
+
               </select>
             </div>
 
@@ -234,10 +247,12 @@ function FX() {
                 onChange={(e) => setTo(e.target.value)}
                 className="bg-card border border-border rounded-lg px-2 py-1.5 text-sm font-medium"
               >
-                <option>USD</option>
-                <option>NGN</option>
-                <option>EUR</option>
-                <option>GBP</option>
+                {walletCcys
+                  .filter((c) => c !== from)
+                  .map((c) => (
+                    <option key={c}>{c}</option>
+                  ))}
+
               </select>
             </div>
           </div>

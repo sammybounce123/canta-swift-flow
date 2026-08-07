@@ -88,7 +88,26 @@ export function ConvertDialog({
         ? "Quote ready"
         : "Draft";
 
-  const destinations = useMemo(() => WALLET_CCYS.filter((c) => c !== from), [from]);
+  /** Only currencies the customer actually holds a wallet in. */
+  const availableCcys = useMemo(
+    () => WALLET_CCYS.filter((c) => s.wallets.some((w) => w.ccy === c)),
+    [s.wallets]
+  );
+  const destinations = useMemo(
+    () => availableCcys.filter((c) => c !== from),
+    [availableCcys, from]
+  );
+
+  useEffect(() => {
+    if (availableCcys.length === 0) return;
+    if (!availableCcys.includes(from)) setFrom(availableCcys[0]!);
+  }, [availableCcys, from]);
+
+  useEffect(() => {
+    if (destinations.length === 0) return;
+    if (!destinations.includes(to)) setTo(destinations[0]!);
+  }, [destinations, to]);
+
 
   const getQuote = () => {
     if (amt <= 0) return toast.error("Enter an amount to convert");
@@ -183,22 +202,27 @@ export function ConvertDialog({
               <Select
                 value={from}
                 onValueChange={(v) => {
-                  setFrom(v as WalletCcy);
+                  const next = v as WalletCcy;
+                  setFrom(next);
                   setQuote(null);
                   setAccepted(false);
-                  if (v === to) setTo(v === "NGN" ? "USD" : "NGN");
+                  if (next === to) {
+                    const alt = availableCcys.find((c) => c !== next);
+                    if (alt) setTo(alt);
+                  }
                 }}
               >
                 <SelectTrigger className="mt-1">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {WALLET_CCYS.map((c) => (
+                  {availableCcys.map((c) => (
                     <SelectItem key={c} value={c}>
                       {c} Wallet — {fmtWallet(walletOf(s, c)?.available ?? 0, c)}
                     </SelectItem>
                   ))}
                 </SelectContent>
+
               </Select>
               <p className="text-[11px] text-muted-foreground mt-1">
                 Available: {fmtWallet(available, from)}
