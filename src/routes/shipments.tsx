@@ -243,7 +243,18 @@ function StatusBadge({ status }: { status: string }) {
   return <span className={`text-[10px] px-2 py-0.5 rounded-full border ${tones[status] ?? "bg-secondary"}`}>{status}</span>;
 }
 
-function ShipmentTable({ rows, onSelect, claimedIds }: { rows: Shipment[]; onSelect: (s: Shipment) => void; claimedIds: Set<string> }) {
+function ClearanceBadge({ value }: { value: Clearance }) {
+  const tones: Record<Clearance, string> = {
+    "Not updated": "bg-secondary text-muted-foreground border-border",
+    "Clearing started": "bg-orange-500/15 text-orange-700 border-orange-500/30",
+    "Duty paid": "bg-blue-500/15 text-blue-700 border-blue-500/30",
+    "Cleared": "bg-success/15 text-success border-success/30",
+    "Delivered": "bg-success/15 text-success border-success/30",
+  };
+  return <span className={`text-[10px] px-2 py-0.5 rounded-full border ${tones[value]}`}>{value}</span>;
+}
+
+function ShipmentTable({ rows, onSelect, claimedIds, clearance }: { rows: Shipment[]; onSelect: (s: Shipment) => void; claimedIds: Set<string>; clearance: Record<string, Clearance> }) {
   return (
     <Card className="shadow-card overflow-hidden">
       <div className="overflow-x-auto">
