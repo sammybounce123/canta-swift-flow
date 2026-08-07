@@ -366,13 +366,38 @@ function EtaCalendar({ rows, onSelect }: { rows: Shipment[]; onSelect: (s: Shipm
   );
 }
 
-function ShipmentDetail({ s }: { s: Shipment }) {
+function ShipmentDetail({ s, clearance, onClearanceChange }: { s: Shipment; clearance: Clearance; onClearanceChange: (c: Clearance) => void }) {
+  const [draft, setDraft] = useState<Clearance>(clearance);
+  const ts = trackedStatus(s);
   return (
     <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>
-        <DialogTitle className="flex items-center gap-2"><TypeIcon type={s.type} /> {s.shipmentNumber} <StatusBadge status={s.status} /></DialogTitle>
+        <DialogTitle className="flex items-center gap-2"><TypeIcon type={s.type} /> {s.shipmentNumber} <StatusBadge status={ts} /></DialogTitle>
         <p className="text-xs text-muted-foreground">{s.name}</p>
       </DialogHeader>
+
+      {ts === "Arrived" && (
+        <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-xs text-amber-700 flex items-center gap-2">
+          <BellRing className="h-3.5 w-3.5" /> Goods have landed at {s.destination} on {s.eta}.
+        </div>
+      )}
+
+      {/* User-recorded clearance — never inferred by Canta */}
+      <Card className="p-4 shadow-card">
+        <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Clearance status (recorded by you)</div>
+        <p className="text-xs text-muted-foreground mt-1">Canta tracks movement up to arrival only. Customs clearance, release and delivery are not detected automatically — update them here when confirmed.</p>
+        <div className="mt-3 flex items-center gap-2 flex-wrap">
+          <Select value={draft} onValueChange={(v) => setDraft(v as Clearance)}>
+            <SelectTrigger className="h-9 text-xs w-[220px]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {CLEARANCE_OPTIONS.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Button size="sm" className="bg-primary" disabled={draft === clearance} onClick={() => onClearanceChange(draft)}>Save update</Button>
+          <ClearanceBadge value={clearance} />
+        </div>
+      </Card>
+
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
         <Field label="Shipment type" value={s.type} />
