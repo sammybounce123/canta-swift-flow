@@ -233,7 +233,7 @@ const SEED_COMMISSIONS: Commission[] = [
     caseRef: "KPP-2026-1004",
     clientName: "Ngozi Eze",
     marketerId: "U-MKT-3",
-    marketerName: "Femi Adeyemi",
+    marketerName: "Michael Turner",
     payoutAmount: 92_500,
     rate: 0.005,
     estimated: 462,

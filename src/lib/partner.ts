@@ -133,7 +133,7 @@ export type Marketer = {
 };
 
 export const PARTNER_ORG = {
-  id: "ORG-BARONCABOT",
+  id: "ORG-KINGSBRIDGE",
   name: "Kingsbridge Property Partners",
   type: "Property Partner",
   country: "United Kingdom",
@@ -204,13 +204,13 @@ export const MARKETERS: Marketer[] = [
   },
   {
     id: "U-MKT-3",
-    name: "Femi Adeyemi",
-    email: "femi@kingsbridgepartners.co.uk",
+    name: "Michael Turner",
+    email: "michael@kingsbridgepartners.co.uk",
     phone: "+234 805 555 1033",
     role: "marketer",
     managerId: "U-MGR-1",
     region: "London, UK",
-    avatarInitials: "FA",
+    avatarInitials: "MT",
     joined: "2024-09-20",
     status: "Active",
     lastActivity: "2026-06-08",
@@ -230,12 +230,12 @@ export const MARKETERS: Marketer[] = [
   },
   {
     id: "U-FIN-1",
-    name: "Daniel Whitfield",
+    name: "Amina Yusuf",
     email: "finance@kingsbridgepartners.co.uk",
     phone: "+44 20 7946 1199",
     role: "finance_viewer",
     region: "HQ — London",
-    avatarInitials: "DW",
+    avatarInitials: "AY",
     joined: "2024-04-04",
     status: "Active",
     lastActivity: "2026-06-09",
@@ -333,7 +333,7 @@ export const SOLICITORS: Solicitor[] = [
   {
     id: "SOL-004",
     firm: "Whitfield & Co.",
-    contact: "Daniel Whitfield",
+    contact: "Amina Yusuf",
     email: "accounts@whitfieldco.co.uk",
     phone: "+44 113 555 4410",
     country: "United Kingdom",
@@ -456,7 +456,7 @@ export const CASES: PaymentCase[] = [
     status: "FX Converted",
     createdAt: "2026-06-03",
     expectedPayout: "2026-06-13",
-    officer: "Femi Adeyemi",
+    officer: "Michael Turner",
     assignedMarketerId: "U-MKT-3",
   },
   {
@@ -510,7 +510,7 @@ export const CASES: PaymentCase[] = [
     status: "Awaiting Client Funding",
     createdAt: "2026-06-07",
     expectedPayout: "2026-06-20",
-    officer: "Femi Adeyemi",
+    officer: "Michael Turner",
     assignedMarketerId: "U-MKT-3",
   },
   {
@@ -564,7 +564,7 @@ export const CASES: PaymentCase[] = [
     status: "Referred",
     createdAt: "2026-06-09",
     expectedPayout: "2026-06-23",
-    officer: "Femi Adeyemi",
+    officer: "Michael Turner",
     assignedMarketerId: "U-MKT-4",
   },
 ];
