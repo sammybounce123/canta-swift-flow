@@ -156,7 +156,8 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
 
       {/* SEND */}
       <Dialog open={send.open} onOpenChange={(o) => setSend((s) => ({ ...s, open: o }))}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="w-[calc(100vw-2rem)] max-w-md max-h-[85vh] overflow-y-auto">
+
           <DialogHeader>
             <DialogTitle>Convert &amp; Send</DialogTitle>
             <DialogDescription>
@@ -326,18 +327,19 @@ function FundFxQuote({
           Illustrative rates
         </span>
       </div>
-      <div className="flex items-center justify-between text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs">
         <span className="text-muted-foreground">Indicative rate</span>
         <span className="font-medium tabular-nums">
           1 {fundCcy} = {rate >= 1 ? rate.toFixed(2) : rate.toFixed(6)} {target}
         </span>
       </div>
-      <div className="flex items-center justify-between text-xs">
-        <span className="text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs">
+        <span className="min-w-0 text-muted-foreground">
           {fmtAnyCcy(amount, fundCcy)} credits approximately
         </span>
         <span className="font-semibold tabular-nums">{fmtAnyCcy(receive, target)}</span>
       </div>
+
       {fundCcy !== target && (
         <div className="text-[11px] text-muted-foreground">
           Funding is accepted in NGN or USDT only; the balance is converted to {target} on credit.
@@ -899,7 +901,7 @@ function SendForm({
   useEffect(() => {
     setQuoteCcy(ben.ccy);
   }, [ben.ccy]);
-  const sourceAmt = (amt * ngnRateOf(quoteCcy)) / ngnRateOf(payCcy);
+  const receiveAmt = (amt * ngnRateOf(payCcy)) / ngnRateOf(quoteCcy);
 
 
 
@@ -907,11 +909,14 @@ function SendForm({
     return (
       <FundFlow
         steps={[
-          { label: `Debiting ${fmtMoney(amt, ben.ccy)}`, sub: `From your ${ben.ccy} wallet` },
+          { label: `Debiting ${fmtAnyCcy(amt, payCcy)}`, sub: `From your ${payCcy} wallet` },
           { label: "Routing on best corridor", sub: `${ben.country} · ${ben.bank}` },
-          { label: `Crediting ${ben.name}`, sub: `${ben.account} · settlement complete` },
+          {
+            label: `Crediting ${ben.name}`,
+            sub: `${fmtAnyCcy(receiveAmt, quoteCcy)} · ${ben.account}`,
+          },
         ]}
-        onDone={() => onConfirm(amt, ben.ccy, ben.name, reference || narration)}
+        onDone={() => onConfirm(receiveAmt, quoteCcy, ben.name, reference || narration)}
       />
     );
   }
@@ -922,11 +927,9 @@ function SendForm({
       ["Country", ben.country],
       ["Bank", ben.bank],
       ["Account", ben.account],
-      ["Currency", ben.ccy],
-      ["Amount", fmtMoney(amt, ben.ccy)],
+      ["You pay", fmtAnyCcy(amt, payCcy)],
+      ["Beneficiary receives", fmtAnyCcy(receiveAmt, quoteCcy)],
       ["Reference", reference || "—"],
-      ["Purpose", narration || "—"],
-      ["Supporting document", doc?.name ?? "None attached"],
     ];
     return (
       <div className="space-y-4">
@@ -1028,16 +1031,21 @@ function SendForm({
           <input
             value={amount}
             onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
-            className="flex-1 bg-transparent text-xl font-semibold tabular-nums outline-none"
+            className="min-w-0 flex-1 bg-transparent text-lg sm:text-xl font-semibold tabular-nums outline-none"
           />
-          <span className="text-sm font-medium grid place-items-center px-2">{ben.ccy}</span>
+          <span className="text-sm font-medium grid place-items-center px-2 shrink-0">
+            {payCcy}
+          </span>
+        </div>
+        <div className="text-xs text-muted-foreground mt-1">
+          You pay in {payCcy}; {ben.name} is credited in {quoteCcy}.
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div>
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <div className="min-w-0">
           <Label className="text-xs">Convert from</Label>
           <Select value={payCcy} onValueChange={(v) => setPayCcy(v as FundingCcy)}>
-            <SelectTrigger className="mt-1">
+            <SelectTrigger className="mt-1 w-full">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -1049,11 +1057,11 @@ function SendForm({
             </SelectContent>
           </Select>
         </div>
-        <div>
+        <div className="min-w-0">
           <Label className="text-xs">Quote against</Label>
           <Select value={quoteCcy} onValueChange={setQuoteCcy}>
-            <SelectTrigger className="mt-1">
-              <SelectValue />
+            <SelectTrigger className="mt-1 w-full">
+              <SelectValue className="truncate" />
             </SelectTrigger>
             <SelectContent>
               {GLOBAL_SEND_CCYS.map((c) => (
@@ -1065,7 +1073,8 @@ function SendForm({
           </Select>
         </div>
       </div>
-      <FundFxQuote fundCcy={payCcy} target={quoteCcy} amount={sourceAmt} />
+      <FundFxQuote fundCcy={payCcy} target={quoteCcy} amount={amt} />
+
 
       <div>
         <Label className="text-xs">Reference</Label>
