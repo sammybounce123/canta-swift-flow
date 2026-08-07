@@ -75,10 +75,11 @@ function TradeDeskList() {
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold">Trade Files</h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            Trade Files open automatically when a document, invoice, payment or case starts. Pick an action below and Canta assigns the reference and takes you to the review screen.
+            Create a Trade File to pay any supplier globally. Add supplier bank details, upload invoice documents,
+            accept an FX quote, fund in NGN or USDT, and track settlement. Your supplier does not need a Canta account.
           </p>
         </div>
-        <Button onClick={() => setDraftOpen(true)} variant="outline" size="sm">
+        <Button onClick={() => setDraftOpen(true)} size="sm">
           <Plus className="h-4 w-4 mr-1.5" /> New Trade File
         </Button>
       </div>
