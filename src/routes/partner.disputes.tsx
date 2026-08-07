@@ -57,7 +57,7 @@ const SEED: Dispute[] = [
     id: "DSP-001",
     client: "Mr. Adebayo",
     marketer: "Sade O.",
-    caseRef: "BC-CASE-4082",
+    caseRef: "KPP-CASE-4082",
     solicitor: "Howell & Sons",
     amount: 245_000,
     issueType: "Funding mismatch",
@@ -72,7 +72,7 @@ const SEED: Dispute[] = [
     id: "DSP-002",
     client: "Mrs. Okonkwo",
     marketer: "Sade O.",
-    caseRef: "BC-CASE-4101",
+    caseRef: "KPP-CASE-4101",
     solicitor: "Bryant Legal",
     amount: 88_500,
     issueType: "Document issue",
@@ -289,7 +289,7 @@ function NewDisputeDialog({
           <Input
             value={f.caseRef}
             onChange={(e) => setF({ ...f, caseRef: e.target.value })}
-            placeholder="BC-CASE-..."
+            placeholder="KPP-CASE-..."
           />
         </div>
         <div>

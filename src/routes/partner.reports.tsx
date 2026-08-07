@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import { CASES, SOLICITORS, formatGBP, getSolicitor } from "@/lib/partner";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { demoToast, downloadCsv } from "@/lib/partner-demo";
 
 export const Route = createFileRoute("/partner/reports")({
   head: () => ({ meta: [{ title: "Reports — Kingsbridge Property Partners" }] }),
@@ -35,6 +36,19 @@ function Reports() {
   const avg = success.length ? Math.round(totalGBP / success.length) : 0;
   const conversion = totalReferred ? Math.round((success.length / totalReferred) * 100) : 0;
   const commission = Math.round(totalGBP * 0.005);
+
+  const exportCsv = (filename: string) =>
+    downloadCsv(filename, [
+      ["Metric", "Value"],
+      ["Referred clients", totalReferred],
+      ["Payment cases", CASES.length],
+      ["Funding received (GBP)", totalGBP],
+      ["Solicitor payouts", success.length],
+      ["Commission estimate (GBP)", commission],
+      ["Commission paid (GBP)", Math.round(commission * 0.6)],
+      ["Marketer conversion (%)", conversion],
+      ["Failed / returned payouts", failed.length],
+    ]);
 
   const monthly = [
     { m: "Jan", v: 820_000 },
@@ -64,17 +78,17 @@ function Reports() {
         <div>
           <h1 className="text-2xl font-semibold">Partner reports</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Reporting on every client referred by Baron &amp; Cabot.
+            Reporting on every client referred by Kingsbridge Property Partners.
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => exportCsv("partner-report.csv")}>
             <FileText className="h-4 w-4 mr-1.5" /> CSV
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => exportCsv("partner-report-excel.csv")}>
             <FileSpreadsheet className="h-4 w-4 mr-1.5" /> Excel
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => demoToast("PDF export")}>
             <Download className="h-4 w-4 mr-1.5" /> PDF
           </Button>
         </div>

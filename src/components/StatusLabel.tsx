@@ -6,7 +6,10 @@ export type ReadinessStatus =
   | "Demo Preview"
   | "Requires Setup"
   | "Coming Soon"
-  | "Contact Canta to Activate";
+  | "Contact Canta to Activate"
+  | "Demo data"
+  | "Payout tracking active"
+  | "Provider confirmation required";
 
 const TONE: Record<ReadinessStatus, string> = {
   Live: "bg-success/15 text-success border-success/30",
@@ -14,6 +17,9 @@ const TONE: Record<ReadinessStatus, string> = {
   "Requires Setup": "bg-warning/15 text-warning border-warning/30",
   "Coming Soon": "bg-muted text-muted-foreground border-border",
   "Contact Canta to Activate": "bg-accent text-accent-foreground border-border",
+  "Demo data": "bg-primary/10 text-primary border-primary/30",
+  "Payout tracking active": "bg-success/15 text-success border-success/30",
+  "Provider confirmation required": "bg-warning/15 text-warning border-warning/30",
 };
 
 const ICONS: Record<ReadinessStatus, React.ComponentType<{ className?: string }>> = {
@@ -22,6 +28,9 @@ const ICONS: Record<ReadinessStatus, React.ComponentType<{ className?: string }>
   "Requires Setup": Wrench,
   "Coming Soon": Clock,
   "Contact Canta to Activate": Phone,
+  "Demo data": Sparkles,
+  "Payout tracking active": CheckCircle2,
+  "Provider confirmation required": Wrench,
 };
 
 export function StatusLabel({

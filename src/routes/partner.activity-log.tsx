@@ -12,19 +12,19 @@ export const Route = createFileRoute("/partner/activity-log")({
 const PARTNER_EVENTS = [
   {
     at: "Today · 09:42",
-    actor: "Charlotte Baron",
+    actor: "Charlotte Hayes",
     action: "Approved payment case",
-    ref: "BC-2026-1001",
+    ref: "KPP-2026-1001",
   },
   {
     at: "Today · 08:15",
     actor: "Quinn Solicitors",
     action: "Uploaded solicitor undertaking",
-    ref: "BC-2026-1001",
+    ref: "KPP-2026-1001",
   },
   {
     at: "Yesterday · 17:04",
-    actor: "Charlotte Baron",
+    actor: "Charlotte Hayes",
     action: "Created payment link",
     ref: "PL-2026-0342",
   },
@@ -36,7 +36,7 @@ const PARTNER_EVENTS = [
   },
   {
     at: "2 days ago",
-    actor: "Charlotte Baron",
+    actor: "Charlotte Hayes",
     action: "Updated commission split",
     ref: "COM-2026-014",
   },

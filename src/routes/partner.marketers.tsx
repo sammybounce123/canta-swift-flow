@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import {
   canSeeAllMarketers,
 } from "@/lib/partner";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
+import { demoToast } from "@/lib/partner-demo";
 
 export const Route = createFileRoute("/partner/marketers")({
   head: () => ({ meta: [{ title: "Marketers — Kingsbridge Property Partners" }] }),
@@ -26,8 +27,8 @@ function Marketers() {
         <ShieldAlert className="h-10 w-10 mx-auto text-muted-foreground" />
         <div className="mt-3 text-base font-semibold">Restricted view</div>
         <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
-          Only Partner Admins and Partner Managers can view marketer performance. Ask Charlotte
-          Baron for access.
+          Only Partner Admins and Partner Managers can view marketer performance. Ask your Partner
+          Admin for access.
         </p>
       </Card>
     );
@@ -92,10 +93,14 @@ function Marketers() {
               </dl>
 
               <div className="mt-4 flex gap-2">
-                <Button size="sm" variant="outline" className="flex-1">
-                  View clients
+                <Button size="sm" variant="outline" className="flex-1" asChild>
+                  <Link to="/partner/clients">View clients</Link>
                 </Button>
-                <Button size="sm" variant="ghost">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => demoToast(`Message ${r.marketer.name}`)}
+                >
                   Message
                 </Button>
               </div>

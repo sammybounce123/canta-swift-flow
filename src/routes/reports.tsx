@@ -169,7 +169,7 @@ function ReportsPage() {
       mode: "Global Collections Mode",
     },
     supplier_dashboard: { name: "Li Wei", title: "Supplier Admin", mode: "Supplier Mode" },
-    partner_property: { name: "Charlotte Baron", title: "Partner Admin", mode: "Partner Mode" },
+    partner_property: { name: "Charlotte Hayes", title: "Partner Admin", mode: "Partner Mode" },
     global_spend_cards: {
       name: "Adaeze Okonkwo",
       title: "Treasury Admin",

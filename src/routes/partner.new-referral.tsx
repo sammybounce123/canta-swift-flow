@@ -15,7 +15,13 @@ import {
 import { Upload, Save, Send, UserPlus, Link2, UserCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { SOLICITORS, MARKETERS, canSeeAllMarketers } from "@/lib/partner";
-import { createCase, addDocument, partnerActorFromUser } from "@/lib/partner-store";
+import {
+  createCase,
+  addDocument,
+  generateQuote,
+  generatePaymentLink,
+  partnerActorFromUser,
+} from "@/lib/partner-store";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 
 export const Route = createFileRoute("/partner/new-referral")({
@@ -68,6 +74,9 @@ function NewReferral() {
     }
     return { ...defaultForm(), file: undefined };
   });
+  const [createdCaseId, setCreatedCaseId] = useState<string | null>(null);
+  const [createdRef, setCreatedRef] = useState<string | null>(null);
+  const [quoteId, setQuoteId] = useState<string | null>(null);
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) =>
     setForm((p) => ({ ...p, [k]: v }));
 
@@ -137,53 +146,71 @@ function NewReferral() {
     return created;
   };
 
+  const canCreateCase =
+    !!form.clientName.trim() &&
+    !!(form.clientEmail.trim() || form.clientPhone.trim()) &&
+    !!form.property.trim() &&
+    Number(form.amount) > 0 &&
+    !!form.currency &&
+    !!form.purpose.trim() &&
+    !!form.solicitor;
+
   const submit = () => {
     if (!validate()) return;
     const created = buildCase();
+    setCreatedCaseId(created.id);
+    setCreatedRef(created.ref);
     toast.success("Payment case created", {
-      description: `${created.ref} — ${created.clientName}`,
+      description: `${created.ref} — ${created.clientName}. You can now generate an FX quote.`,
     });
     clearDraft();
-    setTimeout(
-      () => navigate({ to: "/partner/cases/$caseId", params: { caseId: created.id } }),
-      400,
-    );
+  };
+
+  const doQuote = () => {
+    if (!createdCaseId) return;
+    const q = generateQuote(createdCaseId, "1h", partnerActorFromUser(userId));
+    if (q) {
+      setQuoteId(q.id);
+      toast.success("FX quote generated", {
+        description: `${q.reference} · 1 GBP = ₦${q.rate.toLocaleString()}`,
+      });
+    }
+  };
+
+  const doLink = () => {
+    if (!createdCaseId || !quoteId) return;
+    const l = generatePaymentLink(createdCaseId, partnerActorFromUser(userId));
+    toast.success(l ? `Payment link ${l.id} generated` : "Generate a valid FX quote first");
+    if (l)
+      setTimeout(
+        () => navigate({ to: "/partner/cases/$caseId", params: { caseId: createdCaseId } }),
+        500,
+      );
   };
 
   const saveDraft = () => {
     if (!form.clientName.trim()) {
-      toast.error("Add at least a client name to save a draft");
+      toast.error("Add at least a client name to save a lead");
       return;
     }
     const created = buildCase("draft");
-    toast.success("Draft saved", {
-      description: `${created.ref} kept as draft — you can finish it from Cases.`,
+    toast.success("Saved as referral lead", {
+      description: `${created.ref} kept as a lead — you can finish it from Cases.`,
     });
     clearDraft();
     setTimeout(() => navigate({ to: "/partner/cases" }), 500);
   };
 
-  const sendPaymentLink = () => {
-    if (!validate()) return;
-    const created = buildCase();
-    toast.success("Client payment link sent", {
-      description: `Sent to ${created.clientEmail} for ${created.ref} (£${Number(form.amount).toLocaleString()}).`,
-    });
-    clearDraft();
-    setTimeout(
-      () => navigate({ to: "/partner/cases/$caseId", params: { caseId: created.id } }),
-      500,
-    );
-  };
   void MARKETERS;
   void user;
 
   return (
     <div className="space-y-5 max-w-4xl">
       <div>
-        <h1 className="text-2xl font-semibold">New client referral</h1>
+        <h1 className="text-2xl font-semibold">New Client Payment Case</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Submit a Baron &amp; Cabot client for property payment processing.
+          Refer a client, attach property/payment details, assign solicitor, and create a Canta
+          payment case.
         </p>
       </div>
 
@@ -353,28 +380,39 @@ function NewReferral() {
           </div>
         </Section>
 
-        <div className="pt-4 border-t flex flex-wrap items-center justify-between gap-2">
-          <div className="flex flex-wrap gap-2 min-w-0">
-            <Button variant="outline" onClick={saveDraft}>
-              <Save className="h-4 w-4 mr-1.5" /> Save draft
-            </Button>
-            <Button variant="outline" onClick={sendPaymentLink}>
-              <Link2 className="h-4 w-4 mr-1.5" /> Send client payment link
-            </Button>
+        <div className="pt-4 border-t space-y-3">
+          {createdRef && (
+            <div className="text-xs text-muted-foreground">
+              Payment case <span className="font-mono">{createdRef}</span> created
+              {quoteId ? " · FX quote generated" : " · generate an FX quote next"}.
+            </div>
+          )}
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap gap-2 min-w-0">
+              <Button variant="outline" onClick={saveDraft}>
+                <Save className="h-4 w-4 mr-1.5" /> Save as Lead
+              </Button>
+              <Button variant="outline" onClick={doQuote} disabled={!createdCaseId}>
+                <UserPlus className="h-4 w-4 mr-1.5" /> Generate FX Quote
+              </Button>
+              <Button variant="outline" onClick={doLink} disabled={!quoteId}>
+                <Link2 className="h-4 w-4 mr-1.5" /> Generate Payment Link
+              </Button>
+            </div>
             <Button
-              variant="outline"
-              onClick={() =>
-                toast.success("Solicitor assigned", {
-                  description: SOLICITORS.find((s) => s.id === form.solicitor)?.firm ?? "—",
-                })
-              }
+              className="bg-primary"
+              onClick={submit}
+              disabled={!canCreateCase || !!createdCaseId}
             >
-              <UserPlus className="h-4 w-4 mr-1.5" /> Assign solicitor
+              <Send className="h-4 w-4 mr-1.5" /> Create Payment Case
             </Button>
           </div>
-          <Button className="bg-primary" onClick={submit}>
-            <Send className="h-4 w-4 mr-1.5" /> Create referral
-          </Button>
+          {!canCreateCase && (
+            <p className="text-[11px] text-muted-foreground">
+              Add client name, contact, property/project, amount, currency, payment purpose and a
+              solicitor beneficiary to enable Create Payment Case. You can always Save as Lead.
+            </p>
+          )}
         </div>
       </Card>
     </div>

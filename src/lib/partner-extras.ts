@@ -1,5 +1,5 @@
 // Extensions layered on top of partner-store: solicitor verification state,
-// commission ledger, document audit trail, and B&C settings (commissions toggle).
+// commission ledger, document audit trail, and partner settings (commissions toggle).
 // All client-only, persisted to localStorage.
 
 import type { PartnerRole } from "./partner";
@@ -187,10 +187,10 @@ const SEED_COMMISSIONS: Commission[] = [
   {
     id: "CM-001",
     caseId: "CS-1001",
-    caseRef: "BC-2026-1001",
+    caseRef: "KPP-2026-1001",
     clientName: "Adekunle Okoye",
     marketerId: "U-MKT-1",
-    marketerName: "Tunde Bakare",
+    marketerName: "Sade Ojo",
     payoutAmount: 248_500,
     rate: 0.005,
     estimated: 1242,
@@ -203,10 +203,10 @@ const SEED_COMMISSIONS: Commission[] = [
   {
     id: "CM-002",
     caseId: "CS-1002",
-    caseRef: "BC-2026-1002",
+    caseRef: "KPP-2026-1002",
     clientName: "Folake Adeyemi",
     marketerId: "U-MKT-2",
-    marketerName: "Adaeze Okonkwo",
+    marketerName: "Daniel Reed",
     payoutAmount: 185_000,
     rate: 0.005,
     estimated: 925,
@@ -217,10 +217,10 @@ const SEED_COMMISSIONS: Commission[] = [
   {
     id: "CM-003",
     caseId: "CS-1003",
-    caseRef: "BC-2026-1003",
+    caseRef: "KPP-2026-1003",
     clientName: "Ibrahim Sani",
     marketerId: "U-MKT-1",
-    marketerName: "Tunde Bakare",
+    marketerName: "Sade Ojo",
     payoutAmount: 612_000,
     rate: 0.005,
     estimated: 3060,
@@ -230,10 +230,10 @@ const SEED_COMMISSIONS: Commission[] = [
   {
     id: "CM-004",
     caseId: "CS-1004",
-    caseRef: "BC-2026-1004",
+    caseRef: "KPP-2026-1004",
     clientName: "Ngozi Eze",
     marketerId: "U-MKT-3",
-    marketerName: "Femi Adeyemi",
+    marketerName: "Michael Turner",
     payoutAmount: 92_500,
     rate: 0.005,
     estimated: 462,

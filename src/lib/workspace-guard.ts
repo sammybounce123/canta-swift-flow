@@ -114,7 +114,7 @@ const PROFILES: Record<
     workspaceLabel: "Supplier",
   },
   partner_property: {
-    name: "Charlotte Baron",
+    name: "Charlotte Hayes",
     title: "Partner Admin",
     badge: "Partner Mode",
     workspaceLabel: "Partner Mode",

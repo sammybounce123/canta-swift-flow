@@ -156,7 +156,7 @@ test("Partner Activity Log keeps Partner context", async ({ page }) => {
   await page.waitForLoadState("networkidle");
   await page.goto("/partner/activity-log");
   await page.waitForLoadState("networkidle");
-  await assertPresent(page, ["Charlotte Baron", "Partner Mode"]);
+  await assertPresent(page, ["Charlotte Hayes", "Partner Mode"]);
   await assertAbsent(page, ["Importer Mode", "Enterprise Treasury Mode"]);
 });
 

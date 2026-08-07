@@ -141,7 +141,7 @@ export type ExtendedCase = PaymentCase & {
   activity: ActivityEntry[];
 };
 
-const STORE_KEY = "canta:partner:cases:v1";
+const STORE_KEY = "canta:partner:cases:v2";
 const CHANGE_EVENT = "partner-data-change";
 
 function uid(prefix: string) {
@@ -156,7 +156,110 @@ function emit() {
   if (typeof window !== "undefined") window.dispatchEvent(new Event(CHANGE_EVENT));
 }
 
+// Statuses that imply an FX quote already exists on the case.
+const QUOTE_STATUSES: CaseStatus[] = [
+  "FX Quote Generated",
+  "Payment Link Generated",
+  "Payment Link Sent",
+  "Client Verification Pending",
+  "BVN Pending",
+  "BVN Submitted",
+  "Client Consent Completed",
+  "Awaiting Client Funding",
+  "Funding Received",
+  "Funding Review",
+  "FX Quote Sent",
+  "FX Accepted",
+  "FX Converted",
+  "Payout Processing",
+  "Paid to Solicitor",
+  "Receipt Uploaded",
+  "Client Invited to Canta",
+  "Completed",
+  "Failed / Returned",
+  "Expired Quote",
+];
+
+// Statuses that imply a payment link already exists on the case.
+const LINK_STATUSES: CaseStatus[] = QUOTE_STATUSES.filter(
+  (s) => s !== "FX Quote Generated" && s !== "Expired Quote",
+);
+
+const FUNDED_STATUSES: CaseStatus[] = [
+  "Funding Received",
+  "Funding Review",
+  "FX Accepted",
+  "FX Converted",
+  "Payout Processing",
+  "Paid to Solicitor",
+  "Receipt Uploaded",
+  "Client Invited to Canta",
+  "Completed",
+];
+
+function seedRate(id: string) {
+  let h = 0;
+  for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) % 997;
+  return 2035 + (h % 40);
+}
+
+function seedQuoteFor(c: PaymentCase): FxQuote | undefined {
+  if (!QUOTE_STATUSES.includes(c.status)) return undefined;
+  const rate = seedRate(c.id);
+  const feeGBP = Math.max(20, Math.round(c.amountGBP * 0.0075));
+  const generatedAt = `${c.createdAt}T10:15:00.000Z`;
+  const expired = c.status === "Expired Quote" || c.status === "Failed / Returned";
+  const base = new Date(generatedAt).getTime();
+  return {
+    id: `FXQ-${c.id.replace("CS-", "")}`,
+    caseId: c.id,
+    gbpAmount: c.amountGBP,
+    rate,
+    feeGBP,
+    ngnTotal: Math.round((c.amountGBP + feeGBP) * rate),
+    reference: `CFX-${c.id.replace("CS-", "")}-${c.ref.slice(-4)}`,
+    generatedBy: c.assignedMarketerId,
+    generatedByName: getMarketer(c.assignedMarketerId)?.name ?? "Partner user",
+    generatedAt,
+    expiresAt: new Date(
+      expired ? base + 60 * 60 * 1000 : Date.now() + 45 * 60 * 1000,
+    ).toISOString(),
+    validity: "1h",
+    status: expired ? "Expired" : FUNDED_STATUSES.includes(c.status) ? "Used" : "Active",
+    solicitorId: c.solicitorId,
+  };
+}
+
+function seedLinkFor(c: PaymentCase, quote?: FxQuote): PaymentLink | undefined {
+  if (!quote || !LINK_STATUSES.includes(c.status)) return undefined;
+  const createdAt = `${c.createdAt}T10:20:00.000Z`;
+  const status: PaymentLink["status"] =
+    c.status === "Completed" || c.status === "Receipt Uploaded" || c.status === "Paid to Solicitor"
+      ? "Completed"
+      : FUNDED_STATUSES.includes(c.status)
+        ? "Funded"
+        : c.status === "Awaiting Client Funding"
+          ? "Verified"
+          : c.status === "Failed / Returned"
+            ? "Expired"
+            : c.status === "Payment Link Generated"
+              ? "Active"
+              : "Sent";
+  return {
+    id: `PL-${c.id.replace("CS-", "")}`,
+    caseId: c.id,
+    quoteId: quote.id,
+    url: `/pay/PL-${c.id.replace("CS-", "")}`,
+    status,
+    createdAt,
+    sentAt: status === "Active" ? undefined : `${c.createdAt}T10:25:00.000Z`,
+    openedAt: status === "Active" || status === "Sent" ? undefined : `${c.createdAt}T12:05:00.000Z`,
+  };
+}
+
 function seedExtended(c: PaymentCase): ExtendedCase {
+  const quote = seedQuoteFor(c);
+  const link = seedLinkFor(c, quote);
   return {
     ...c,
     clientSource: "Partner Referral",
@@ -164,7 +267,19 @@ function seedExtended(c: PaymentCase): ExtendedCase {
     paymentDeadline: c.expectedPayout,
     createdBy: c.assignedMarketerId,
     documents: [],
-    quotes: [],
+    quotes: quote ? [quote] : [],
+    activeQuoteId: quote?.id,
+    paymentLink: link,
+    funding: FUNDED_STATUSES.includes(c.status)
+      ? {
+          expectedNGN: quote?.ngnTotal ?? 0,
+          receivedNGN: quote?.ngnTotal ?? 0,
+          payerName: c.clientName,
+          reference: quote?.reference,
+          receivedAt: `${c.createdAt}T15:40:00.000Z`,
+          reviewStatus: "Ready for FX",
+        }
+      : undefined,
     payout: {
       status:
         c.status === "Paid to Solicitor"
@@ -312,7 +427,7 @@ export function createCase(input: {
 }): ExtendedCase {
   const num = 1000 + readStore().length + 1;
   const id = `CS-${num}`;
-  const ref = `BC-2026-${num}`;
+  const ref = `KPP-2026-${num}`;
   const officer = getMarketer(input.assignedMarketerId)?.name ?? "Unassigned";
   const c: ExtendedCase = {
     id,

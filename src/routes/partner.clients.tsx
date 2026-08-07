@@ -22,6 +22,7 @@ import {
   type CaseStatus,
 } from "@/lib/partner";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
+import { downloadCsv } from "@/lib/partner-demo";
 
 export const Route = createFileRoute("/partner/clients")({
   head: () => ({ meta: [{ title: "Partner Clients — Kingsbridge Property Partners" }] }),
@@ -101,6 +102,12 @@ function PartnerClientsPage() {
     [rows, q, status],
   );
 
+  const exportCsv = () =>
+    downloadCsv("partner-clients.csv", [
+      ["Client", "Case", "Property", "Amount GBP", "Status"],
+      ...cases.map((c) => [c.clientName, c.ref, c.property, c.amountGBP, c.status]),
+    ]);
+
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:flex sm:flex-wrap sm:justify-between">
@@ -113,7 +120,7 @@ function PartnerClientsPage() {
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <Button variant="outline">
+          <Button variant="outline" onClick={exportCsv}>
             <Download className="h-4 w-4 mr-1.5" /> Export
           </Button>
           <Button asChild>

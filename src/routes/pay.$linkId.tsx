@@ -69,7 +69,7 @@ function ClientPayPage() {
           <AlertTriangle className="h-8 w-8 text-destructive mx-auto" />
           <h2 className="mt-3 text-lg font-semibold">Payment link invalid or expired</h2>
           <p className="text-sm text-muted-foreground mt-2">
-            Please contact Baron &amp; Cabot for a new link.
+            Please contact Kingsbridge Property Partners for a new link.
           </p>
         </Card>
       </PublicShell>
@@ -114,8 +114,8 @@ function ClientPayPage() {
             <CheckCircle2 className="h-8 w-8 text-success mx-auto" />
             <h2 className="mt-3 font-semibold">This payment is complete</h2>
             <p className="text-sm text-muted-foreground mt-1">
-              This link has already been used and cannot be reused. Please contact Baron &amp; Cabot
-              if you need a new payment.
+              This link has already been used and cannot be reused. Please contact Kingsbridge
+              Property Partners if you need a new payment.
             </p>
           </Card>
         ) : quoteExpired ? (
@@ -123,8 +123,8 @@ function ClientPayPage() {
             <AlertTriangle className="h-8 w-8 text-destructive mx-auto" />
             <h2 className="mt-3 font-semibold">Quote expired — request a new quote.</h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Payment cannot be made against an expired quote. Please contact Baron &amp; Cabot to
-              issue a fresh FX quote — your NGN payable amount will be recalculated.
+              Payment cannot be made against an expired quote. Please contact Kingsbridge Property
+              Partners to issue a fresh FX quote — your NGN payable amount will be recalculated.
             </p>
           </Card>
         ) : (
@@ -187,7 +187,9 @@ function BrandHeader() {
             C
           </div>
           <div>
-            <div className="text-sm font-semibold leading-none">Canta × Baron &amp; Cabot</div>
+            <div className="text-sm font-semibold leading-none">
+              Canta × Kingsbridge Property Partners
+            </div>
             <div className="text-[11px] text-muted-foreground">Secure Property Payment</div>
           </div>
         </div>
@@ -304,7 +306,8 @@ function VerifyStep({ caseId, clientName, onDone }: any) {
       </div>
       <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs">
         <strong>Your BVN is collected securely by Canta</strong> for verification and compliance.
-        Baron &amp; Cabot will not enter this on your behalf and will never see your full BVN.
+        Kingsbridge Property Partners will not enter this on your behalf and will never see your
+        full BVN.
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -401,7 +404,7 @@ function DocStep({ c, confirmed, setConfirmed, onNext }: any) {
       {c.documents.length > 0 ? (
         <>
           <div className="text-xs text-muted-foreground">
-            Documents already provided by Baron &amp; Cabot:
+            Documents already provided by Kingsbridge Property Partners:
           </div>
           <ul className="text-sm border rounded-lg divide-y">
             {c.documents.map((d: any) => (
@@ -460,7 +463,7 @@ function FundGate({ c, quote, docsConfirmed, onPaid }: any) {
     { ok: !!v?.sourceOfFunds, label: "Source of funds declared" },
     { ok: !!v?.consent?.propertyPurpose, label: "Payment purpose confirmed" },
     { ok: !!v?.consent?.canta, label: "Consent: Canta to process this property payment" },
-    { ok: !!v?.consent?.sharedDocs, label: "Consent: use of B&C-shared KYC documents" },
+    { ok: !!v?.consent?.sharedDocs, label: "Consent: use of partner-shared KYC documents" },
     { ok: !!v?.consent?.terms, label: "Canta Terms of Service accepted" },
     { ok: !!v?.consent?.privacy, label: "Canta Privacy & Data Processing Policy accepted" },
     { ok: !!docsConfirmed, label: "Required documents uploaded or confirmed" },
