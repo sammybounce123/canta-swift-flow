@@ -63,6 +63,7 @@ function FX() {
     rate: number;
   } | null>(null);
   const [chosenBeneficiary, setChosenBeneficiary] = useState<Beneficiary | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   useEffect(() => {
     const i = setInterval(() => setTimer((t) => (t > 0 ? t - 1 : 30)), 1000);
