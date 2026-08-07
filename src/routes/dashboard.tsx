@@ -25,7 +25,7 @@ import {
 } from "recharts";
 import { wallets, transactions, cashFlow, fmtMoney, fmtNGN } from "@/lib/mock";
 import { StatusPill } from "@/components/StatusPill";
-import { useActions } from "@/components/ActionsProvider";
+import { useActions } from "@/components/actions-context";
 import { useRole } from "@/components/RoleProvider";
 import { useMode } from "@/components/ModeProvider";
 import { Link, useNavigate } from "@tanstack/react-router";

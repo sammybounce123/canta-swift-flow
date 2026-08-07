@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { UserPlus, Check, Search, Sparkles, Shield } from "lucide-react";
 import { team } from "@/lib/mock";
-import { useActions } from "@/components/ActionsProvider";
+import { useActions } from "@/components/actions-context";
 import {
   DropdownMenu,
   DropdownMenuContent,

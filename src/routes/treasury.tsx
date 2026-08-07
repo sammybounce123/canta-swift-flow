@@ -15,7 +15,7 @@ import {
   Legend,
 } from "recharts";
 import { Calendar, Layers } from "lucide-react";
-import { useActions } from "@/components/ActionsProvider";
+import { useActions } from "@/components/actions-context";
 import { WorkspaceWelcome } from "@/components/WorkspaceWelcome";
 import { StartHereCard } from "@/components/StartHereCard";
 import { ReadinessBar } from "@/components/ReadinessBar";
