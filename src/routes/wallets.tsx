@@ -76,32 +76,29 @@ function Wallets() {
       <Card className="p-6 shadow-card">
         <div className="text-sm font-semibold">Funding Options</div>
         <div className="text-xs text-muted-foreground">
-          Choose how you'd like to fund your wallet.
+          Funding is only available in NGN or USDT — balances are converted on credit.
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
           {[
             {
               icon: Building,
-              label: "Bank Transfer",
-              desc: "Free · Settles in seconds",
+              label: "NGN Bank Transfer",
+              desc: "Free · Virtual account in your name",
               badge: "Recommended",
+              ccy: "NGN",
             },
             {
               icon: Coins,
               label: "USDT (TRC20 / ERC20)",
-              desc: "Stablecoin deposit · Auto-converted to local currency",
+              desc: "Stablecoin deposit · Converted on credit",
               badge: "Crypto",
-            },
-            {
-              icon: Zap,
-              label: "Pay Without Funding",
-              desc: "Inline payment · No pre-fund needed",
-              badge: "New",
+              ccy: "USDT",
             },
           ].map((o) => (
             <button
               key={o.label}
-              onClick={() => openFund("NGN")}
+              onClick={() => openFund(o.ccy)}
+
               className="text-left p-4 rounded-xl border border-border hover:border-accent hover:shadow-card transition"
             >
               <div className="flex items-start justify-between">
