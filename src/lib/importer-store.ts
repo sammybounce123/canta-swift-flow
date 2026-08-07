@@ -1149,3 +1149,152 @@ export function buildLockedQuote(
     expiresAt: lockedAt + QUOTE_LOCK_SECONDS * 1000,
   };
 }
+
+/* ------------------------------------------------ convert (wallet→wallet) */
+
+/** Fee charged on a wallet-to-wallet conversion (source currency). */
+export const CONVERSION_FEE_PCT = 0.005;
+
+/** Seconds a conversion quote stays valid before it must be refreshed. */
+export const CONVERSION_QUOTE_SECONDS = 90;
+
+export type ConversionQuote = {
+  from: WalletCcy;
+  to: WalletCcy;
+  amount: number;
+  fee: number;
+  debit: number;
+  rate: number;
+  credit: number;
+  lockedAt: number;
+  expiresAt: number;
+  eta: string;
+  complianceNote?: string;
+};
+
+export function buildConversionQuote(
+  from: WalletCcy,
+  to: WalletCcy,
+  amount: number,
+): ConversionQuote {
+  const fee = Math.round(amount * CONVERSION_FEE_PCT * 100) / 100;
+  const net = Math.max(0, amount - fee);
+  const rate = WALLET_NGN_RATE[from] / WALLET_NGN_RATE[to];
+  const lockedAt = Date.now();
+  return {
+    from,
+    to,
+    amount,
+    fee,
+    debit: amount,
+    rate,
+    credit: Math.round(net * rate * 100) / 100,
+    lockedAt,
+    expiresAt: lockedAt + CONVERSION_QUOTE_SECONDS * 1000,
+    eta: "Usually instant — within 2 minutes in this demo",
+    complianceNote:
+      from === "USDT" || to === "USDT"
+        ? "Stablecoin conversions are screened before the destination wallet is credited."
+        : undefined,
+  };
+}
+
+export const quoteExpired = (q: { expiresAt: number }) => Date.now() > q.expiresAt;
+
+export type ConvertResult =
+  | { ok: true; conversion: Conversion; receiptNo: string }
+  | { ok: false; reason: "expired" | "insufficient" | "same-wallet" | "no-wallet" | "amount" };
+
+/**
+ * Executes a wallet-to-wallet conversion: debits the source wallet, credits the
+ * destination wallet, records both transactions and issues a receipt. Demo-only —
+ * no live provider is contacted.
+ */
+export function executeConversion(q: ConversionQuote): ConvertResult {
+  if (q.from === q.to) return { ok: false, reason: "same-wallet" };
+  if (!(q.amount > 0)) return { ok: false, reason: "amount" };
+  if (quoteExpired(q)) return { ok: false, reason: "expired" };
+
+  const s = read();
+  const src = walletOf(s, q.from);
+  const dst = walletOf(s, q.to);
+  if (!src) return { ok: false, reason: "no-wallet" };
+  if (src.available < q.debit) return { ok: false, reason: "insufficient" };
+  if (!dst) createWallet(q.to);
+
+  const seq = Math.floor(1000 + Math.random() * 9000);
+  const id = `CV-${new Date().getFullYear()}-${seq}`;
+  const receiptNo = `CR-${seq}`;
+  const at = today();
+  const conversion: Conversion = {
+    id,
+    from: q.from,
+    to: q.to,
+    debit: q.debit,
+    credit: q.credit,
+    rate: q.rate,
+    fee: q.fee,
+    status: "Converted",
+    at,
+    receiptNo,
+  };
+
+  update((s0) => {
+    const debited = applyWallet(s0, q.from, (w) => ({
+      ...w,
+      available: Math.max(0, w.available - q.debit),
+    }));
+    const credited = applyWallet(debited, q.to, (w) => ({
+      ...w,
+      available: w.available + q.credit,
+    }));
+    return {
+      ...credited,
+      conversions: [conversion, ...credited.conversions],
+      conversionReceipts: [
+        {
+          receiptNo,
+          conversionRef: id,
+          from: q.from,
+          to: q.to,
+          debit: q.debit,
+          credit: q.credit,
+          rate: q.rate,
+          fee: q.fee,
+          at,
+          status: "Converted" as const,
+        },
+        ...credited.conversionReceipts,
+      ],
+      walletTx: [
+        {
+          id: `WT-${Date.now()}-out`,
+          at,
+          ccy: q.from,
+          type: "FX conversion" as const,
+          amount: -q.debit,
+          status: "Completed" as const,
+          reference: id,
+          receiptNo,
+        },
+        {
+          id: `WT-${Date.now()}-in`,
+          at,
+          ccy: q.to,
+          type: "FX conversion" as const,
+          amount: q.credit,
+          status: "Completed" as const,
+          reference: id,
+          receiptNo,
+        },
+        ...credited.walletTx,
+      ],
+    };
+  });
+
+  notify(
+    "FX",
+    `${fmtWallet(q.debit, q.from)} converted to ${fmtWallet(q.credit, q.to)} — receipt ${receiptNo} is available.`,
+  );
+  return { ok: true, conversion, receiptNo };
+}
