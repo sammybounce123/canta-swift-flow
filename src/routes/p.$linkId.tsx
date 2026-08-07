@@ -109,7 +109,9 @@ function readArr<T>(key: string): T[] {
 function writeArr<T>(key: string, arr: T[]) {
   try {
     localStorage.setItem(key, JSON.stringify(arr));
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 }
 
 // Deterministic 10-digit virtual account number derived from the link id.

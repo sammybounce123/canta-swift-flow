@@ -155,7 +155,9 @@ function readLS(): PaymentLink[] {
 function writeLS(arr: PaymentLink[]) {
   try {
     localStorage.setItem(LS_KEY, JSON.stringify(arr));
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 }
 
 function PaymentLinksPage() {

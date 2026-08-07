@@ -211,7 +211,9 @@ export function loadFlags(workspace?: WorkspaceType): FeatureFlags {
       const raw = window.localStorage.getItem(FLAGS_KEY);
       if (raw)
         return { ...defaultFlagsFor(workspace ?? "enterprise_treasury"), ...JSON.parse(raw) };
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
   return defaultFlagsFor(workspace ?? "enterprise_treasury");
 }

@@ -525,14 +525,18 @@ function SupplierFxQuoteCard() {
           setBuyer(parsed[0] ?? DEFAULT_BUYERS[0]);
         }
       }
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }, []);
 
   function saveBuyers(next: string[]) {
     setBuyers(next);
     try {
       window.localStorage.setItem("canta.buyers", JSON.stringify(next));
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   function confirmAddBuyer() {
@@ -586,7 +590,9 @@ function SupplierFxQuoteCard() {
     };
     try {
       window.sessionStorage.setItem("canta.fx.quote", JSON.stringify(quote));
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     toast.success(
       `Invoice draft prepared at ${pair.from}/${pair.to} = ${pair.rate.toLocaleString()}`,
     );
