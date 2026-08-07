@@ -26,6 +26,17 @@ type Ctx = {
   ccy?: string;
   forwarder?: string;
   eta?: string;
+  // External supplier beneficiary details (supplier never needs a Canta account)
+  supplierCountry?: string;
+  supplierContact?: string;
+  supplierEmail?: string;
+  bankName?: string;
+  bankAccount?: string;
+  swift?: string;
+  settlementCcy?: string;
+  compliancePurpose?: string;
+  notes?: string;
+  supplierType?: "External supplier" | "Canta supplier";
 };
 
 const LABELS: Record<TradeFileEvent, string> = {
@@ -67,6 +78,16 @@ export function createDraftTradeFile(event: TradeFileEvent, ctx: Ctx = {}) {
     eta: ctx.eta || "—",
     createdAt: new Date().toISOString().slice(0, 10),
     sourceEvent: event,
+    supplierCountry: ctx.supplierCountry || "—",
+    supplierContact: ctx.supplierContact || "—",
+    supplierEmail: ctx.supplierEmail || "—",
+    bankName: ctx.bankName || "—",
+    bankAccount: ctx.bankAccount || "—",
+    swift: ctx.swift || "—",
+    settlementCcy: ctx.settlementCcy || ctx.ccy || "USD",
+    compliancePurpose: ctx.compliancePurpose || "Goods import payment",
+    notes: ctx.notes || "",
+    supplierType: ctx.supplierType || "External supplier",
   };
   try {
     if (typeof window !== "undefined") {

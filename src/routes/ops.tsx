@@ -59,6 +59,13 @@ const RECENT_ACTIVITY = [
   { at: "3h ago", kind: "Payment", text: "PR-3055 failed at settlement rail — retry queued", to: "/treasury" },
 ];
 
+const TRADE_FILE_MONITOR: { id: string; supplier: string; importer: string; amount: string; stage: string; type: "External supplier" | "Canta supplier" }[] = [
+  { id: "TF-2026-0214", supplier: "Shenzhen Hua Tech Co.", importer: "ABC Electronics", amount: "USD 184,000", stage: "Compliance review", type: "External supplier" },
+  { id: "TF-2026-0211", supplier: "Yiwu General Trading", importer: "Balogun Trade Hub", amount: "RMB 620,400", stage: "Awaiting NGN funding", type: "Canta supplier" },
+  { id: "TF-2026-0208", supplier: "Meridian Supplies Ltd", importer: "Global Motors", amount: "GBP 92,400", stage: "Settlement in progress", type: "External supplier" },
+  { id: "TF-2026-0203", supplier: "Contoso Industries", importer: "Dav Excel Autos", amount: "EUR 48,900", stage: "Receipt issued", type: "External supplier" },
+];
+
 function toneClasses(t: Metric["tone"]) {
   switch (t) {
     case "warn": return "border-amber-500/40 bg-amber-500/5";
@@ -149,6 +156,30 @@ function OpsConsole() {
           </div>
         </Card>
       </div>
+
+      <Card className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold">Trade File settlement monitoring</h2>
+          <Badge variant="outline" className="text-xs">Demo data</Badge>
+        </div>
+        <p className="text-xs text-muted-foreground mb-3">
+          Importers can pay suppliers that have no Canta account. Each Trade File shows whether the beneficiary is an
+          external supplier or a Supplier Portal user.
+        </p>
+        <ul className="divide-y divide-border">
+          {TRADE_FILE_MONITOR.map((t) => (
+            <li key={t.id} className="py-2.5 flex items-center justify-between gap-3 flex-wrap">
+              <div className="min-w-0">
+                <div className="text-sm font-medium truncate">{t.id} · {t.supplier}</div>
+                <div className="text-xs text-muted-foreground">{t.importer} · {t.amount} · {t.stage}</div>
+              </div>
+              <Badge variant={t.type === "Canta supplier" ? "secondary" : "outline"} className="text-[10px]">
+                {t.type}
+              </Badge>
+            </li>
+          ))}
+        </ul>
+      </Card>
 
       <p className="text-xs text-muted-foreground">
         Ops Console is an internal Canta view. Supplier RMB Settlement balances and importer Trade File details are only referenced here at an operational level and remain owned by their respective workspaces.

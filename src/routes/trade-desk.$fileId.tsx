@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,9 +30,29 @@ export const Route = createFileRoute("/trade-desk/$fileId")({
 function TradeFileDetail() {
   const { fileId } = Route.useParams();
   const navigate = useNavigate();
-  const file = (tradeFiles.find((f) => f.id === fileId)
+  const known = (tradeFiles.find((f) => f.id === fileId)
     ?? (findDraftTradeFile(fileId) as (typeof tradeFiles)[number] | null));
-  if (!file) throw notFound();
+  // A Trade File reference may exist on a draft created in another session or
+  // referenced from Ops. Render a placeholder payment case instead of a 404.
+  const file: (typeof tradeFiles)[number] = known ?? ({
+    id: fileId,
+    name: `${fileId} — supplier payment`,
+    importer: "—",
+    supplier: "External supplier",
+    origin: "—",
+    destination: "—",
+    goods: "—",
+    invoiceValue: 0,
+    ccy: "USD",
+    status: "Drafting",
+    paymentStatus: "Pending",
+    risk: "Low",
+    forwarder: "—",
+    eta: "—",
+    escrow: "Not requested",
+  } as unknown as (typeof tradeFiles)[number]);
+
+
 
   const reachedIdx =
     file.status === "Drafting" ? 1 :
@@ -80,39 +100,44 @@ function TradeFileDetail() {
         <div className="flex items-start justify-between flex-wrap gap-3">
           <div className="min-w-0">
             <div className="text-xs uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
-              <Factory className="h-3.5 w-3.5" /> Supplier collaboration
+              <Factory className="h-3.5 w-3.5" /> Supplier beneficiary
             </div>
-            <div className="text-sm font-semibold mt-1">Supplier · {file.supplier}</div>
+            <div className="text-sm font-semibold mt-1 flex items-center gap-2 flex-wrap">
+              Supplier · {file.supplier}
+              <Badge variant="outline" className="text-[10px]">
+                {(file as { supplierType?: string }).supplierType ?? "External supplier"}
+              </Badge>
+            </div>
             <div className="text-xs text-muted-foreground mt-1 max-w-xl">
-              Nigerian buyers can pay locally in NGN while suppliers receive RMB settlement through Canta.
+              You pay in NGN or USDT and Canta settles your supplier's own bank account. Supplier does not need a Canta account.
             </div>
           </div>
-          <ButtonGroup label="Supplier collaboration actions" className="w-auto justify-start sm:justify-end">
+          <ButtonGroup label="Supplier beneficiary actions" className="w-auto justify-start sm:justify-end">
             <Button asChild size="sm" variant="outline">
-              <Link to="/my-suppliers">Manage Suppliers</Link>
+              <Link to="/my-suppliers">Save supplier beneficiary</Link>
             </Button>
             <Button asChild size="sm" variant="outline">
-              <Link to="/documents">Supplier Documents</Link>
+              <Link to="/documents">Invoice & documents</Link>
             </Button>
             <Button asChild size="sm">
-              <Link to="/payments">View Supplier Payment Status</Link>
+              <Link to="/payments">View settlement status</Link>
             </Button>
           </ButtonGroup>
 
         </div>
         <div className="mt-4 grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-3 text-xs">
           <Field label="Supplier name" value={file.supplier} />
+          <Field label="Supplier country" value={(file as { supplierCountry?: string }).supplierCountry ?? file.origin} />
+          <Field label="Beneficiary bank" value={(file as { bankName?: string }).bankName ?? "On file"} />
           <Field label="Invoice amount" value={fmtMoney(file.invoiceValue, file.ccy)} />
           <Field label="NGN equivalent" value={`₦${Math.round(file.invoiceValue * 1612).toLocaleString()}`} />
-          <Field label="Payment status" value="Awaiting NGN Payment" />
-          <Field label="RMB settlement" value="RMB Processing" />
-          <Field label="Verification" value="Supplier verified" />
+          <Field label="Settlement currency" value={(file as { settlementCcy?: string }).settlementCcy ?? file.ccy} />
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-background/70 p-3">
           <div className="text-xs text-muted-foreground">
-            Documents uploaded: Supplier invoice, packing list, proforma invoice · Status path: Invoice Received → Awaiting NGN Payment → NGN Paid → RMB Processing → RMB Paid to Supplier → Receipt Available
+            Payment path: Trade File created → Supplier beneficiary added → Invoice uploaded → FX quote accepted → Funded in NGN / USDT → Compliance review → Supplier receives settlement → Receipt available
           </div>
-          <Button size="sm" onClick={() => toast.success("Supplier payment initiated for NGN collection")}>Pay Supplier</Button>
+          <Button size="sm" onClick={() => toast.success("Supplier payment initiated — funding in NGN")}>Pay Supplier</Button>
         </div>
       </Card>
 
@@ -342,10 +367,10 @@ function TradeFileActions({
       onClick: () => onNavigate({ to: "/clearing-quotes", search: { file: fileId, view: "select" } as never }) },
     { label: "Track Clearing Workflow", icon: Activity,
       onClick: () => onNavigate({ to: "/clearing-quotes", search: { file: fileId, view: "track" } as never }) },
-    { label: "Add Supplier", icon: UserPlus,
-      onClick: () => go("/suppliers", `Add ${supplier} to your supplier directory`) },
-    { label: "Invite Supplier", icon: Mail,
-      onClick: () => go("/my-suppliers", `Invite ${supplier} to your supplier directory`) },
+    { label: "Add supplier details", icon: UserPlus,
+      onClick: () => go("/suppliers", `Add ${supplier}'s bank details to your beneficiaries`) },
+    { label: "Save supplier beneficiary", icon: Mail,
+      onClick: () => go("/my-suppliers", `Save ${supplier} as a reusable beneficiary`) },
     { label: "Link Supplier Payment Request", icon: LinkIcon,
       onClick: () => go("/payments", `Link a supplier payment request to ${fileId}`) },
     { label: "View Supplier Payment Status", icon: Eye,
