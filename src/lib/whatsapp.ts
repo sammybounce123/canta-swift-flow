@@ -1,8 +1,12 @@
 // Canta official WhatsApp support number.
 // Configure via VITE_CANTA_WHATSAPP_NUMBER (E.164 digits only, no + sign).
-export const CANTA_WHATSAPP_NUMBER =
-  (import.meta.env.VITE_CANTA_WHATSAPP_NUMBER as string | undefined)?.replace(/\D/g, "") ||
-  "2348000000000";
+const CONFIGURED_WHATSAPP_NUMBER =
+  (import.meta.env.VITE_CANTA_WHATSAPP_NUMBER as string | undefined)?.replace(/\D/g, "") || "";
+
+// True only when a real number is configured. Screens must never invent one.
+export const WHATSAPP_SUPPORT_CONFIGURED = CONFIGURED_WHATSAPP_NUMBER.length > 0;
+
+export const CANTA_WHATSAPP_NUMBER = CONFIGURED_WHATSAPP_NUMBER || "2348000000000";
 
 // Shipment-tracking WhatsApp bot. Configure via VITE_CANTA_WHATSAPP_BOT_NUMBER
 // (E.164 digits only, no + sign). Empty when not configured — never invent one.

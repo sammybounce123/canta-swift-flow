@@ -214,8 +214,8 @@ export function getSidebarForWorkspace(workspace: WorkspaceType, _flags: Feature
         { to: "/importer/payments", label: "Payments", iconKey: "receipt", group: "Money" },
         { to: "/importer/shipments", label: "Shipments", iconKey: "ship", group: "Move Goods" },
         { to: "/importer/documents", label: "Documents", iconKey: "file", group: "Move Goods" },
-        { to: "/support", label: "Support", iconKey: "users", group: "Help" },
-        Settings,
+        { to: "/importer/support", label: "Support", iconKey: "users", group: "Help" },
+        { to: "/importer/settings", label: "Settings", iconKey: "settings", group: "Workspace" },
       ];
 
 
