@@ -1033,6 +1033,40 @@ function SendForm({
           <span className="text-sm font-medium grid place-items-center px-2">{ben.ccy}</span>
         </div>
       </div>
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <Label className="text-xs">Convert from</Label>
+          <Select value={payCcy} onValueChange={(v) => setPayCcy(v as FundingCcy)}>
+            <SelectTrigger className="mt-1">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {FUNDING_CCYS.map((c) => (
+                <SelectItem key={c} value={c}>
+                  {c}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label className="text-xs">Quote against</Label>
+          <Select value={quoteCcy} onValueChange={setQuoteCcy}>
+            <SelectTrigger className="mt-1">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {GLOBAL_SEND_CCYS.map((c) => (
+                <SelectItem key={c.code} value={c.code}>
+                  {c.code} · {c.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <FundFxQuote fundCcy={payCcy} target={quoteCcy} amount={sourceAmt} />
+
       <div>
         <Label className="text-xs">Reference</Label>
         <Input
