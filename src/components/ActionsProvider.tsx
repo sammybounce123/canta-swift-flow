@@ -46,7 +46,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { beneficiaries, fmtMoney } from "@/lib/mock";
 import { addTransaction } from "@/lib/tx-store";
-import { GLOBAL_SEND_CCYS, ngnRateOf, fmtAnyCcy } from "@/lib/importer-store";
+import { ngnRateOf, fmtAnyCcy } from "@/lib/importer-store";
 import { useRole } from "@/components/RoleProvider";
 
 type Ctx = {
@@ -322,13 +322,22 @@ function FundFlow({
   );
 }
 
-function FundFxQuote({ ccy, amount }: { ccy: string; amount: number }) {
-  const [target, setTarget] = useState(() =>
-    ccy !== "NGN" && GLOBAL_SEND_CCYS.some((c) => c.code === ccy) ? ccy : "USD",
-  );
-  const rate = 1 / ngnRateOf(target);
-  const ngnAmount = ccy === "NGN" ? amount : amount * ngnRateOf(ccy);
-  const receive = ngnAmount * rate;
+const FUNDING_CCYS = ["NGN", "USDT"] as const;
+type FundingCcy = (typeof FUNDING_CCYS)[number];
+
+/** Converts the funded NGN/USDT amount into the destination wallet currency. */
+function FundFxQuote({
+  fundCcy,
+  target,
+  amount,
+}: {
+  fundCcy: FundingCcy;
+  target: string;
+  amount: number;
+}) {
+  const ngnAmount = amount * ngnRateOf(fundCcy);
+  const rate = ngnRateOf(fundCcy) / ngnRateOf(target);
+  const receive = ngnAmount / ngnRateOf(target);
 
   return (
     <div className="rounded-xl border border-border bg-secondary/30 p-3 space-y-2">
@@ -338,36 +347,21 @@ function FundFxQuote({ ccy, amount }: { ccy: string; amount: number }) {
           Illustrative rates
         </span>
       </div>
-      <div>
-        <Label className="text-[11px] text-muted-foreground">Quote NGN against</Label>
-        <Select value={target} onValueChange={setTarget}>
-          <SelectTrigger className="mt-1">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent className="max-h-64">
-            {GLOBAL_SEND_CCYS.map((c) => (
-              <SelectItem key={c.code} value={c.code}>
-                {c.code} · {c.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
       <div className="flex items-center justify-between text-xs">
         <span className="text-muted-foreground">Indicative rate</span>
         <span className="font-medium tabular-nums">
-          1 NGN = {rate >= 1 ? rate.toFixed(2) : rate.toFixed(6)} {target}
+          1 {fundCcy} = {rate >= 1 ? rate.toFixed(2) : rate.toFixed(6)} {target}
         </span>
       </div>
       <div className="flex items-center justify-between text-xs">
         <span className="text-muted-foreground">
-          {fmtAnyCcy(ngnAmount, "NGN")} converts to approximately
+          {fmtAnyCcy(amount, fundCcy)} credits approximately
         </span>
         <span className="font-semibold tabular-nums">{fmtAnyCcy(receive, target)}</span>
       </div>
-      {ccy !== "NGN" && (
+      {fundCcy !== target && (
         <div className="text-[11px] text-muted-foreground">
-          Based on the NGN value of {fmtMoney(amount, ccy)} at demo rates.
+          Funding is accepted in NGN or USDT only; the balance is converted to {target} on credit.
         </div>
       )}
     </div>
@@ -382,19 +376,21 @@ function FundForm({
   onConfirm: (amount: number, method: string) => void;
 }) {
   const { profile } = useRole();
-  const [amount, setAmount] = useState("1000000");
+  const [fundCcy, setFundCcy] = useState<FundingCcy>(ccy === "USDT" ? "USDT" : "NGN");
+  const [amount, setAmount] = useState(ccy === "USDT" ? "1000" : "1000000");
   const [method, setMethod] = useState<string | null>(null);
   const [stage, setStage] = useState<"form" | "vaccount" | "tracker">("form");
   const amt = Number(amount.replace(/,/g, "")) || 0;
+  const credited = (amt * ngnRateOf(fundCcy)) / ngnRateOf(ccy);
 
   if (stage === "tracker" && method) {
     return (
       <FundTracker
         ccy={ccy}
-        amount={amt}
+        amount={credited}
         method={method}
         accountName={profile.name}
-        onDone={() => onConfirm(amt, method)}
+        onDone={() => onConfirm(credited, method)}
       />
     );
   }
@@ -402,7 +398,7 @@ function FundForm({
   if (stage === "vaccount" && method === "Bank Transfer") {
     return (
       <VirtualAccountPanel
-        ccy={ccy}
+        ccy={fundCcy}
         amount={amt}
         accountName={profile.name}
         onBack={() => {
@@ -414,10 +410,47 @@ function FundForm({
     );
   }
 
+  const methods =
+    fundCcy === "NGN"
+      ? [
+          {
+            icon: Building,
+            label: "Bank Transfer",
+            desc: "Free · NGN virtual account in your name",
+            rec: true,
+          },
+        ]
+      : [
+          {
+            icon: Coins,
+            label: "USDT (TRC20 / ERC20)",
+            desc: "Stablecoin deposit · Converted on credit",
+            rec: true,
+          },
+        ];
+
   return (
     <div className="space-y-3">
       <div>
-        <Label className="text-xs">Amount ({ccy})</Label>
+        <Label className="text-xs">Fund with</Label>
+        <Select value={fundCcy} onValueChange={(v) => setFundCcy(v as FundingCcy)}>
+          <SelectTrigger className="mt-1">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {FUNDING_CCYS.map((c) => (
+              <SelectItem key={c} value={c}>
+                {c}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <div className="mt-1 text-[11px] text-muted-foreground">
+          Funding is only available in NGN or USDT.
+        </div>
+      </div>
+      <div>
+        <Label className="text-xs">Amount ({fundCcy})</Label>
         <Input
           inputMode="decimal"
           value={amount}
@@ -428,22 +461,9 @@ function FundForm({
           Funding as <span className="font-medium text-foreground">{profile.name}</span>
         </div>
       </div>
-      <FundFxQuote ccy={ccy} amount={amt} />
+      <FundFxQuote fundCcy={fundCcy} target={ccy} amount={amt} />
       <div className="space-y-2">
-        {[
-          {
-            icon: Building,
-            label: "Bank Transfer",
-            desc: "Free · Virtual account in your name",
-            rec: true,
-          },
-          {
-            icon: Coins,
-            label: "USDT (TRC20 / ERC20)",
-            desc: "Stablecoin · Auto-converted at mid-market",
-          },
-          { icon: Zap, label: "Pay Without Funding", desc: "Inline · No pre-fund needed" },
-        ].map((o) => (
+        {methods.map((o) => (
           <button
             key={o.label}
             disabled={amt <= 0}
@@ -471,6 +491,7 @@ function FundForm({
     </div>
   );
 }
+
 
 function VirtualAccountPanel({
   ccy,
