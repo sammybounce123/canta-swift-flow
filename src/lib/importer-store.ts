@@ -193,12 +193,18 @@ function seed(): ImporterState {
   };
 }
 
+let serverSnapshot: ImporterState | null = null;
+function serverState(): ImporterState {
+  if (!serverSnapshot) serverSnapshot = seed();
+  return serverSnapshot;
+}
+
 let state: ImporterState | null = null;
 const listeners = new Set<() => void>();
 
 function read(): ImporterState {
   if (state) return state;
-  if (typeof window === "undefined") return seed();
+  if (typeof window === "undefined") return serverState();
   try {
     const raw = window.localStorage.getItem(KEY);
     state = raw ? { ...seed(), ...JSON.parse(raw) } : seed();
@@ -224,7 +230,7 @@ export function useImporter(): ImporterState {
   return useSyncExternalStore(
     (cb) => { listeners.add(cb); return () => listeners.delete(cb); },
     () => read(),
-    () => seed(),
+    () => serverState(),
   );
 }
 

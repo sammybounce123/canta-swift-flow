@@ -89,12 +89,12 @@ function SuppliersPage() {
                 <div>{pays.length} payment{pays.length === 1 ? "" : "s"} recorded</div>
               </div>
               <div className="mt-3 flex flex-wrap gap-1.5">
-                <Button asChild size="sm"><Link to="/importer/pay-supplier">Pay again</Link></Button>
+                <Button asChild size="sm"><Link to="/importer/payments" search={{ tab: "new" }}>Pay again</Link></Button>
                 <Dialog>
                   <DialogTrigger asChild><Button size="sm" variant="outline">Edit bank details</Button></DialogTrigger>
                   <SupplierDialog initial={sup} onClose={() => undefined} />
                 </Dialog>
-                <Button asChild size="sm" variant="ghost"><Link to="/importer/payments">View payments</Link></Button>
+                <Button asChild size="sm" variant="ghost"><Link to="/importer/payments" search={{ tab: "pending" }}>View previous payments</Link></Button>
                 <Button size="sm" variant="ghost" onClick={() => { addDocument({ name: `Supplier document — ${sup.name}.pdf`, type: "Supporting document" }); toast.success("Document uploaded"); }}>
                   <Upload className="h-3.5 w-3.5" /> Upload document
                 </Button>
@@ -106,7 +106,7 @@ function SuppliersPage() {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Beneficiary means the supplier bank account that receives payment.
+        "Beneficiary" means the supplier bank account that receives the payment.
       </p>
     </div>
   );

@@ -70,8 +70,10 @@ import { Route as ImporterNotificationsRouteImport } from './routes/importer.not
 import { Route as ImporterPaySupplierRouteImport } from './routes/importer.pay-supplier'
 import { Route as ImporterPaymentsRouteImport } from './routes/importer.payments'
 import { Route as ImporterReceiptsRouteImport } from './routes/importer.receipts'
+import { Route as ImporterSettingsRouteImport } from './routes/importer.settings'
 import { Route as ImporterShipmentsRouteImport } from './routes/importer.shipments'
 import { Route as ImporterSuppliersRouteImport } from './routes/importer.suppliers'
+import { Route as ImporterSupportRouteImport } from './routes/importer.support'
 import { Route as MerchantKybRouteImport } from './routes/merchant.kyb'
 import { Route as MerchantProfileRouteImport } from './routes/merchant.profile'
 import { Route as PLinkIdRouteImport } from './routes/p.$linkId'
@@ -433,6 +435,11 @@ const ImporterReceiptsRoute = ImporterReceiptsRouteImport.update({
   path: '/receipts',
   getParentRoute: () => ImporterRoute,
 } as any)
+const ImporterSettingsRoute = ImporterSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => ImporterRoute,
+} as any)
 const ImporterShipmentsRoute = ImporterShipmentsRouteImport.update({
   id: '/shipments',
   path: '/shipments',
@@ -441,6 +448,11 @@ const ImporterShipmentsRoute = ImporterShipmentsRouteImport.update({
 const ImporterSuppliersRoute = ImporterSuppliersRouteImport.update({
   id: '/suppliers',
   path: '/suppliers',
+  getParentRoute: () => ImporterRoute,
+} as any)
+const ImporterSupportRoute = ImporterSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => ImporterRoute,
 } as any)
 const MerchantKybRoute = MerchantKybRouteImport.update({
@@ -790,8 +802,10 @@ export interface FileRoutesByFullPath {
   '/importer/pay-supplier': typeof ImporterPaySupplierRoute
   '/importer/payments': typeof ImporterPaymentsRoute
   '/importer/receipts': typeof ImporterReceiptsRoute
+  '/importer/settings': typeof ImporterSettingsRoute
   '/importer/shipments': typeof ImporterShipmentsRoute
   '/importer/suppliers': typeof ImporterSuppliersRoute
+  '/importer/support': typeof ImporterSupportRoute
   '/merchant/kyb': typeof MerchantKybRoute
   '/merchant/profile': typeof MerchantProfileRoute
   '/p/$linkId': typeof PLinkIdRoute
@@ -906,8 +920,10 @@ export interface FileRoutesByTo {
   '/importer/pay-supplier': typeof ImporterPaySupplierRoute
   '/importer/payments': typeof ImporterPaymentsRoute
   '/importer/receipts': typeof ImporterReceiptsRoute
+  '/importer/settings': typeof ImporterSettingsRoute
   '/importer/shipments': typeof ImporterShipmentsRoute
   '/importer/suppliers': typeof ImporterSuppliersRoute
+  '/importer/support': typeof ImporterSupportRoute
   '/merchant/kyb': typeof MerchantKybRoute
   '/merchant/profile': typeof MerchantProfileRoute
   '/p/$linkId': typeof PLinkIdRoute
@@ -1026,8 +1042,10 @@ export interface FileRoutesById {
   '/importer/pay-supplier': typeof ImporterPaySupplierRoute
   '/importer/payments': typeof ImporterPaymentsRoute
   '/importer/receipts': typeof ImporterReceiptsRoute
+  '/importer/settings': typeof ImporterSettingsRoute
   '/importer/shipments': typeof ImporterShipmentsRoute
   '/importer/suppliers': typeof ImporterSuppliersRoute
+  '/importer/support': typeof ImporterSupportRoute
   '/merchant/kyb': typeof MerchantKybRoute
   '/merchant/profile': typeof MerchantProfileRoute
   '/p/$linkId': typeof PLinkIdRoute
@@ -1148,8 +1166,10 @@ export interface FileRouteTypes {
     | '/importer/pay-supplier'
     | '/importer/payments'
     | '/importer/receipts'
+    | '/importer/settings'
     | '/importer/shipments'
     | '/importer/suppliers'
+    | '/importer/support'
     | '/merchant/kyb'
     | '/merchant/profile'
     | '/p/$linkId'
@@ -1264,8 +1284,10 @@ export interface FileRouteTypes {
     | '/importer/pay-supplier'
     | '/importer/payments'
     | '/importer/receipts'
+    | '/importer/settings'
     | '/importer/shipments'
     | '/importer/suppliers'
+    | '/importer/support'
     | '/merchant/kyb'
     | '/merchant/profile'
     | '/p/$linkId'
@@ -1383,8 +1405,10 @@ export interface FileRouteTypes {
     | '/importer/pay-supplier'
     | '/importer/payments'
     | '/importer/receipts'
+    | '/importer/settings'
     | '/importer/shipments'
     | '/importer/suppliers'
+    | '/importer/support'
     | '/merchant/kyb'
     | '/merchant/profile'
     | '/p/$linkId'
@@ -1934,6 +1958,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImporterReceiptsRouteImport
       parentRoute: typeof ImporterRoute
     }
+    '/importer/settings': {
+      id: '/importer/settings'
+      path: '/settings'
+      fullPath: '/importer/settings'
+      preLoaderRoute: typeof ImporterSettingsRouteImport
+      parentRoute: typeof ImporterRoute
+    }
     '/importer/shipments': {
       id: '/importer/shipments'
       path: '/shipments'
@@ -1946,6 +1977,13 @@ declare module '@tanstack/react-router' {
       path: '/suppliers'
       fullPath: '/importer/suppliers'
       preLoaderRoute: typeof ImporterSuppliersRouteImport
+      parentRoute: typeof ImporterRoute
+    }
+    '/importer/support': {
+      id: '/importer/support'
+      path: '/support'
+      fullPath: '/importer/support'
+      preLoaderRoute: typeof ImporterSupportRouteImport
       parentRoute: typeof ImporterRoute
     }
     '/merchant/kyb': {
@@ -2356,8 +2394,10 @@ interface ImporterRouteChildren {
   ImporterPaySupplierRoute: typeof ImporterPaySupplierRoute
   ImporterPaymentsRoute: typeof ImporterPaymentsRoute
   ImporterReceiptsRoute: typeof ImporterReceiptsRoute
+  ImporterSettingsRoute: typeof ImporterSettingsRoute
   ImporterShipmentsRoute: typeof ImporterShipmentsRoute
   ImporterSuppliersRoute: typeof ImporterSuppliersRoute
+  ImporterSupportRoute: typeof ImporterSupportRoute
   ImporterIndexRoute: typeof ImporterIndexRoute
 }
 
@@ -2369,8 +2409,10 @@ const ImporterRouteChildren: ImporterRouteChildren = {
   ImporterPaySupplierRoute: ImporterPaySupplierRoute,
   ImporterPaymentsRoute: ImporterPaymentsRoute,
   ImporterReceiptsRoute: ImporterReceiptsRoute,
+  ImporterSettingsRoute: ImporterSettingsRoute,
   ImporterShipmentsRoute: ImporterShipmentsRoute,
   ImporterSuppliersRoute: ImporterSuppliersRoute,
+  ImporterSupportRoute: ImporterSupportRoute,
   ImporterIndexRoute: ImporterIndexRoute,
 }
 
@@ -2597,13 +2639,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

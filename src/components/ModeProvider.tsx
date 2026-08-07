@@ -9,7 +9,7 @@ export type Mode =
   | "Canta Ops";
 
 export const ALL_MODES: { id: Mode; tag: string; desc: string }[] = [
-  { id: "Importer", tag: "IM", desc: "BL, shipments, clearing, landed cost" },
+  { id: "Importer", tag: "IM", desc: "Pay suppliers, track shipments, keep receipts" },
   { id: "Supplier", tag: "SP", desc: "NGN buyer payment, RMB settlement" },
   { id: "Enterprise Treasury", tag: "ET", desc: "FX, balances, payouts, approvals" },
   { id: "Partner Property", tag: "PP", desc: "Property partner client referrals" },
@@ -17,7 +17,7 @@ export const ALL_MODES: { id: Mode; tag: string; desc: string }[] = [
 
 export const MODE_DISPLAY_LABEL: Record<Mode, string> = {
   "Enterprise Treasury": "Enterprise Treasury",
-  "Importer": "Importer Trade Desk",
+  "Importer": "Importer Mode",
   "Supplier": "Supplier Portal",
   "Global Merchant": "Global Merchant",
   "Partner Property": "Partner",

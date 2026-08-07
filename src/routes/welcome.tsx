@@ -38,7 +38,7 @@ const DO_BULLETS: Partial<Record<WorkspaceType, string[]>> = {
 };
 const CTA: Partial<Record<WorkspaceType, string>> = {
   enterprise_treasury: "Enter Treasury",
-  importer_portal: "Enter Importer Trade Desk",
+  importer_portal: "Enter Importer Mode",
   supplier_dashboard: "Enter Supplier Portal",
   partner_property: "Enter Partner Mode",
 };

@@ -36,7 +36,8 @@ function ImporterHome() {
           <Badge variant="outline" className="text-[10px]">Demo persona</Badge>
         </div>
         <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-          Fund your Canta balance, pay suppliers globally, track shipments, and download receipts.
+          Pay any supplier globally. Your supplier does not need a Canta account. Fund your balance, pay your
+          supplier, track the shipment, and download the receipt.
         </p>
       </header>
 
@@ -48,17 +49,20 @@ function ImporterHome() {
         <StatCard icon={Ship} label="Shipments in progress" value={`${shipping.length} shipment${shipping.length === 1 ? "" : "s"}`}
           helper="Track BL uploads, shipping updates, and delivery progress." to="/importer/shipments" />
         <StatCard icon={Receipt} label="Receipts available" value={`${receipts.length} receipt${receipts.length === 1 ? "" : "s"}`}
-          helper="Download payment and settlement receipts for your records." to="/importer/receipts" />
+          helper="Download payment and settlement receipts for your records." to="/importer/payments" />
       </div>
 
       <Card className="p-4 sm:p-5 shadow-card">
         <div className="text-xs uppercase tracking-widest text-muted-foreground">Quick actions</div>
-        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
-          <Button asChild className="justify-start"><Link to="/importer/balance"><Wallet className="h-4 w-4" /> Fund balance</Link></Button>
-          <Button asChild className="justify-start"><Link to="/importer/pay-supplier"><Send className="h-4 w-4" /> Pay supplier</Link></Button>
+        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+          <Button asChild size="lg" className="justify-start sm:col-span-2 lg:col-span-3">
+            <Link to="/importer/payments" search={{ tab: "new" }}><Send className="h-4 w-4" /> Pay supplier</Link>
+          </Button>
+          <Button asChild variant="outline" className="justify-start"><Link to="/importer/balance"><Wallet className="h-4 w-4" /> Fund balance</Link></Button>
           <Button asChild variant="outline" className="justify-start"><Link to="/importer/suppliers"><Building2 className="h-4 w-4" /> Add supplier bank details</Link></Button>
           <Button asChild variant="outline" className="justify-start"><Link to="/importer/shipments"><Upload className="h-4 w-4" /> Upload BL</Link></Button>
-          <Button asChild variant="outline" className="justify-start"><Link to="/importer/receipts"><Receipt className="h-4 w-4" /> View receipts</Link></Button>
+          <Button asChild variant="outline" className="justify-start"><Link to="/importer/shipments"><Ship className="h-4 w-4" /> Track shipment</Link></Button>
+          <Button asChild variant="outline" className="justify-start"><Link to="/importer/payments" search={{ tab: "receipts" }}><Receipt className="h-4 w-4" /> View receipts</Link></Button>
         </div>
         <p className="text-xs text-muted-foreground mt-3 flex items-start gap-1.5">
           <ShieldCheck className="h-3.5 w-3.5 mt-0.5 shrink-0 text-primary" />
