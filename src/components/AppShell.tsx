@@ -218,10 +218,14 @@ function SidebarContent({
   const hydrated = useHydrated();
   // Stored workspace lives in localStorage, which the server cannot read. Only
   // consult it after hydration so SSR and the first client render agree.
-  const workspace =
-    pathWorkspace ??
-    (hydrated ? resolveActiveWorkspace(pathname, mode) : null) ??
-    "importer_portal";
+  const resolvedWorkspace =
+    pathWorkspace ?? (hydrated ? resolveActiveWorkspace(pathname, mode) : null);
+  // On shared routes the workspace is unknown until hydration. Render a neutral
+  // shell instead of guessing, so Treasury/Partner users never see an Importer
+  // sidebar or persona flash before hydration.
+  const pendingWorkspace = resolvedWorkspace === null;
+  const workspace = resolvedWorkspace ?? "importer_portal";
+
   // Persist the active workspace whenever the user lands on any workspace-scoped
   // route (direct URL visit, refresh, or link click). Without this, shared
   // routes like /reports, /support and /whatsapp silently fall back to
