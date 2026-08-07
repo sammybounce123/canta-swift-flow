@@ -73,17 +73,18 @@ function LandedCostPage() {
   return (
     <div className="space-y-6">
       <ReadinessBar status="Demo Preview" cue="Landed cost is an estimate based on the values you enter." />
-      <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:flex-wrap sm:justify-between">
+      <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:flex sm:flex-wrap sm:justify-between sm:gap-4">
         <div className="min-w-0">
-          <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
-            <Calculator className="h-5 w-5 text-accent shrink-0" /> Landed Cost
+          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight sm:text-2xl">
+            <Calculator className="h-5 w-5 shrink-0 text-accent" /> <span className="truncate">Landed Cost</span>
           </h1>
-          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
             Know your true cost per unit before goods arrive — and see your projected profit.
           </p>
         </div>
-        <Button onClick={() => toast.success("Estimate saved")}>Save estimate</Button>
+        <Button className="shrink-0" onClick={() => toast.success("Estimate saved")}>Save estimate</Button>
       </header>
+
 
       <Card className={`p-3 shadow-card text-xs text-muted-foreground ${clearingSource.tone}`}>
         <span className="font-semibold text-foreground">Clearing fee source:</span> {clearingSource.label}. Canta does not quote clearing fees directly — fees, timelines, duty estimates and service delivery are provided by the selected clearing agent.
