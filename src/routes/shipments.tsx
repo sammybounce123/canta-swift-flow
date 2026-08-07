@@ -289,10 +289,12 @@ function ShipmentTable({ rows, onSelect, claimedIds, clearance }: { rows: Shipme
                 <td className="px-4 py-3 text-xs">{s.forwarder}</td>
                 <td className="px-4 py-3 tabular-nums text-xs">
                   <div>{s.eta}</div>
-                  <div className="text-[10px] text-muted-foreground">{s.status === "Delivered" ? "Delivered" : s.status === "Arrived" || s.status === "Customs" || s.status === "Released" ? "Arrived at port" : "Estimated arrival"}</div>
+                  <div className="text-[10px] text-muted-foreground">{trackedStatus(s) === "Arrived" ? "Arrived at port" : "Estimated arrival"}</div>
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums font-semibold">{fmtMoney(s.value, s.ccy)}</td>
-                <td className="px-4 py-3"><StatusBadge status={s.status} /></td>
+                <td className="px-4 py-3"><StatusBadge status={trackedStatus(s)} /></td>
+                <td className="px-4 py-3"><ClearanceBadge value={clearance[s.id] ?? "Not updated"} /></td>
+
               </tr>
             ))}
             {rows.length === 0 && (
