@@ -1,8 +1,19 @@
 // Saved beneficiaries — the single source of truth for payouts.
 // Bulk Payout can only pay saved, verified beneficiaries whose receiving
 // currency matches the source wallet currency.
+//
+// A beneficiary account is a high-risk payout object: it starts as
+// "Pending Review", becomes payable only when "Verified", and is pushed to
+// "Locked After Change" whenever its bank details are edited.
 
-export type BeneficiaryStatus = "Verified" | "Pending" | "Disabled";
+import { logPayoutEvent, maskAccountNumber, payoutReviewQueue } from "@/lib/payout-security";
+
+export type BeneficiaryStatus =
+  | "Verified"
+  | "Pending Review"
+  | "Locked After Change"
+  | "Rejected"
+  | "Disabled";
 
 export type SavedBeneficiary = {
   id: string;
@@ -14,6 +25,7 @@ export type SavedBeneficiary = {
   status: BeneficiaryStatus;
   lastPayout: string | null;
 };
+
 
 let list: SavedBeneficiary[] = [
   {
