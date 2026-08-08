@@ -177,6 +177,7 @@ function RootComponent() {
           </ActionsProvider>
         </ModeProvider>
       </RoleProvider>
+      <StepUpDialog />
       <Toaster />
     </QueryClientProvider>
   );
