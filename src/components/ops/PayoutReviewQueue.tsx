@@ -20,7 +20,10 @@ export function PayoutReviewQueue() {
   const queue = usePayoutReviewQueue();
   const audit = usePayoutAudit();
   const pending = queue.filter(
-    (q) => q.status === "Pending Review" || q.status === "Submitted" || q.status === "More Info Required",
+    (q) =>
+      q.status === "Pending Review" ||
+      q.status === "Submitted" ||
+      q.status === "More Info Required",
   );
 
   return (

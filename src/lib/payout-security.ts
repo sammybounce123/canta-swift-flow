@@ -224,7 +224,9 @@ const notifyQueue = () => qSubs.forEach((f) => f());
 
 export const payoutReviewQueue = {
   list: () => QUEUE,
-  add: (item: Omit<ReviewItem, "id" | "submittedAt" | "status"> & { status?: PayoutAccountStatus }) => {
+  add: (
+    item: Omit<ReviewItem, "id" | "submittedAt" | "status"> & { status?: PayoutAccountStatus },
+  ) => {
     const full: ReviewItem = {
       id: `PAR-${qSeq++}`,
       submittedAt: today(),

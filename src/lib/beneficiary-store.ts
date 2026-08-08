@@ -26,7 +26,6 @@ export type SavedBeneficiary = {
   lastPayout: string | null;
 };
 
-
 let list: SavedBeneficiary[] = [
   {
     id: "BEN-1001",

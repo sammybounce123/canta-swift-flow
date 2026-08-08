@@ -54,7 +54,6 @@ export function AutoConvertCard() {
   const blockers = useConversionBlockers();
   const paused = useAutoConvertPaused();
 
-
   return (
     <Card className="p-4 space-y-3">
       <div className="flex items-start justify-between gap-4">
@@ -104,7 +103,6 @@ export function AutoConvertCard() {
           </ul>
         </div>
       )}
-
     </Card>
   );
 }

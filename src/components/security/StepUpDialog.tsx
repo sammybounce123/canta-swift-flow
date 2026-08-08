@@ -33,7 +33,8 @@ export function StepUpDialog() {
   if (!pending) return null;
   const { request } = pending;
   const needsValue = method !== "Demo confirm";
-  const blocked = (needsValue && value.trim().length < 4) || (request.requireReason && !reason.trim());
+  const blocked =
+    (needsValue && value.trim().length < 4) || (request.requireReason && !reason.trim());
 
   return (
     <Dialog
@@ -105,9 +106,7 @@ export function StepUpDialog() {
           </Button>
           <Button
             disabled={blocked}
-            onClick={() =>
-              stepUpStore.resolve({ ok: true, method, ...(reason ? { reason } : {}) })
-            }
+            onClick={() => stepUpStore.resolve({ ok: true, method, ...(reason ? { reason } : {}) })}
           >
             Confirm
           </Button>

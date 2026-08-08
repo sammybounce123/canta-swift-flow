@@ -274,7 +274,10 @@ export const rmbBankStore = {
     });
     autoConvertPause.resume();
   },
-  setDestination: (id: string, opts?: { kybApproved?: boolean }): { ok: boolean; error?: string } => {
+  setDestination: (
+    id: string,
+    opts?: { kybApproved?: boolean },
+  ): { ok: boolean; error?: string } => {
     const acc = BANKS.find((b) => b.id === id);
     if (!acc) return { ok: false, error: "Account not found." };
     if (opts && opts.kybApproved === false) {
@@ -308,8 +311,6 @@ export const rmbBankStore = {
     return () => bankSubs.delete(f);
   },
 };
-
-
 
 export function useRmbBanks() {
   return useSyncExternalStore(rmbBankStore.subscribe, rmbBankStore.list, rmbBankStore.list);
