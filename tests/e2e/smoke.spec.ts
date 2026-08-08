@@ -448,6 +448,9 @@ test("Bulk Payout accepts a same-currency saved-beneficiary batch", async ({ pag
   await expect(dialog).toContainText("Batch currency");
   await expect(dialog).toContainText("Saved beneficiaries");
   await dialog.getByRole("button", { name: "Submit for approval" }).click();
+  const stepUp = page.getByRole("dialog").filter({ hasText: "Security check required" });
+  await expect(stepUp).toBeVisible();
+  await stepUp.getByRole("button", { name: "Confirm", exact: true }).click();
   await expect(page.getByText("Batch submitted for approval")).toBeVisible();
 });
 
