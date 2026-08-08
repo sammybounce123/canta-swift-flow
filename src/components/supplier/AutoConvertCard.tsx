@@ -7,12 +7,15 @@ import { toast } from "sonner";
 import {
   autoConvertStore,
   useAutoConvert,
+  useAutoConvertPaused,
+  autoConvertPause,
   useRmbBanks,
   useSimpleInvoices,
   isInvoiceQuoteExpired,
 } from "@/lib/supplier-simple";
 import { useVerified } from "@/lib/supplier-data";
 import { useT } from "@/lib/supplier-lang";
+import { canReceivePayout, SECURITY_COPY } from "@/lib/payout-security";
 
 /**
  * Account-level requirements that must be met before Canta can auto-convert.
@@ -22,12 +25,19 @@ export function useConversionBlockers(invoice?: { quoteExpiresAt: number; status
   const verified = useVerified();
   const banks = useRmbBanks();
   const invoices = useSimpleInvoices();
+  const paused = useAutoConvertPaused();
   const blockers: Array<{ label: string; to: string }> = [];
   if (!verified)
     blockers.push({ label: "Complete verification", to: "/supplier-portal/verification" });
-  if (!banks.some((b) => b.status === "Verified" && b.isSettlementDestination)) {
+  if (!banks.some((b) => canReceivePayout(b.status) && b.isSettlementDestination)) {
     blockers.push({
       label: "Add or verify an RMB bank account",
+      to: "/supplier-portal/rmb-bank-account",
+    });
+  }
+  if (paused) {
+    blockers.push({
+      label: "Payout account changed — awaiting Canta review",
       to: "/supplier-portal/rmb-bank-account",
     });
   }
@@ -42,6 +52,8 @@ export function AutoConvertCard() {
   const on = useAutoConvert();
   const t = useT();
   const blockers = useConversionBlockers();
+  const paused = useAutoConvertPaused();
+
 
   return (
     <Card className="p-4 space-y-3">
