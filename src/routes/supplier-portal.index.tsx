@@ -32,7 +32,7 @@ function SupplierDashboard() {
 
   const verificationLabel = verified
     ? "Verified"
-    : banks.some((b) => b.status === "Pending")
+    : banks.some((b) => b.status === "Pending Review" || b.status === "Submitted")
       ? "Under Review"
       : "Incomplete";
 
