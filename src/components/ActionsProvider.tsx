@@ -46,6 +46,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { beneficiaries, fmtMoney } from "@/lib/mock";
 import { addBeneficiary } from "@/lib/beneficiary-store";
+import { requestStepUp } from "@/lib/step-up";
 
 import { BulkPayoutForm } from "@/components/treasury/BulkPayoutForm";
 import { addTransaction } from "@/lib/tx-store";
@@ -1255,18 +1256,25 @@ function AddBeneficiaryForm({ onClose }: { onClose: () => void }) {
         </Button>
         <Button
           className="bg-accent text-accent-foreground hover:bg-accent/90"
-          onClick={() => {
+          onClick={async () => {
+            const step = await requestStepUp({
+              title: "Security check required",
+              action: "Add payout account (beneficiary)",
+            });
+            if (!step.ok) {
+              toast.info("Security check cancelled — beneficiary not saved.");
+              return;
+            }
             const created = addBeneficiary({
               name: name.trim() || "New Beneficiary",
               country: COUNTRIES.find((c) => c.code === country)?.name ?? country,
               bank: vals.bank || "Demo Bank",
               account: vals.account || vals.iban || "•••• 0000",
               ccy,
-              status: "Verified",
             });
             onClose();
-            toast.success("Beneficiary saved and verified", {
-              description: `${created.name} (${created.id}) is ready for ${ccy} payouts.`,
+            toast.success("Beneficiary submitted for verification", {
+              description: `${created.name} (${created.id}) cannot receive ${ccy} payouts until Canta Ops verifies it.`,
             });
           }}
         >
