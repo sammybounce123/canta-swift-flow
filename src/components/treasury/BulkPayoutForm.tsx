@@ -95,8 +95,41 @@ export function BulkPayoutForm({
     URL.revokeObjectURL(url);
   }
 
-  function submit() {
+  async function submit() {
     if (errors.length) return;
+    const unverified = rows.filter((r) => {
+      const b = findBeneficiary(r.beneficiary);
+      return !b || !canReceivePayout(b.status);
+    });
+    if (unverified.length) {
+      toast.error("Batch blocked — unverified payout accounts", {
+        description: "Every beneficiary must be Verified before a bulk payout can run.",
+      });
+      logPayoutEvent({
+        action: "Payout blocked",
+        workspace: "Treasury",
+        entity: `Bulk payout · ${walletCcy}`,
+        actor: "Treasury operator",
+        reason: "Unverified beneficiary in batch",
+        result: "Failed",
+      });
+      return;
+    }
+    const step = await requestStepUp({
+      title: "Security check required",
+      action: `Submit bulk payout · ${rows.length} ${walletCcy} beneficiaries`,
+    });
+    if (!step.ok) {
+      toast.info("Security check cancelled — batch not submitted.");
+      return;
+    }
+    logPayoutEvent({
+      action: "Payout attempted",
+      workspace: "Treasury",
+      entity: `Bulk payout · ${rows.length} ${walletCcy} beneficiaries`,
+      actor: "Treasury operator",
+      result: "Pending",
+    });
     addBatch({
       sourceWallet: wallet?.label ?? `${walletCcy} Wallet`,
       currency: walletCcy,
