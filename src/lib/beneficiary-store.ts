@@ -121,15 +121,77 @@ export function addBeneficiary(
   const full: SavedBeneficiary = {
     id: "BEN-" + Math.floor(1000 + Math.random() * 9000),
     lastPayout: null,
-    status: b.status ?? "Verified",
+    // New payout accounts are never immediately payable.
+    status: b.status ?? "Pending Review",
     ...b,
   };
   list = [full, ...list];
   emit();
+  logPayoutEvent({
+    action: "Account created",
+    workspace: "Treasury",
+    entity: `${full.id} · ${full.name}`,
+    actor: "Treasury operator",
+    next: maskAccountNumber(full.account),
+    result: "Pending",
+  });
+  if (full.status !== "Verified") {
+    payoutReviewQueue.add({
+      workspace: "Treasury",
+      business: "Canta Enterprise Treasury",
+      accountHolder: full.name,
+      bank: full.bank,
+      currency: full.ccy,
+      accountNumber: full.account,
+      submittedBy: "Treasury operator",
+      documents: [],
+      nameMatch: "Match",
+      riskFlags: ["New beneficiary"],
+      previousChanges: 0,
+      linkedRef: full.id,
+    });
+  }
   return full;
 }
 
-export function setBeneficiaryStatus(id: string, status: BeneficiaryStatus) {
+/** Editing bank details always re-locks the beneficiary for re-verification. */
+export function updateBeneficiaryDetails(
+  id: string,
+  patch: Partial<Pick<SavedBeneficiary, "name" | "bank" | "account" | "country" | "ccy">>,
+) {
+  const prev = list.find((b) => b.id === id);
+  list = list.map((b) => (b.id === id ? { ...b, ...patch, status: "Locked After Change" } : b));
+  emit();
+  logPayoutEvent({
+    action: "Account edited",
+    workspace: "Treasury",
+    entity: `${id} · ${prev?.name ?? ""}`,
+    actor: "Treasury operator",
+    previous: maskAccountNumber(prev?.account ?? ""),
+    next: maskAccountNumber(patch.account ?? prev?.account ?? ""),
+    result: "Pending",
+  });
+}
+
+export function setBeneficiaryStatus(id: string, status: BeneficiaryStatus, reason?: string) {
+  const prev = list.find((b) => b.id === id);
   list = list.map((b) => (b.id === id ? { ...b, status } : b));
   emit();
+  logPayoutEvent({
+    action:
+      status === "Verified"
+        ? "Account approved"
+        : status === "Rejected"
+          ? "Account rejected"
+          : "Account edited",
+    workspace: "Treasury",
+    entity: `${id} · ${prev?.name ?? ""}`,
+    actor: "Canta Ops",
+    role: "Ops reviewer",
+    previous: prev?.status,
+    next: status,
+    ...(reason ? { reason } : {}),
+  });
+}
+
 }
