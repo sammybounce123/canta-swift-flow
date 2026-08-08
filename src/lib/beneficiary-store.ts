@@ -193,5 +193,3 @@ export function setBeneficiaryStatus(id: string, status: BeneficiaryStatus, reas
     ...(reason ? { reason } : {}),
   });
 }
-
-}
