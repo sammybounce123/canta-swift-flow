@@ -85,7 +85,7 @@ let list: SavedBeneficiary[] = [
     bank: "Demo Bank NA",
     account: "•••• 3391",
     ccy: "USD",
-    status: "Pending",
+    status: "Pending Review",
     lastPayout: null,
   },
   {
