@@ -13,6 +13,7 @@ import {
   BarChart3,
   Building2,
 } from "lucide-react";
+import { PayoutReviewQueue } from "@/components/ops/PayoutReviewQueue";
 
 export const Route = createFileRoute("/ops")({
   head: () => ({
@@ -210,6 +211,8 @@ function OpsConsole() {
           </Link>
         </Button>
       </div>
+
+      <PayoutReviewQueue />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {METRICS.map((m) => (

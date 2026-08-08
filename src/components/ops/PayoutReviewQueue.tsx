@@ -61,7 +61,7 @@ export function PayoutReviewQueue() {
             <tbody>
               {audit.slice(0, 40).map((e) => (
                 <tr key={e.id} className="border-t align-top">
-                  <td className="py-1 pr-3 whitespace-nowrap">{e.at?.slice(0, 16) ?? "—"}</td>
+                  <td className="py-1 pr-3 whitespace-nowrap">{e.ts}</td>
                   <td className="py-1 pr-3">{e.actor}</td>
                   <td className="py-1 pr-3">{e.action}</td>
                   <td className="py-1 pr-3">{e.entity}</td>
