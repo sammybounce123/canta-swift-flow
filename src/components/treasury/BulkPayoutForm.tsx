@@ -26,6 +26,8 @@ import {
   csvTemplateFor,
   type BulkRow,
 } from "@/lib/bulk-payout-store";
+import { canReceivePayout, logPayoutEvent } from "@/lib/payout-security";
+import { requestStepUp } from "@/lib/step-up";
 
 export function BulkPayoutForm({
   onClose,
@@ -98,7 +100,7 @@ export function BulkPayoutForm({
   async function submit() {
     if (errors.length) return;
     const unverified = rows.filter((r) => {
-      const b = findBeneficiary(r.beneficiary);
+      const b = findBeneficiary(r.beneficiaryId);
       return !b || !canReceivePayout(b.status);
     });
     if (unverified.length) {
@@ -402,7 +404,7 @@ export function BulkPayoutForm({
             <Button variant="ghost" onClick={() => setStep(2)}>
               <ArrowLeft className="h-3.5 w-3.5 mr-1" /> Back
             </Button>
-            <Button disabled={errors.length > 0} onClick={submit}>
+            <Button disabled={errors.length > 0} onClick={() => void submit()}>
               Submit for approval
             </Button>
           </div>
