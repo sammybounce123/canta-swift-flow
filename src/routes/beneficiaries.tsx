@@ -12,6 +12,13 @@ import {
   setBeneficiaryStatus,
 } from "@/lib/beneficiary-store";
 import { toast } from "sonner";
+import {
+  PAYOUT_STATUS_TONE,
+  canReceivePayout,
+  payoutBlockReason,
+  SECURITY_COPY,
+} from "@/lib/payout-security";
+import { requestStepUp } from "@/lib/step-up";
 
 export const Route = createFileRoute("/beneficiaries")({
   head: () => ({ meta: [{ title: "Beneficiaries — Canta" }] }),
