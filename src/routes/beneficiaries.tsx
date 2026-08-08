@@ -58,8 +58,8 @@ function Beneficiaries() {
       </div>
 
       <Card className="p-3 shadow-card text-xs text-muted-foreground">
-        Bulk Payout uses saved beneficiaries only. The beneficiary currency must match the source
-        wallet currency.
+        {SECURITY_COPY.treasury} New or edited beneficiaries start as Pending Review and cannot
+        receive funds until Canta Ops verifies them.
       </Card>
 
       <Card className="p-4 shadow-card flex items-center gap-3">
