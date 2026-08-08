@@ -12,6 +12,7 @@ import { ActionsProvider } from "@/components/ActionsProvider";
 import { RoleProvider } from "@/components/RoleProvider";
 import { ModeProvider } from "@/components/ModeProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { StepUpDialog } from "@/components/security/StepUpDialog";
 import { useRouterState } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
