@@ -45,7 +45,9 @@ import {
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { beneficiaries, fmtMoney } from "@/lib/mock";
-import { addBeneficiary } from "@/lib/beneficiary-store";
+import { addBeneficiary, findBeneficiary } from "@/lib/beneficiary-store";
+import { requestStepUp } from "@/lib/step-up";
+import { canReceivePayout, payoutBlockReason, logPayoutEvent } from "@/lib/payout-security";
 
 import { BulkPayoutForm } from "@/components/treasury/BulkPayoutForm";
 import { addTransaction } from "@/lib/tx-store";
@@ -992,7 +994,27 @@ function SendForm({
           <Button
             className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90"
             disabled={!confirmDetails || !confirmAuth}
-            onClick={() => {
+            onClick={async () => {
+              const saved = findBeneficiary(ben.name);
+              if (saved && !canReceivePayout(saved.status)) {
+                toast.error("Payout blocked — beneficiary is not verified", {
+                  description: payoutBlockReason(saved.status) ?? undefined,
+                });
+                logPayoutEvent({
+                  action: "Payout blocked",
+                  workspace: "Treasury",
+                  entity: `${saved.id} · ${saved.name}`,
+                  actor: "Treasury operator",
+                  reason: "Beneficiary not verified",
+                  result: "Failed",
+                });
+                return;
+              }
+              const step = await requestStepUp({
+                title: "Security check required",
+                action: `Send ${fmtAnyCcy(amt, payCcy)} to ${ben.name}`,
+              });
+              if (!step.ok) return;
               toast.success("Details verified — sending");
               setStage("sending");
             }}
@@ -1255,18 +1277,25 @@ function AddBeneficiaryForm({ onClose }: { onClose: () => void }) {
         </Button>
         <Button
           className="bg-accent text-accent-foreground hover:bg-accent/90"
-          onClick={() => {
+          onClick={async () => {
+            const step = await requestStepUp({
+              title: "Security check required",
+              action: "Add payout account (beneficiary)",
+            });
+            if (!step.ok) {
+              toast.info("Security check cancelled — beneficiary not saved.");
+              return;
+            }
             const created = addBeneficiary({
               name: name.trim() || "New Beneficiary",
               country: COUNTRIES.find((c) => c.code === country)?.name ?? country,
               bank: vals.bank || "Demo Bank",
               account: vals.account || vals.iban || "•••• 0000",
               ccy,
-              status: "Verified",
             });
             onClose();
-            toast.success("Beneficiary saved and verified", {
-              description: `${created.name} (${created.id}) is ready for ${ccy} payouts.`,
+            toast.success("Beneficiary submitted for verification", {
+              description: `${created.name} (${created.id}) cannot receive ${ccy} payouts until Canta Ops verifies it.`,
             });
           }}
         >

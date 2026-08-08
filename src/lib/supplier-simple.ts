@@ -59,7 +59,28 @@ export function useAutoConvert() {
 // RMB bank accounts (settlement destinations)
 // ---------------------------------------------------------------------------
 
-export type BankStatus = "Pending" | "Verified" | "Rejected";
+import {
+  canReceivePayout,
+  logPayoutEvent,
+  maskAccountNumber,
+  payoutReviewQueue,
+  type PayoutAccountStatus,
+} from "@/lib/payout-security";
+
+export type BankStatus = PayoutAccountStatus;
+
+/** Supplier company name used for account-holder name matching. */
+export const SUPPLIER_COMPANY = "Guangzhou Tech Factory Co., Ltd";
+export const SUPPLIER_ALIASES = ["Guangzhou Tech Factory", "GZ Tech Factory Co Ltd"];
+
+export function nameMatchesSupplier(holder: string) {
+  const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const target = norm(holder);
+  if (!target) return false;
+  return [SUPPLIER_COMPANY, ...SUPPLIER_ALIASES].some(
+    (n) => norm(n) === target || target.includes(norm(n)) || norm(n).includes(target),
+  );
+}
 
 export type RmbBankAccount = {
   id: string;
@@ -76,6 +97,7 @@ export type RmbBankAccount = {
   isSettlementDestination: boolean;
   rejectionReason?: string;
   proofFileName?: string;
+  changedAt?: string;
 };
 
 let BANKS: RmbBankAccount[] = [
@@ -104,7 +126,7 @@ let BANKS: RmbBankAccount[] = [
     bankAddress: "No. 197 Dongfeng West Road",
     province: "Guangdong / Guangzhou",
     currency: "USD",
-    status: "Pending",
+    status: "Pending Review",
     isSettlementDestination: false,
   },
 ];
@@ -113,38 +135,175 @@ let bankSeq = 1003;
 const bankSubs = new Set<() => void>();
 const notifyBanks = () => bankSubs.forEach((f) => f());
 
+// Automatic Convert pause (triggered by any payout-account change)
+let acPaused = false;
+let acPauseReason = "";
+const acPauseSubs = new Set<() => void>();
+const notifyPause = () => acPauseSubs.forEach((f) => f());
+
+export const autoConvertPause = {
+  get: () => acPaused,
+  reason: () => acPauseReason,
+  pause: (reason: string) => {
+    acPaused = true;
+    acPauseReason = reason;
+    notifyPause();
+    logPayoutEvent({
+      action: "Automatic Convert paused",
+      workspace: "Supplier",
+      entity: "Automatic Convert",
+      actor: "Supplier admin",
+      reason,
+      result: "Pending",
+    });
+  },
+  resume: () => {
+    acPaused = false;
+    acPauseReason = "";
+    notifyPause();
+    logPayoutEvent({
+      action: "Automatic Convert resumed",
+      workspace: "Supplier",
+      entity: "Automatic Convert",
+      actor: "Canta Ops",
+    });
+  },
+  subscribe: (f: () => void) => {
+    acPauseSubs.add(f);
+    return () => acPauseSubs.delete(f);
+  },
+};
+
+export function useAutoConvertPaused() {
+  const paused = useSyncExternalStore(
+    autoConvertPause.subscribe,
+    autoConvertPause.get,
+    () => false,
+  );
+  return paused;
+}
+
 export const rmbBankStore = {
   list: () => BANKS,
   destination: () => BANKS.find((b) => b.isSettlementDestination) ?? null,
   add: (b: Omit<RmbBankAccount, "id" | "status" | "isSettlementDestination">) => {
     const full: RmbBankAccount = {
       id: `RB-${bankSeq++}`,
-      status: "Pending",
+      status: "Pending Review",
       isSettlementDestination: false,
       ...b,
     };
     BANKS = [...BANKS, full];
     notifyBanks();
+    logPayoutEvent({
+      action: "Account created",
+      workspace: "Supplier",
+      entity: `${full.id} · ${maskAccountNumber(full.accountNumber)}`,
+      actor: "Supplier admin",
+      next: maskAccountNumber(full.accountNumber),
+      result: "Pending",
+    });
+    payoutReviewQueue.add({
+      workspace: "Supplier",
+      business: SUPPLIER_COMPANY,
+      accountHolder: full.accountHolder,
+      bank: full.bankName,
+      currency: full.currency,
+      accountNumber: full.accountNumber,
+      submittedBy: "Supplier admin",
+      documents: full.proofFileName ? [full.proofFileName] : [],
+      nameMatch: nameMatchesSupplier(full.accountHolder) ? "Match" : "Mismatch",
+      riskFlags: [
+        ...(full.proofFileName ? [] : ["No bank proof uploaded"]),
+        ...(nameMatchesSupplier(full.accountHolder) ? [] : ["Account holder name mismatch"]),
+      ],
+      previousChanges: 0,
+      linkedRef: full.id,
+    });
+    autoConvertPause.pause("New RMB bank account added — awaiting Canta review.");
     return full;
   },
   update: (id: string, patch: Partial<RmbBankAccount>) => {
-    BANKS = BANKS.map((b) => (b.id === id ? { ...b, ...patch } : b));
+    const prev = BANKS.find((b) => b.id === id);
+    BANKS = BANKS.map((b) =>
+      b.id === id
+        ? {
+            ...b,
+            ...patch,
+            status: "Locked After Change",
+            isSettlementDestination: false,
+            changedAt: new Date().toISOString(),
+          }
+        : b,
+    );
     notifyBanks();
+    logPayoutEvent({
+      action: "Account edited",
+      workspace: "Supplier",
+      entity: `${id} · ${maskAccountNumber(prev?.accountNumber ?? "")}`,
+      actor: "Supplier admin",
+      previous: maskAccountNumber(prev?.accountNumber ?? ""),
+      next: maskAccountNumber(patch.accountNumber ?? prev?.accountNumber ?? ""),
+      result: "Pending",
+    });
+    autoConvertPause.pause("RMB bank account details changed — Canta Ops must approve the change.");
   },
   submitForVerification: (id: string) => {
     BANKS = BANKS.map((b) =>
-      b.id === id ? { ...b, status: "Pending", rejectionReason: undefined } : b,
+      b.id === id ? { ...b, status: "Pending Review", rejectionReason: undefined } : b,
     );
     notifyBanks();
+    logPayoutEvent({
+      action: "Account submitted",
+      workspace: "Supplier",
+      entity: id,
+      actor: "Supplier admin",
+      result: "Pending",
+    });
   },
-  setDestination: (id: string): { ok: boolean; error?: string } => {
+  approve: (id: string) => {
+    BANKS = BANKS.map((b) => (b.id === id ? { ...b, status: "Verified" } : b));
+    notifyBanks();
+    logPayoutEvent({
+      action: "Account approved",
+      workspace: "Ops",
+      entity: id,
+      actor: "Canta Ops",
+      role: "Ops reviewer",
+      next: "Verified",
+    });
+    autoConvertPause.resume();
+  },
+  setDestination: (
+    id: string,
+    opts?: { kybApproved?: boolean },
+  ): { ok: boolean; error?: string } => {
     const acc = BANKS.find((b) => b.id === id);
     if (!acc) return { ok: false, error: "Account not found." };
-    if (acc.status !== "Verified") {
-      return { ok: false, error: "Only a verified bank account can receive settlement." };
+    if (opts && opts.kybApproved === false) {
+      return { ok: false, error: "Your business verification (KYB) must be approved first." };
+    }
+    if (!canReceivePayout(acc.status)) {
+      return {
+        ok: false,
+        error:
+          acc.status === "Locked After Change"
+            ? "This account changed and is locked until Canta re-verifies it."
+            : "Only a verified bank account can receive settlement.",
+      };
+    }
+    if (!nameMatchesSupplier(acc.accountHolder)) {
+      return { ok: false, error: "Account holder name must match your registered company name." };
     }
     BANKS = BANKS.map((b) => ({ ...b, isSettlementDestination: b.id === id }));
     notifyBanks();
+    logPayoutEvent({
+      action: "Account set as default",
+      workspace: "Supplier",
+      entity: `${id} · ${maskAccountNumber(acc.accountNumber)}`,
+      actor: "Supplier admin",
+      next: "Settlement destination",
+    });
     return { ok: true };
   },
   subscribe: (f: () => void) => {

@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { requestStepUp } from "@/lib/step-up";
+import { logPayoutEvent } from "@/lib/payout-security";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -185,7 +187,26 @@ function Solicitors() {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => setReveal((r) => ({ ...r, [s.id]: !r[s.id] }))}
+                    onClick={async () => {
+                      if (reveal[s.id]) {
+                        setReveal((r) => ({ ...r, [s.id]: false }));
+                        return;
+                      }
+                      const step = await requestStepUp({
+                        title: "Security check required",
+                        action: `Reveal payout details for ${s.firm}`,
+                        requireReason: true,
+                      });
+                      if (!step.ok) return;
+                      setReveal((r) => ({ ...r, [s.id]: true }));
+                      logPayoutEvent({
+                        action: "Bank account details revealed",
+                        workspace: "Partner",
+                        entity: `${s.id} · ${s.firm}`,
+                        actor: "Partner admin",
+                        reason: step.reason ?? "Not provided",
+                      });
+                    }}
                   >
                     {revealed ? (
                       <>

@@ -26,6 +26,8 @@ import {
   csvTemplateFor,
   type BulkRow,
 } from "@/lib/bulk-payout-store";
+import { canReceivePayout, logPayoutEvent } from "@/lib/payout-security";
+import { requestStepUp } from "@/lib/step-up";
 
 export function BulkPayoutForm({
   onClose,
@@ -95,8 +97,41 @@ export function BulkPayoutForm({
     URL.revokeObjectURL(url);
   }
 
-  function submit() {
+  async function submit() {
     if (errors.length) return;
+    const unverified = rows.filter((r) => {
+      const b = findBeneficiary(r.beneficiaryId);
+      return !b || !canReceivePayout(b.status);
+    });
+    if (unverified.length) {
+      toast.error("Batch blocked — unverified payout accounts", {
+        description: "Every beneficiary must be Verified before a bulk payout can run.",
+      });
+      logPayoutEvent({
+        action: "Payout blocked",
+        workspace: "Treasury",
+        entity: `Bulk payout · ${walletCcy}`,
+        actor: "Treasury operator",
+        reason: "Unverified beneficiary in batch",
+        result: "Failed",
+      });
+      return;
+    }
+    const step = await requestStepUp({
+      title: "Security check required",
+      action: `Submit bulk payout · ${rows.length} ${walletCcy} beneficiaries`,
+    });
+    if (!step.ok) {
+      toast.info("Security check cancelled — batch not submitted.");
+      return;
+    }
+    logPayoutEvent({
+      action: "Payout attempted",
+      workspace: "Treasury",
+      entity: `Bulk payout · ${rows.length} ${walletCcy} beneficiaries`,
+      actor: "Treasury operator",
+      result: "Pending",
+    });
     addBatch({
       sourceWallet: wallet?.label ?? `${walletCcy} Wallet`,
       currency: walletCcy,
@@ -369,7 +404,7 @@ export function BulkPayoutForm({
             <Button variant="ghost" onClick={() => setStep(2)}>
               <ArrowLeft className="h-3.5 w-3.5 mr-1" /> Back
             </Button>
-            <Button disabled={errors.length > 0} onClick={submit}>
+            <Button disabled={errors.length > 0} onClick={() => void submit()}>
               Submit for approval
             </Button>
           </div>

@@ -12,6 +12,13 @@ import {
   setBeneficiaryStatus,
 } from "@/lib/beneficiary-store";
 import { toast } from "sonner";
+import {
+  PAYOUT_STATUS_TONE,
+  canReceivePayout,
+  payoutBlockReason,
+  SECURITY_COPY,
+} from "@/lib/payout-security";
+import { requestStepUp } from "@/lib/step-up";
 
 export const Route = createFileRoute("/beneficiaries")({
   head: () => ({ meta: [{ title: "Beneficiaries — Canta" }] }),
@@ -51,8 +58,8 @@ function Beneficiaries() {
       </div>
 
       <Card className="p-3 shadow-card text-xs text-muted-foreground">
-        Bulk Payout uses saved beneficiaries only. The beneficiary currency must match the source
-        wallet currency.
+        {SECURITY_COPY.treasury} New or edited beneficiaries start as Pending Review and cannot
+        receive funds until Canta Ops verifies them.
       </Card>
 
       <Card className="p-4 shadow-card flex items-center gap-3">
@@ -107,39 +114,46 @@ function Beneficiaries() {
                 <Badge variant="outline" className="text-[10px]">
                   {b.id}
                 </Badge>
-                <Badge
-                  variant={b.status === "Verified" ? "secondary" : "outline"}
-                  className="text-[10px]"
-                >
-                  {b.status}
-                </Badge>
+                <Badge className={`text-[10px] ${PAYOUT_STATUS_TONE[b.status]}`}>{b.status}</Badge>
                 <span className="text-[10px] text-muted-foreground">
                   Last payout: {b.lastPayout ?? "None"}
                 </span>
               </div>
               <div className="mt-3 text-xs text-muted-foreground font-mono">{b.account}</div>
-              {b.status !== "Verified" && (
+              {payoutBlockReason(b.status) && (
+                <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 p-2 text-[11px] text-amber-900">
+                  {payoutBlockReason(b.status)}
+                </div>
+              )}
+              {b.status !== "Verified" && b.status !== "Pending Review" && (
                 <Button
                   size="sm"
                   variant="outline"
                   className="w-full mt-3"
-                  onClick={() => {
-                    setBeneficiaryStatus(b.id, "Verified");
-                    toast.success(`${b.name} verified`, {
-                      description: `Now available for ${b.ccy} Bulk Payout batches.`,
+                  onClick={async () => {
+                    const step = await requestStepUp({
+                      title: "Security check required",
+                      action: `Submit ${b.name} for verification`,
+                    });
+                    if (!step.ok) return;
+                    setBeneficiaryStatus(b.id, "Pending Review");
+                    toast.success(`${b.name} submitted to Canta Ops`, {
+                      description: "Payouts stay blocked until Ops verifies the account.",
                     });
                   }}
                 >
-                  <BadgeCheck className="h-3.5 w-3.5 mr-1.5" /> Verify beneficiary
+                  <BadgeCheck className="h-3.5 w-3.5 mr-1.5" /> Submit for verification
                 </Button>
               )}
               <Button
                 size="sm"
+                disabled={!canReceivePayout(b.status)}
                 onClick={() => openSend(b.name)}
                 className="w-full mt-3 bg-accent text-accent-foreground hover:bg-accent/90"
               >
                 <Send className="h-3.5 w-3.5 mr-1.5" /> Convert &amp; Send
               </Button>
+
               <p className="text-[11px] text-muted-foreground mt-2">
                 Convert funds and send to this beneficiary after review.
               </p>
