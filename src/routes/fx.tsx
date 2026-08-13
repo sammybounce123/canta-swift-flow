@@ -62,6 +62,8 @@ function FX() {
   const [from, setFrom] = useState("NGN");
   const [to, setTo] = useState("USD");
   const [amount, setAmount] = useState("50000000");
+  const [receiveAmount, setReceiveAmount] = useState("");
+  const [editingReceive, setEditingReceive] = useState(false);
   const [rate, setRate] = useState(0.00062);
   const [timer, setTimer] = useState(30);
   const [phase, setPhase] = useState<"convert" | "beneficiary" | "tracking">("convert");
@@ -97,6 +99,17 @@ function FX() {
 
   const num = Number(amount) || 0;
   const out = num * rate;
+
+  useEffect(() => {
+    if (editingReceive) {
+      const rec = Number(receiveAmount) || 0;
+      const next = rate > 0 ? (rec / rate).toFixed(2) : "0";
+      setAmount(next);
+    } else {
+      setReceiveAmount(out.toFixed(2));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [out, rate, editingReceive]);
 
   const requestConfirm = () => {
     if (num <= 0) return toast.error("Enter an amount to convert");
