@@ -473,10 +473,10 @@ function NewPaymentCasePage() {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="space-y-1.5">
-      <Label className="text-xs">{label}</Label>
+    <label className="block space-y-1.5">
+      <span className="text-xs font-medium leading-none">{label}</span>
       {children}
-    </div>
+    </label>
   );
 }
 
