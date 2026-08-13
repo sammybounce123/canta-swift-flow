@@ -20,7 +20,8 @@ import {
   type FxQuote,
 } from "@/lib/partner-store";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { countdownTo, formatIsoDate, useNow } from "@/lib/hydration-time";
 import { ReadinessBar } from "@/components/ReadinessBar";
 import { SolicitorQuotesTable } from "@/components/partner/SolicitorPaymentSections";
 
@@ -55,11 +56,8 @@ function FxQuotesPage() {
     .sort((a, b) => b.q.generatedAt.localeCompare(a.q.generatedAt));
   const noQuote = scoped.filter((c) => c.quotes.length === 0);
 
-  const [, force] = useState(0);
-  useEffect(() => {
-    const i = setInterval(() => force((n) => n + 1), 1000);
-    return () => clearInterval(i);
-  }, []);
+  // Countdown ticks only after hydration so SSR and first client render match.
+  const now = useNow(1000);
 
   const refresh = (caseId: string) => {
     generateQuote(caseId, "1h", partnerActorFromUser(userId));
@@ -109,11 +107,8 @@ function FxQuotesPage() {
             </thead>
             <tbody>
               {rows.map(({ q, c }) => {
-                const remaining = Math.max(0, new Date(q.expiresAt).getTime() - Date.now());
-                const mm = Math.floor(remaining / 60000);
-                const ss = Math.floor((remaining % 60000) / 1000);
-                const expired =
-                  q.status === "Expired" || (q.status === "Active" && remaining === 0);
+                const cd = countdownTo(q.expiresAt, now);
+                const expired = q.status === "Expired" || (cd?.expired ?? false);
                 const tone = expired
                   ? "bg-destructive/15 text-destructive border-destructive/30"
                   : q.status === "Active"
@@ -147,13 +142,13 @@ function FxQuotesPage() {
                     <td className="py-3 px-4 text-right tabular-nums">{q.rate.toLocaleString()}</td>
                     <td className="py-3 px-4 text-right tabular-nums">{formatGBP(q.feeGBP)}</td>
                     <td className="py-3 px-4 text-xs">
-                      {q.status === "Active" && !expired ? (
+                      {q.status === "Active" && cd && !expired ? (
                         <span className="inline-flex items-center gap-1 text-warning">
-                          <Clock className="h-3 w-3" /> {mm}m {ss}s
+                          <Clock className="h-3 w-3" /> {cd.minutes}m {cd.seconds}s
                         </span>
                       ) : (
                         <span className="text-muted-foreground">
-                          {new Date(q.expiresAt).toLocaleDateString()}
+                          {formatIsoDate(q.expiresAt)}
                         </span>
                       )}
                     </td>
