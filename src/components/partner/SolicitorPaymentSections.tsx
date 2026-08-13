@@ -123,7 +123,9 @@ export function ClientPaymentLinksTable() {
 /** FX quotes generated for solicitor payment cases. */
 export function SolicitorQuotesTable() {
   const { cases } = usePartnerPayments();
+  const now = useNow(1000);
   if (cases.length === 0) return null;
+
   return (
     <Card className="shadow-card overflow-hidden">
       <div className="px-4 py-3 border-b">
