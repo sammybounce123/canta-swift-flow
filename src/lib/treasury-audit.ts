@@ -53,7 +53,6 @@ export function getAuditEntriesServerSnapshot(): AuditEntry[] {
   return EMPTY_ENTRIES;
 }
 
-
 export function addAuditEntry(entry: Omit<AuditEntry, "id" | "ts">): AuditEntry {
   const full: AuditEntry = {
     id: `AUD-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,

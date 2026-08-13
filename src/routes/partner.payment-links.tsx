@@ -72,7 +72,6 @@ function PaymentLinksPage() {
 
       <ClientPaymentLinksTable />
 
-
       <Card className="p-0 shadow-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[1100px]">

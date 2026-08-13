@@ -85,7 +85,6 @@ function FxQuotesPage() {
 
       <SolicitorQuotesTable />
 
-
       <Card className="p-0 shadow-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[1100px]">
@@ -147,9 +146,7 @@ function FxQuotesPage() {
                           <Clock className="h-3 w-3" /> {cd.minutes}m {cd.seconds}s
                         </span>
                       ) : (
-                        <span className="text-muted-foreground">
-                          {formatIsoDate(q.expiresAt)}
-                        </span>
+                        <span className="text-muted-foreground">{formatIsoDate(q.expiresAt)}</span>
                       )}
                     </td>
                     <td className="py-3 px-4">
