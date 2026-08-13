@@ -47,6 +47,7 @@ import {
 } from "@/lib/partner";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { PartnerWalletCards } from "@/components/partner/SolicitorPaymentSections";
 
 export const Route = createFileRoute("/partner/")({
   head: () => ({ meta: [{ title: "Dashboard — Kingsbridge Property Partners Partner Payments" }] }),
@@ -55,9 +56,16 @@ export const Route = createFileRoute("/partner/")({
 
 function PartnerDashboard() {
   const { role, userId, user } = usePartnerRole();
-  if (role === "marketer")
-    return <MarketerDashboard userId={userId} name={user?.name ?? "Marketer"} />;
-  return <AdminDashboard />;
+  return (
+    <div className="space-y-5">
+      <PartnerWalletCards />
+      {role === "marketer" ? (
+        <MarketerDashboard userId={userId} name={user?.name ?? "Marketer"} />
+      ) : (
+        <AdminDashboard />
+      )}
+    </div>
+  );
 }
 
 /* ============================ Partner Admin ============================ */

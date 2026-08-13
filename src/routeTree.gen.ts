@@ -84,10 +84,13 @@ import { Route as PartnerClientsRouteImport } from './routes/partner.clients'
 import { Route as PartnerCommissionsRouteImport } from './routes/partner.commissions'
 import { Route as PartnerDisputesRouteImport } from './routes/partner.disputes'
 import { Route as PartnerDocumentsRouteImport } from './routes/partner.documents'
+import { Route as PartnerFeePaymentsRouteImport } from './routes/partner.fee-payments'
 import { Route as PartnerFxQuotesRouteImport } from './routes/partner.fx-quotes'
 import { Route as PartnerLeadsRouteImport } from './routes/partner.leads'
 import { Route as PartnerMarketersRouteImport } from './routes/partner.marketers'
+import { Route as PartnerNewPaymentCaseRouteImport } from './routes/partner.new-payment-case'
 import { Route as PartnerNewReferralRouteImport } from './routes/partner.new-referral'
+import { Route as PartnerPaymentCasesRouteImport } from './routes/partner.payment-cases'
 import { Route as PartnerPaymentLinksRouteImport } from './routes/partner.payment-links'
 import { Route as PartnerPayoutsRouteImport } from './routes/partner.payouts'
 import { Route as PartnerReportsRouteImport } from './routes/partner.reports'
@@ -129,6 +132,9 @@ import { Route as TradeDeskFileIdRouteImport } from './routes/trade-desk.$fileId
 import { Route as TreasuryCardsRouteImport } from './routes/treasury.cards'
 import { Route as PartnerCasesIndexRouteImport } from './routes/partner.cases.index'
 import { Route as PartnerCasesCaseIdRouteImport } from './routes/partner.cases.$caseId'
+import { Route as PartnerPaymentCasesIndexRouteImport } from './routes/partner.payment-cases.index'
+import { Route as PartnerPaymentCasesCaseIdRouteImport } from './routes/partner.payment-cases.$caseId'
+import { Route as PayPartnerLinkIdRouteImport } from './routes/pay.partner.$linkId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -505,6 +511,11 @@ const PartnerDocumentsRoute = PartnerDocumentsRouteImport.update({
   path: '/documents',
   getParentRoute: () => PartnerRoute,
 } as any)
+const PartnerFeePaymentsRoute = PartnerFeePaymentsRouteImport.update({
+  id: '/fee-payments',
+  path: '/fee-payments',
+  getParentRoute: () => PartnerRoute,
+} as any)
 const PartnerFxQuotesRoute = PartnerFxQuotesRouteImport.update({
   id: '/fx-quotes',
   path: '/fx-quotes',
@@ -520,9 +531,19 @@ const PartnerMarketersRoute = PartnerMarketersRouteImport.update({
   path: '/marketers',
   getParentRoute: () => PartnerRoute,
 } as any)
+const PartnerNewPaymentCaseRoute = PartnerNewPaymentCaseRouteImport.update({
+  id: '/new-payment-case',
+  path: '/new-payment-case',
+  getParentRoute: () => PartnerRoute,
+} as any)
 const PartnerNewReferralRoute = PartnerNewReferralRouteImport.update({
   id: '/new-referral',
   path: '/new-referral',
+  getParentRoute: () => PartnerRoute,
+} as any)
+const PartnerPaymentCasesRoute = PartnerPaymentCasesRouteImport.update({
+  id: '/payment-cases',
+  path: '/payment-cases',
   getParentRoute: () => PartnerRoute,
 } as any)
 const PartnerPaymentLinksRoute = PartnerPaymentLinksRouteImport.update({
@@ -740,6 +761,23 @@ const PartnerCasesCaseIdRoute = PartnerCasesCaseIdRouteImport.update({
   path: '/$caseId',
   getParentRoute: () => PartnerCasesRoute,
 } as any)
+const PartnerPaymentCasesIndexRoute =
+  PartnerPaymentCasesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => PartnerPaymentCasesRoute,
+  } as any)
+const PartnerPaymentCasesCaseIdRoute =
+  PartnerPaymentCasesCaseIdRouteImport.update({
+    id: '/$caseId',
+    path: '/$caseId',
+    getParentRoute: () => PartnerPaymentCasesRoute,
+  } as any)
+const PayPartnerLinkIdRoute = PayPartnerLinkIdRouteImport.update({
+  id: '/pay/partner/$linkId',
+  path: '/pay/partner/$linkId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -815,10 +853,13 @@ export interface FileRoutesByFullPath {
   '/partner/commissions': typeof PartnerCommissionsRoute
   '/partner/disputes': typeof PartnerDisputesRoute
   '/partner/documents': typeof PartnerDocumentsRoute
+  '/partner/fee-payments': typeof PartnerFeePaymentsRoute
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
   '/partner/leads': typeof PartnerLeadsRoute
   '/partner/marketers': typeof PartnerMarketersRoute
+  '/partner/new-payment-case': typeof PartnerNewPaymentCaseRoute
   '/partner/new-referral': typeof PartnerNewReferralRoute
+  '/partner/payment-cases': typeof PartnerPaymentCasesRouteWithChildren
   '/partner/payment-links': typeof PartnerPaymentLinksRoute
   '/partner/payouts': typeof PartnerPayoutsRoute
   '/partner/reports': typeof PartnerReportsRoute
@@ -861,7 +902,10 @@ export interface FileRoutesByFullPath {
   '/track/': typeof TrackIndexRoute
   '/trade-desk/': typeof TradeDeskIndexRoute
   '/partner/cases/$caseId': typeof PartnerCasesCaseIdRoute
+  '/partner/payment-cases/$caseId': typeof PartnerPaymentCasesCaseIdRoute
+  '/pay/partner/$linkId': typeof PayPartnerLinkIdRoute
   '/partner/cases/': typeof PartnerCasesIndexRoute
+  '/partner/payment-cases/': typeof PartnerPaymentCasesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -932,9 +976,11 @@ export interface FileRoutesByTo {
   '/partner/commissions': typeof PartnerCommissionsRoute
   '/partner/disputes': typeof PartnerDisputesRoute
   '/partner/documents': typeof PartnerDocumentsRoute
+  '/partner/fee-payments': typeof PartnerFeePaymentsRoute
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
   '/partner/leads': typeof PartnerLeadsRoute
   '/partner/marketers': typeof PartnerMarketersRoute
+  '/partner/new-payment-case': typeof PartnerNewPaymentCaseRoute
   '/partner/new-referral': typeof PartnerNewReferralRoute
   '/partner/payment-links': typeof PartnerPaymentLinksRoute
   '/partner/payouts': typeof PartnerPayoutsRoute
@@ -978,7 +1024,10 @@ export interface FileRoutesByTo {
   '/track': typeof TrackIndexRoute
   '/trade-desk': typeof TradeDeskIndexRoute
   '/partner/cases/$caseId': typeof PartnerCasesCaseIdRoute
+  '/partner/payment-cases/$caseId': typeof PartnerPaymentCasesCaseIdRoute
+  '/pay/partner/$linkId': typeof PayPartnerLinkIdRoute
   '/partner/cases': typeof PartnerCasesIndexRoute
+  '/partner/payment-cases': typeof PartnerPaymentCasesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -1055,10 +1104,13 @@ export interface FileRoutesById {
   '/partner/commissions': typeof PartnerCommissionsRoute
   '/partner/disputes': typeof PartnerDisputesRoute
   '/partner/documents': typeof PartnerDocumentsRoute
+  '/partner/fee-payments': typeof PartnerFeePaymentsRoute
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
   '/partner/leads': typeof PartnerLeadsRoute
   '/partner/marketers': typeof PartnerMarketersRoute
+  '/partner/new-payment-case': typeof PartnerNewPaymentCaseRoute
   '/partner/new-referral': typeof PartnerNewReferralRoute
+  '/partner/payment-cases': typeof PartnerPaymentCasesRouteWithChildren
   '/partner/payment-links': typeof PartnerPaymentLinksRoute
   '/partner/payouts': typeof PartnerPayoutsRoute
   '/partner/reports': typeof PartnerReportsRoute
@@ -1101,7 +1153,10 @@ export interface FileRoutesById {
   '/track/': typeof TrackIndexRoute
   '/trade-desk/': typeof TradeDeskIndexRoute
   '/partner/cases/$caseId': typeof PartnerCasesCaseIdRoute
+  '/partner/payment-cases/$caseId': typeof PartnerPaymentCasesCaseIdRoute
+  '/pay/partner/$linkId': typeof PayPartnerLinkIdRoute
   '/partner/cases/': typeof PartnerCasesIndexRoute
+  '/partner/payment-cases/': typeof PartnerPaymentCasesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -1179,10 +1234,13 @@ export interface FileRouteTypes {
     | '/partner/commissions'
     | '/partner/disputes'
     | '/partner/documents'
+    | '/partner/fee-payments'
     | '/partner/fx-quotes'
     | '/partner/leads'
     | '/partner/marketers'
+    | '/partner/new-payment-case'
     | '/partner/new-referral'
+    | '/partner/payment-cases'
     | '/partner/payment-links'
     | '/partner/payouts'
     | '/partner/reports'
@@ -1225,7 +1283,10 @@ export interface FileRouteTypes {
     | '/track/'
     | '/trade-desk/'
     | '/partner/cases/$caseId'
+    | '/partner/payment-cases/$caseId'
+    | '/pay/partner/$linkId'
     | '/partner/cases/'
+    | '/partner/payment-cases/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1296,9 +1357,11 @@ export interface FileRouteTypes {
     | '/partner/commissions'
     | '/partner/disputes'
     | '/partner/documents'
+    | '/partner/fee-payments'
     | '/partner/fx-quotes'
     | '/partner/leads'
     | '/partner/marketers'
+    | '/partner/new-payment-case'
     | '/partner/new-referral'
     | '/partner/payment-links'
     | '/partner/payouts'
@@ -1342,7 +1405,10 @@ export interface FileRouteTypes {
     | '/track'
     | '/trade-desk'
     | '/partner/cases/$caseId'
+    | '/partner/payment-cases/$caseId'
+    | '/pay/partner/$linkId'
     | '/partner/cases'
+    | '/partner/payment-cases'
   id:
     | '__root__'
     | '/'
@@ -1418,10 +1484,13 @@ export interface FileRouteTypes {
     | '/partner/commissions'
     | '/partner/disputes'
     | '/partner/documents'
+    | '/partner/fee-payments'
     | '/partner/fx-quotes'
     | '/partner/leads'
     | '/partner/marketers'
+    | '/partner/new-payment-case'
     | '/partner/new-referral'
+    | '/partner/payment-cases'
     | '/partner/payment-links'
     | '/partner/payouts'
     | '/partner/reports'
@@ -1464,7 +1533,10 @@ export interface FileRouteTypes {
     | '/track/'
     | '/trade-desk/'
     | '/partner/cases/$caseId'
+    | '/partner/payment-cases/$caseId'
+    | '/pay/partner/$linkId'
     | '/partner/cases/'
+    | '/partner/payment-cases/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1527,6 +1599,7 @@ export interface RootRouteChildren {
   TrackIdRoute: typeof TrackIdRoute
   TrackWhatsappRoute: typeof TrackWhatsappRoute
   TrackIndexRoute: typeof TrackIndexRoute
+  PayPartnerLinkIdRoute: typeof PayPartnerLinkIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -2056,6 +2129,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PartnerDocumentsRouteImport
       parentRoute: typeof PartnerRoute
     }
+    '/partner/fee-payments': {
+      id: '/partner/fee-payments'
+      path: '/fee-payments'
+      fullPath: '/partner/fee-payments'
+      preLoaderRoute: typeof PartnerFeePaymentsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
     '/partner/fx-quotes': {
       id: '/partner/fx-quotes'
       path: '/fx-quotes'
@@ -2077,11 +2157,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PartnerMarketersRouteImport
       parentRoute: typeof PartnerRoute
     }
+    '/partner/new-payment-case': {
+      id: '/partner/new-payment-case'
+      path: '/new-payment-case'
+      fullPath: '/partner/new-payment-case'
+      preLoaderRoute: typeof PartnerNewPaymentCaseRouteImport
+      parentRoute: typeof PartnerRoute
+    }
     '/partner/new-referral': {
       id: '/partner/new-referral'
       path: '/new-referral'
       fullPath: '/partner/new-referral'
       preLoaderRoute: typeof PartnerNewReferralRouteImport
+      parentRoute: typeof PartnerRoute
+    }
+    '/partner/payment-cases': {
+      id: '/partner/payment-cases'
+      path: '/payment-cases'
+      fullPath: '/partner/payment-cases'
+      preLoaderRoute: typeof PartnerPaymentCasesRouteImport
       parentRoute: typeof PartnerRoute
     }
     '/partner/payment-links': {
@@ -2371,6 +2465,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PartnerCasesCaseIdRouteImport
       parentRoute: typeof PartnerCasesRoute
     }
+    '/partner/payment-cases/': {
+      id: '/partner/payment-cases/'
+      path: '/'
+      fullPath: '/partner/payment-cases/'
+      preLoaderRoute: typeof PartnerPaymentCasesIndexRouteImport
+      parentRoute: typeof PartnerPaymentCasesRoute
+    }
+    '/partner/payment-cases/$caseId': {
+      id: '/partner/payment-cases/$caseId'
+      path: '/$caseId'
+      fullPath: '/partner/payment-cases/$caseId'
+      preLoaderRoute: typeof PartnerPaymentCasesCaseIdRouteImport
+      parentRoute: typeof PartnerPaymentCasesRoute
+    }
+    '/pay/partner/$linkId': {
+      id: '/pay/partner/$linkId'
+      path: '/pay/partner/$linkId'
+      fullPath: '/pay/partner/$linkId'
+      preLoaderRoute: typeof PayPartnerLinkIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -2434,6 +2549,19 @@ const PartnerCasesRouteWithChildren = PartnerCasesRoute._addFileChildren(
   PartnerCasesRouteChildren,
 )
 
+interface PartnerPaymentCasesRouteChildren {
+  PartnerPaymentCasesCaseIdRoute: typeof PartnerPaymentCasesCaseIdRoute
+  PartnerPaymentCasesIndexRoute: typeof PartnerPaymentCasesIndexRoute
+}
+
+const PartnerPaymentCasesRouteChildren: PartnerPaymentCasesRouteChildren = {
+  PartnerPaymentCasesCaseIdRoute: PartnerPaymentCasesCaseIdRoute,
+  PartnerPaymentCasesIndexRoute: PartnerPaymentCasesIndexRoute,
+}
+
+const PartnerPaymentCasesRouteWithChildren =
+  PartnerPaymentCasesRoute._addFileChildren(PartnerPaymentCasesRouteChildren)
+
 interface PartnerRouteChildren {
   PartnerActivityLogRoute: typeof PartnerActivityLogRoute
   PartnerCasesRoute: typeof PartnerCasesRouteWithChildren
@@ -2441,10 +2569,13 @@ interface PartnerRouteChildren {
   PartnerCommissionsRoute: typeof PartnerCommissionsRoute
   PartnerDisputesRoute: typeof PartnerDisputesRoute
   PartnerDocumentsRoute: typeof PartnerDocumentsRoute
+  PartnerFeePaymentsRoute: typeof PartnerFeePaymentsRoute
   PartnerFxQuotesRoute: typeof PartnerFxQuotesRoute
   PartnerLeadsRoute: typeof PartnerLeadsRoute
   PartnerMarketersRoute: typeof PartnerMarketersRoute
+  PartnerNewPaymentCaseRoute: typeof PartnerNewPaymentCaseRoute
   PartnerNewReferralRoute: typeof PartnerNewReferralRoute
+  PartnerPaymentCasesRoute: typeof PartnerPaymentCasesRouteWithChildren
   PartnerPaymentLinksRoute: typeof PartnerPaymentLinksRoute
   PartnerPayoutsRoute: typeof PartnerPayoutsRoute
   PartnerReportsRoute: typeof PartnerReportsRoute
@@ -2461,10 +2592,13 @@ const PartnerRouteChildren: PartnerRouteChildren = {
   PartnerCommissionsRoute: PartnerCommissionsRoute,
   PartnerDisputesRoute: PartnerDisputesRoute,
   PartnerDocumentsRoute: PartnerDocumentsRoute,
+  PartnerFeePaymentsRoute: PartnerFeePaymentsRoute,
   PartnerFxQuotesRoute: PartnerFxQuotesRoute,
   PartnerLeadsRoute: PartnerLeadsRoute,
   PartnerMarketersRoute: PartnerMarketersRoute,
+  PartnerNewPaymentCaseRoute: PartnerNewPaymentCaseRoute,
   PartnerNewReferralRoute: PartnerNewReferralRoute,
+  PartnerPaymentCasesRoute: PartnerPaymentCasesRouteWithChildren,
   PartnerPaymentLinksRoute: PartnerPaymentLinksRoute,
   PartnerPayoutsRoute: PartnerPayoutsRoute,
   PartnerReportsRoute: PartnerReportsRoute,
@@ -2635,6 +2769,7 @@ const rootRouteChildren: RootRouteChildren = {
   TrackIdRoute: TrackIdRoute,
   TrackWhatsappRoute: TrackWhatsappRoute,
   TrackIndexRoute: TrackIndexRoute,
+  PayPartnerLinkIdRoute: PayPartnerLinkIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

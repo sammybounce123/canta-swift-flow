@@ -22,6 +22,7 @@ import {
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { SolicitorQuotesTable } from "@/components/partner/SolicitorPaymentSections";
 
 export const Route = createFileRoute("/partner/fx-quotes")({
   head: () => ({
@@ -83,6 +84,9 @@ function FxQuotesPage() {
           All FX quotes generated for Kingsbridge Property Partners client payment cases.
         </p>
       </div>
+
+      <SolicitorQuotesTable />
+
 
       <Card className="p-0 shadow-card overflow-hidden">
         <div className="overflow-x-auto">

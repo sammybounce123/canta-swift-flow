@@ -9,6 +9,7 @@ import { visibleCases, formatGBP, getSolicitor } from "@/lib/partner";
 import { markLinkSent, appendActivity, partnerActorFromUser } from "@/lib/partner-store";
 import { toast } from "sonner";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { ClientPaymentLinksTable } from "@/components/partner/SolicitorPaymentSections";
 
 export const Route = createFileRoute("/partner/payment-links")({
   head: () => ({
@@ -68,6 +69,9 @@ function PaymentLinksPage() {
           Secure Canta × Kingsbridge Property Partners payment pages — one link per payment case.
         </p>
       </div>
+
+      <ClientPaymentLinksTable />
+
 
       <Card className="p-0 shadow-card overflow-hidden">
         <div className="overflow-x-auto">

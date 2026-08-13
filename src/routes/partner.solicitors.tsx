@@ -48,6 +48,7 @@ import {
 } from "@/lib/partner-extras";
 import { usePartnerRole } from "@/hooks/usePartnerRole";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { SolicitorAccountsPanel } from "@/components/partner/SolicitorAccountsPanel";
 import { demoToast, downloadCsv } from "@/lib/partner-demo";
 
 export const Route = createFileRoute("/partner/solicitors")({
@@ -86,6 +87,8 @@ function Solicitors() {
         status="Demo Preview"
         cue="Verify solicitor account details before initiating payouts."
       />
+      <SolicitorAccountsPanel />
+
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Solicitor directory</h1>

@@ -89,13 +89,16 @@ function CasesList() {
               : "All Kingsbridge Property Partners referred clients across the team."}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline">
             <Download className="h-4 w-4 mr-1.5" /> Export CSV
           </Button>
+          <Button asChild variant="outline">
+            <Link to="/partner/fee-payments">Create Partner Fee Payment</Link>
+          </Button>
           <Button asChild className="bg-primary">
-            <Link to="/partner/new-referral">
-              <Plus className="h-4 w-4 mr-1.5" /> New referral
+            <Link to="/partner/new-payment-case">
+              <Plus className="h-4 w-4 mr-1.5" /> Create Solicitor Payment
             </Link>
           </Button>
         </div>
