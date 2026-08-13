@@ -216,7 +216,11 @@ function FX() {
             <div className="grid grid-cols-[1fr_auto] items-center gap-2 p-3 rounded-xl bg-secondary/50 border border-border focus-within:border-ring">
               <input
                 value={amount}
-                onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
+                onChange={(e) => {
+                  setAmount(e.target.value.replace(/[^0-9.]/g, ""));
+                  setEditingReceive(false);
+                }}
+                onFocus={() => setEditingReceive(false)}
                 style={{ wordBreak: "normal", overflowWrap: "normal" }}
                 className="min-w-0 w-full bg-transparent text-2xl font-semibold tabular-nums outline-none"
               />
