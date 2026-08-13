@@ -244,16 +244,25 @@ function FX() {
             </div>
 
             <label className="text-xs text-muted-foreground">You receive in your {to} wallet</label>
-            <div className="grid grid-cols-[1fr_auto] items-center gap-2 p-3 rounded-xl bg-secondary/50 border border-border">
-              <div
+            <div className="grid grid-cols-[1fr_auto] items-center gap-2 p-3 rounded-xl bg-secondary/50 border border-border focus-within:border-ring">
+              <input
+                value={receiveAmount}
+                onChange={(e) => {
+                  const v = e.target.value.replace(/[^0-9.]/g, "");
+                  setReceiveAmount(v);
+                  setEditingReceive(true);
+                }}
+                onFocus={() => setEditingReceive(true)}
+                placeholder="0.00"
                 style={{ wordBreak: "normal", overflowWrap: "normal" }}
-                className="min-w-0 text-2xl font-semibold tabular-nums truncate"
-              >
-                {out.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-              </div>
+                className="min-w-0 w-full bg-transparent text-2xl font-semibold tabular-nums outline-none"
+              />
               <select
                 value={to}
-                onChange={(e) => setTo(e.target.value)}
+                onChange={(e) => {
+                  setTo(e.target.value);
+                  setEditingReceive(false);
+                }}
                 className="bg-card border border-border rounded-lg px-2 py-1.5 text-sm font-medium"
               >
                 {walletCcys
