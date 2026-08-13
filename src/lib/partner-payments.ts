@@ -10,11 +10,7 @@
 
 import { useSyncExternalStore } from "react";
 import { SOLICITORS, PARTNER_ORG } from "@/lib/partner";
-import {
-  canReceivePayout,
-  logPayoutEvent,
-  type PayoutAccountStatus,
-} from "@/lib/payout-security";
+import { canReceivePayout, logPayoutEvent, type PayoutAccountStatus } from "@/lib/payout-security";
 
 /* ------------------------------------------------------------------ */
 /* Currencies & pricing                                                */
@@ -121,7 +117,11 @@ export const PARTNER_FEE_ACCOUNT: PartnerFeeAccount = {
 
 function seedAccounts(): SolicitorPayoutAccount[] {
   const statusFor = (v: string): PayoutAccountStatus =>
-    v === "Verified" ? "Verified" : v === "Re-verification" ? "Locked After Change" : "Pending Review";
+    v === "Verified"
+      ? "Verified"
+      : v === "Re-verification"
+        ? "Locked After Change"
+        : "Pending Review";
   const base = SOLICITORS.map((s, i) => ({
     id: `SPA-${s.id}-GBP`,
     solicitorId: s.id,
@@ -350,9 +350,7 @@ export function solicitorCurrencies(solicitorId: string): PayoutCurrency[] {
 
 export function currencyBlockMessage(solicitorId: string, currency: PayoutCurrency): string | null {
   if (verifiedAccount(solicitorId, currency)) return null;
-  const verified = solicitorCurrencies(solicitorId).filter((c) =>
-    verifiedAccount(solicitorId, c),
-  );
+  const verified = solicitorCurrencies(solicitorId).filter((c) => verifiedAccount(solicitorId, c));
   const alt = verified.length ? verified.join(" / ") : "another currency";
   return `This solicitor does not have a verified ${currency} account. Add and verify a ${currency} solicitor account or select ${alt}.`;
 }
@@ -397,7 +395,9 @@ export function addSolicitorAccount(input: {
 
 export function updateSolicitorAccount(
   id: string,
-  patch: Partial<Pick<SolicitorPayoutAccount, "bank" | "accountName" | "accountNumber" | "swift" | "iban">>,
+  patch: Partial<
+    Pick<SolicitorPayoutAccount, "bank" | "accountName" | "accountNumber" | "swift" | "iban">
+  >,
   actor?: string,
 ) {
   hydrate();
@@ -497,7 +497,11 @@ export function createClientPaymentCase(input: {
     timeline: [
       { ts: now, label: "Case Created" },
       { ts: now, label: "Solicitor Selected" },
-      { ts: now, label: "FX Quote Generated", note: `Rate 1 ${input.payoutCurrency} = ₦${quote.rate}` },
+      {
+        ts: now,
+        label: "FX Quote Generated",
+        note: `Rate 1 ${input.payoutCurrency} = ₦${quote.rate}`,
+      },
       { ts: now, label: "Client Payment Link created" },
     ],
   };
@@ -757,7 +761,9 @@ export function partnerWalletSummary(
   const awaiting = cases.filter((c) => !c.ngnReceived);
   const held = received.filter((c) => c.status === "Compliance Review");
   const converted = received.filter((c) => c.status !== "Compliance Review");
-  const paid = received.filter((c) => c.status === "Solicitor Paid" || c.status === "Receipt Available");
+  const paid = received.filter(
+    (c) => c.status === "Solicitor Paid" || c.status === "Receipt Available",
+  );
   const month = new Date().getMonth();
   return {
     balanceNgn: held.reduce((s, c) => s + (c.ngnReceived ?? 0), 0),
