@@ -16,6 +16,7 @@ import {
   refreshCaseQuote,
   usePartnerPayments,
 } from "@/lib/partner-payments";
+import { formatIsoDateTime, formatIsoTime, useNow } from "@/lib/hydration-time";
 
 function copyLink(linkId: string) {
   navigator.clipboard?.writeText(paymentLinkUrl(linkId));
@@ -25,6 +26,8 @@ function copyLink(linkId: string) {
 /** Client Payment Links generated from Client Payment Cases. */
 export function ClientPaymentLinksTable() {
   const { cases } = usePartnerPayments();
+  // Expiry state is time-dependent: keep it stable until hydration.
+  const now = useNow(1000);
   if (cases.length === 0) return null;
   return (
     <Card className="shadow-card overflow-hidden">
@@ -62,9 +65,9 @@ export function ClientPaymentLinksTable() {
                 </td>
                 <td className="py-3 px-4 text-right tabular-nums">{formatNgn(c.quote.ngnTotal)}</td>
                 <td className="py-3 px-4 text-xs text-muted-foreground">
-                  {quoteExpired(c.quote)
+                  {now !== null && quoteExpired(c.quote)
                     ? "Expired"
-                    : new Date(c.quote.expiresAt).toLocaleTimeString()}
+                    : formatIsoTime(c.quote.expiresAt)}
                 </td>
                 <td className="py-3 px-4">
                   <Badge variant="outline" className={`text-[10px] ${partnerCaseTone(c.status)}`}>
@@ -72,7 +75,7 @@ export function ClientPaymentLinksTable() {
                   </Badge>
                 </td>
                 <td className="py-3 px-4 text-xs text-muted-foreground">
-                  {new Date(c.timeline[c.timeline.length - 1]?.ts ?? c.createdAt).toLocaleString()}
+                  {formatIsoDateTime(c.timeline[c.timeline.length - 1]?.ts ?? c.createdAt)}
                 </td>
                 <td className="py-3 px-4">
                   <div className="flex flex-wrap justify-end gap-2">
@@ -147,7 +150,7 @@ export function SolicitorQuotesTable() {
           </thead>
           <tbody>
             {cases.map((c) => {
-              const expired = quoteExpired(c.quote);
+              const expired = now !== null && quoteExpired(c.quote);
               return (
                 <tr key={c.id} className="border-t hover:bg-secondary/30">
                   <td className="py-3 px-4 font-mono text-xs">Q-{c.id.slice(-4)}</td>
@@ -169,7 +172,7 @@ export function SolicitorQuotesTable() {
                     {formatNgn(c.quote.feeNgn)}
                   </td>
                   <td className="py-3 px-4 text-xs text-muted-foreground">
-                    {new Date(c.quote.expiresAt).toLocaleTimeString()}
+                    {formatIsoTime(c.quote.expiresAt)}
                   </td>
                   <td className="py-3 px-4">
                     <Badge variant="outline" className="text-[10px]">
