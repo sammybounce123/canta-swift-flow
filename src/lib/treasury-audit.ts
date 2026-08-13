@@ -24,14 +24,33 @@ function nowStamp() {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 
+const EMPTY_ENTRIES: AuditEntry[] = [];
+
+// useSyncExternalStore requires a cached snapshot: returning a freshly parsed
+// array on every call makes React loop ("getServerSnapshot should be cached").
+let cachedRaw: string | null = null;
+let cachedEntries: AuditEntry[] = EMPTY_ENTRIES;
+
 export function getAuditEntries(): AuditEntry[] {
-  if (typeof window === "undefined") return [];
+  if (typeof window === "undefined") return EMPTY_ENTRIES;
+  let raw: string | null = null;
   try {
-    const raw = window.localStorage.getItem(KEY);
-    return raw ? (JSON.parse(raw) as AuditEntry[]) : [];
+    raw = window.localStorage.getItem(KEY);
   } catch {
-    return [];
+    return EMPTY_ENTRIES;
   }
+  if (raw === cachedRaw) return cachedEntries;
+  cachedRaw = raw;
+  try {
+    cachedEntries = raw ? (JSON.parse(raw) as AuditEntry[]) : EMPTY_ENTRIES;
+  } catch {
+    cachedEntries = EMPTY_ENTRIES;
+  }
+  return cachedEntries;
+}
+
+export function getAuditEntriesServerSnapshot(): AuditEntry[] {
+  return EMPTY_ENTRIES;
 }
 
 export function addAuditEntry(entry: Omit<AuditEntry, "id" | "ts">): AuditEntry {
