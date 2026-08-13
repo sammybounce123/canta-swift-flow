@@ -3,7 +3,12 @@
 // solicitor account, treasury beneficiary) is a high-risk financial object:
 // it can only receive money once it is Verified/Active.
 
-import { addAuditEntry, getAuditEntries, subscribeAudit } from "@/lib/treasury-audit";
+import {
+  addAuditEntry,
+  getAuditEntries,
+  getAuditEntriesServerSnapshot,
+  subscribeAudit,
+} from "@/lib/treasury-audit";
 import { useSyncExternalStore } from "react";
 
 /* ------------------------------------------------------------------ */
@@ -132,11 +137,7 @@ export function logPayoutEvent(input: {
 }
 
 export function usePayoutAudit() {
-  return useSyncExternalStore(
-    subscribeAudit,
-    getAuditEntries,
-    () => [] as ReturnType<typeof getAuditEntries>,
-  );
+  return useSyncExternalStore(subscribeAudit, getAuditEntries, getAuditEntriesServerSnapshot);
 }
 
 /* ------------------------------------------------------------------ */
