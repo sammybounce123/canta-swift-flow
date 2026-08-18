@@ -55,6 +55,9 @@ export const Route = createFileRoute("/partner/new-fee-payment")({
 
 const STEPS = ["Client details", "Fee destination", "Fee amount & quote", "Payment link"];
 
+const HINT_TYPES = ["BVN", "NIN", "Passport", "Selfie", "Other ID"] as const;
+type HintType = (typeof HINT_TYPES)[number];
+
 const FEE_PURPOSES = [
   "Partner service fee",
   "Reservation / booking fee",
