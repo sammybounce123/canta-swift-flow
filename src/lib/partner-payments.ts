@@ -216,6 +216,8 @@ export type TimelineEntry = { ts: string; label: string; note?: string };
 
 export type ClientPaymentCase = {
   id: string; // PC-2026-0142
+  /** "fee" cases collect the partner's own fee; they settle to the Partner Fee Account. */
+  kind?: "client" | "fee";
   linkId: string; // PL-2026-0142
   clientName: string;
   clientEmail: string;
@@ -472,6 +474,7 @@ export function createClientPaymentCase(input: {
   payoutCurrency: PayoutCurrency;
   payoutAmount: number;
   createdBy: string;
+  kind?: "client" | "fee";
 }): ClientPaymentCase {
   hydrate();
   const ref = nextRef();
@@ -479,6 +482,7 @@ export function createClientPaymentCase(input: {
   const now = new Date().toISOString();
   const kase: ClientPaymentCase = {
     id: ref.id,
+    kind: input.kind ?? "client",
     linkId: ref.linkId,
     clientName: input.clientName,
     clientEmail: input.clientEmail,
@@ -496,8 +500,11 @@ export function createClientPaymentCase(input: {
     status: "Awaiting NGN Payment",
     createdAt: now,
     timeline: [
-      { ts: now, label: "Case Created" },
-      { ts: now, label: "Solicitor Selected" },
+      { ts: now, label: input.kind === "fee" ? "Partner fee case created" : "Case Created" },
+      {
+        ts: now,
+        label: input.kind === "fee" ? "Partner Fee Account selected" : "Solicitor Selected",
+      },
       {
         ts: now,
         label: "FX Quote Generated",
@@ -509,6 +516,43 @@ export function createClientPaymentCase(input: {
   state = { ...state, cases: [kase, ...state.cases] };
   emit();
   return kase;
+}
+
+/** Partner fee cases run the identical client payment flow, but settle to the Partner Fee Account. */
+export function createPartnerFeeCase(input: {
+  clientName: string;
+  clientEmail: string;
+  clientPhone: string;
+  country: string;
+  property: string;
+  purpose: string;
+  notes?: string;
+  feeAmount: number;
+  createdBy: string;
+}): ClientPaymentCase {
+  return createClientPaymentCase({
+    clientName: input.clientName,
+    clientEmail: input.clientEmail,
+    clientPhone: input.clientPhone,
+    country: input.country,
+    property: input.property,
+    purpose: input.purpose,
+    notes: input.notes,
+    solicitorId: "",
+    solicitorAccountId: PARTNER_FEE_ACCOUNT.id,
+    payoutCurrency: "GBP",
+    payoutAmount: input.feeAmount,
+    createdBy: input.createdBy,
+    kind: "fee",
+  });
+}
+
+export function isFeeCase(c: ClientPaymentCase): boolean {
+  return c.kind === "fee";
+}
+
+export function listFeeCases(): ClientPaymentCase[] {
+  return listClientPaymentCases().filter(isFeeCase);
 }
 
 export function getClientPaymentCase(id: string): ClientPaymentCase | undefined {
@@ -619,8 +663,21 @@ export function passComplianceAndConvert(id: string): { ok: boolean; error?: str
     return { ok: false, error: gate };
   }
 
+  if (isFeeCase(c)) {
+    if (!canReceivePayout(PARTNER_FEE_ACCOUNT.status)) {
+      logPayoutEvent({
+        action: "Payout blocked",
+        workspace: "Partner",
+        entity: c.id,
+        reason: "Partner fee account not verified",
+        result: "Failed",
+      });
+      return { ok: false, error: "Partner fee account is not verified — settlement blocked." };
+    }
+  }
+
   const acct = listSolicitorAccounts().find((a) => a.id === c.solicitorAccountId);
-  if (!acct || !canReceivePayout(acct.status)) {
+  if (!isFeeCase(c) && (!acct || !canReceivePayout(acct.status))) {
     logPayoutEvent({
       action: "Payout blocked",
       workspace: "Partner",
@@ -646,7 +703,7 @@ export function passComplianceAndConvert(id: string): { ok: boolean; error?: str
   logPayoutEvent({
     action: "Payout attempted",
     workspace: "Partner",
-    entity: `${c.id} → ${acct.accountName}`,
+    entity: `${c.id} → ${acct?.accountName ?? PARTNER_FEE_ACCOUNT.accountName}`,
     result: "Pending",
   });
   return { ok: true };
