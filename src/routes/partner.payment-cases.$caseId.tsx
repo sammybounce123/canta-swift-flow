@@ -99,10 +99,7 @@ function CaseDetail() {
           <Row label="Client" value={`${kase.clientName} · ${kase.clientEmail}`} />
           <Row label="Property / project" value={kase.property} />
           <Row label="Partner" value={kase.partnerName} />
-          <Row
-            label={fee ? "Fee destination" : "Selected solicitor"}
-            value={beneficiaryName}
-          />
+          <Row label={fee ? "Fee destination" : "Selected solicitor"} value={beneficiaryName} />
           <Row
             label="Settlement Destination"
             value={
@@ -161,10 +158,7 @@ function CaseDetail() {
             className="w-full justify-start"
             onClick={() => {
               markCaseLinkSent(kase.id, "Reminder");
-              copyText(
-                clientWhatsAppMessage(kase, beneficiaryName),
-                "Reminder message",
-              );
+              copyText(clientWhatsAppMessage(kase, beneficiaryName), "Reminder message");
               toast.info("Sending is not configured in demo. Copy the message and send manually.");
             }}
           >
@@ -269,9 +263,7 @@ function CaseDetail() {
           size="sm"
           variant="outline"
           className="mt-3"
-          onClick={() =>
-            copyText(clientEmailMessage(kase, beneficiaryName), "Email message")
-          }
+          onClick={() => copyText(clientEmailMessage(kase, beneficiaryName), "Email message")}
         >
           <Copy className="h-4 w-4 mr-1.5" /> Copy email message
         </Button>

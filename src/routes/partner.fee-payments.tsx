@@ -144,7 +144,10 @@ function FeePaymentsPage() {
                         size="sm"
                         variant="outline"
                         onClick={() =>
-                          copyText(clientEmailMessage(f, PARTNER_FEE_ACCOUNT.label), "Email message")
+                          copyText(
+                            clientEmailMessage(f, PARTNER_FEE_ACCOUNT.label),
+                            "Email message",
+                          )
                         }
                       >
                         Email

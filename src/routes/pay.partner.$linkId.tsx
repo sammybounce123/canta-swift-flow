@@ -392,8 +392,8 @@ function ClientPayPage() {
           </Button>
           {!solicitorVerified && (
             <p className="text-[11px] text-destructive">
-              {isFee ? "Partner fee account" : "Solicitor payout account"} is not verified —
-              payment cannot be collected yet.
+              {isFee ? "Partner fee account" : "Solicitor payout account"} is not verified — payment
+              cannot be collected yet.
             </p>
           )}
         </Card>
@@ -441,9 +441,9 @@ function ClientPayPage() {
           </div>
           <p className="text-[11px] text-muted-foreground flex items-start gap-1.5">
             <ShieldCheck className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-            Funds are remitted only to the {isFee ? "partner fee" : "solicitor"} account verified
-            by Canta for this case. Canta
-            may request identity or source-of-funds documents before settlement.
+            Funds are remitted only to the {isFee ? "partner fee" : "solicitor"} account verified by
+            Canta for this case. Canta may request identity or source-of-funds documents before
+            settlement.
           </p>
         </Card>
       )}
