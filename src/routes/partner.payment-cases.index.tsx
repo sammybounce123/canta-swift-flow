@@ -6,6 +6,7 @@ import { Plus } from "lucide-react";
 import { getSolicitor } from "@/lib/partner";
 import {
   formatFx,
+  isFeeCase,
   formatNgn,
   partnerCaseTone,
   quoteExpired,
@@ -32,7 +33,8 @@ export const Route = createFileRoute("/partner/payment-cases/")({
 });
 
 function PaymentCasesList() {
-  const { cases } = usePartnerPayments();
+  const { cases: allCases } = usePartnerPayments();
+  const cases = allCases.filter((c) => !isFeeCase(c));
 
   return (
     <div className="space-y-5">
