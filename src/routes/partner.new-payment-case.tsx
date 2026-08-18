@@ -33,6 +33,7 @@ import {
   type PayoutCurrency,
 } from "@/lib/partner-payments";
 import { canReceivePayout, maskAccountNumber, PAYOUT_STATUS_TONE } from "@/lib/payout-security";
+import { setPartnerIdHint, type IdMethod } from "@/lib/partner-kyc";
 import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/new-payment-case")({
@@ -81,6 +82,8 @@ function NewPaymentCasePage() {
   const [property, setProperty] = useState("");
   const [purpose, setPurpose] = useState("Property purchase completion");
   const [notes, setNotes] = useState("");
+  const [idHintMethod, setIdHintMethod] = useState<IdMethod>("BVN");
+  const [idHintLast4, setIdHintLast4] = useState("");
 
   const [solicitorId, setSolicitorId] = useState("");
   const [currency, setCurrency] = useState<PayoutCurrency>("GBP");
@@ -125,6 +128,11 @@ function NewPaymentCasePage() {
       payoutCurrency: currency,
       payoutAmount: amountNum,
       createdBy: user?.name ?? "Partner",
+    });
+    setPartnerIdHint(kase.id, kase.linkId, {
+      method: idHintMethod,
+      last4: idHintLast4,
+      assistedCapture: false,
     });
     setCreated(kase);
     setStep(4);
