@@ -227,9 +227,9 @@ function CaseDetail() {
             value={`${kyc.idHint.method} ••••${kyc.idHint.last4} — ${kyc.idHint.note}`}
           />
         )}
-        {kyc.flags.filter((f) => f.status === "Open").length > 0 && (
+        {kyc.flags.filter((f) => f.state === "Open").length > 0 && (
           <p className="text-xs text-destructive">
-            {kyc.flags.filter((f) => f.status === "Open").length} open compliance flag(s) — Canta Ops
+            {kyc.flags.filter((f) => f.state === "Open").length} open compliance flag(s) — Canta Ops
             review required.
           </p>
         )}
