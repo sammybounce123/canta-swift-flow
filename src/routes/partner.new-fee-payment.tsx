@@ -371,9 +371,14 @@ function NewFeePaymentPage() {
               >
                 Copy email
               </Button>
-              <Button asChild>
+              <Button asChild variant="outline">
                 <Link to="/partner/payment-cases/$caseId" params={{ caseId: created.id }}>
                   Open fee case
+                </Link>
+              </Button>
+              <Button asChild>
+                <Link to="/pay/partner/$linkId" params={{ linkId: created.linkId }}>
+                  Open payment page
                 </Link>
               </Button>
             </div>
