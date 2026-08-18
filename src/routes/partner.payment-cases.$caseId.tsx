@@ -168,31 +168,12 @@ function CaseDetail() {
           <Button asChild variant="outline" className="w-full justify-start">
             <Link to="/partner/solicitors">View solicitor</Link>
           </Button>
-          <Button
-            variant="outline"
-            className="w-full justify-start"
-            onClick={() =>
-              act(passComplianceAndConvert(kase.id), "Converted — solicitor payout pending")
-            }
-          >
-            View settlement / convert
-          </Button>
-          <Button
-            variant="secondary"
-            className="w-full justify-start"
-            onClick={() => act(simulateClientPayment(kase.id), "Client NGN payment received")}
-          >
-            Simulate client payment — demo only
-          </Button>
-          <Button
-            variant="secondary"
-            className="w-full justify-start"
-            onClick={() =>
-              act(simulateProviderConfirmation(kase.id), "Solicitor paid — receipt available")
-            }
-          >
-            Simulate provider confirmation — demo only
-          </Button>
+          <p className="text-[11px] text-muted-foreground border-t pt-2">
+            Conversion, settlement and identity approval are performed by Canta Compliance/Ops. The
+            client must consent and verify their identity on the payment link before an NGN account
+            is issued.
+          </p>
+
           <Button
             className="w-full justify-start"
             disabled={!receiptReady}
