@@ -15,7 +15,10 @@ import {
 import { AlertTriangle, CheckCircle2, Copy, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { getSolicitor } from "@/lib/partner";
+import { canReceivePayout } from "@/lib/payout-security";
 import {
+  PARTNER_FEE_ACCOUNT,
+  isFeeCase,
   formatFx,
   formatNgn,
   markCaseLinkViewed,
@@ -98,7 +101,13 @@ function ClientPayPage() {
 
   const kyc = getKyc(kase.id, kase.linkId);
   const solicitor = getSolicitor(kase.solicitorId);
-  const solicitorVerified = !!verifiedAccount(kase.solicitorId, kase.payoutCurrency);
+  const isFee = isFeeCase(kase);
+  const beneficiaryLabel = isFee ? "Partner fee account" : "Solicitor / law firm";
+  const beneficiaryName = isFee ? PARTNER_FEE_ACCOUNT.accountName : (solicitor?.firm ?? "—");
+  const receivesLabel = isFee ? "Partner receives" : "Solicitor receives";
+  const solicitorVerified = isFee
+    ? canReceivePayout(PARTNER_FEE_ACCOUNT.status)
+    : !!verifiedAccount(kase.solicitorId, kase.payoutCurrency);
   const expired = quoteExpired(kase.quote);
   const cd = countdownTo(kase.quote.expiresAt, now);
   const countdown = cd
@@ -134,10 +143,10 @@ function ClientPayPage() {
         <Row label="Client" value={kase.clientName} />
         <Row label="Property / project" value={kase.property} />
         <Row label="Payment purpose" value={kase.purpose} />
-        <Row label="Solicitor / law firm" value={solicitor?.firm ?? "—"} />
+        <Row label={beneficiaryLabel} value={beneficiaryName} />
         <div className="rounded-lg border p-4 space-y-2 bg-secondary/30">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">Solicitor receives</span>
+            <span className="text-xs text-muted-foreground">{receivesLabel}</span>
             <span className="text-lg font-semibold">
               {formatFx(kase.quote.payoutAmount, kase.payoutCurrency)}
             </span>
@@ -383,7 +392,8 @@ function ClientPayPage() {
           </Button>
           {!solicitorVerified && (
             <p className="text-[11px] text-destructive">
-              Solicitor payout account is not verified — payment cannot be collected yet.
+              {isFee ? "Partner fee account" : "Solicitor payout account"} is not verified —
+              payment cannot be collected yet.
             </p>
           )}
         </Card>
@@ -431,7 +441,8 @@ function ClientPayPage() {
           </div>
           <p className="text-[11px] text-muted-foreground flex items-start gap-1.5">
             <ShieldCheck className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-            Funds are remitted only to the solicitor account verified by Canta for this case. Canta
+            Funds are remitted only to the {isFee ? "partner fee" : "solicitor"} account verified
+            by Canta for this case. Canta
             may request identity or source-of-funds documents before settlement.
           </p>
         </Card>
@@ -466,7 +477,8 @@ function ClientPayPage() {
           )}
           <p className="text-xs text-muted-foreground">
             Canta will convert and remit {formatFx(kase.quote.payoutAmount, kase.payoutCurrency)} to
-            the verified solicitor account once compliance checks are complete.
+            the verified {isFee ? "partner fee" : "solicitor"} account once compliance checks are
+            complete.
           </p>
         </Card>
       )}
