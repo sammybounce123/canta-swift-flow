@@ -35,6 +35,7 @@ import {
 import { canReceivePayout, maskAccountNumber, PAYOUT_STATUS_TONE } from "@/lib/payout-security";
 import { setPartnerIdHint, type IdMethod } from "@/lib/partner-kyc";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { usePartnerProjects } from "@/lib/partner-projects";
 
 export const Route = createFileRoute("/partner/new-payment-case")({
   head: () => ({
@@ -74,6 +75,7 @@ function NewPaymentCasePage() {
   const { user } = usePartnerRole();
   usePartnerPayments(); // subscribe to account changes
   const [step, setStep] = useState(0);
+  const projects = usePartnerProjects();
 
   const [clientName, setClientName] = useState("");
   const [clientEmail, setClientEmail] = useState("");
