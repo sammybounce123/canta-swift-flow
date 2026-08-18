@@ -33,6 +33,7 @@ import {
   type PayoutCurrency,
 } from "@/lib/partner-payments";
 import { canReceivePayout, maskAccountNumber, PAYOUT_STATUS_TONE } from "@/lib/payout-security";
+import { setPartnerIdHint, type IdMethod } from "@/lib/partner-kyc";
 import { ReadinessBar } from "@/components/ReadinessBar";
 
 export const Route = createFileRoute("/partner/new-payment-case")({
@@ -81,6 +82,8 @@ function NewPaymentCasePage() {
   const [property, setProperty] = useState("");
   const [purpose, setPurpose] = useState("Property purchase completion");
   const [notes, setNotes] = useState("");
+  const [idHintMethod, setIdHintMethod] = useState<IdMethod>("BVN");
+  const [idHintLast4, setIdHintLast4] = useState("");
 
   const [solicitorId, setSolicitorId] = useState("");
   const [currency, setCurrency] = useState<PayoutCurrency>("GBP");
@@ -125,6 +128,11 @@ function NewPaymentCasePage() {
       payoutCurrency: currency,
       payoutAmount: amountNum,
       createdBy: user?.name ?? "Partner",
+    });
+    setPartnerIdHint(kase.id, kase.linkId, {
+      method: idHintMethod,
+      last4: idHintLast4,
+      assistedCapture: false,
     });
     setCreated(kase);
     setStep(4);
@@ -208,6 +216,43 @@ function NewPaymentCasePage() {
               <Field label="Notes">
                 <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} />
               </Field>
+            </div>
+            <div className="md:col-span-2 rounded-lg border p-3 space-y-3 bg-secondary/30">
+              <div className="text-xs font-medium">
+                Optional ID hint — never a substitute for client consent
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                You may record the ID type and last 4 digits only. The client must personally
+                consent and submit their BVN/NIN/passport and selfie through the secure payment
+                link. Do not upload client identity documents here.
+              </p>
+              <div className="grid gap-3 md:grid-cols-2">
+                <Field label="Expected ID type">
+                  <Select
+                    value={idHintMethod}
+                    onValueChange={(v) => setIdHintMethod(v as IdMethod)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {(["BVN", "NIN", "Passport"] as IdMethod[]).map((m) => (
+                        <SelectItem key={m} value={m}>
+                          {m}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+                <Field label="Last 4 digits (optional)">
+                  <Input
+                    maxLength={4}
+                    value={idHintLast4}
+                    onChange={(e) => setIdHintLast4(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                    placeholder="1234"
+                  />
+                </Field>
+              </div>
             </div>
           </div>
         )}

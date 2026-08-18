@@ -11,6 +11,7 @@
 import { useSyncExternalStore } from "react";
 import { SOLICITORS, PARTNER_ORG } from "@/lib/partner";
 import { canReceivePayout, logPayoutEvent, type PayoutAccountStatus } from "@/lib/payout-security";
+import { recordClientPayment, setLinkStatus, settlementBlock } from "@/lib/partner-kyc";
 
 /* ------------------------------------------------------------------ */
 /* Currencies & pricing                                                */
@@ -538,6 +539,8 @@ export function refreshCaseQuote(id: string) {
 }
 
 export function markCaseLinkSent(id: string, channel: string) {
+  const c = getClientPaymentCase(id);
+  if (c) setLinkStatus(c.id, c.linkId, "Sent");
   updateCase(id, (k) => ({
     ...k,
     status: k.status === "Awaiting NGN Payment" ? "Payment Link Sent" : k.status,
@@ -548,6 +551,8 @@ export function markCaseLinkSent(id: string, channel: string) {
 export function markCaseLinkViewed(id: string) {
   const c = getClientPaymentCase(id);
   if (!c || c.ngnReceived) return;
+  setLinkStatus(c.id, c.linkId, "Viewed");
+  if (c.status === "Client Viewed") return;
   updateCase(id, (k) => ({
     ...k,
     status: "Client Viewed",
@@ -555,30 +560,65 @@ export function markCaseLinkViewed(id: string) {
   }));
 }
 
-/** Demo-only: client pays the NGN amount into the Partner NGN Wallet. */
-export function simulateClientPayment(id: string): { ok: boolean; error?: string } {
+/**
+ * Demo-only: the client pays into the case-specific NGN account. Requires
+ * consent + identity verification + a generated case account. Payments after
+ * expiry, underpayments and overpayments are held for compliance review.
+ */
+export function simulateClientPayment(
+  id: string,
+  amountNgn?: number,
+): { ok: boolean; error?: string; variance?: string } {
   const c = getClientPaymentCase(id);
   if (!c) return { ok: false, error: "Case not found" };
-  if (quoteExpired(c.quote))
-    return { ok: false, error: "Quote expired — refresh the quote before payment." };
+  const expired = quoteExpired(c.quote);
+  const amount = amountNgn ?? c.quote.ngnTotal;
+  const res = recordClientPayment({
+    caseId: c.id,
+    linkId: c.linkId,
+    amountNgn: amount,
+    expectedNgn: c.quote.ngnTotal,
+    quoteExpired: expired,
+  });
+  if (!res.ok) return { ok: false, error: res.error };
   const now = new Date().toISOString();
+  const note =
+    res.variance === "After expiry"
+      ? "Rate Expired Review — refreshed quote required"
+      : res.variance === "Underpaid"
+        ? "Partially Paid — conversion blocked"
+        : res.variance === "Overpaid"
+          ? "Overpaid Review — Ops decision required"
+          : undefined;
   updateCase(id, (k) => ({
     ...k,
     status: "Compliance Review",
-    ngnReceived: k.quote.ngnTotal,
+    ngnReceived: amount,
     receivedAt: now,
     timeline: push(
-      push(k.timeline, "NGN Received", `${formatNgn(k.quote.ngnTotal)} into Partner NGN Wallet`),
+      push(k.timeline, "NGN Received", `${formatNgn(amount)} into case-linked Partner NGN Wallet`),
       "Compliance Review",
+      note,
     ),
   }));
-  return { ok: true };
+  return { ok: true, variance: res.variance };
 }
 
 export function passComplianceAndConvert(id: string): { ok: boolean; error?: string } {
   const c = getClientPaymentCase(id);
   if (!c) return { ok: false, error: "Case not found" };
-  if (!c.ngnReceived) return { ok: false, error: "No client NGN payment received yet." };
+  const gate = settlementBlock(c.id);
+  if (gate) {
+    logPayoutEvent({
+      action: "Payout blocked",
+      workspace: "Partner",
+      entity: c.id,
+      reason: gate,
+      result: "Failed",
+    });
+    return { ok: false, error: gate };
+  }
+
   const acct = listSolicitorAccounts().find((a) => a.id === c.solicitorAccountId);
   if (!acct || !canReceivePayout(acct.status)) {
     logPayoutEvent({
@@ -590,6 +630,7 @@ export function passComplianceAndConvert(id: string): { ok: boolean; error?: str
     });
     return { ok: false, error: "Solicitor payout account is not verified — settlement blocked." };
   }
+  setLinkStatus(c.id, c.linkId, "Solicitor Payout Pending");
   updateCase(id, (k) => ({
     ...k,
     status: "Provider Confirmation Pending",
@@ -618,6 +659,7 @@ export function simulateProviderConfirmation(id: string): { ok: boolean; error?:
   if (c.status !== "Provider Confirmation Pending")
     return { ok: false, error: "Payout has not been submitted to the provider yet." };
   const ref = `PRV-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+  setLinkStatus(c.id, c.linkId, "Receipt Available");
   updateCase(id, (k) => ({
     ...k,
     status: "Receipt Available",
