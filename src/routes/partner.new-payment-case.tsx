@@ -190,7 +190,37 @@ function NewPaymentCasePage() {
               <Input value={country} onChange={(e) => setCountry(e.target.value)} />
             </Field>
             <Field label="Property / project">
-              <Input value={property} onChange={(e) => setProperty(e.target.value)} />
+              <div className="space-y-1.5">
+                <Select
+                  value={projects.some((p) => p.name === property) ? property : "__other"}
+                  onValueChange={(v) => setProperty(v === "__other" ? "" : v)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a project" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {projects.map((p) => (
+                      <SelectItem key={p.id} value={p.name}>
+                        {p.name} — {p.location}
+                      </SelectItem>
+                    ))}
+                    <SelectItem value="__other">Other / not listed</SelectItem>
+                  </SelectContent>
+                </Select>
+                {!projects.some((p) => p.name === property) && (
+                  <Input
+                    value={property}
+                    onChange={(e) => setProperty(e.target.value)}
+                    placeholder="Type the property or project"
+                  />
+                )}
+                <Link
+                  to="/partner/projects"
+                  className="text-[11px] text-primary hover:underline inline-block"
+                >
+                  Manage projects
+                </Link>
+              </div>
             </Field>
             <Field label="Payment purpose">
               <Select value={purpose} onValueChange={setPurpose}>
