@@ -118,7 +118,11 @@ function NewFeePaymentPage() {
       createdBy: user?.name ?? "Partner user",
     });
     if (idHintLast4.trim()) {
-      setPartnerIdHint(kase.id, { method: idHintMethod, last4: idHintLast4.trim() });
+      setPartnerIdHint(kase.id, kase.linkId, {
+        method: idHintMethod,
+        last4: idHintLast4.trim(),
+        assistedCapture: false,
+      });
     }
     setCreated(kase);
     setStep(3);
