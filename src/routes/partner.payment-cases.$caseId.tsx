@@ -13,16 +13,15 @@ import {
   listSolicitorAccounts,
   markCaseLinkSent,
   partnerCaseTone,
-  passComplianceAndConvert,
   paymentLinkUrl,
   quoteExpired,
   refreshCaseQuote,
-  simulateClientPayment,
-  simulateProviderConfirmation,
   usePartnerPayments,
 } from "@/lib/partner-payments";
 import { maskAccountNumber, PAYOUT_STATUS_TONE, payoutBlockReason } from "@/lib/payout-security";
 import { ReadinessBar } from "@/components/ReadinessBar";
+import { getKyc, useKycState } from "@/lib/partner-kyc";
+import { formatIsoDateTime } from "@/lib/hydration-time";
 
 export const Route = createFileRoute("/partner/payment-cases/$caseId")({
   head: () => ({
@@ -51,6 +50,7 @@ function copyText(text: string, label: string) {
 function CaseDetail() {
   const { caseId } = useParams({ from: "/partner/payment-cases/$caseId" });
   const { cases } = usePartnerPayments();
+  useKycState();
   const kase = cases.find((c) => c.id === caseId);
 
   if (!kase) {
@@ -69,9 +69,8 @@ function CaseDetail() {
   const blocked = account ? payoutBlockReason(account.status) : "No settlement destination mapped.";
   const expired = quoteExpired(kase.quote);
   const receiptReady = kase.status === "Receipt Available";
+  const kyc = getKyc(kase.id, kase.linkId);
 
-  const act = (r: { ok: boolean; error?: string }, okMsg: string) =>
-    r.ok ? toast.success(okMsg) : toast.error(r.error ?? "Action blocked");
 
   return (
     <div className="space-y-5">
@@ -199,13 +198,50 @@ function CaseDetail() {
         </Card>
       </div>
 
+      <Card className="p-5 shadow-card space-y-2">
+        <h2 className="font-medium text-sm">Client consent &amp; identity</h2>
+        <p className="text-[11px] text-muted-foreground">
+          Canta stores masked identity references only. Partner staff cannot view the client's full
+          BVN/NIN/passport or selfie.
+        </p>
+        <Row label="Link status" value={kyc.linkStatus} />
+        <Row
+          label="Consent"
+          value={kyc.consent ? `Given ${formatIsoDateTime(kyc.consent.timestamp)}` : "Not yet given"}
+        />
+        <Row
+          label="Identity"
+          value={
+            kyc.identity
+              ? `${kyc.identity.status} · ${kyc.identity.method} ${kyc.identity.maskedRef}`
+              : "Awaiting client submission"
+          }
+        />
+        <Row
+          label="Case NGN account"
+          value={kyc.account ? `${kyc.account.accountNumber} · single-use` : "Not generated"}
+        />
+        {kyc.idHint && (
+          <Row
+            label="Partner ID hint"
+            value={`${kyc.idHint.method} ••••${kyc.idHint.last4} — ${kyc.idHint.note}`}
+          />
+        )}
+        {kyc.flags.filter((f) => f.status === "Open").length > 0 && (
+          <p className="text-xs text-destructive">
+            {kyc.flags.filter((f) => f.status === "Open").length} open compliance flag(s) — Canta Ops
+            review required.
+          </p>
+        )}
+      </Card>
+
       <Card className="p-5 shadow-card">
         <h2 className="font-medium text-sm mb-3">Timeline</h2>
         <ol className="space-y-2 text-sm">
           {kase.timeline.map((t, i) => (
             <li key={i} className="flex gap-3">
               <span className="text-xs text-muted-foreground w-40 shrink-0 tabular-nums">
-                {new Date(t.ts).toLocaleString()}
+                {formatIsoDateTime(t.ts)}
               </span>
               <span>
                 {t.label}
