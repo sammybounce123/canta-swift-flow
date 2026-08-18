@@ -6,6 +6,8 @@ import { Copy, Download, RefreshCw, Send } from "lucide-react";
 import { toast } from "sonner";
 import { getSolicitor } from "@/lib/partner";
 import {
+  PARTNER_FEE_ACCOUNT,
+  isFeeCase,
   clientEmailMessage,
   clientWhatsAppMessage,
   formatFx,
