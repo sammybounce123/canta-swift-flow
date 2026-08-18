@@ -84,7 +84,7 @@ function NewFeePaymentPage() {
   const [property, setProperty] = useState("");
   const [purpose, setPurpose] = useState(FEE_PURPOSES[0]);
   const [notes, setNotes] = useState("");
-  const [idHintMethod, setIdHintMethod] = useState<IdMethod>("BVN");
+  const [idHintTypes, setIdHintTypes] = useState<HintType[]>(["BVN"]);
   const [idHintLast4, setIdHintLast4] = useState("");
   const [amount, setAmount] = useState("");
   const [created, setCreated] = useState<ClientPaymentCase | null>(null);
@@ -122,7 +122,8 @@ function NewFeePaymentPage() {
     });
     if (idHintLast4.trim()) {
       setPartnerIdHint(kase.id, kase.linkId, {
-        method: idHintMethod,
+        method: (idHintTypes.find((t) => t === "BVN" || t === "NIN" || t === "Passport") ??
+          "BVN") as IdMethod,
         last4: idHintLast4.trim(),
         assistedCapture: false,
       });
