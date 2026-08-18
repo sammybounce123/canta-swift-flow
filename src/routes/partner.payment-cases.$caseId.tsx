@@ -71,7 +71,6 @@ function CaseDetail() {
   const receiptReady = kase.status === "Receipt Available";
   const kyc = getKyc(kase.id, kase.linkId);
 
-
   return (
     <div className="space-y-5">
       <ReadinessBar
@@ -207,7 +206,9 @@ function CaseDetail() {
         <Row label="Link status" value={kyc.linkStatus} />
         <Row
           label="Consent"
-          value={kyc.consent ? `Given ${formatIsoDateTime(kyc.consent.timestamp)}` : "Not yet given"}
+          value={
+            kyc.consent ? `Given ${formatIsoDateTime(kyc.consent.timestamp)}` : "Not yet given"
+          }
         />
         <Row
           label="Identity"

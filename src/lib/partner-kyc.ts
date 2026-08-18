@@ -351,7 +351,12 @@ function makeFlag(caseId: string, trigger: ComplianceTrigger, note?: string): Co
   };
 }
 
-export function raiseFlag(caseId: string, linkId: string, trigger: ComplianceTrigger, note?: string) {
+export function raiseFlag(
+  caseId: string,
+  linkId: string,
+  trigger: ComplianceTrigger,
+  note?: string,
+) {
   const k = getKyc(caseId, linkId);
   write(caseId, { ...k, linkId, flags: [...k.flags, makeFlag(caseId, trigger, note)] });
 }
@@ -537,8 +542,7 @@ export function settlementBlock(caseId: string): string | null {
   if (k.payment.variance === "After expiry")
     return "Payment was received after the quote expired. A refreshed quote is required before conversion.";
   if (k.payment.variance === "Underpaid") return "Client underpaid — conversion blocked.";
-  if (k.payment.variance === "Overpaid")
-    return "Overpayment review required before conversion.";
+  if (k.payment.variance === "Overpaid") return "Overpayment review required before conversion.";
   if (k.flags.some((f) => f.state === "Open" || f.state === "Escalated"))
     return "Open compliance review items must be resolved first.";
   return null;

@@ -101,7 +101,11 @@ function ClientPayPage() {
   const solicitorVerified = !!verifiedAccount(kase.solicitorId, kase.payoutCurrency);
   const expired = quoteExpired(kase.quote);
   const cd = countdownTo(kase.quote.expiresAt, now);
-  const countdown = cd ? (cd.expired ? "Expired" : `${cd.minutes}m ${String(cd.seconds).padStart(2, "0")}s`) : "—";
+  const countdown = cd
+    ? cd.expired
+      ? "Expired"
+      : `${cd.minutes}m ${String(cd.seconds).padStart(2, "0")}s`
+    : "—";
   const highValue = kase.quote.ngnTotal >= 100_000_000;
 
   const stage: "consent" | "identity" | "account" | "pay" | "done" = kyc.payment
@@ -313,9 +317,7 @@ function ClientPayPage() {
 
           <Button
             className="w-full"
-            disabled={
-              !reference.trim() || !selfieCaptured || (highValue && !sourceOfFunds.trim())
-            }
+            disabled={!reference.trim() || !selfieCaptured || (highValue && !sourceOfFunds.trim())}
             onClick={() => {
               const r = submitIdentity({
                 caseId: kase.id,
@@ -349,7 +351,9 @@ function ClientPayPage() {
           {expired ? (
             <div className="flex gap-2 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-xs text-destructive">
               <AlertTriangle className="h-4 w-4 shrink-0" />
-              <span>Quote expired — ask {kase.partnerName} to refresh the quote before paying.</span>
+              <span>
+                Quote expired — ask {kase.partnerName} to refresh the quote before paying.
+              </span>
             </div>
           ) : (
             <p className="text-xs text-muted-foreground">
@@ -450,9 +454,8 @@ function ClientPayPage() {
           )}
           {kyc.payment.variance === "Underpaid" && (
             <p className="text-xs text-destructive">
-              Partially paid — outstanding{" "}
-              {formatNgn(kase.quote.ngnTotal - kyc.payment.amountNgn)}. Conversion is blocked until
-              the balance is received.
+              Partially paid — outstanding {formatNgn(kase.quote.ngnTotal - kyc.payment.amountNgn)}.
+              Conversion is blocked until the balance is received.
             </p>
           )}
           {kyc.payment.variance === "Overpaid" && (

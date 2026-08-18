@@ -13,7 +13,6 @@ import { SOLICITORS, PARTNER_ORG } from "@/lib/partner";
 import { canReceivePayout, logPayoutEvent, type PayoutAccountStatus } from "@/lib/payout-security";
 import { recordClientPayment, setLinkStatus, settlementBlock } from "@/lib/partner-kyc";
 
-
 /* ------------------------------------------------------------------ */
 /* Currencies & pricing                                                */
 /* ------------------------------------------------------------------ */
@@ -561,7 +560,6 @@ export function markCaseLinkViewed(id: string) {
   }));
 }
 
-
 /**
  * Demo-only: the client pays into the case-specific NGN account. Requires
  * consent + identity verification + a generated case account. Payments after
@@ -634,7 +632,6 @@ export function passComplianceAndConvert(id: string): { ok: boolean; error?: str
   }
   setLinkStatus(c.id, c.linkId, "Solicitor Payout Pending");
   updateCase(id, (k) => ({
-
     ...k,
     status: "Provider Confirmation Pending",
     convertedAt: new Date().toISOString(),
@@ -664,7 +661,6 @@ export function simulateProviderConfirmation(id: string): { ok: boolean; error?:
   const ref = `PRV-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
   setLinkStatus(c.id, c.linkId, "Receipt Available");
   updateCase(id, (k) => ({
-
     ...k,
     status: "Receipt Available",
     paidAt: new Date().toISOString(),

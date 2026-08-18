@@ -228,7 +228,10 @@ function NewPaymentCasePage() {
               </p>
               <div className="grid gap-3 md:grid-cols-2">
                 <Field label="Expected ID type">
-                  <Select value={idHintMethod} onValueChange={(v) => setIdHintMethod(v as IdMethod)}>
+                  <Select
+                    value={idHintMethod}
+                    onValueChange={(v) => setIdHintMethod(v as IdMethod)}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -253,7 +256,6 @@ function NewPaymentCasePage() {
             </div>
           </div>
         )}
-
 
         {step === 1 && (
           <div className="space-y-3">

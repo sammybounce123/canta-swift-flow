@@ -9,13 +9,7 @@ import {
   simulateProviderConfirmation,
   usePartnerPayments,
 } from "@/lib/partner-payments";
-import {
-  decideFlag,
-  getKyc,
-  lockCase,
-  opsAcceptIdentity,
-  useKycState,
-} from "@/lib/partner-kyc";
+import { decideFlag, getKyc, lockCase, opsAcceptIdentity, useKycState } from "@/lib/partner-kyc";
 import { formatIsoDateTime } from "@/lib/hydration-time";
 
 const OPS_USER = "Canta Ops (demo)";
@@ -55,9 +49,7 @@ export function PartnerComplianceQueue() {
 
       <div className="space-y-3">
         {rows.map(({ kase, kyc }) => {
-          const openFlags = kyc.flags.filter(
-            (f) => f.state === "Open" || f.state === "Escalated",
-          );
+          const openFlags = kyc.flags.filter((f) => f.state === "Open" || f.state === "Escalated");
           return (
             <div key={kase.id} className="rounded-lg border p-3 space-y-2 text-sm">
               <div className="flex flex-wrap items-center gap-2">
