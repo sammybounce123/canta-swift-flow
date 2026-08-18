@@ -55,6 +55,9 @@ export const Route = createFileRoute("/partner/new-fee-payment")({
 
 const STEPS = ["Client details", "Fee destination", "Fee amount & quote", "Payment link"];
 
+const HINT_TYPES = ["BVN", "NIN", "Passport", "Selfie", "Other ID"] as const;
+type HintType = (typeof HINT_TYPES)[number];
+
 const FEE_PURPOSES = [
   "Partner service fee",
   "Reservation / booking fee",
@@ -81,7 +84,7 @@ function NewFeePaymentPage() {
   const [property, setProperty] = useState("");
   const [purpose, setPurpose] = useState(FEE_PURPOSES[0]);
   const [notes, setNotes] = useState("");
-  const [idHintMethod, setIdHintMethod] = useState<IdMethod>("BVN");
+  const [idHintTypes, setIdHintTypes] = useState<HintType[]>(["BVN"]);
   const [idHintLast4, setIdHintLast4] = useState("");
   const [amount, setAmount] = useState("");
   const [created, setCreated] = useState<ClientPaymentCase | null>(null);
@@ -119,7 +122,8 @@ function NewFeePaymentPage() {
     });
     if (idHintLast4.trim()) {
       setPartnerIdHint(kase.id, kase.linkId, {
-        method: idHintMethod,
+        method: (idHintTypes.find((t) => t === "BVN" || t === "NIN" || t === "Passport") ??
+          "BVN") as IdMethod,
         last4: idHintLast4.trim(),
         assistedCapture: false,
       });
@@ -221,19 +225,31 @@ function NewFeePaymentPage() {
               </Select>
             </Field>
             <div className="md:col-span-2 grid gap-4 md:grid-cols-2">
-              <Field label="Expected ID type (optional hint)">
-                <Select value={idHintMethod} onValueChange={(v) => setIdHintMethod(v as IdMethod)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(["BVN", "NIN", "Passport"] as IdMethod[]).map((m) => (
-                      <SelectItem key={m} value={m}>
-                        {m}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <Field label="Expected verification types (optional hint)">
+                <div className="flex flex-wrap gap-2">
+                  {HINT_TYPES.map((t) => {
+                    const active = idHintTypes.includes(t);
+                    return (
+                      <button
+                        key={t}
+                        type="button"
+                        aria-pressed={active}
+                        onClick={() =>
+                          setIdHintTypes((prev) =>
+                            prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t],
+                          )
+                        }
+                        className={`px-3 py-1.5 rounded-full border text-xs transition-colors ${
+                          active
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "text-muted-foreground border-border hover:bg-secondary"
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    );
+                  })}
+                </div>
               </Field>
               <Field label="Last 4 digits (optional hint)">
                 <Input
