@@ -14,6 +14,7 @@ import {
   Building2,
 } from "lucide-react";
 import { PayoutReviewQueue } from "@/components/ops/PayoutReviewQueue";
+import { PartnerComplianceQueue } from "@/components/ops/PartnerComplianceQueue";
 
 export const Route = createFileRoute("/ops")({
   head: () => ({
@@ -213,6 +214,8 @@ function OpsConsole() {
       </div>
 
       <PayoutReviewQueue />
+
+      <PartnerComplianceQueue />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {METRICS.map((m) => (
