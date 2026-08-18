@@ -93,6 +93,7 @@ import { Route as PartnerNewReferralRouteImport } from './routes/partner.new-ref
 import { Route as PartnerPaymentCasesRouteImport } from './routes/partner.payment-cases'
 import { Route as PartnerPaymentLinksRouteImport } from './routes/partner.payment-links'
 import { Route as PartnerPayoutsRouteImport } from './routes/partner.payouts'
+import { Route as PartnerProjectsRouteImport } from './routes/partner.projects'
 import { Route as PartnerReportsRouteImport } from './routes/partner.reports'
 import { Route as PartnerSettingsRouteImport } from './routes/partner.settings'
 import { Route as PartnerSolicitorsRouteImport } from './routes/partner.solicitors'
@@ -556,6 +557,11 @@ const PartnerPayoutsRoute = PartnerPayoutsRouteImport.update({
   path: '/payouts',
   getParentRoute: () => PartnerRoute,
 } as any)
+const PartnerProjectsRoute = PartnerProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => PartnerRoute,
+} as any)
 const PartnerReportsRoute = PartnerReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -862,6 +868,7 @@ export interface FileRoutesByFullPath {
   '/partner/payment-cases': typeof PartnerPaymentCasesRouteWithChildren
   '/partner/payment-links': typeof PartnerPaymentLinksRoute
   '/partner/payouts': typeof PartnerPayoutsRoute
+  '/partner/projects': typeof PartnerProjectsRoute
   '/partner/reports': typeof PartnerReportsRoute
   '/partner/settings': typeof PartnerSettingsRoute
   '/partner/solicitors': typeof PartnerSolicitorsRoute
@@ -984,6 +991,7 @@ export interface FileRoutesByTo {
   '/partner/new-referral': typeof PartnerNewReferralRoute
   '/partner/payment-links': typeof PartnerPaymentLinksRoute
   '/partner/payouts': typeof PartnerPayoutsRoute
+  '/partner/projects': typeof PartnerProjectsRoute
   '/partner/reports': typeof PartnerReportsRoute
   '/partner/settings': typeof PartnerSettingsRoute
   '/partner/solicitors': typeof PartnerSolicitorsRoute
@@ -1113,6 +1121,7 @@ export interface FileRoutesById {
   '/partner/payment-cases': typeof PartnerPaymentCasesRouteWithChildren
   '/partner/payment-links': typeof PartnerPaymentLinksRoute
   '/partner/payouts': typeof PartnerPayoutsRoute
+  '/partner/projects': typeof PartnerProjectsRoute
   '/partner/reports': typeof PartnerReportsRoute
   '/partner/settings': typeof PartnerSettingsRoute
   '/partner/solicitors': typeof PartnerSolicitorsRoute
@@ -1243,6 +1252,7 @@ export interface FileRouteTypes {
     | '/partner/payment-cases'
     | '/partner/payment-links'
     | '/partner/payouts'
+    | '/partner/projects'
     | '/partner/reports'
     | '/partner/settings'
     | '/partner/solicitors'
@@ -1365,6 +1375,7 @@ export interface FileRouteTypes {
     | '/partner/new-referral'
     | '/partner/payment-links'
     | '/partner/payouts'
+    | '/partner/projects'
     | '/partner/reports'
     | '/partner/settings'
     | '/partner/solicitors'
@@ -1493,6 +1504,7 @@ export interface FileRouteTypes {
     | '/partner/payment-cases'
     | '/partner/payment-links'
     | '/partner/payouts'
+    | '/partner/projects'
     | '/partner/reports'
     | '/partner/settings'
     | '/partner/solicitors'
@@ -2192,6 +2204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PartnerPayoutsRouteImport
       parentRoute: typeof PartnerRoute
     }
+    '/partner/projects': {
+      id: '/partner/projects'
+      path: '/projects'
+      fullPath: '/partner/projects'
+      preLoaderRoute: typeof PartnerProjectsRouteImport
+      parentRoute: typeof PartnerRoute
+    }
     '/partner/reports': {
       id: '/partner/reports'
       path: '/reports'
@@ -2578,6 +2597,7 @@ interface PartnerRouteChildren {
   PartnerPaymentCasesRoute: typeof PartnerPaymentCasesRouteWithChildren
   PartnerPaymentLinksRoute: typeof PartnerPaymentLinksRoute
   PartnerPayoutsRoute: typeof PartnerPayoutsRoute
+  PartnerProjectsRoute: typeof PartnerProjectsRoute
   PartnerReportsRoute: typeof PartnerReportsRoute
   PartnerSettingsRoute: typeof PartnerSettingsRoute
   PartnerSolicitorsRoute: typeof PartnerSolicitorsRoute
@@ -2601,6 +2621,7 @@ const PartnerRouteChildren: PartnerRouteChildren = {
   PartnerPaymentCasesRoute: PartnerPaymentCasesRouteWithChildren,
   PartnerPaymentLinksRoute: PartnerPaymentLinksRoute,
   PartnerPayoutsRoute: PartnerPayoutsRoute,
+  PartnerProjectsRoute: PartnerProjectsRoute,
   PartnerReportsRoute: PartnerReportsRoute,
   PartnerSettingsRoute: PartnerSettingsRoute,
   PartnerSolicitorsRoute: PartnerSolicitorsRoute,
