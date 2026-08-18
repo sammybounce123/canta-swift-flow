@@ -78,11 +78,7 @@ export function getProjects() {
 }
 
 export function usePartnerProjects() {
-  return useSyncExternalStore(
-    subscribeProjects,
-    getProjects,
-    getProjects,
-  );
+  return useSyncExternalStore(subscribeProjects, getProjects, getProjects);
 }
 
 export function addProject(input: Omit<PartnerProject, "id" | "createdAt">) {

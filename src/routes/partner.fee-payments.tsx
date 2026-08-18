@@ -1,23 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Copy, RefreshCw } from "lucide-react";
+import { Copy, Plus } from "lucide-react";
 import { toast } from "sonner";
 import {
   PARTNER_FEE_ACCOUNT,
-  confirmFeePayment,
-  createPartnerFeePayment,
+  clientEmailMessage,
+  clientWhatsAppMessage,
   formatFx,
   formatNgn,
+  isFeeCase,
   partnerCaseTone,
   paymentLinkUrl,
   quoteExpired,
-  refreshFeeQuote,
-  simulateFeePayment,
   usePartnerPayments,
 } from "@/lib/partner-payments";
 import { maskAccountNumber, PAYOUT_STATUS_TONE } from "@/lib/payout-security";
@@ -30,77 +26,60 @@ export const Route = createFileRoute("/partner/fee-payments")({
       {
         name: "description",
         content:
-          "Partner fee payments settle separately to the verified Partner GBP account, never mixed with solicitor remittances.",
+          "Partner fee payments follow the same client payment flow and settle to the verified Partner GBP account, never mixed with solicitor remittances.",
       },
       { property: "og:title", content: "Partner Fee Payments — Kingsbridge Property Partners" },
       {
         property: "og:description",
         content: "Create and track partner fee payments separate from solicitor payouts.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: FeePaymentsPage,
 });
 
-function FeePaymentsPage() {
-  const { fees } = usePartnerPayments();
-  const [clientName, setClientName] = useState("");
-  const [property, setProperty] = useState("");
-  const [feeAmount, setFeeAmount] = useState("5000");
+function copyText(text: string, label: string) {
+  if (typeof navigator === "undefined") return;
+  navigator.clipboard?.writeText(text);
+  toast.success(`${label} copied`);
+}
 
-  const create = () => {
-    const amt = Number(feeAmount.replace(/,/g, "")) || 0;
-    if (!clientName.trim() || amt <= 0) {
-      toast.error("Client and fee amount are required");
-      return;
-    }
-    const fee = createPartnerFeePayment({ clientName, property, feeAmount: amt });
-    toast.success(`Partner fee payment ${fee.id} created`);
-    setClientName("");
-    setProperty("");
-  };
+function FeePaymentsPage() {
+  const { cases } = usePartnerPayments();
+  const feeCases = cases.filter(isFeeCase);
 
   return (
     <div className="space-y-5">
       <ReadinessBar
         status="Demo Preview"
-        cue="Partner fees are a separate payment from the solicitor remittance."
+        cue="Partner fees use the same consent-first client payment flow as client payment cases."
       />
-      <div>
-        <h1 className="text-2xl font-semibold">Partner Fee Payments</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Partner fees are collected separately from the solicitor payment and settle only to the
-          verified Partner GBP account.
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold">Partner Fee Payments</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Same journey as a client payment case — client consents, verifies identity and pays NGN
+            into a case-specific account. Fees settle only to the verified Partner GBP account.
+          </p>
+        </div>
+        <Button asChild>
+          <Link to="/partner/new-fee-payment">
+            <Plus className="h-4 w-4 mr-1.5" /> New Partner Fee Payment
+          </Link>
+        </Button>
       </div>
 
-      <Card className="p-5 shadow-card space-y-3">
-        <h2 className="font-medium text-sm">Create Partner Fee Payment</h2>
-        <div className="grid gap-3 md:grid-cols-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs">Client</Label>
-            <Input value={clientName} onChange={(e) => setClientName(e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Property / project</Label>
-            <Input value={property} onChange={(e) => setProperty(e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Fee amount (GBP)</Label>
-            <Input value={feeAmount} onChange={(e) => setFeeAmount(e.target.value)} />
-          </div>
-        </div>
-        <div className="text-xs text-muted-foreground">
-          Destination: {PARTNER_FEE_ACCOUNT.label} · {PARTNER_FEE_ACCOUNT.bank} ·{" "}
-          {maskAccountNumber(PARTNER_FEE_ACCOUNT.accountNumber)}{" "}
-          <Badge
-            variant="outline"
-            className={`ml-1 text-[10px] ${PAYOUT_STATUS_TONE[PARTNER_FEE_ACCOUNT.status]}`}
-          >
-            {PARTNER_FEE_ACCOUNT.status}
-          </Badge>
-        </div>
-        <Button onClick={create}>Create Partner Fee Payment</Button>
+      <Card className="p-4 shadow-card text-xs text-muted-foreground">
+        Destination: {PARTNER_FEE_ACCOUNT.label} · {PARTNER_FEE_ACCOUNT.bank} ·{" "}
+        {maskAccountNumber(PARTNER_FEE_ACCOUNT.accountNumber)}{" "}
+        <Badge
+          variant="outline"
+          className={`ml-1 text-[10px] ${PAYOUT_STATUS_TONE[PARTNER_FEE_ACCOUNT.status]}`}
+        >
+          {PARTNER_FEE_ACCOUNT.status}
+        </Badge>
       </Card>
 
       <Card className="shadow-card overflow-hidden">
@@ -108,33 +87,31 @@ function FeePaymentsPage() {
           <table className="w-full text-sm min-w-[900px]">
             <thead className="bg-secondary/40">
               <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
-                <th className="py-3 px-3">Fee ID</th>
+                <th className="py-3 px-3">Fee case</th>
                 <th className="py-3 px-3">Client</th>
                 <th className="py-3 px-3">Property</th>
-                <th className="py-3 px-3 text-right">Fee</th>
+                <th className="py-3 px-3 text-right">Partner receives</th>
                 <th className="py-3 px-3 text-right">Client pays NGN</th>
-                <th className="py-3 px-3">Rate</th>
-                <th className="py-3 px-3">Quote</th>
+                <th className="py-3 px-3">Quote expiry</th>
                 <th className="py-3 px-3">Status</th>
                 <th className="py-3 px-3"></th>
               </tr>
             </thead>
             <tbody>
-              {fees.map((f) => (
+              {feeCases.map((f) => (
                 <tr key={f.id} className="border-t hover:bg-secondary/30">
                   <td className="py-3 px-3 font-mono text-xs">{f.id}</td>
                   <td className="py-3 px-3">{f.clientName}</td>
                   <td className="py-3 px-3 text-xs text-muted-foreground">{f.property || "—"}</td>
                   <td className="py-3 px-3 text-right tabular-nums">
-                    {formatFx(f.feeAmount, "GBP")}
+                    {formatFx(f.quote.payoutAmount, f.payoutCurrency)}
                   </td>
                   <td className="py-3 px-3 text-right tabular-nums">
                     {formatNgn(f.quote.ngnTotal)}
                   </td>
-                  <td className="py-3 px-3 text-xs">1 GBP = ₦{f.quote.rate}</td>
                   <td className="py-3 px-3 text-xs text-muted-foreground">
                     {quoteExpired(f.quote)
-                      ? "Expired"
+                      ? "Expired — refresh"
                       : new Date(f.quote.expiresAt).toLocaleTimeString()}
                   </td>
                   <td className="py-3 px-3">
@@ -147,53 +124,47 @@ function FeePaymentsPage() {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => {
-                          navigator.clipboard?.writeText(paymentLinkUrl(f.linkId));
-                          toast.success("Fee payment link copied");
-                        }}
+                        onClick={() => copyText(paymentLinkUrl(f.linkId), "Fee payment link")}
                       >
                         <Copy className="h-3.5 w-3.5 mr-1" /> Copy link
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => {
-                          refreshFeeQuote(f.id);
-                          toast.success("Quote refreshed");
-                        }}
+                        onClick={() =>
+                          copyText(
+                            clientWhatsAppMessage(f, PARTNER_FEE_ACCOUNT.label),
+                            "WhatsApp message",
+                          )
+                        }
                       >
-                        <RefreshCw className="h-3.5 w-3.5 mr-1" /> Refresh quote
+                        WhatsApp
                       </Button>
                       <Button
                         size="sm"
-                        variant="secondary"
-                        onClick={() => {
-                          const r = simulateFeePayment(f.id);
-                          if (r.ok) toast.success("Fee payment received");
-                          else toast.error(r.error ?? "Blocked");
-                        }}
+                        variant="outline"
+                        onClick={() =>
+                          copyText(
+                            clientEmailMessage(f, PARTNER_FEE_ACCOUNT.label),
+                            "Email message",
+                          )
+                        }
                       >
-                        Simulate client payment — demo only
+                        Email
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => {
-                          const r = confirmFeePayment(f.id);
-                          if (r.ok) toast.success("Partner fee settled — receipt available");
-                          else toast.error(r.error ?? "Blocked");
-                        }}
-                      >
-                        Simulate provider confirmation — demo only
+                      <Button asChild size="sm" variant="ghost">
+                        <Link to="/partner/payment-cases/$caseId" params={{ caseId: f.id }}>
+                          View
+                        </Link>
                       </Button>
                     </div>
                   </td>
                 </tr>
               ))}
-              {fees.length === 0 && (
+              {feeCases.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="py-10 text-center text-sm text-muted-foreground">
-                    No partner fee payments yet.
+                  <td colSpan={8} className="py-10 text-center text-sm text-muted-foreground">
+                    No partner fee payments yet. Create one to send a client fee payment link.
                   </td>
                 </tr>
               )}

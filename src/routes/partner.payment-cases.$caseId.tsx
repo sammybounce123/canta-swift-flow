@@ -6,6 +6,8 @@ import { Copy, Download, RefreshCw, Send } from "lucide-react";
 import { toast } from "sonner";
 import { getSolicitor } from "@/lib/partner";
 import {
+  PARTNER_FEE_ACCOUNT,
+  isFeeCase,
   clientEmailMessage,
   clientWhatsAppMessage,
   formatFx,
@@ -64,7 +66,9 @@ function CaseDetail() {
     );
   }
 
+  const fee = isFeeCase(kase);
   const solicitor = getSolicitor(kase.solicitorId);
+  const beneficiaryName = fee ? PARTNER_FEE_ACCOUNT.accountName : (solicitor?.firm ?? "—");
   const account = listSolicitorAccounts().find((a) => a.id === kase.solicitorAccountId);
   const blocked = account ? payoutBlockReason(account.status) : "No settlement destination mapped.";
   const expired = quoteExpired(kase.quote);
@@ -95,7 +99,7 @@ function CaseDetail() {
           <Row label="Client" value={`${kase.clientName} · ${kase.clientEmail}`} />
           <Row label="Property / project" value={kase.property} />
           <Row label="Partner" value={kase.partnerName} />
-          <Row label="Selected solicitor" value={solicitor?.firm ?? "—"} />
+          <Row label={fee ? "Fee destination" : "Selected solicitor"} value={beneficiaryName} />
           <Row
             label="Settlement Destination"
             value={
@@ -154,10 +158,7 @@ function CaseDetail() {
             className="w-full justify-start"
             onClick={() => {
               markCaseLinkSent(kase.id, "Reminder");
-              copyText(
-                clientWhatsAppMessage(kase, solicitor?.firm ?? "Solicitor"),
-                "Reminder message",
-              );
+              copyText(clientWhatsAppMessage(kase, beneficiaryName), "Reminder message");
               toast.info("Sending is not configured in demo. Copy the message and send manually.");
             }}
           >
@@ -180,7 +181,7 @@ function CaseDetail() {
                 `Canta receipt ${kase.receiptId}`,
                 `Case ${kase.id}`,
                 `Client ${kase.clientName} paid ${formatNgn(kase.ngnReceived ?? 0)}`,
-                `Solicitor ${solicitor?.firm} received ${formatFx(kase.quote.payoutAmount, kase.payoutCurrency)}`,
+                `${beneficiaryName} received ${formatFx(kase.quote.payoutAmount, kase.payoutCurrency)}`,
                 `Provider reference ${kase.providerRef}`,
               ].join("\n");
               const url = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
@@ -256,15 +257,13 @@ function CaseDetail() {
       <Card className="p-5 shadow-card">
         <h2 className="font-medium text-sm mb-2">Client message</h2>
         <pre className="text-xs whitespace-pre-wrap bg-secondary/30 rounded-lg p-3">
-          {clientEmailMessage(kase, solicitor?.firm ?? "Solicitor")}
+          {clientEmailMessage(kase, beneficiaryName)}
         </pre>
         <Button
           size="sm"
           variant="outline"
           className="mt-3"
-          onClick={() =>
-            copyText(clientEmailMessage(kase, solicitor?.firm ?? "Solicitor"), "Email message")
-          }
+          onClick={() => copyText(clientEmailMessage(kase, beneficiaryName), "Email message")}
         >
           <Copy className="h-4 w-4 mr-1.5" /> Copy email message
         </Button>

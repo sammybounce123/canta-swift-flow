@@ -88,6 +88,7 @@ import { Route as PartnerFeePaymentsRouteImport } from './routes/partner.fee-pay
 import { Route as PartnerFxQuotesRouteImport } from './routes/partner.fx-quotes'
 import { Route as PartnerLeadsRouteImport } from './routes/partner.leads'
 import { Route as PartnerMarketersRouteImport } from './routes/partner.marketers'
+import { Route as PartnerNewFeePaymentRouteImport } from './routes/partner.new-fee-payment'
 import { Route as PartnerNewPaymentCaseRouteImport } from './routes/partner.new-payment-case'
 import { Route as PartnerNewReferralRouteImport } from './routes/partner.new-referral'
 import { Route as PartnerPaymentCasesRouteImport } from './routes/partner.payment-cases'
@@ -532,6 +533,11 @@ const PartnerMarketersRoute = PartnerMarketersRouteImport.update({
   path: '/marketers',
   getParentRoute: () => PartnerRoute,
 } as any)
+const PartnerNewFeePaymentRoute = PartnerNewFeePaymentRouteImport.update({
+  id: '/new-fee-payment',
+  path: '/new-fee-payment',
+  getParentRoute: () => PartnerRoute,
+} as any)
 const PartnerNewPaymentCaseRoute = PartnerNewPaymentCaseRouteImport.update({
   id: '/new-payment-case',
   path: '/new-payment-case',
@@ -863,6 +869,7 @@ export interface FileRoutesByFullPath {
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
   '/partner/leads': typeof PartnerLeadsRoute
   '/partner/marketers': typeof PartnerMarketersRoute
+  '/partner/new-fee-payment': typeof PartnerNewFeePaymentRoute
   '/partner/new-payment-case': typeof PartnerNewPaymentCaseRoute
   '/partner/new-referral': typeof PartnerNewReferralRoute
   '/partner/payment-cases': typeof PartnerPaymentCasesRouteWithChildren
@@ -987,6 +994,7 @@ export interface FileRoutesByTo {
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
   '/partner/leads': typeof PartnerLeadsRoute
   '/partner/marketers': typeof PartnerMarketersRoute
+  '/partner/new-fee-payment': typeof PartnerNewFeePaymentRoute
   '/partner/new-payment-case': typeof PartnerNewPaymentCaseRoute
   '/partner/new-referral': typeof PartnerNewReferralRoute
   '/partner/payment-links': typeof PartnerPaymentLinksRoute
@@ -1116,6 +1124,7 @@ export interface FileRoutesById {
   '/partner/fx-quotes': typeof PartnerFxQuotesRoute
   '/partner/leads': typeof PartnerLeadsRoute
   '/partner/marketers': typeof PartnerMarketersRoute
+  '/partner/new-fee-payment': typeof PartnerNewFeePaymentRoute
   '/partner/new-payment-case': typeof PartnerNewPaymentCaseRoute
   '/partner/new-referral': typeof PartnerNewReferralRoute
   '/partner/payment-cases': typeof PartnerPaymentCasesRouteWithChildren
@@ -1247,6 +1256,7 @@ export interface FileRouteTypes {
     | '/partner/fx-quotes'
     | '/partner/leads'
     | '/partner/marketers'
+    | '/partner/new-fee-payment'
     | '/partner/new-payment-case'
     | '/partner/new-referral'
     | '/partner/payment-cases'
@@ -1371,6 +1381,7 @@ export interface FileRouteTypes {
     | '/partner/fx-quotes'
     | '/partner/leads'
     | '/partner/marketers'
+    | '/partner/new-fee-payment'
     | '/partner/new-payment-case'
     | '/partner/new-referral'
     | '/partner/payment-links'
@@ -1499,6 +1510,7 @@ export interface FileRouteTypes {
     | '/partner/fx-quotes'
     | '/partner/leads'
     | '/partner/marketers'
+    | '/partner/new-fee-payment'
     | '/partner/new-payment-case'
     | '/partner/new-referral'
     | '/partner/payment-cases'
@@ -2169,6 +2181,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PartnerMarketersRouteImport
       parentRoute: typeof PartnerRoute
     }
+    '/partner/new-fee-payment': {
+      id: '/partner/new-fee-payment'
+      path: '/new-fee-payment'
+      fullPath: '/partner/new-fee-payment'
+      preLoaderRoute: typeof PartnerNewFeePaymentRouteImport
+      parentRoute: typeof PartnerRoute
+    }
     '/partner/new-payment-case': {
       id: '/partner/new-payment-case'
       path: '/new-payment-case'
@@ -2592,6 +2611,7 @@ interface PartnerRouteChildren {
   PartnerFxQuotesRoute: typeof PartnerFxQuotesRoute
   PartnerLeadsRoute: typeof PartnerLeadsRoute
   PartnerMarketersRoute: typeof PartnerMarketersRoute
+  PartnerNewFeePaymentRoute: typeof PartnerNewFeePaymentRoute
   PartnerNewPaymentCaseRoute: typeof PartnerNewPaymentCaseRoute
   PartnerNewReferralRoute: typeof PartnerNewReferralRoute
   PartnerPaymentCasesRoute: typeof PartnerPaymentCasesRouteWithChildren
@@ -2616,6 +2636,7 @@ const PartnerRouteChildren: PartnerRouteChildren = {
   PartnerFxQuotesRoute: PartnerFxQuotesRoute,
   PartnerLeadsRoute: PartnerLeadsRoute,
   PartnerMarketersRoute: PartnerMarketersRoute,
+  PartnerNewFeePaymentRoute: PartnerNewFeePaymentRoute,
   PartnerNewPaymentCaseRoute: PartnerNewPaymentCaseRoute,
   PartnerNewReferralRoute: PartnerNewReferralRoute,
   PartnerPaymentCasesRoute: PartnerPaymentCasesRouteWithChildren,
