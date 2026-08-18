@@ -407,6 +407,7 @@ export function getSidebarForWorkspace(
       }
       const items: SidebarItem[] = [
         D,
+        { to: "/partner/projects", label: "Projects", iconKey: "file", group: "Referrals" },
         { to: "/partner/clients", label: "Partner Clients", iconKey: "users", group: "Referrals" },
         { to: "/partner/leads", label: "Referral Leads", iconKey: "sparkles", group: "Referrals" },
         {
